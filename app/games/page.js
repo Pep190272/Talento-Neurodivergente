@@ -2,7 +2,7 @@
 'use client'
 import React, { useState } from 'react';
 import GameContainer from '../components/games/GameContainer';
-import StatsDisplay from '../components/games/StatsDisplay';
+
 import { FaBrain, FaPuzzlePiece, FaRegClock, FaShapes, FaPalette, FaRoute, FaSortNumericDown, FaFont, FaGripHorizontal, FaHandPointer } from 'react-icons/fa';
 import './games.css';
 
