@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import QuizQuestion from "../components/quiz/QuizQuestion";
-import DraggableList from "../components/Quiz/DraggableList";
+
 import StatsDisplay from "../components/quiz/StatsDisplay";
 import { FaBrain, FaCheck, FaListOl, FaRegClock, FaRobot, FaVolumeUp, FaRedo } from "react-icons/fa";
 import "./quiz.css";
