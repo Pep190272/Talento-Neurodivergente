@@ -72,19 +72,43 @@ export default function Hero() {
   const [stats, setStats] = useState(statsConfig.map(() => 0))
   const [statsVisible, setStatsVisible] = useState(false)
 
-  // Simplified chat system
+  // Enhanced chat system with user context
   const [chatOpen, setChatOpen] = useState(false)
-  const [chatMessages, setChatMessages] = useState([
-    { 
-      text: "Hello! I'm here to help you understand how neurodivergent talent can benefit your organization. What would you like to know?", 
-      sender: 'bot', 
-      timestamp: Date.now() 
-    }
-  ])
+  const [chatMessages, setChatMessages] = useState([])
   const [currentMessage, setCurrentMessage] = useState('')
   const [isTypingBot, setIsTypingBot] = useState(false)
+  const [userData, setUserData] = useState(null)
   const chatInputRef = useRef()
   const chatBodyRef = useRef()
+
+  // Load user data from localStorage
+  useEffect(() => {
+    const savedUserData = localStorage.getItem('diversia_user_data')
+    if (savedUserData) {
+      setUserData(JSON.parse(savedUserData))
+    }
+  }, [])
+
+  // Initialize chat with personalized welcome message
+  useEffect(() => {
+    if (userData) {
+      const welcomeMessage = userData.userType === 'candidate' 
+        ? `Hello ${userData.firstName}! I'm NeuroDialect, your AI assistant. I can help you with career guidance, skill development, and finding opportunities that match your unique strengths. What would you like to know?`
+        : `Hello ${userData.firstName}! I'm NeuroDialect, your AI assistant. I can help you with building inclusive teams, hiring neurodivergent talent, and creating supportive workplace environments. What would you like to know?`
+      
+      setChatMessages([{ 
+        text: welcomeMessage, 
+        sender: 'bot', 
+        timestamp: Date.now() 
+      }])
+    } else {
+      setChatMessages([{ 
+        text: "Hello! I'm NeuroDialect, your AI assistant specializing in neurodivergent talent and workplace inclusion. What would you like to know?", 
+        sender: 'bot', 
+        timestamp: Date.now() 
+      }])
+    }
+  }, [userData])
 
   // Key features for professional presentation
   const keyFeatures = [
@@ -172,8 +196,8 @@ export default function Hero() {
     return () => observer.disconnect()
   }, [statsVisible])
 
-  // Chat functionality
-  const handleSendMessage = () => {
+  // Enhanced chat functionality with OpenAI API
+  const handleSendMessage = async () => {
     if (currentMessage.trim()) {
       const newMessage = {
         text: currentMessage,
@@ -185,23 +209,58 @@ export default function Hero() {
       setCurrentMessage('')
       setIsTypingBot(true)
       
-      setTimeout(() => {
-        const botResponses = [
-          "Neurodivergent individuals often excel in pattern recognition, attention to detail, and systematic thinking. These skills are highly valuable in technology, finance, and research roles.",
-          "Studies show that teams with neurodivergent members can be up to 30% more productive when properly supported. We help organizations create those supportive environments.",
-          "Our talent acquisition process focuses on skills-based assessment rather than traditional interviews, helping you identify the best candidates regardless of communication style.",
-          "We provide ongoing support for both employers and employees to ensure successful long-term placements and career growth."
-        ]
+      try {
+        const response = await fetch('/api/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            message: currentMessage,
+            userData: userData
+          }),
+        })
+
+        const data = await response.json()
         
-        const response = {
-          text: botResponses[Math.floor(Math.random() * botResponses.length)],
+        if (data.success) {
+          const botResponse = {
+            text: data.response,
+            sender: 'bot',
+            timestamp: Date.now()
+          }
+          
+          setChatMessages(prev => [...prev, botResponse])
+        } else {
+          // Fallback response if API fails
+          const fallbackResponses = [
+            "I apologize, but I'm having trouble connecting right now. Please try again in a moment.",
+            "Thank you for your message! I'm currently experiencing some technical difficulties. Please try again shortly.",
+            "I'd love to help you with that! However, I'm temporarily unavailable. Please try again in a few moments."
+          ]
+          
+          const fallbackResponse = {
+            text: fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)],
+            sender: 'bot',
+            timestamp: Date.now()
+          }
+          
+          setChatMessages(prev => [...prev, fallbackResponse])
+        }
+      } catch (error) {
+        console.error('Chat API Error:', error)
+        
+        // Fallback response on error
+        const errorResponse = {
+          text: "I'm sorry, I'm having trouble connecting right now. Please try again in a moment.",
           sender: 'bot',
           timestamp: Date.now()
         }
         
-        setChatMessages(prev => [...prev, response])
+        setChatMessages(prev => [...prev, errorResponse])
+      } finally {
         setIsTypingBot(false)
-      }, 1200)
+      }
     }
   }
 

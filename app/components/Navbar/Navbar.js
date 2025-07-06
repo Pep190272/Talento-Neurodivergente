@@ -7,12 +7,10 @@ import './Navbar.css'
 const navItems = [
   { name: 'Home', href: '/', nameEs: 'Inicio' },
   { name: 'Features', href: '/features', nameEs: 'Características' },
-  { name: 'Detect', href: '/detect', nameEs: 'Detectar' },
-  { name: 'Companies', href: '/companies', nameEs: 'Empresas' },
-  { name: 'Training', href: '/training', nameEs: 'Entrenamiento' },
-  { name: 'Community', href: '/community', nameEs: 'Comunidad' },
-  { name: 'About', href: '/about', nameEs: 'Acerca' },
-  { name: 'Contact', href: '/contact', nameEs: 'Contacto' },
+  { name: 'Forms', href: '/forms', nameEs: 'Formularios' },
+  { name: 'Games', href: '/games', nameEs: 'Juegos' },
+  { name: 'Quiz', href: '/quiz', nameEs: 'Evaluación' },
+  { name: 'About', href: '/about', nameEs: 'Acerca de' },
 ]
 
 const languages = [
@@ -28,6 +26,7 @@ export default function Navbar() {
   const [langDropdownOpen, setLangDropdownOpen] = useState(false)
   const [isVisible, setIsVisible] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
+  const [userData, setUserData] = useState(null)
   const pathname = usePathname()
   const langDropdownRef = useRef(null)
 
@@ -60,11 +59,29 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
 
+  // Load user data from localStorage
+  useEffect(() => {
+    const savedUserData = localStorage.getItem('userData')
+    if (savedUserData) {
+      try {
+        setUserData(JSON.parse(savedUserData))
+      } catch (error) {
+        console.error('Error loading user data:', error)
+      }
+    }
+  }, [])
+
   const handleLanguageChange = (langCode) => {
     setCurrentLang(langCode)
     setLangDropdownOpen(false)
     // Here you would typically integrate with your i18n library
     console.log(`Language changed to: ${langCode}`)
+  }
+
+  const logout = () => {
+    localStorage.removeItem('userData')
+    localStorage.removeItem('chatHistory')
+    window.location.href = '/'
   }
 
   return (
@@ -112,6 +129,18 @@ export default function Navbar() {
                 </Link>
               </li>
             ))}
+            {userData && (
+              <li className="menu-item" style={{ '--delay': '0.9s' }}>
+                <Link
+                  href="/dashboard"
+                  className={`link${pathname === '/dashboard' ? ' active' : ''}`}
+                  onClick={() => setOpen(false)}
+                >
+                  <span className="link-text">Dashboard</span>
+                  <span className="link-bg"></span>
+                </Link>
+              </li>
+            )}
           </ul>
         </div>
 
@@ -157,18 +186,35 @@ export default function Navbar() {
             </div>
           </div>
 
-          {/* Get Started Button */}
-          <Link href="/get-started" className="get-started">
-            <span className="btn-text">
-              {currentLang === 'en' ? 'Get Started' : 'Comenzar'}
-            </span>
-            <span className="btn-glow"></span>
-            <span className="btn-particles">
-              <span className="btn-particle"></span>
-              <span className="btn-particle"></span>
-              <span className="btn-particle"></span>
-            </span>
-          </Link>
+          {/* User Profile or Get Started Button */}
+          {userData ? (
+            <div className="user-profile">
+              <div className="user-info">
+                <span className="user-name">
+                  {currentLang === 'en' ? `Hi, ${userData.name || 'User'}` : `Hola, ${userData.name || 'Usuario'}`}
+                </span>
+                <span className="user-type">
+                  {userData.type === 'individual' ? 'Individual' : 
+                   userData.type === 'company' ? 'Company' : 'Therapist'}
+                </span>
+              </div>
+              <button onClick={logout} className="logout-btn">
+                <span className="logout-text">Logout</span>
+              </button>
+            </div>
+          ) : (
+            <Link href="/get-started" className="get-started">
+              <span className="btn-text">
+                {currentLang === 'en' ? 'Get Started' : 'Comenzar'}
+              </span>
+              <span className="btn-glow"></span>
+              <span className="btn-particles">
+                <span className="btn-particle"></span>
+                <span className="btn-particle"></span>
+                <span className="btn-particle"></span>
+              </span>
+            </Link>
+          )}
         </div>
       </div>
     </nav>
