@@ -159,6 +159,36 @@ export default function FormsPage() {
     setMounted(true);
   }, []);
 
+  // Inject spinner and focus CSS on client only
+  useEffect(() => {
+    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+      const styleSheet = document.createElement('style');
+      styleSheet.textContent = `
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        input:focus, textarea:focus {
+          border-color: #9333ea !important;
+          box-shadow: 0 0 0 2px rgba(147, 51, 234, 0.2) !important;
+        }
+        button:hover:not(:disabled) {
+          background: linear-gradient(45deg, #7c3aed, #6d28d9) !important;
+          transform: scale(1.05) !important;
+          box-shadow: 0 10px 25px -5px rgba(147, 51, 234, 0.4) !important;
+        }
+        .tab-button:hover:not(.tab-button-active) {
+          border-color: #4b5563 !important;
+          background: rgba(55, 65, 81, 0.5) !important;
+        }
+      `;
+      document.head.appendChild(styleSheet);
+      return () => {
+        if (styleSheet.parentNode) styleSheet.parentNode.removeChild(styleSheet);
+      };
+    }
+  }, []);
+
   if (!mounted) return null;
 
   const activeTabData = TABS.find(tab => tab.key === activeTab);
@@ -556,33 +586,3 @@ const styles = {
     transition: 'color 0.2s ease',
   },
 };
-
-// Add CSS animation for spinner (client-side only)
-useEffect(() => {
-  if (typeof window !== 'undefined' && typeof document !== 'undefined') {
-    const styleSheet = document.createElement('style');
-    styleSheet.textContent = `
-      @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-      }
-      input:focus, textarea:focus {
-        border-color: #9333ea !important;
-        box-shadow: 0 0 0 2px rgba(147, 51, 234, 0.2) !important;
-      }
-      button:hover:not(:disabled) {
-        background: linear-gradient(45deg, #7c3aed, #6d28d9) !important;
-        transform: scale(1.05) !important;
-        box-shadow: 0 10px 25px -5px rgba(147, 51, 234, 0.4) !important;
-      }
-      .tab-button:hover:not(.tab-button-active) {
-        border-color: #4b5563 !important;
-        background: rgba(55, 65, 81, 0.5) !important;
-      }
-    `;
-    document.head.appendChild(styleSheet);
-    return () => {
-      if (styleSheet.parentNode) styleSheet.parentNode.removeChild(styleSheet);
-    };
-  }
-}, []);
