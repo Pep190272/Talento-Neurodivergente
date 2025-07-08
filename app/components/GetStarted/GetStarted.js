@@ -3,7 +3,7 @@ import { useState } from 'react';
 import './GetStarted.css';
 
 const GetStarted = () => {
-  const [currentStep, setCurrentStep] = useState('selection'); // 'selection', 'candidate', 'company'
+  const [currentStep, setCurrentStep] = useState('selection'); // 'selection', 'candidate', 'company', 'therapist'
   const [userType, setUserType] = useState('');
   const [formData, setFormData] = useState({
     // Common fields
@@ -28,7 +28,17 @@ const GetStarted = () => {
     position: '',
     hiringGoals: '',
     diversityExperience: '',
-    jobTypes: []
+    jobTypes: [],
+    
+    // Therapist specific
+    licenseNumber: '',
+    specialization: '',
+    yearsOfExperience: '',
+    certifications: [],
+    therapyTypes: [],
+    availability: '',
+    consultationFee: '',
+    bio: ''
   });
 
   const [errors, setErrors] = useState({});
@@ -91,6 +101,13 @@ const GetStarted = () => {
       if (!formData.position.trim()) newErrors.position = 'Your position is required';
     }
     
+    if (userType === 'therapist') {
+      if (!formData.licenseNumber.trim()) newErrors.licenseNumber = 'License number is required';
+      if (!formData.specialization) newErrors.specialization = 'Specialization is required';
+      if (!formData.yearsOfExperience) newErrors.yearsOfExperience = 'Years of experience is required';
+      if (formData.certifications.length === 0) newErrors.certifications = 'Select at least one certification';
+    }
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -126,9 +143,11 @@ const GetStarted = () => {
       
       // Redirect to appropriate dashboard
       if (userType === 'company') {
-        window.location.href = '/company/dashboard';
+        window.location.href = '/company';
       } else if (userType === 'candidate') {
         window.location.href = '/dashboard';
+      } else if (userType === 'therapist') {
+        window.location.href = '/therapist';
       } else {
         window.location.href = '/';
       }
@@ -192,6 +211,23 @@ const GetStarted = () => {
             <span>📊 Diversity Analytics</span>
           </div>
           <button className="optionButton">Find Talent</button>
+        </div>
+        
+        <div 
+          className="optionCard"
+          onClick={() => handleUserTypeSelection('therapist')}
+        >
+          <div className="optionIcon">🩺</div>
+          <h3 className="optionTitle">I'm a Therapist</h3>
+          <p className="optionDescription">
+            Support neurodivergent individuals and help them thrive in their professional journey
+          </p>
+          <div className="optionFeatures">
+            <span>👥 Client Management</span>
+            <span>📋 Assessment Tools</span>
+            <span>💼 Professional Resources</span>
+          </div>
+          <button className="optionButton">Start Helping</button>
         </div>
       </div>
     </div>
@@ -597,6 +633,227 @@ const GetStarted = () => {
     </div>
   );
 
+  // Render therapist form
+  const renderTherapistForm = () => (
+    <div className="formContainer">
+      <div className="formHeader">
+        <button className="backButton" onClick={handleGoBack}>← Back</button>
+        <h2 className="formTitle">Therapist Registration</h2>
+        <p className="formSubtitle">Join our network of neurodivergent support professionals</p>
+      </div>
+      
+      <form onSubmit={handleSubmit} className="form">
+        <div className="formSection">
+          <h3 className="sectionTitle">Personal Information</h3>
+          <div className="formRow">
+            <div className="formGroup">
+              <label className="label">First Name *</label>
+              <input
+                type="text"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleInputChange}
+                className={`input ${errors.firstName ? 'inputError' : ''}`}
+                placeholder="Enter your first name"
+              />
+              {errors.firstName && <span className="errorText">{errors.firstName}</span>}
+            </div>
+            <div className="formGroup">
+              <label className="label">Last Name *</label>
+              <input
+                type="text"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleInputChange}
+                className={`input ${errors.lastName ? 'inputError' : ''}`}
+                placeholder="Enter your last name"
+              />
+              {errors.lastName && <span className="errorText">{errors.lastName}</span>}
+            </div>
+          </div>
+          
+          <div className="formRow">
+            <div className="formGroup">
+              <label className="label">Email *</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                className={`input ${errors.email ? 'inputError' : ''}`}
+                placeholder="your.email@example.com"
+              />
+              {errors.email && <span className="errorText">{errors.email}</span>}
+            </div>
+            <div className="formGroup">
+              <label className="label">Phone</label>
+              <input
+                type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleInputChange}
+                className="input"
+                placeholder="+1 (555) 123-4567"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="formSection">
+          <h3 className="sectionTitle">Professional Credentials</h3>
+          <div className="formRow">
+            <div className="formGroup">
+              <label className="label">License Number *</label>
+              <input
+                type="text"
+                name="licenseNumber"
+                value={formData.licenseNumber}
+                onChange={handleInputChange}
+                className={`input ${errors.licenseNumber ? 'inputError' : ''}`}
+                placeholder="Enter your professional license number"
+              />
+              {errors.licenseNumber && <span className="errorText">{errors.licenseNumber}</span>}
+            </div>
+            <div className="formGroup">
+              <label className="label">Years of Experience *</label>
+              <select
+                name="yearsOfExperience"
+                value={formData.yearsOfExperience}
+                onChange={handleInputChange}
+                className={`select ${errors.yearsOfExperience ? 'inputError' : ''}`}
+              >
+                <option value="">Select experience level</option>
+                <option value="0-2">0-2 years</option>
+                <option value="3-5">3-5 years</option>
+                <option value="6-10">6-10 years</option>
+                <option value="11-15">11-15 years</option>
+                <option value="15+">15+ years</option>
+              </select>
+              {errors.yearsOfExperience && <span className="errorText">{errors.yearsOfExperience}</span>}
+            </div>
+          </div>
+          
+          <div className="formGroup">
+            <label className="label">Primary Specialization *</label>
+            <select
+              name="specialization"
+              value={formData.specialization}
+              onChange={handleInputChange}
+              className={`select ${errors.specialization ? 'inputError' : ''}`}
+            >
+              <option value="">Select specialization</option>
+              <option value="adhd">ADHD Specialist</option>
+              <option value="autism">Autism Spectrum Specialist</option>
+              <option value="dyslexia">Dyslexia Specialist</option>
+              <option value="dyspraxia">Dyspraxia Specialist</option>
+              <option value="general">General Neurodivergent Support</option>
+              <option value="occupational">Occupational Therapy</option>
+              <option value="psychology">Clinical Psychology</option>
+              <option value="other">Other</option>
+            </select>
+            {errors.specialization && <span className="errorText">{errors.specialization}</span>}
+          </div>
+        </div>
+
+        <div className="formSection">
+          <h3 className="sectionTitle">Certifications & Training</h3>
+          <div className="formGroup">
+            <label className="label">Professional Certifications * (Select all that apply)</label>
+            <div className="checkboxGrid">
+              {['Licensed Clinical Psychologist', 'Licensed Professional Counselor', 'Occupational Therapist', 'ADHD Coach', 'Autism Specialist', 'Dyslexia Specialist', 'Neurodivergent Coach', 'Career Counselor'].map(cert => (
+                <label key={cert} className="checkboxLabel">
+                  <input
+                    type="checkbox"
+                    name="certifications"
+                    value={cert}
+                    checked={formData.certifications.includes(cert)}
+                    onChange={handleInputChange}
+                    className="checkbox"
+                  />
+                  {cert}
+                </label>
+              ))}
+            </div>
+            {errors.certifications && <span className="errorText">{errors.certifications}</span>}
+          </div>
+          
+          <div className="formGroup">
+            <label className="label">Therapy Types Offered (Select all that apply)</label>
+            <div className="checkboxGrid">
+              {['Individual Therapy', 'Group Therapy', 'Family Therapy', 'Career Counseling', 'Assessment & Evaluation', 'Skills Training', 'Accommodation Planning', 'Workplace Support'].map(type => (
+                <label key={type} className="checkboxLabel">
+                  <input
+                    type="checkbox"
+                    name="therapyTypes"
+                    value={type}
+                    checked={formData.therapyTypes.includes(type)}
+                    onChange={handleInputChange}
+                    className="checkbox"
+                  />
+                  {type}
+                </label>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="formSection">
+          <h3 className="sectionTitle">Practice Information</h3>
+          <div className="formRow">
+            <div className="formGroup">
+              <label className="label">Availability</label>
+              <select
+                name="availability"
+                value={formData.availability}
+                onChange={handleInputChange}
+                className="select"
+              >
+                <option value="">Select availability</option>
+                <option value="full-time">Full-time</option>
+                <option value="part-time">Part-time</option>
+                <option value="weekends">Weekends only</option>
+                <option value="evenings">Evenings only</option>
+                <option value="flexible">Flexible schedule</option>
+              </select>
+            </div>
+            <div className="formGroup">
+              <label className="label">Consultation Fee (USD)</label>
+              <input
+                type="number"
+                name="consultationFee"
+                value={formData.consultationFee}
+                onChange={handleInputChange}
+                className="input"
+                placeholder="e.g., 150"
+                min="0"
+              />
+            </div>
+          </div>
+          
+          <div className="formGroup">
+            <label className="label">Professional Bio</label>
+            <textarea
+              name="bio"
+              value={formData.bio}
+              onChange={handleInputChange}
+              className="textarea"
+              placeholder="Tell us about your experience, approach, and how you help neurodivergent individuals..."
+              rows="4"
+            />
+          </div>
+        </div>
+
+        <button 
+          type="submit" 
+          className="submitButton"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? 'Creating Your Profile...' : 'Join Our Network'}
+        </button>
+      </form>
+    </div>
+  );
+
   return (
     <div className="container">
       <div className="background">
@@ -609,6 +866,7 @@ const GetStarted = () => {
         {currentStep === 'selection' && renderSelection()}
         {currentStep === 'candidate' && renderCandidateForm()}
         {currentStep === 'company' && renderCompanyForm()}
+        {currentStep === 'therapist' && renderTherapistForm()}
       </div>
     </div>
   );

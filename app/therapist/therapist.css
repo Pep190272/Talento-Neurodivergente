@@ -1,0 +1,2669 @@
+/* Therapist Dashboard Styles - Following Analytics Design Patterns */
+
+.therapist-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
+  color: #fff;
+  font-family: 'Rajdhani', sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Background Effects */
+.therapist-container::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(ellipse at 20% 30%, rgba(255, 215, 0, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 70%, rgba(147, 51, 234, 0.08) 0%, transparent 50%);
+  animation: gradientShift 8s ease-in-out infinite;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.therapist-container::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: 
+    linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px);
+  background-size: 50px 50px;
+  opacity: 0.3;
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Main Layout */
+.therapist-main {
+  margin-left: 280px;
+  transition: margin-left 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.therapist-main.sidebar-collapsed {
+  margin-left: 80px;
+}
+
+.therapist-content {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Page Header */
+.therapist-page-header {
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(10, 10, 10, 0.95) 100%);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(147, 51, 234, 0.2);
+  padding: 2rem;
+  margin: -2rem -2rem 2rem -2rem;
+  position: relative;
+  z-index: 10;
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.therapist-page-title {
+  font-family: 'Orbitron', monospace;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 900;
+  background: linear-gradient(135deg, #ffffff 0%, #FFD700 50%, #9333EA 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: textGradient 6s ease-in-out infinite;
+  margin-bottom: 0.5rem;
+}
+
+.therapist-page-subtitle {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+
+.therapist-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.therapist-notification-btn {
+  position: relative;
+  padding: 0.75rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.therapist-notification-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #FFD700;
+  color: #FFD700;
+  transform: scale(1.05);
+}
+
+.therapist-notification-dot {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  background: #ef4444;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
+}
+
+.therapist-user-profile {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.2) 0%, rgba(147, 51, 234, 0.1) 100%);
+  border: 1px solid rgba(147, 51, 234, 0.3);
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+.therapist-user-icon {
+  color: #FFD700;
+  font-size: 1.25rem;
+}
+
+.therapist-user-name {
+  color: #fff;
+  font-weight: 600;
+  font-family: 'Rajdhani', sans-serif;
+}
+
+.therapist-user-status {
+  color: #10B981;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+/* Sidebar */
+.therapist-sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(10, 10, 10, 0.95) 100%);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(147, 51, 234, 0.2);
+  width: 280px;
+  transition: width 0.3s ease;
+  z-index: 40;
+  overflow-y: auto;
+}
+
+.therapist-sidebar.collapsed {
+  width: 80px;
+}
+
+.therapist-sidebar-content {
+  padding: 2rem 1.5rem;
+}
+
+.therapist-sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(147, 51, 234, 0.2);
+}
+
+.therapist-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.therapist-logo-icon {
+  color: #FFD700;
+  font-size: 1.75rem;
+}
+
+.therapist-logo-text {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.5rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #FFD700 0%, #9333EA 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.therapist-collapse-btn {
+  padding: 0.5rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.therapist-collapse-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #FFD700;
+  color: #FFD700;
+}
+
+.therapist-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.therapist-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1rem;
+  border-radius: 12px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  width: 100%;
+  text-align: left;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+}
+
+.therapist-nav-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+  transition: left 0.5s ease;
+}
+
+.therapist-nav-item:hover::before {
+  left: 100%;
+}
+
+.therapist-nav-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #FFD700;
+  transform: translateX(4px);
+}
+
+.therapist-nav-item.active {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.2) 0%, rgba(147, 51, 234, 0.1) 100%);
+  color: #FFD700;
+  border: 1px solid rgba(147, 51, 234, 0.3);
+  box-shadow: 0 4px 15px rgba(147, 51, 234, 0.2);
+}
+
+.therapist-nav-icon {
+  font-size: 1.125rem;
+  min-width: 1.125rem;
+}
+
+/* KPI Cards */
+.therapist-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.therapist-kpi-card {
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.95) 0%, rgba(10, 10, 10, 0.95) 100%);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(147, 51, 234, 0.2);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.therapist-kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #FFD700, #9333EA);
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+
+.therapist-kpi-card:hover::before {
+  transform: scaleX(1);
+}
+
+.therapist-kpi-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 215, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(147, 51, 234, 0.2);
+}
+
+.therapist-kpi-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.therapist-kpi-icon {
+  font-size: 2rem;
+  color: #FFD700;
+  transition: all 0.3s ease;
+}
+
+.therapist-kpi-card:hover .therapist-kpi-icon {
+  transform: scale(1.1);
+}
+
+.therapist-kpi-expand {
+  color: rgba(255, 255, 255, 0.5);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+
+.therapist-kpi-card:hover .therapist-kpi-expand {
+  opacity: 1;
+  color: #FFD700;
+}
+
+.therapist-kpi-value {
+  font-family: 'Orbitron', monospace;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: #FFD700;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+}
+
+.therapist-kpi-title {
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.therapist-kpi-trend {
+  color: #10B981;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 500;
+}
+
+.therapist-kpi-trend-icon {
+  font-size: 0.75rem;
+}
+
+.therapist-kpi-progress {
+  margin-top: 1rem;
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  height: 0.5rem;
+  overflow: hidden;
+}
+
+.therapist-kpi-progress-bar {
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #FFD700, #9333EA);
+  transition: width 1s ease;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+}
+
+/* Animations */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes textGradient {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+/* Scrollbar Styling */
+.therapist-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.therapist-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.therapist-container::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #FFD700, #9333EA);
+  border-radius: 4px;
+}
+
+.therapist-container::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #9333EA, #FFD700);
+} 
+
+/* --- Referral Queue --- */
+.therapist-referral-section {
+  background: linear-gradient(135deg, rgba(26,26,26,0.95) 0%, rgba(10,10,10,0.95) 100%);
+  border: 1px solid rgba(147,51,234,0.15);
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 2px 12px rgba(147,51,234,0.05);
+}
+.therapist-referral-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+.therapist-referral-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.4rem;
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  color: #FFD700;
+}
+.therapist-referral-icon {
+  color: #9333EA;
+  font-size: 1.3rem;
+}
+.therapist-referral-count {
+  background: #FFD700;
+  color: #1a1a1a;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 0.1rem 0.7rem;
+  margin-left: 0.5rem;
+}
+.therapist-referral-controls {
+  display: flex;
+  gap: 1rem;
+}
+.therapist-search-box {
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.07);
+  border-radius: 8px;
+  padding: 0.4rem 0.8rem;
+  border: 1px solid rgba(147,51,234,0.15);
+}
+.therapist-search-icon {
+  color: #FFD700;
+  margin-right: 0.5rem;
+}
+.therapist-search-input {
+  background: transparent;
+  border: none;
+  color: #fff;
+  font-size: 1rem;
+  outline: none;
+  width: 140px;
+}
+.therapist-filter-select {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(147,51,234,0.15);
+  color: #FFD700;
+  border-radius: 8px;
+  padding: 0.4rem 1rem;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 500;
+}
+.therapist-referral-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.therapist-referral-item {
+  background: rgba(26,26,26,0.8);
+  border: 1px solid rgba(147,51,234,0.10);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  display: flex;
+  align-items: center;
+  transition: box-shadow 0.2s;
+  box-shadow: 0 1px 6px rgba(147,51,234,0.04);
+}
+.therapist-referral-item:hover {
+  box-shadow: 0 4px 18px rgba(255,215,0,0.10);
+  border-color: #FFD700;
+}
+.therapist-referral-content {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+}
+.therapist-referral-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.therapist-urgency-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  box-shadow: 0 0 8px rgba(255,215,0,0.15);
+}
+.therapist-urgency-critical { background: #FFD700; }
+.therapist-urgency-high { background: #9333EA; }
+.therapist-urgency-standard { background: #10B981; }
+.therapist-urgency-low { background: #6B7280; }
+.therapist-referral-details {
+  display: flex;
+  flex-direction: column;
+}
+.therapist-referral-details-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: #fff;
+}
+.therapist-referral-details-name {
+  font-size: 1.1rem;
+  color: #FFD700;
+}
+.therapist-referral-type {
+  font-size: 0.9rem;
+  background: #9333EA;
+  color: #fff;
+  border-radius: 6px;
+  padding: 0.1rem 0.6rem;
+  font-weight: 500;
+}
+.therapist-referral-type-company { background: #FFD700; color: #1a1a1a; }
+.therapist-referral-meta {
+  color: #bdbdbd;
+  font-size: 0.95rem;
+  margin-top: 0.2rem;
+}
+.therapist-referral-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.therapist-status-badge {
+  font-size: 0.9rem;
+  border-radius: 6px;
+  padding: 0.2rem 0.7rem;
+  font-weight: 700;
+  margin-right: 0.5rem;
+  background: #222;
+  color: #FFD700;
+  border: 1px solid #FFD700;
+}
+.therapist-status-inreview { background: #9333EA; color: #fff; border: none; }
+.therapist-status-completed { background: #10B981; color: #fff; border: none; }
+
+/* --- Bookings Calendar --- */
+.therapist-bookings-section {
+  background: linear-gradient(135deg, rgba(26,26,26,0.95) 0%, rgba(10,10,10,0.95) 100%);
+  border: 1px solid rgba(147,51,234,0.15);
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 12px rgba(147,51,234,0.05);
+}
+.therapist-bookings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+.therapist-bookings-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.2rem;
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  color: #FFD700;
+}
+.therapist-bookings-icon {
+  color: #9333EA;
+  font-size: 1.1rem;
+}
+.therapist-bookings-controls {
+  display: flex;
+  gap: 0.7rem;
+}
+.therapist-bookings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.therapist-booking-item {
+  background: rgba(26,26,26,0.8);
+  border: 1px solid rgba(147,51,234,0.10);
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  display: flex;
+  align-items: center;
+  transition: box-shadow 0.2s;
+  box-shadow: 0 1px 6px rgba(147,51,234,0.04);
+}
+.therapist-booking-item:hover {
+  box-shadow: 0 4px 18px rgba(255,215,0,0.10);
+  border-color: #FFD700;
+}
+.therapist-booking-content {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+}
+.therapist-booking-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.therapist-booking-status {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  box-shadow: 0 0 8px rgba(255,215,0,0.15);
+}
+.therapist-booking-status-confirmed { background: #10B981; }
+.therapist-booking-status-pending { background: #FFD700; }
+.therapist-booking-status-tentative { background: #9333EA; }
+.therapist-booking-status-cancelled { background: #ef4444; }
+.therapist-booking-details {
+  display: flex;
+  flex-direction: column;
+}
+.therapist-booking-details-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: #fff;
+}
+.therapist-booking-details-name {
+  font-size: 1.1rem;
+  color: #FFD700;
+}
+.therapist-booking-platform {
+  font-size: 0.9rem;
+  background: #9333EA;
+  color: #fff;
+  border-radius: 6px;
+  padding: 0.1rem 0.6rem;
+  font-weight: 500;
+}
+.therapist-booking-type {
+  color: #bdbdbd;
+  font-size: 0.95rem;
+  margin-top: 0.2rem;
+}
+.therapist-booking-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+.therapist-booking-time {
+  color: #FFD700;
+  font-size: 1rem;
+  font-weight: 700;
+}
+.therapist-booking-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+.therapist-bookings-footer {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+/* --- Buttons --- */
+.therapist-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 10px;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  border: none;
+  background: rgba(255,255,255,0.08);
+  color: #FFD700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 1px 4px rgba(147,51,234,0.05);
+}
+.therapist-btn:hover {
+  background: #FFD700;
+  color: #1a1a1a;
+  box-shadow: 0 4px 16px rgba(255,215,0,0.10);
+}
+.therapist-btn-primary {
+  background: linear-gradient(90deg, #FFD700 60%, #9333EA 100%);
+  color: #1a1a1a;
+}
+.therapist-btn-primary:hover {
+  background: #9333EA;
+  color: #FFD700;
+}
+.therapist-btn-secondary {
+  background: rgba(147,51,234,0.15);
+  color: #FFD700;
+  border: 1px solid #9333EA;
+}
+.therapist-btn-secondary:hover {
+  background: #FFD700;
+  color: #9333EA;
+}
+.therapist-btn-join {
+  background: #10B981;
+  color: #fff;
+}
+.therapist-btn-join:hover {
+  background: #FFD700;
+  color: #10B981;
+}
+.therapist-btn-remind {
+  background: #9333EA;
+  color: #fff;
+}
+.therapist-btn-remind:hover {
+  background: #FFD700;
+  color: #9333EA;
+}
+.therapist-btn-add-session {
+  background: #FFD700;
+  color: #1a1a1a;
+  font-weight: 700;
+}
+.therapist-btn-add-session:hover {
+  background: #9333EA;
+  color: #FFD700;
+}
+.therapist-btn-accommodation {
+  background: #9333EA;
+  color: #FFD700;
+}
+.therapist-btn-accommodation:hover {
+  background: #FFD700;
+  color: #9333EA;
+}
+.therapist-btn-video {
+  background: #FFD700;
+  color: #9333EA;
+}
+.therapist-btn-video:hover {
+  background: #9333EA;
+  color: #FFD700;
+}
+.therapist-btn-schedule {
+  background: rgba(255,255,255,0.08);
+  color: #FFD700;
+}
+.therapist-btn-schedule:hover {
+  background: #FFD700;
+  color: #1a1a1a;
+}
+.therapist-btn-template {
+  background: #FFD700;
+  color: #9333EA;
+  font-weight: 700;
+}
+.therapist-btn-template:hover {
+  background: #9333EA;
+  color: #FFD700;
+}
+.therapist-btn-export {
+  background: #FFD700;
+  color: #9333EA;
+}
+.therapist-btn-export:hover {
+  background: #9333EA;
+  color: #FFD700;
+}
+.therapist-btn-share {
+  background: #9333EA;
+  color: #FFD700;
+}
+.therapist-btn-share:hover {
+  background: #FFD700;
+  color: #9333EA;
+}
+
+/* --- Impact Dashboard --- */
+.therapist-impact-section {
+  background: linear-gradient(135deg, rgba(26,26,26,0.95) 0%, rgba(10,10,10,0.95) 100%);
+  border: 1px solid rgba(147,51,234,0.15);
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 12px rgba(147,51,234,0.05);
+}
+.therapist-impact-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.2rem;
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  color: #FFD700;
+  margin-bottom: 1.5rem;
+}
+.therapist-impact-icon {
+  color: #9333EA;
+  font-size: 1.1rem;
+}
+.therapist-impact-grid {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+.therapist-wellbeing-card, .therapist-retention-card {
+  flex: 1;
+  background: rgba(26,26,26,0.8);
+  border: 1px solid rgba(147,51,234,0.10);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+.therapist-wellbeing-title, .therapist-retention-title {
+  color: #FFD700;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.therapist-wellbeing-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.7rem;
+}
+.therapist-wellbeing-month {
+  color: #9333EA;
+  font-weight: 600;
+  width: 40px;
+}
+.therapist-wellbeing-progress-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+.therapist-wellbeing-progress {
+  background: rgba(255,255,255,0.08);
+  border-radius: 9999px;
+  height: 0.5rem;
+  width: 100%;
+  overflow: hidden;
+}
+.therapist-wellbeing-progress-bar {
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #FFD700, #9333EA);
+  transition: width 1s ease;
+  box-shadow: 0 0 10px rgba(255,215,0,0.3);
+}
+.therapist-wellbeing-score {
+  color: #FFD700;
+  font-weight: 700;
+  font-size: 1rem;
+}
+.therapist-retention-rate {
+  color: #FFD700;
+  font-size: 2rem;
+  font-weight: 900;
+  font-family: 'Orbitron', monospace;
+}
+.therapist-retention-label {
+  color: #bdbdbd;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+.therapist-retention-breakdown {
+  margin-top: 1rem;
+}
+.therapist-retention-item {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  margin-bottom: 0.4rem;
+}
+.therapist-retention-risk {
+  color: #fff;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.therapist-retention-count {
+  font-weight: 700;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  padding: 0.1rem 0.6rem;
+}
+.therapist-retention-high { background: #ef4444; color: #fff; }
+.therapist-retention-medium { background: #FFD700; color: #1a1a1a; }
+.therapist-retention-low { background: #10B981; color: #fff; }
+.therapist-success-stories {
+  margin-top: 2rem;
+  background: rgba(255,215,0,0.07);
+  border-radius: 10px;
+  padding: 1rem 1.5rem;
+  color: #FFD700;
+  font-style: italic;
+  font-size: 1.05rem;
+}
+
+/* --- AI Assistant --- */
+.therapist-ai-assistant {
+  position: fixed;
+  bottom: 2.5rem;
+  right: 2.5rem;
+  z-index: 100;
+  background: linear-gradient(135deg, rgba(26,26,26,0.98) 0%, rgba(10,10,10,0.98) 100%);
+  border: 1px solid rgba(147,51,234,0.18);
+  border-radius: 18px;
+  box-shadow: 0 4px 32px rgba(147,51,234,0.10);
+  width: 340px;
+  transition: width 0.3s, height 0.3s;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.therapist-ai-assistant.expanded {
+  height: 420px;
+}
+.therapist-ai-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.2rem;
+  border-bottom: 1px solid rgba(147,51,234,0.10);
+}
+.therapist-ai-title {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  font-size: 1.1rem;
+  font-family: 'Orbitron', monospace;
+  font-weight: 700;
+  color: #FFD700;
+}
+.therapist-ai-robot-icon {
+  color: #9333EA;
+  font-size: 1.2rem;
+}
+.therapist-ai-toggle {
+  background: none;
+  border: none;
+  color: #FFD700;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.therapist-ai-toggle:hover {
+  color: #9333EA;
+}
+.therapist-ai-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1.2rem;
+  gap: 1rem;
+}
+.therapist-ai-intro-text {
+  color: #FFD700;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.therapist-ai-features {
+  color: #fff;
+  font-size: 0.98rem;
+  margin-bottom: 1rem;
+  padding-left: 1.2rem;
+}
+.therapist-ai-input {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: auto;
+}
+.therapist-ai-text-input {
+  flex: 1;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(147,51,234,0.15);
+  color: #FFD700;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  outline: none;
+}
+.therapist-ai-send-btn {
+  background: #FFD700;
+  color: #9333EA;
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 0.9rem;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+}
+.therapist-ai-send-btn:hover {
+  background: #9333EA;
+  color: #FFD700;
+}
+
+/* --- Modal Overlay --- */
+.therapist-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(10,10,10,0.85);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.therapist-modal-container {
+  background: linear-gradient(135deg, rgba(26,26,26,0.98) 0%, rgba(10,10,10,0.98) 100%);
+  border: 1px solid rgba(147,51,234,0.18);
+  border-radius: 18px;
+  box-shadow: 0 4px 32px rgba(147,51,234,0.10);
+  padding: 2.5rem 2rem;
+  min-width: 420px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+/* --- Floating Action Button --- */
+.therapist-floating-btn {
+  position: fixed;
+  bottom: 2.5rem;
+  left: 2.5rem;
+  z-index: 100;
+  background: #FFD700;
+  color: #9333EA;
+  border: none;
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  box-shadow: 0 4px 24px rgba(255,215,0,0.10);
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+.therapist-floating-btn:hover {
+  background: #9333EA;
+  color: #FFD700;
+  box-shadow: 0 8px 32px rgba(147,51,234,0.15);
+}
+
+/* --- Responsive --- */
+@media (max-width: 1200px) {
+  .therapist-content { padding: 1rem; }
+  .therapist-sidebar-content { padding: 1.2rem 0.7rem; }
+}
+@media (max-width: 900px) {
+  .therapist-main { margin-left: 0; }
+  .therapist-sidebar { display: none; }
+  .therapist-content { padding: 0.5rem; }
+}
+@media (max-width: 600px) {
+  .therapist-modal-container { min-width: 90vw; padding: 1rem 0.5rem; }
+  .therapist-ai-assistant, .therapist-ai-assistant.expanded { width: 98vw; right: 1vw; bottom: 1vw; }
+  .therapist-floating-btn { left: 1vw; bottom: 1vw; width: 48px; height: 48px; font-size: 1.3rem; }
+} 
+
+/* --- Browse Matches --- */
+.therapist-browse-section {
+  background: linear-gradient(135deg, rgba(26,26,26,0.95) 0%, rgba(10,10,10,0.95) 100%);
+  border: 1px solid rgba(147,51,234,0.15);
+  border-radius: 16px;
+  padding: 2rem 1.5rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 2px 12px rgba(147,51,234,0.05);
+}
+.therapist-browse-header {
+  margin-bottom: 2rem;
+}
+.therapist-browse-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #FFD700;
+  margin-bottom: 1.5rem;
+}
+.therapist-browse-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.therapist-view-toggle {
+  display: flex;
+  gap: 0.5rem;
+}
+.therapist-toggle-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.7);
+  border: 1px solid rgba(147,51,234,0.15);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+}
+.therapist-toggle-btn.active {
+  background: linear-gradient(135deg, rgba(147,51,234,0.2) 0%, rgba(147,51,234,0.1) 100%);
+  color: #FFD700;
+  border-color: #9333EA;
+}
+.therapist-toggle-btn:hover {
+  background: rgba(255,255,255,0.15);
+  color: #FFD700;
+}
+.therapist-toggle-icon {
+  font-size: 1.1rem;
+}
+.therapist-search-controls {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+.therapist-browse-content {
+  margin-top: 2rem;
+}
+
+/* --- Candidate Cards --- */
+.therapist-candidates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+.therapist-candidate-card {
+  background: rgba(26,26,26,0.8);
+  border: 1px solid rgba(147,51,234,0.10);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.therapist-candidate-card:hover {
+  border-color: #FFD700;
+  box-shadow: 0 8px 32px rgba(255,215,0,0.15);
+  transform: translateY(-4px);
+}
+.therapist-candidate-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.therapist-candidate-icon {
+  color: #9333EA;
+  font-size: 2rem;
+}
+.therapist-candidate-info {
+  flex: 1;
+}
+.therapist-candidate-name {
+  color: #FFD700;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+.therapist-candidate-meta {
+  color: #bdbdbd;
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+}
+.therapist-candidate-location {
+  color: #9333EA;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.therapist-candidate-score {
+  text-align: center;
+  background: rgba(255,215,0,0.1);
+  border-radius: 12px;
+  padding: 0.75rem;
+  border: 1px solid rgba(255,215,0,0.2);
+}
+.therapist-score-value {
+  display: block;
+  color: #FFD700;
+  font-size: 1.5rem;
+  font-weight: 900;
+  font-family: 'Orbitron', monospace;
+}
+.therapist-score-label {
+  color: #bdbdbd;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+.therapist-candidate-skills {
+  margin-bottom: 1rem;
+}
+.therapist-candidate-skills h4 {
+  color: #FFD700;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.therapist-skills-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.therapist-skill-tag {
+  background: rgba(147,51,234,0.2);
+  color: #FFD700;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 1px solid rgba(147,51,234,0.3);
+}
+.therapist-candidate-superpower {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255,215,0,0.1);
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(255,215,0,0.2);
+}
+.therapist-superpower-icon {
+  color: #FFD700;
+  font-size: 1.1rem;
+}
+.therapist-candidate-superpower span {
+  color: #FFD700;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.therapist-candidate-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* --- Company Cards --- */
+.therapist-companies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+.therapist-company-card {
+  background: rgba(26,26,26,0.8);
+  border: 1px solid rgba(147,51,234,0.10);
+  border-radius: 16px;
+  padding: 1.5rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.therapist-company-card:hover {
+  border-color: #FFD700;
+  box-shadow: 0 8px 32px rgba(255,215,0,0.15);
+  transform: translateY(-4px);
+}
+.therapist-company-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.therapist-company-icon {
+  color: #9333EA;
+  font-size: 2rem;
+}
+.therapist-company-info {
+  flex: 1;
+}
+.therapist-company-name {
+  color: #FFD700;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+.therapist-company-meta {
+  color: #bdbdbd;
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+}
+.therapist-company-location {
+  color: #9333EA;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+.therapist-company-positions {
+  text-align: center;
+  background: rgba(147,51,234,0.1);
+  border-radius: 12px;
+  padding: 0.75rem;
+  border: 1px solid rgba(147,51,234,0.2);
+}
+.therapist-positions-count {
+  display: block;
+  color: #9333EA;
+  font-size: 1.5rem;
+  font-weight: 900;
+  font-family: 'Orbitron', monospace;
+}
+.therapist-positions-label {
+  color: #bdbdbd;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+.therapist-company-culture,
+.therapist-company-support {
+  margin-bottom: 1rem;
+}
+.therapist-company-culture h4,
+.therapist-company-support h4 {
+  color: #FFD700;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.therapist-company-culture p,
+.therapist-company-support p {
+  color: #bdbdbd;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+.therapist-company-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+/* --- Candidate Detail --- */
+.therapist-candidate-detail {
+  background: linear-gradient(135deg, rgba(26,26,26,0.95) 0%, rgba(10,10,10,0.95) 100%);
+  border: 1px solid rgba(147,51,234,0.15);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 2px 12px rgba(147,51,234,0.05);
+}
+.therapist-candidate-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(147,51,234,0.2);
+}
+.therapist-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255,255,255,0.08);
+  color: #FFD700;
+  border: 1px solid rgba(147,51,234,0.15);
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.therapist-back-btn:hover {
+  background: rgba(255,255,255,0.15);
+  border-color: #FFD700;
+}
+.therapist-candidate-detail-title {
+  color: #FFD700;
+  font-family: 'Orbitron', monospace;
+  font-size: 1.8rem;
+  font-weight: 900;
+}
+.therapist-candidate-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+.therapist-candidate-profile,
+.therapist-candidate-skills,
+.therapist-candidate-assessment,
+.therapist-candidate-accommodations {
+  background: rgba(26,26,26,0.8);
+  border: 1px solid rgba(147,51,234,0.10);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+.therapist-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #FFD700;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.therapist-section-icon {
+  color: #9333EA;
+  font-size: 1.1rem;
+}
+.therapist-profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.therapist-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.therapist-info-label {
+  color: #bdbdbd;
+  font-weight: 500;
+}
+.therapist-info-value {
+  color: #FFD700;
+  font-weight: 600;
+}
+.therapist-skills-section,
+.therapist-strengths-section {
+  margin-bottom: 1.5rem;
+}
+.therapist-skills-section h4,
+.therapist-strengths-section h4 {
+  color: #FFD700;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+.therapist-skills-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.therapist-strengths-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.therapist-strength-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #bdbdbd;
+  font-size: 0.95rem;
+}
+.therapist-strength-icon {
+  color: #FFD700;
+  font-size: 0.9rem;
+}
+.therapist-assessment-scores {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.therapist-assessment-score {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.therapist-assessment-category {
+  color: #bdbdbd;
+  font-weight: 500;
+  min-width: 120px;
+  text-transform: capitalize;
+}
+.therapist-assessment-bar {
+  flex: 1;
+  background: rgba(255,255,255,0.08);
+  border-radius: 9999px;
+  height: 0.5rem;
+  overflow: hidden;
+}
+.therapist-assessment-fill {
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #FFD700, #9333EA);
+  transition: width 1s ease;
+}
+.therapist-assessment-value {
+  color: #FFD700;
+  font-weight: 700;
+  min-width: 40px;
+  text-align: right;
+}
+.therapist-accommodations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+.therapist-accommodation-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #bdbdbd;
+  font-size: 0.95rem;
+}
+.therapist-accommodation-icon {
+  color: #10B981;
+  font-size: 1rem;
+}
+.therapist-preferences {
+  border-top: 1px solid rgba(147,51,234,0.2);
+  padding-top: 1rem;
+}
+.therapist-preferences h4 {
+  color: #FFD700;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+.therapist-preference-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+.therapist-preference-label {
+  color: #bdbdbd;
+  font-weight: 500;
+}
+.therapist-preference-value {
+  color: #FFD700;
+  font-weight: 600;
+}
+
+/* --- Company Detail --- */
+.therapist-company-detail {
+  background: linear-gradient(135deg, rgba(26,26,26,0.95) 0%, rgba(10,10,10,0.95) 100%);
+  border: 1px solid rgba(147,51,234,0.15);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 2px 12px rgba(147,51,234,0.05);
+}
+.therapist-company-detail-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(147,51,234,0.2);
+}
+.therapist-company-detail-title {
+  color: #FFD700;
+  font-family: 'Orbitron', monospace;
+  font-size: 1.8rem;
+  font-weight: 900;
+}
+.therapist-company-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+.therapist-company-overview,
+.therapist-company-positions,
+.therapist-company-support,
+.therapist-company-contact {
+  background: rgba(26,26,26,0.8);
+  border: 1px solid rgba(147,51,234,0.10);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+.therapist-company-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.therapist-positions-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.therapist-position-card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(147,51,234,0.1);
+  border-radius: 8px;
+  padding: 1rem;
+}
+.therapist-position-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+.therapist-position-title {
+  color: #FFD700;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.therapist-position-department {
+  background: #9333EA;
+  color: #fff;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.therapist-position-requirements,
+.therapist-position-accommodations {
+  margin-bottom: 0.75rem;
+}
+.therapist-position-requirements h5,
+.therapist-position-accommodations h5 {
+  color: #FFD700;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.therapist-requirements-grid,
+.therapist-accommodations-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.therapist-requirement-tag {
+  background: rgba(147,51,234,0.2);
+  color: #FFD700;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 1px solid rgba(147,51,234,0.3);
+}
+.therapist-accommodation-tag {
+  background: rgba(16,185,129,0.2);
+  color: #10B981;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 1px solid rgba(16,185,129,0.3);
+}
+.therapist-support-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.therapist-support-description {
+  color: #bdbdbd;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.therapist-benefits-list h4 {
+  color: #FFD700;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+.therapist-benefit-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #bdbdbd;
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+}
+.therapist-benefit-icon {
+  color: #10B981;
+  font-size: 1rem;
+}
+.therapist-contact-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.therapist-contact-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.therapist-contact-label {
+  color: #bdbdbd;
+  font-weight: 500;
+}
+.therapist-contact-value {
+  color: #FFD700;
+  font-weight: 600;
+}
+
+/* --- Matching Interface --- */
+.therapist-matching-interface {
+  background: linear-gradient(135deg, rgba(26,26,26,0.95) 0%, rgba(10,10,10,0.95) 100%);
+  border: 1px solid rgba(147,51,234,0.15);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 2px 12px rgba(147,51,234,0.05);
+}
+.therapist-matching-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(147,51,234,0.2);
+}
+.therapist-matching-title {
+  color: #FFD700;
+  font-family: 'Orbitron', monospace;
+  font-size: 1.8rem;
+  font-weight: 900;
+}
+.therapist-matching-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+.therapist-match-participants {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+  background: rgba(26,26,26,0.8);
+  border: 1px solid rgba(147,51,234,0.10);
+  border-radius: 12px;
+  padding: 2rem;
+}
+.therapist-match-candidate,
+.therapist-match-company {
+  flex: 1;
+  text-align: center;
+}
+.therapist-match-candidate h3,
+.therapist-match-company h3 {
+  color: #FFD700;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.therapist-match-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(147,51,234,0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+.therapist-match-icon {
+  color: #9333EA;
+  font-size: 2.5rem;
+}
+.therapist-match-info h4 {
+  color: #FFD700;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+.therapist-match-info p {
+  color: #bdbdbd;
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+}
+.therapist-match-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  background: linear-gradient(135deg, rgba(255,215,0,0.2) 0%, rgba(147,51,234,0.2) 100%);
+  border-radius: 50%;
+  border: 2px solid #FFD700;
+}
+.therapist-match-arrow-icon {
+  color: #FFD700;
+  font-size: 2rem;
+  animation: pulse 2s infinite;
+}
+.therapist-match-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+.therapist-position-selection,
+.therapist-match-notes,
+.therapist-match-status {
+  background: rgba(26,26,26,0.8);
+  border: 1px solid rgba(147,51,234,0.10);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+.therapist-position-selection h3,
+.therapist-match-notes h3,
+.therapist-match-status h3 {
+  color: #FFD700;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.therapist-select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(147,51,234,0.15);
+  background: rgba(255,255,255,0.05);
+  color: #FFD700;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 500;
+  outline: none;
+}
+.therapist-select:focus {
+  border-color: #FFD700;
+  box-shadow: 0 0 0 2px rgba(255,215,0,0.2);
+}
+.therapist-textarea {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(147,51,234,0.15);
+  background: rgba(255,255,255,0.05);
+  color: #FFD700;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 500;
+  outline: none;
+  resize: vertical;
+}
+.therapist-textarea:focus {
+  border-color: #FFD700;
+  box-shadow: 0 0 0 2px rgba(255,215,0,0.2);
+}
+.therapist-match-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+/* --- AI Matching Suggestions --- */
+.therapist-ai-matching-section {
+  background: rgba(26,26,26,0.8);
+  border: 1px solid rgba(147,51,234,0.10);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+.therapist-ai-matching-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+.therapist-ai-matching-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #FFD700;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+.therapist-ai-matching-icon {
+  color: #9333EA;
+  font-size: 1.1rem;
+}
+.therapist-match-score {
+  text-align: center;
+  background: rgba(255,215,0,0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  border: 1px solid rgba(255,215,0,0.2);
+}
+.therapist-match-score-value {
+  display: block;
+  color: #FFD700;
+  font-size: 2rem;
+  font-weight: 900;
+  font-family: 'Orbitron', monospace;
+}
+.therapist-match-score-label {
+  color: #bdbdbd;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+.therapist-ai-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  color: #FFD700;
+  font-size: 1.1rem;
+  font-weight: 600;
+  padding: 2rem;
+}
+.therapist-ai-loading-icon {
+  animation: spin 1s linear infinite;
+}
+.therapist-ai-suggestions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.therapist-ai-suggestion {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(147,51,234,0.1);
+  border-radius: 8px;
+  padding: 1rem;
+  transition: all 0.3s ease;
+}
+.therapist-ai-suggestion:hover {
+  border-color: #FFD700;
+  box-shadow: 0 4px 16px rgba(255,215,0,0.1);
+}
+.therapist-ai-suggestion-strength {
+  border-left: 4px solid #10B981;
+}
+.therapist-ai-suggestion-accommodation {
+  border-left: 4px solid #9333EA;
+}
+.therapist-ai-suggestion-culture {
+  border-left: 4px solid #FFD700;
+}
+.therapist-ai-suggestion-growth {
+  border-left: 4px solid #ef4444;
+}
+.therapist-ai-suggestion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+.therapist-ai-suggestion-title {
+  color: #FFD700;
+  font-weight: 600;
+  font-size: 1rem;
+}
+.therapist-ai-suggestion-icon {
+  color: #9333EA;
+  font-size: 1rem;
+}
+.therapist-ai-confidence {
+  background: #9333EA;
+  color: #fff;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.therapist-ai-suggestion-text {
+  color: #bdbdbd;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+.therapist-ai-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* --- Additional Animations --- */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+  .therapist-browse-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .therapist-view-toggle {
+    justify-content: center;
+  }
+  .therapist-search-controls {
+    flex-direction: column;
+  }
+  .therapist-candidates-grid,
+  .therapist-companies-grid {
+    grid-template-columns: 1fr;
+  }
+  .therapist-match-participants {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .therapist-match-arrow {
+    transform: rotate(90deg);
+  }
+  .therapist-candidate-detail-grid,
+  .therapist-company-detail-grid {
+    grid-template-columns: 1fr;
+  }
+} 
+
+/* --- Detailed Matching Interfaces --- */
+.therapist-candidate-matching,
+.therapist-company-matching {
+  background: linear-gradient(135deg, rgba(26,26,26,0.95) 0%, rgba(10,10,10,0.95) 100%);
+  border: 1px solid rgba(147,51,234,0.15);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 2px 12px rgba(147,51,234,0.05);
+}
+
+.therapist-matching-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(147,51,234,0.2);
+}
+
+.therapist-matching-title {
+  color: #FFD700;
+  font-family: 'Orbitron', monospace;
+  font-size: 1.8rem;
+  font-weight: 900;
+}
+
+.therapist-matching-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* --- Large Profile Cards --- */
+.therapist-candidate-card-large,
+.therapist-company-card-large {
+  background: rgba(26,26,26,0.8);
+  border: 1px solid rgba(147,51,234,0.10);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 1rem;
+}
+
+.therapist-candidate-header-large,
+.therapist-company-header-large {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.therapist-candidate-icon-large,
+.therapist-company-icon-large {
+  color: #9333EA;
+  font-size: 3rem;
+}
+
+.therapist-candidate-info-large,
+.therapist-company-info-large {
+  flex: 1;
+}
+
+.therapist-candidate-name-large,
+.therapist-company-name-large {
+  color: #FFD700;
+  font-size: 1.8rem;
+  font-weight: 900;
+  margin-bottom: 0.5rem;
+}
+
+.therapist-candidate-meta-large,
+.therapist-company-meta-large {
+  color: #bdbdbd;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.therapist-candidate-education,
+.therapist-candidate-experience,
+.therapist-company-culture-large {
+  color: #9333EA;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.therapist-candidate-stats-large,
+.therapist-company-stats-large {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.therapist-stat-item {
+  text-align: center;
+  background: rgba(255,215,0,0.1);
+  border-radius: 12px;
+  padding: 1rem;
+  border: 1px solid rgba(255,215,0,0.2);
+}
+
+.therapist-stat-value {
+  display: block;
+  color: #FFD700;
+  font-size: 1.5rem;
+  font-weight: 900;
+  font-family: 'Orbitron', monospace;
+}
+
+.therapist-stat-label {
+  color: #bdbdbd;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.therapist-candidate-skills-large,
+.therapist-company-support-large,
+.therapist-company-benefits-large {
+  margin-bottom: 1.5rem;
+}
+
+.therapist-candidate-skills-large h4,
+.therapist-company-support-large h4,
+.therapist-company-benefits-large h4 {
+  color: #FFD700;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.therapist-skills-tags-large {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.therapist-skill-tag-large {
+  background: rgba(147,51,234,0.2);
+  color: #FFD700;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: 1px solid rgba(147,51,234,0.3);
+}
+
+.therapist-company-support-large p {
+  color: #bdbdbd;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.therapist-benefits-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.therapist-benefit-tag-large {
+  background: rgba(16,185,129,0.2);
+  color: #10B981;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-weight: 600;
+  border: 1px solid rgba(16,185,129,0.3);
+}
+
+.therapist-candidate-superpower-large {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(255,215,0,0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  border: 1px solid rgba(255,215,0,0.2);
+}
+
+.therapist-superpower-icon-large {
+  color: #FFD700;
+  font-size: 1.5rem;
+}
+
+.therapist-superpower-text {
+  color: #FFD700;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+/* --- Matching Grids --- */
+.therapist-companies-grid-matching,
+.therapist-candidates-grid-matching {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.therapist-company-card-matching,
+.therapist-candidate-card-matching {
+  background: rgba(26,26,26,0.8);
+  border: 1px solid rgba(147,51,234,0.10);
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.therapist-company-card-matching:hover,
+.therapist-candidate-card-matching:hover {
+  border-color: #FFD700;
+  box-shadow: 0 8px 32px rgba(255,215,0,0.15);
+  transform: translateY(-4px);
+}
+
+.therapist-company-card-matching.selected,
+.therapist-candidate-card-matching.selected {
+  border-color: #FFD700;
+  background: rgba(255,215,0,0.05);
+  box-shadow: 0 8px 32px rgba(255,215,0,0.2);
+}
+
+.therapist-company-header-matching,
+.therapist-candidate-header-matching {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.therapist-company-icon-matching,
+.therapist-candidate-icon-matching {
+  color: #9333EA;
+  font-size: 1.5rem;
+}
+
+.therapist-company-info-matching,
+.therapist-candidate-info-matching {
+  flex: 1;
+}
+
+.therapist-company-name-matching,
+.therapist-candidate-name-matching {
+  color: #FFD700;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 0.25rem;
+}
+
+.therapist-company-meta-matching,
+.therapist-candidate-meta-matching {
+  color: #bdbdbd;
+  font-size: 0.95rem;
+  margin-bottom: 0.25rem;
+}
+
+.therapist-company-location-matching,
+.therapist-candidate-location-matching {
+  color: #9333EA;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.therapist-company-score,
+.therapist-candidate-score-matching {
+  text-align: center;
+  background: rgba(255,215,0,0.1);
+  border-radius: 8px;
+  padding: 0.75rem;
+  border: 1px solid rgba(255,215,0,0.2);
+}
+
+.therapist-company-score-value,
+.therapist-candidate-score-value {
+  display: block;
+  color: #FFD700;
+  font-size: 1.3rem;
+  font-weight: 900;
+  font-family: 'Orbitron', monospace;
+}
+
+.therapist-company-score-label,
+.therapist-candidate-score-label {
+  color: #bdbdbd;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.therapist-company-culture-matching,
+.therapist-company-support-matching {
+  margin-bottom: 0.75rem;
+}
+
+.therapist-company-culture-matching p,
+.therapist-company-support-matching p {
+  color: #bdbdbd;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+/* --- Position Selection --- */
+.therapist-positions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.therapist-position-card-matching {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(147,51,234,0.1);
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.therapist-position-card-matching:hover {
+  border-color: #FFD700;
+  box-shadow: 0 8px 32px rgba(255,215,0,0.15);
+  transform: translateY(-4px);
+}
+
+.therapist-position-card-matching.selected {
+  border-color: #FFD700;
+  background: rgba(255,215,0,0.05);
+  box-shadow: 0 8px 32px rgba(255,215,0,0.2);
+}
+
+.therapist-position-header-matching {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.therapist-position-title-matching {
+  color: #FFD700;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.therapist-position-department-matching {
+  background: #9333EA;
+  color: #fff;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.therapist-position-requirements-matching,
+.therapist-position-accommodations-matching {
+  margin-bottom: 1rem;
+}
+
+.therapist-position-requirements-matching h5,
+.therapist-position-accommodations-matching h5 {
+  color: #FFD700;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.therapist-requirements-tags,
+.therapist-accommodations-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.therapist-requirement-tag-matching {
+  background: rgba(147,51,234,0.2);
+  color: #FFD700;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 1px solid rgba(147,51,234,0.3);
+}
+
+.therapist-accommodation-tag-matching {
+  background: rgba(16,185,129,0.2);
+  color: #10B981;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 1px solid rgba(16,185,129,0.3);
+}
+
+.therapist-position-match-score {
+  text-align: center;
+  background: rgba(255,215,0,0.1);
+  border-radius: 8px;
+  padding: 0.75rem;
+  border: 1px solid rgba(255,215,0,0.2);
+}
+
+.therapist-position-score-value {
+  display: block;
+  color: #FFD700;
+  font-size: 1.3rem;
+  font-weight: 900;
+  font-family: 'Orbitron', monospace;
+}
+
+.therapist-position-score-label {
+  color: #bdbdbd;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* --- Candidate Skills in Matching --- */
+.therapist-candidate-skills-matching {
+  margin-bottom: 1rem;
+}
+
+.therapist-candidate-skills-matching h5 {
+  color: #FFD700;
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.therapist-skills-tags-matching {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.therapist-skill-tag-matching {
+  background: rgba(147,51,234,0.2);
+  color: #FFD700;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 1px solid rgba(147,51,234,0.3);
+}
+
+.therapist-candidate-superpower-matching {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255,215,0,0.1);
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(255,215,0,0.2);
+}
+
+.therapist-superpower-icon-matching {
+  color: #FFD700;
+  font-size: 1rem;
+}
+
+.therapist-candidate-superpower-matching span {
+  color: #FFD700;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.therapist-assessment-mini {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: #bdbdbd;
+}
+
+/* --- Application Message --- */
+.therapist-application-message {
+  background: rgba(26,26,26,0.8);
+  border: 1px solid rgba(147,51,234,0.10);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.therapist-message-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.therapist-message-textarea {
+  width: 100%;
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(147,51,234,0.15);
+  background: rgba(255,255,255,0.05);
+  color: #FFD700;
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 500;
+  outline: none;
+  resize: vertical;
+  min-height: 150px;
+}
+
+.therapist-message-textarea:focus {
+  border-color: #FFD700;
+  box-shadow: 0 0 0 2px rgba(255,215,0,0.2);
+}
+
+.therapist-message-preview {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(147,51,234,0.1);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.therapist-message-preview h4 {
+  color: #FFD700;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.therapist-message-content {
+  color: #bdbdbd;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  min-height: 120px;
+  white-space: pre-wrap;
+}
+
+/* --- Send Application Section --- */
+.therapist-send-application {
+  background: rgba(255,215,0,0.05);
+  border: 1px solid rgba(255,215,0,0.2);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+}
+
+.therapist-match-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.therapist-match-summary-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.therapist-match-label {
+  color: #bdbdbd;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.therapist-match-value {
+  color: #FFD700;
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.therapist-match-score-highlight {
+  background: rgba(255,215,0,0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255,215,0,0.3);
+}
+
+.therapist-btn-send-application {
+  background: linear-gradient(135deg, #FFD700 0%, #9333EA 100%);
+  color: #1a1a1a;
+  font-size: 1.1rem;
+  font-weight: 700;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(255,215,0,0.3);
+  transition: all 0.3s ease;
+}
+
+.therapist-btn-send-application:hover {
+  background: linear-gradient(135deg, #9333EA 0%, #FFD700 100%);
+  color: #FFD700;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(147,51,234,0.4);
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 768px) {
+  .therapist-message-container {
+    grid-template-columns: 1fr;
+  }
+  
+  .therapist-companies-grid-matching,
+  .therapist-candidates-grid-matching,
+  .therapist-positions-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .therapist-match-summary {
+    grid-template-columns: 1fr;
+  }
+  
+  .therapist-candidate-header-large,
+  .therapist-company-header-large {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .therapist-candidate-stats-large,
+  .therapist-company-stats-large {
+    flex-direction: row;
+    justify-content: center;
+  }
+} 

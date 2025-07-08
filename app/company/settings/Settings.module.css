@@ -1,0 +1,74 @@
+.settingsPage {
+  padding: 2rem;
+  color: #fff;
+}
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #FFD700;
+  margin-bottom: 1.5rem;
+}
+.section {
+  background: #18181b;
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid #9333EA33;
+  max-width: 500px;
+}
+.sectionTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #FFD700;
+  margin-bottom: 1rem;
+}
+.input {
+  background: rgba(26, 26, 26, 0.8);
+  border: 1px solid #FFD70033;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  color: #fff;
+  width: 100%;
+  margin-bottom: 0.75rem;
+  font-family: 'Rajdhani', sans-serif;
+}
+.saveBtn {
+  background: linear-gradient(135deg, #9333EA, #FFD700);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  margin-right: 0.5rem;
+  transition: all 0.3s;
+}
+.saveBtn:hover {
+  background: linear-gradient(135deg, #FFD700, #9333EA);
+  color: #000;
+}
+.deleteBtn {
+  background: #e11d48;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: all 0.3s;
+}
+.deleteBtn:hover {
+  background: #be123c;
+}
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+.checkbox {
+  accent-color: #FFD700;
+} 
