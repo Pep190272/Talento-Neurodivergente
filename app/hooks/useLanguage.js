@@ -4,14 +4,14 @@ import { translations } from '../utils/translations';
 import { extendedTranslations } from '../utils/translations_extended';
 
 export function useLanguage() {
-  const [currentLang, setCurrentLang] = useState('en');
+  const [currentLang, setCurrentLang] = useState('es');
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
 
     if (typeof window !== 'undefined') {
-      const savedLang = localStorage.getItem('app_language') || 'en';
+      const savedLang = localStorage.getItem('app_language') || 'es';
       setCurrentLang(savedLang);
     }
 

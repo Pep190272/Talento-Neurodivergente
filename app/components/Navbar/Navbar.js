@@ -14,22 +14,15 @@ const navItems = [
   { name: 'About', href: '/about', key: 'navbar.about' },
 ]
 
-const languages = [
-  { code: 'en', name: 'English', flag: '🇺🇸' },
-  { code: 'es', name: 'Español', flag: '🇪🇸' }
-]
-
 export default function Navbar() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
-  const [langDropdownOpen, setLangDropdownOpen] = useState(false)
   const [isVisible, setIsVisible] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
   const [userData, setUserData] = useState(null)
   const pathname = usePathname()
-  const langDropdownRef = useRef(null)
-  const { currentLang, changeLanguage, t } = useLanguage()
+  const { t } = useLanguage()
 
   useEffect(() => {
     const onScroll = () => {
@@ -50,15 +43,6 @@ export default function Navbar() {
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (langDropdownRef.current && !langDropdownRef.current.contains(event.target)) {
-        setLangDropdownOpen(false)
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
 
   // Load user data from localStorage
   useEffect(() => {
@@ -71,11 +55,6 @@ export default function Navbar() {
       }
     }
   }, [])
-
-  const handleLanguageChange = (langCode) => {
-    changeLanguage(langCode)
-    setLangDropdownOpen(false)
-  }
 
   const logout = () => {
     localStorage.removeItem('userData')
@@ -145,46 +124,6 @@ export default function Navbar() {
 
         {/* Actions Section - Far Right */}
         <div className="actions-section">
-          {/* Language Switcher */}
-          <div className="language-switcher" ref={langDropdownRef}>
-            <button
-              className="language-toggle"
-              onClick={() => setLangDropdownOpen(!langDropdownOpen)}
-            >
-              <span className="current-lang">
-                {languages.find(lang => lang.code === currentLang)?.flag}
-                <span className="lang-text">
-                  {languages.find(lang => lang.code === currentLang)?.name}
-                </span>
-              </span>
-              <span className={`lang-arrow${langDropdownOpen ? ' open' : ''}`}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </span>
-            </button>
-            
-            <div className={`language-dropdown${langDropdownOpen ? ' open' : ''}`}>
-              {languages.map((lang) => (
-                <button
-                  key={lang.code}
-                  className={`language-option${currentLang === lang.code ? ' active' : ''}`}
-                  onClick={() => handleLanguageChange(lang.code)}
-                >
-                  <span className="lang-flag">{lang.flag}</span>
-                  <span className="lang-name">{lang.name}</span>
-                  {currentLang === lang.code && (
-                    <span className="check-icon">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                        <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </span>
-                  )}
-                </button>
-              ))}
-            </div>
-          </div>
-
           {/* User Profile or Get Started Button */}
           {userData ? (
             <div className="user-profile">
