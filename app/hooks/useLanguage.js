@@ -55,5 +55,5 @@ export function useLanguage() {
     return value || key;
   };
 
-  return { currentLang, changeLanguage, t, isClient };
+  return { currentLang, language: currentLang, changeLanguage, t, isClient };
 }
