@@ -7,35 +7,35 @@ import { useLanguage } from '../../hooks/useLanguage';
 const statsConfig = [
   {
     icon: <FaChartLine />,
-    label: 'Productivity Increase',
+    label: 'Incremento de Productividad',
     end: 85,
     suffix: '%',
     color: 'var(--primary-gold)',
-    description: 'Average productivity boost in inclusive teams'
+    description: 'Aumento promedio de productividad en equipos inclusivos'
   },
   {
     icon: <FaUsers />,
-    label: 'Successful Placements',
+    label: 'Colocaciones Exitosas',
     end: 750,
     suffix: '+',
     color: 'var(--primary-purple)',
-    description: 'Neurodivergent professionals placed'
+    description: 'Profesionales neurodivergentes colocados'
   },
   {
     icon: <FaHandshake />,
-    label: 'Partner Companies',
+    label: 'Empresas Asociadas',
     end: 120,
     suffix: '+',
     color: 'var(--primary-gold)',
-    description: 'Organizations trust our solutions'
+    description: 'Organizaciones confían en nuestras soluciones'
   },
   {
     icon: <FaStar />,
-    label: 'Satisfaction Rate',
+    label: 'Tasa de Satisfacción',
     end: 95,
     suffix: '%',
     color: 'var(--primary-purple)',
-    description: 'Candidate and employer satisfaction'
+    description: 'Satisfacción de candidatos y empleadores'
   }
 ];
 

@@ -24,10 +24,10 @@ export default function ContactSupportTeaser() {
           marginBottom: '1.2rem',
           letterSpacing: '-0.01em'
         }}>
-          Need Help or Have Questions?
+          ¿Necesitas Ayuda o Tienes Preguntas?
         </h2>
         <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.1rem', marginBottom: '2rem', fontFamily: 'Rajdhani, sans-serif' }}>
-          Our team is here to support you. Reach out for assistance, feedback, or partnership inquiries.
+          Nuestro equipo está aquí para apoyarte. Contáctanos para asistencia, comentarios o consultas de asociación.
         </p>
         <Link href="/forms" style={{
           background: 'linear-gradient(135deg, #FFD700 0%, #9333EA 100%)',
@@ -45,7 +45,7 @@ export default function ContactSupportTeaser() {
           transition: 'background 0.2s, color 0.2s',
           border: '2px solid #FFD700'
         }}>
-          <FaLifeRing /> Contact Support
+          <FaLifeRing /> Contactar Soporte
         </Link>
       </div>
     </section>

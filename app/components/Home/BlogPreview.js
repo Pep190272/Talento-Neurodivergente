@@ -5,20 +5,20 @@ import Link from 'next/link';
 
 const posts = [
   {
-    title: 'Unlocking Neurodivergent Talent: A Guide for Employers',
-    summary: 'Discover best practices for hiring, onboarding, and supporting neurodivergent professionals in your organization.',
+    title: 'Desbloqueando el Talento Neurodivergente: Guía para Empleadores',
+    summary: 'Descubre las mejores prácticas para contratar, incorporar y apoyar a profesionales neurodivergentes en tu organización.',
     image: 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=crop&w=600&q=80',
     link: '/blog/unlocking-neurodivergent-talent'
   },
   {
-    title: 'AI in Neurodiversity: How Technology Empowers Inclusion',
-    summary: 'Explore how AI-driven tools are transforming assessment, matching, and support for neurodivergent individuals.',
+    title: 'IA en la Neurodiversidad: Cómo la Tecnología Empodera la Inclusión',
+    summary: 'Explora cómo las herramientas impulsadas por IA están transformando la evaluación, el emparejamiento y el apoyo para individuos neurodivergentes.',
     image: 'https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80',
     link: '/blog/ai-in-neurodiversity'
   },
   {
-    title: 'Building Inclusive Teams: Strategies That Work',
-    summary: 'Learn actionable strategies to foster a culture of inclusion and innovation in your workplace.',
+    title: 'Construyendo Equipos Inclusivos: Estrategias que Funcionan',
+    summary: 'Aprende estrategias accionables para fomentar una cultura de inclusión e innovación en tu lugar de trabajo.',
     image: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=600&q=80',
     link: '/blog/building-inclusive-teams'
   }
@@ -41,7 +41,7 @@ export default function BlogPreview() {
           marginBottom: '2.5rem',
           letterSpacing: '-0.01em'
         }}>
-          Blog & Resources
+          Blog y Recursos
         </h2>
         <div style={{
           display: 'grid',
@@ -76,7 +76,7 @@ export default function BlogPreview() {
                   marginTop: 'auto',
                   display: 'inline-block'
                 }}>
-                  Read More &rarr;
+                  Leer Más &rarr;
                 </Link>
               </div>
             </div>
