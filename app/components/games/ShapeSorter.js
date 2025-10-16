@@ -1,12 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { FaCircle, FaSquare, FaStar, FaHeart } from "react-icons/fa";
+import { useLanguage } from '../../hooks/useLanguage';
 
-const SHAPES = [
-  { name: "circle", icon: <FaCircle />, color: "#9333ea" },
-  { name: "square", icon: <FaSquare />, color: "#ffd700" },
-  { name: "star", icon: <FaStar />, color: "#3b82f6" },
-  { name: "heart", icon: <FaHeart />, color: "#ec4899" },
+const getShapes = (t) => [
+  { name: t('gamesContent.shapeSorter.circle'), icon: <FaCircle />, color: "#9333ea" },
+  { name: t('gamesContent.shapeSorter.square'), icon: <FaSquare />, color: "#ffd700" },
+  { name: t('gamesContent.shapeSorter.star'), icon: <FaStar />, color: "#3b82f6" },
+  { name: t('gamesContent.shapeSorter.heart'), icon: <FaHeart />, color: "#ec4899" },
 ];
 
 function shuffle(array) {
@@ -19,6 +20,8 @@ function shuffle(array) {
 }
 
 export default function ShapeSorter({ onGameOver, savedStats }) {
+  const { t } = useLanguage();
+  const SHAPES = getShapes(t);
   const [shapes, setShapes] = useState([]);
   const [targets, setTargets] = useState([]);
   const [dragged, setDragged] = useState(null);
@@ -69,7 +72,7 @@ export default function ShapeSorter({ onGameOver, savedStats }) {
             placed: { ...placed, [targetIdx]: dragged },
             correct: correct + 1,
             incorrect,
-            aiTips: "Look for shape outlines and colors to match quickly!",
+            aiTips: t('gamesContent.shapeSorter.aiTips'),
           });
       }
     } else {
@@ -80,7 +83,7 @@ export default function ShapeSorter({ onGameOver, savedStats }) {
 
   return (
     <div className="shape-sorter-area">
-      <h2 className="gameplay-title">Shape Sorter</h2>
+      <h2 className="gameplay-title">{t('gamesContent.shapeSorter.title')}</h2>
       <div className="shape-drag-row">
         {shapes.map((shape, idx) => (
           <div
@@ -103,7 +106,7 @@ export default function ShapeSorter({ onGameOver, savedStats }) {
             className={`shape-target${placed[idx] !== undefined ? " filled" : ""}`}
             onDragOver={(e) => e.preventDefault()}
             onDrop={() => handleDrop(idx)}
-            aria-label={`Target for ${target.name}`}
+            aria-label={`${t('gamesContent.shapeSorter.targetFor')} ${target.name}`}
             tabIndex={0}
             style={{ color: target.color, borderColor: target.color, background: placed[idx] !== undefined ? '#18181b' : 'transparent' }}
           >
@@ -112,8 +115,8 @@ export default function ShapeSorter({ onGameOver, savedStats }) {
         ))}
       </div>
       <div className="shape-sorter-stats">
-        <span>Correct: {correct}</span>
-        <span>Incorrect: {incorrect}</span>
+        <span>{t('gamesContent.shapeSorter.correct')}: {correct}</span>
+        <span>{t('gamesContent.shapeSorter.incorrect')}: {incorrect}</span>
       </div>
     </div>
   );

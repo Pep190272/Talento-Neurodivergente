@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { FaSortNumericDown } from "react-icons/fa";
+import { useLanguage } from '../../hooks/useLanguage';
 
 function shuffle(array) {
   let arr = array.slice();
@@ -14,6 +15,7 @@ function shuffle(array) {
 const NUMBERS = Array.from({ length: 16 }, (_, i) => i + 1);
 
 export default function NumberSequence({ onGameOver, savedStats }) {
+  const { t } = useLanguage();
   const [grid, setGrid] = useState([]);
   const [next, setNext] = useState(1);
   const [startTime, setStartTime] = useState(null);
@@ -55,7 +57,7 @@ export default function NumberSequence({ onGameOver, savedStats }) {
             grid,
             correct: correct + 1,
             incorrect,
-            aiTips: "Scan the grid and look for patterns to find numbers faster!",
+            aiTips: t('gamesContent.numberSequence.aiTips'),
           });
       } else {
         setNext((n) => n + 1);
@@ -67,14 +69,14 @@ export default function NumberSequence({ onGameOver, savedStats }) {
 
   return (
     <div className="number-sequence-area">
-      <h2 className="gameplay-title">Number Sequence</h2>
+      <h2 className="gameplay-title">{t('gamesContent.numberSequence.title')}</h2>
       <div className="number-sequence-grid" role="grid" aria-label="Number grid">
         {grid.map((num, idx) => (
           <button
             key={num}
             className={`number-cell${num < next ? " correct" : ""}`}
             onClick={() => handleNumberClick(num, idx)}
-            aria-label={`Number ${num}`}
+            aria-label={`${t('gamesContent.numberSequence.number')} ${num}`}
             tabIndex={0}
             style={{ cursor: num < next ? 'default' : 'pointer' }}
             disabled={num < next}
@@ -84,9 +86,9 @@ export default function NumberSequence({ onGameOver, savedStats }) {
         ))}
       </div>
       <div className="number-sequence-stats">
-        <span>Next: {next}</span>
-        <span>Correct: {correct}</span>
-        <span>Incorrect: {incorrect}</span>
+        <span>{t('gamesContent.numberSequence.next')}: {next}</span>
+        <span>{t('gamesContent.numberSequence.correct')}: {correct}</span>
+        <span>{t('gamesContent.numberSequence.incorrect')}: {incorrect}</span>
       </div>
     </div>
   );

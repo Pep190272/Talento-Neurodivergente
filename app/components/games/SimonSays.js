@@ -1,19 +1,22 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { FaCircle } from "react-icons/fa";
+import { useLanguage } from '../../hooks/useLanguage';
 
-const COLORS = [
-  { name: "purple", color: "#9333ea" },
-  { name: "gold", color: "#ffd700" },
-  { name: "blue", color: "#3b82f6" },
-  { name: "pink", color: "#ec4899" },
+const getColors = (t) => [
+  { name: t('gamesContent.simonSays.purple'), color: "#9333ea" },
+  { name: t('gamesContent.simonSays.gold'), color: "#ffd700" },
+  { name: t('gamesContent.simonSays.blue'), color: "#3b82f6" },
+  { name: t('gamesContent.simonSays.pink'), color: "#ec4899" },
 ];
 
-function getRandomColorIdx() {
-  return Math.floor(Math.random() * COLORS.length);
+function getRandomColorIdx(colorsLength) {
+  return Math.floor(Math.random() * colorsLength);
 }
 
 export default function SimonSays({ onGameOver, savedStats }) {
+  const { t } = useLanguage();
+  const COLORS = getColors(t);
   const [sequence, setSequence] = useState([]);
   const [userInput, setUserInput] = useState([]);
   const [round, setRound] = useState(1);
@@ -40,7 +43,7 @@ export default function SimonSays({ onGameOver, savedStats }) {
   }, []);
 
   const startNewGame = () => {
-    setSequence([getRandomColorIdx()]);
+    setSequence([getRandomColorIdx(COLORS.length)]);
     setUserInput([]);
     setRound(1);
     setErrors(0);
@@ -90,13 +93,13 @@ export default function SimonSays({ onGameOver, savedStats }) {
           reactionTime: Math.round(totalTime / round),
           round,
           errors: errors + 1,
-          aiTips: "Focus on the sequence and repeat it in your mind!",
+          aiTips: t('gamesContent.simonSays.aiTips'),
         });
       return;
     }
     if (nextInput.length === sequence.length) {
       setTimeout(() => {
-        setSequence((seq) => [...seq, getRandomColorIdx()]);
+        setSequence((seq) => [...seq, getRandomColorIdx(COLORS.length)]);
         setUserInput([]);
         setRound((r) => r + 1);
       }, 800);
@@ -105,7 +108,7 @@ export default function SimonSays({ onGameOver, savedStats }) {
 
   return (
     <div className="simon-says-area">
-      <h2 className="gameplay-title">Simon Says</h2>
+      <h2 className="gameplay-title">{t('gamesContent.simonSays.title')}</h2>
       <div className="simon-sequence">
         {COLORS.map((c, idx) => (
           <button
@@ -122,8 +125,8 @@ export default function SimonSays({ onGameOver, savedStats }) {
         ))}
       </div>
       <div className="simon-stats">
-        <span>Round: {round}</span>
-        <span>Errors: {errors}</span>
+        <span>{t('gamesContent.simonSays.round')}: {round}</span>
+        <span>{t('gamesContent.simonSays.errors')}: {errors}</span>
       </div>
     </div>
   );

@@ -1,22 +1,25 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { FaHandPointer, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import { useLanguage } from '../../hooks/useLanguage';
 
-const TARGETS = [
-  { key: "head", label: "Head", cx: 50, cy: 30 },
-  { key: "chest", label: "Chest", cx: 50, cy: 60 },
-  { key: "leftArm", label: "Left Arm", cx: 20, cy: 60 },
-  { key: "rightArm", label: "Right Arm", cx: 80, cy: 60 },
-  { key: "leftLeg", label: "Left Leg", cx: 35, cy: 100 },
-  { key: "rightLeg", label: "Right Leg", cx: 65, cy: 100 },
+const getTargets = (t) => [
+  { key: "head", label: t('gamesContent.operacion.head'), cx: 50, cy: 30 },
+  { key: "chest", label: t('gamesContent.operacion.chest'), cx: 50, cy: 60 },
+  { key: "leftArm", label: t('gamesContent.operacion.leftArm'), cx: 20, cy: 60 },
+  { key: "rightArm", label: t('gamesContent.operacion.rightArm'), cx: 80, cy: 60 },
+  { key: "leftLeg", label: t('gamesContent.operacion.leftLeg'), cx: 35, cy: 100 },
+  { key: "rightLeg", label: t('gamesContent.operacion.rightLeg'), cx: 65, cy: 100 },
 ];
 
-function getRandomTarget() {
-  return TARGETS[Math.floor(Math.random() * TARGETS.length)];
+function getRandomTarget(targets) {
+  return targets[Math.floor(Math.random() * targets.length)];
 }
 
 export default function Operacion({ onGameOver, savedStats }) {
-  const [currentTarget, setCurrentTarget] = useState(getRandomTarget());
+  const { t } = useLanguage();
+  const TARGETS = getTargets(t);
+  const [currentTarget, setCurrentTarget] = useState(getRandomTarget(TARGETS));
   const [hits, setHits] = useState(0);
   const [misses, setMisses] = useState(0);
   const [startTime, setStartTime] = useState(null);
@@ -24,7 +27,7 @@ export default function Operacion({ onGameOver, savedStats }) {
   const [feedback, setFeedback] = useState(null); // 'hit' or 'miss'
 
   useEffect(() => {
-    setCurrentTarget(getRandomTarget());
+    setCurrentTarget(getRandomTarget(TARGETS));
     setHits(0);
     setMisses(0);
     setStartTime(Date.now());
@@ -53,12 +56,12 @@ export default function Operacion({ onGameOver, savedStats }) {
           reactionTime: Math.round(totalTime / (hits + 1)),
           hits: hits + 1,
           misses,
-          aiTips: "Focus on the highlighted area and react quickly!",
+          aiTips: t('gamesContent.operacion.aiTips'),
         });
         return;
       }
       setTimeout(() => {
-        setCurrentTarget(getRandomTarget());
+        setCurrentTarget(getRandomTarget(TARGETS));
         setFeedback(null);
       }, 600);
     } else {
@@ -70,9 +73,9 @@ export default function Operacion({ onGameOver, savedStats }) {
 
   return (
     <div className="operacion-area">
-      <h2 className="gameplay-title">Operación 2.0</h2>
+      <h2 className="gameplay-title">{t('gamesContent.operacion.title')}</h2>
       <div className="operacion-instructions">
-        Tap the <b>{currentTarget.label}</b>!
+        {t('gamesContent.operacion.tap')} <b>{currentTarget.label}</b>!
       </div>
       <svg
         className="operacion-svg"
@@ -117,8 +120,8 @@ export default function Operacion({ onGameOver, savedStats }) {
         ))}
       </svg>
       <div className="operacion-stats">
-        <span>Hits: {hits}</span>
-        <span>Misses: {misses}</span>
+        <span>{t('gamesContent.operacion.hits')}: {hits}</span>
+        <span>{t('gamesContent.operacion.misses')}: {misses}</span>
         {feedback === 'hit' && <FaCheckCircle className="hit-icon" aria-label="Correct!" />}
         {feedback === 'miss' && <FaTimesCircle className="miss-icon" aria-label="Incorrect!" />}
       </div>

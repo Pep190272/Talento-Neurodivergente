@@ -1,12 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { FaPalette } from "react-icons/fa";
+import { useLanguage } from '../../hooks/useLanguage';
 
-const COLORS = [
-  { name: "Purple", color: "#9333ea" },
-  { name: "Gold", color: "#ffd700" },
-  { name: "Blue", color: "#3b82f6" },
-  { name: "Pink", color: "#ec4899" },
+const getColors = (t) => [
+  { name: t('gamesContent.colorMatch.purple'), color: "#9333ea" },
+  { name: t('gamesContent.colorMatch.gold'), color: "#ffd700" },
+  { name: t('gamesContent.colorMatch.blue'), color: "#3b82f6" },
+  { name: t('gamesContent.colorMatch.pink'), color: "#ec4899" },
 ];
 
 function shuffle(array) {
@@ -19,6 +20,8 @@ function shuffle(array) {
 }
 
 export default function ColorMatch({ onGameOver, savedStats }) {
+  const { t } = useLanguage();
+  const COLORS = getColors(t);
   const [colorName, setColorName] = useState(COLORS[0].name);
   const [options, setOptions] = useState([]);
   const [correct, setCorrect] = useState(0);
@@ -59,7 +62,7 @@ export default function ColorMatch({ onGameOver, savedStats }) {
             reactionTime: Math.round(totalTime / (correct + 1)),
             correct: correct + 1,
             incorrect,
-            aiTips: "Read the color name carefully and match to the button color!",
+            aiTips: t('gamesContent.colorMatch.aiTips'),
           });
       } else {
         setColorName(COLORS[Math.floor(Math.random() * COLORS.length)].name);
@@ -72,10 +75,10 @@ export default function ColorMatch({ onGameOver, savedStats }) {
 
   return (
     <div className="color-match-area">
-      <h2 className="gameplay-title">Color Match</h2>
+      <h2 className="gameplay-title">{t('gamesContent.colorMatch.title')}</h2>
       <div className="color-match-question">
         <FaPalette className="color-match-icon" />
-        <span>Match this color:</span>
+        <span>{t('gamesContent.colorMatch.matchColor')}</span>
         <b>{colorName}</b>
       </div>
       <div className="color-match-options">
@@ -93,8 +96,8 @@ export default function ColorMatch({ onGameOver, savedStats }) {
         ))}
       </div>
       <div className="color-match-stats">
-        <span>Correct: {correct}</span>
-        <span>Incorrect: {incorrect}</span>
+        <span>{t('gamesContent.colorMatch.correct')}: {correct}</span>
+        <span>{t('gamesContent.colorMatch.incorrect')}: {incorrect}</span>
       </div>
     </div>
   );

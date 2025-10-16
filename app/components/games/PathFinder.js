@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { FaRoute, FaArrowUp, FaArrowDown, FaArrowLeft, FaArrowRight, FaFlagCheckered } from "react-icons/fa";
+import { useLanguage } from '../../hooks/useLanguage';
 
 const SIZE = 5;
 const START = { x: 0, y: 0 };
@@ -11,6 +12,7 @@ function isSame(a, b) {
 }
 
 export default function PathFinder({ onGameOver, savedStats }) {
+  const { t } = useLanguage();
   const [pos, setPos] = useState(START);
   const [moves, setMoves] = useState(0);
   const [startTime, setStartTime] = useState(null);
@@ -40,7 +42,7 @@ export default function PathFinder({ onGameOver, savedStats }) {
           accuracy: 100,
           reactionTime: Math.round(totalTime / (moves || 1)),
           moves,
-          aiTips: "Plan your path and use the shortest route!",
+          aiTips: t('gamesContent.pathFinder.aiTips'),
         });
     }
     // eslint-disable-next-line
@@ -71,7 +73,7 @@ export default function PathFinder({ onGameOver, savedStats }) {
 
   return (
     <div className="path-finder-area">
-      <h2 className="gameplay-title">Path Finder</h2>
+      <h2 className="gameplay-title">{t('gamesContent.pathFinder.title')}</h2>
       <div className="path-finder-grid" role="grid" aria-label="Path grid">
         {[...Array(SIZE)].map((_, y) => (
           <div className="path-row" key={y}>
@@ -79,7 +81,7 @@ export default function PathFinder({ onGameOver, savedStats }) {
               <div
                 key={x}
                 className={`path-cell${isSame(pos, { x, y }) ? " current" : ""}${isSame(END, { x, y }) ? " end" : ""}`}
-                aria-label={isSame(pos, { x, y }) ? "Current position" : isSame(END, { x, y }) ? "Finish" : "Cell"}
+                aria-label={isSame(pos, { x, y }) ? t('gamesContent.pathFinder.currentPosition') : isSame(END, { x, y }) ? t('gamesContent.pathFinder.finish') : t('gamesContent.pathFinder.cell')}
               >
                 {isSame(pos, { x, y }) && <FaRoute className="path-icon" />}
                 {isSame(END, { x, y }) && <FaFlagCheckered className="end-icon" />}
@@ -89,15 +91,15 @@ export default function PathFinder({ onGameOver, savedStats }) {
         ))}
       </div>
       <div className="path-controls">
-        <button onClick={() => move(0, -1)} aria-label="Up" className="path-btn"><FaArrowUp /></button>
+        <button onClick={() => move(0, -1)} aria-label={t('gamesContent.pathFinder.up')} className="path-btn"><FaArrowUp /></button>
         <div>
-          <button onClick={() => move(-1, 0)} aria-label="Left" className="path-btn"><FaArrowLeft /></button>
-          <button onClick={() => move(1, 0)} aria-label="Right" className="path-btn"><FaArrowRight /></button>
+          <button onClick={() => move(-1, 0)} aria-label={t('gamesContent.pathFinder.left')} className="path-btn"><FaArrowLeft /></button>
+          <button onClick={() => move(1, 0)} aria-label={t('gamesContent.pathFinder.right')} className="path-btn"><FaArrowRight /></button>
         </div>
-        <button onClick={() => move(0, 1)} aria-label="Down" className="path-btn"><FaArrowDown /></button>
+        <button onClick={() => move(0, 1)} aria-label={t('gamesContent.pathFinder.down')} className="path-btn"><FaArrowDown /></button>
       </div>
       <div className="path-finder-stats">
-        <span>Moves: {moves}</span>
+        <span>{t('gamesContent.pathFinder.moves')}: {moves}</span>
       </div>
     </div>
   );

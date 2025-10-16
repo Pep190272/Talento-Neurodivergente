@@ -322,6 +322,106 @@ export const extendedTranslations = {
       settingUp: 'Setting up:',
       needHelp: 'Need help? Contact our support team at',
       supportEmail: 'support@example.com'
+    },
+    gamesContent: {
+      memoryGrid: {
+        title: 'Memory Grid',
+        moves: 'Moves',
+        matched: 'Matched',
+        flipCard: 'Flip card',
+        matchedCard: 'Matched card',
+        aiTips: 'Try to remember card positions and use patterns!'
+      },
+      colorMatch: {
+        title: 'Color Match',
+        matchColor: 'Match this color:',
+        correct: 'Correct',
+        incorrect: 'Incorrect',
+        purple: 'Purple',
+        gold: 'Gold',
+        blue: 'Blue',
+        pink: 'Pink',
+        aiTips: 'Read the color name carefully and match to the button color!'
+      },
+      operacion: {
+        title: 'Operación 2.0',
+        tap: 'Tap the',
+        head: 'Head',
+        chest: 'Chest',
+        leftArm: 'Left Arm',
+        rightArm: 'Right Arm',
+        leftLeg: 'Left Leg',
+        rightLeg: 'Right Leg',
+        hits: 'Hits',
+        misses: 'Misses',
+        aiTips: 'Focus on the highlighted area and react quickly!'
+      },
+      pathFinder: {
+        title: 'Path Finder',
+        moves: 'Moves',
+        up: 'Up',
+        down: 'Down',
+        left: 'Left',
+        right: 'Right',
+        currentPosition: 'Current position',
+        finish: 'Finish',
+        cell: 'Cell',
+        aiTips: 'Plan your path and use the shortest route!'
+      },
+      numberSequence: {
+        title: 'Number Sequence',
+        next: 'Next',
+        correct: 'Correct',
+        incorrect: 'Incorrect',
+        number: 'Number',
+        aiTips: 'Scan the grid and look for patterns to find numbers faster!'
+      },
+      simonSays: {
+        title: 'Simon Says',
+        round: 'Round',
+        errors: 'Errors',
+        purple: 'purple',
+        gold: 'gold',
+        blue: 'blue',
+        pink: 'pink',
+        aiTips: 'Focus on the sequence and repeat it in your mind!'
+      },
+      reactionTime: {
+        title: 'Reaction Time',
+        waitForGreen: 'Wait for green...',
+        clickNow: 'Click!',
+        gameOver: 'Game Over',
+        tries: 'Tries',
+        avg: 'Avg',
+        aiTips: 'Try to stay relaxed and focused for faster reactions!'
+      },
+      patternMatrix: {
+        title: 'Pattern Matrix',
+        correct: 'Correct',
+        incorrect: 'Incorrect',
+        correctCell: 'Correct cell',
+        incorrectCell: 'Incorrect cell',
+        fillCell: 'Fill cell',
+        aiTips: 'Look for symmetry and repetition in the patterns!'
+      },
+      shapeSorter: {
+        title: 'Shape Sorter',
+        correct: 'Correct',
+        incorrect: 'Incorrect',
+        circle: 'circle',
+        square: 'square',
+        star: 'star',
+        heart: 'heart',
+        targetFor: 'Target for',
+        aiTips: 'Look for shape outlines and colors to match quickly!'
+      },
+      wordBuilder: {
+        title: 'Word Builder',
+        buildWord: 'Build this word:',
+        pickLetter: 'Pick letter',
+        attempts: 'Attempts',
+        aiTips: 'Look for common letter patterns and try again if you get stuck!'
+      }
     }
   },
   es: {
@@ -644,6 +744,106 @@ export const extendedTranslations = {
       settingUp: 'Configurando:',
       needHelp: '¿Necesitas ayuda? Contacta a nuestro equipo de soporte en',
       supportEmail: 'support@example.com'
+    },
+    gamesContent: {
+      memoryGrid: {
+        title: 'Cuadrícula de Memoria',
+        moves: 'Movimientos',
+        matched: 'Emparejados',
+        flipCard: 'Voltear carta',
+        matchedCard: 'Carta emparejada',
+        aiTips: '¡Intenta recordar las posiciones de las cartas y usa patrones!'
+      },
+      colorMatch: {
+        title: 'Emparejamiento de Colores',
+        matchColor: 'Empareja este color:',
+        correct: 'Correcto',
+        incorrect: 'Incorrecto',
+        purple: 'Morado',
+        gold: 'Dorado',
+        blue: 'Azul',
+        pink: 'Rosa',
+        aiTips: '¡Lee el nombre del color cuidadosamente y emparéjalo con el color del botón!'
+      },
+      operacion: {
+        title: 'Operación 2.0',
+        tap: 'Toca el',
+        head: 'Cabeza',
+        chest: 'Pecho',
+        leftArm: 'Brazo Izquierdo',
+        rightArm: 'Brazo Derecho',
+        leftLeg: 'Pierna Izquierda',
+        rightLeg: 'Pierna Derecha',
+        hits: 'Aciertos',
+        misses: 'Fallos',
+        aiTips: '¡Concéntrate en el área resaltada y reacciona rápidamente!'
+      },
+      pathFinder: {
+        title: 'Buscador de Caminos',
+        moves: 'Movimientos',
+        up: 'Arriba',
+        down: 'Abajo',
+        left: 'Izquierda',
+        right: 'Derecha',
+        currentPosition: 'Posición actual',
+        finish: 'Meta',
+        cell: 'Celda',
+        aiTips: '¡Planifica tu ruta y usa el camino más corto!'
+      },
+      numberSequence: {
+        title: 'Secuencia Numérica',
+        next: 'Siguiente',
+        correct: 'Correcto',
+        incorrect: 'Incorrecto',
+        number: 'Número',
+        aiTips: '¡Escanea la cuadrícula y busca patrones para encontrar números más rápido!'
+      },
+      simonSays: {
+        title: 'Simón Dice',
+        round: 'Ronda',
+        errors: 'Errores',
+        purple: 'morado',
+        gold: 'dorado',
+        blue: 'azul',
+        pink: 'rosa',
+        aiTips: '¡Concéntrate en la secuencia y repítela en tu mente!'
+      },
+      reactionTime: {
+        title: 'Tiempo de Reacción',
+        waitForGreen: 'Espera el verde...',
+        clickNow: '¡Haz clic!',
+        gameOver: 'Fin del Juego',
+        tries: 'Intentos',
+        avg: 'Promedio',
+        aiTips: '¡Intenta relajarte y concentrarte para reacciones más rápidas!'
+      },
+      patternMatrix: {
+        title: 'Matriz de Patrones',
+        correct: 'Correcto',
+        incorrect: 'Incorrecto',
+        correctCell: 'Celda correcta',
+        incorrectCell: 'Celda incorrecta',
+        fillCell: 'Llenar celda',
+        aiTips: '¡Busca simetría y repetición en los patrones!'
+      },
+      shapeSorter: {
+        title: 'Clasificador de Formas',
+        correct: 'Correcto',
+        incorrect: 'Incorrecto',
+        circle: 'círculo',
+        square: 'cuadrado',
+        star: 'estrella',
+        heart: 'corazón',
+        targetFor: 'Objetivo para',
+        aiTips: '¡Busca los contornos y colores de las formas para emparejar rápidamente!'
+      },
+      wordBuilder: {
+        title: 'Constructor de Palabras',
+        buildWord: 'Construye esta palabra:',
+        pickLetter: 'Elegir letra',
+        attempts: 'Intentos',
+        aiTips: '¡Busca patrones de letras comunes e intenta de nuevo si te atascas!'
+      }
     }
   }
 };

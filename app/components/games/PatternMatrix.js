@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { FaPuzzlePiece } from "react-icons/fa";
+import { useLanguage } from '../../hooks/useLanguage';
 
 const GRID_SIZE = 4;
 const PATTERNS = [
@@ -20,6 +21,7 @@ function getRandomPattern() {
 }
 
 export default function PatternMatrix({ onGameOver, savedStats }) {
+  const { t } = useLanguage();
   const [pattern, setPattern] = useState([]);
   const [userGrid, setUserGrid] = useState(Array(GRID_SIZE * GRID_SIZE).fill(false));
   const [startTime, setStartTime] = useState(null);
@@ -67,7 +69,7 @@ export default function PatternMatrix({ onGameOver, savedStats }) {
           userGrid: newGrid,
           correct: correct + 1,
           incorrect,
-          aiTips: "Look for symmetry and repetition in the patterns!",
+          aiTips: t('gamesContent.patternMatrix.aiTips'),
         });
       }
     } else {
@@ -77,14 +79,14 @@ export default function PatternMatrix({ onGameOver, savedStats }) {
 
   return (
     <div className="pattern-matrix-area">
-      <h2 className="gameplay-title">Pattern Matrix</h2>
+      <h2 className="gameplay-title">{t('gamesContent.patternMatrix.title')}</h2>
       <div className="pattern-matrix-grid" role="grid" aria-label="Pattern matrix">
         {userGrid.map((filled, idx) => (
           <button
             key={idx}
             className={`pattern-cell${filled ? (pattern.includes(idx) ? " correct" : " incorrect") : ""}`}
             onClick={() => handleCellClick(idx)}
-            aria-label={filled ? (pattern.includes(idx) ? "Correct cell" : "Incorrect cell") : "Fill cell"}
+            aria-label={filled ? (pattern.includes(idx) ? t('gamesContent.patternMatrix.correctCell') : t('gamesContent.patternMatrix.incorrectCell')) : t('gamesContent.patternMatrix.fillCell')}
             tabIndex={0}
             style={{ cursor: filled ? 'default' : 'pointer' }}
           >
@@ -94,8 +96,8 @@ export default function PatternMatrix({ onGameOver, savedStats }) {
         ))}
       </div>
       <div className="pattern-matrix-stats">
-        <span>Correct: {correct}</span>
-        <span>Incorrect: {incorrect}</span>
+        <span>{t('gamesContent.patternMatrix.correct')}: {correct}</span>
+        <span>{t('gamesContent.patternMatrix.incorrect')}: {incorrect}</span>
       </div>
     </div>
   );

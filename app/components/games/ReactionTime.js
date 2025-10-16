@@ -1,8 +1,10 @@
 "use client";
 import React, { useState, useRef } from "react";
 import { FaRegClock } from "react-icons/fa";
+import { useLanguage } from '../../hooks/useLanguage';
 
 export default function ReactionTime({ onGameOver, savedStats }) {
+  const { t } = useLanguage();
   const [waiting, setWaiting] = useState(true);
   const [ready, setReady] = useState(false);
   const [start, setStart] = useState(null);
@@ -50,7 +52,7 @@ export default function ReactionTime({ onGameOver, savedStats }) {
             ),
             reactionTime: avg,
             tries: tries + 1,
-            aiTips: "Try to stay relaxed and focused for faster reactions!",
+            aiTips: t('gamesContent.reactionTime.aiTips'),
           });
       } else {
         setTimeout(startRound, 1000);
@@ -66,27 +68,27 @@ export default function ReactionTime({ onGameOver, savedStats }) {
 
   return (
     <div className="reaction-time-area">
-      <h2 className="gameplay-title">Reaction Time</h2>
+      <h2 className="gameplay-title">{t('gamesContent.reactionTime.title')}</h2>
       <div
         className={`reaction-box${ready ? " ready" : waiting ? " waiting" : ""}`}
         tabIndex={0}
         role="button"
-        aria-label={ready ? "Click now!" : waiting ? "Wait for green" : "Game over"}
+        aria-label={ready ? t('gamesContent.reactionTime.clickNow') : waiting ? t('gamesContent.reactionTime.waitForGreen') : t('gamesContent.reactionTime.gameOver')}
         onClick={handleClick}
         style={{ cursor: 'pointer' }}
       >
         {gameOver ? (
-          <span className="reaction-message">Game Over</span>
+          <span className="reaction-message">{t('gamesContent.reactionTime.gameOver')}</span>
         ) : ready ? (
-          <span className="reaction-message">Click!</span>
+          <span className="reaction-message">{t('gamesContent.reactionTime.clickNow')}</span>
         ) : (
-          <span className="reaction-message">Wait for green...</span>
+          <span className="reaction-message">{t('gamesContent.reactionTime.waitForGreen')}</span>
         )}
       </div>
       <div className="reaction-stats">
-        <span>Tries: {tries}</span>
+        <span>{t('gamesContent.reactionTime.tries')}: {tries}</span>
         <span>
-          Avg: {reactionTimes.filter((x) => x > 0).length
+          {t('gamesContent.reactionTime.avg')}: {reactionTimes.filter((x) => x > 0).length
             ? Math.round(
                 reactionTimes.filter((x) => x > 0).reduce((a, b) => a + b, 0) /
                   reactionTimes.filter((x) => x > 0).length

@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { FaFont } from "react-icons/fa";
+import { useLanguage } from '../../hooks/useLanguage';
 
 const WORDS = ["BRAIN", "NEURO", "FOCUS", "QUIZ", "GAMES", "LOGIC", "MEMORY", "SHAPE"];
 
@@ -14,6 +15,7 @@ function shuffle(array) {
 }
 
 export default function WordBuilder({ onGameOver, savedStats }) {
+  const { t } = useLanguage();
   const [target, setTarget] = useState(WORDS[Math.floor(Math.random() * WORDS.length)]);
   const [letters, setLetters] = useState([]);
   const [input, setInput] = useState([]);
@@ -60,7 +62,7 @@ export default function WordBuilder({ onGameOver, savedStats }) {
             reactionTime: Math.round(totalTime / attempts),
             target,
             attempts,
-            aiTips: "Look for common letter patterns and try again if you get stuck!",
+            aiTips: t('gamesContent.wordBuilder.aiTips'),
           });
       } else {
         // Wrong, reset input and reshuffle
@@ -75,10 +77,10 @@ export default function WordBuilder({ onGameOver, savedStats }) {
 
   return (
     <div className="word-builder-area">
-      <h2 className="gameplay-title">Word Builder</h2>
+      <h2 className="gameplay-title">{t('gamesContent.wordBuilder.title')}</h2>
       <div className="word-target">
         <FaFont className="word-icon" />
-        <span>Build this word:</span>
+        <span>{t('gamesContent.wordBuilder.buildWord')}</span>
         <b>{target}</b>
       </div>
       <div className="word-letters">
@@ -87,7 +89,7 @@ export default function WordBuilder({ onGameOver, savedStats }) {
             key={idx}
             className="letter-btn"
             onClick={() => handleLetterClick(idx)}
-            aria-label={`Pick letter ${l}`}
+            aria-label={`${t('gamesContent.wordBuilder.pickLetter')} ${l}`}
             tabIndex={0}
             style={{ cursor: 'pointer' }}
           >
@@ -101,7 +103,7 @@ export default function WordBuilder({ onGameOver, savedStats }) {
         ))}
       </div>
       <div className="word-stats">
-        <span>Attempts: {attempts}</span>
+        <span>{t('gamesContent.wordBuilder.attempts')}: {attempts}</span>
       </div>
     </div>
   );

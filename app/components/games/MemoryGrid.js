@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import { FaBrain, FaStar } from "react-icons/fa";
+import { useLanguage } from '../../hooks/useLanguage';
 
 const icons = [
   <FaBrain />, <FaStar />, <FaBrain />, <FaStar />,
@@ -17,6 +18,7 @@ function shuffle(array) {
 }
 
 export default function MemoryGrid({ onGameOver, savedStats }) {
+  const { t } = useLanguage();
   const [cards, setCards] = useState([]);
   const [flipped, setFlipped] = useState([]);
   const [matched, setMatched] = useState([]);
@@ -61,7 +63,7 @@ export default function MemoryGrid({ onGameOver, savedStats }) {
         moves,
         matched,
         cards,
-        aiTips: "Try to remember card positions and use patterns!"
+        aiTips: t('gamesContent.memoryGrid.aiTips')
       });
     }
     // eslint-disable-next-line
@@ -101,7 +103,7 @@ export default function MemoryGrid({ onGameOver, savedStats }) {
 
   return (
     <div className="memory-grid-area">
-      <h2 className="gameplay-title">Memory Grid</h2>
+      <h2 className="gameplay-title">{t('gamesContent.memoryGrid.title')}</h2>
       <div className="memory-grid" ref={gridRef} role="grid" aria-label="Memory cards">
         {cards.map((card, idx) => (
           <button
@@ -109,7 +111,7 @@ export default function MemoryGrid({ onGameOver, savedStats }) {
             className={`card-btn${flipped.includes(idx) || matched.includes(idx) ? ' flipped' : ''}`}
             onClick={() => handleFlip(idx)}
             disabled={flipped.length === 2 || matched.includes(idx)}
-            aria-label={matched.includes(idx) ? "Matched card" : "Flip card"}
+            aria-label={matched.includes(idx) ? t('gamesContent.memoryGrid.matchedCard') : t('gamesContent.memoryGrid.flipCard')}
             tabIndex={0}
             style={{ cursor: matched.includes(idx) ? 'default' : 'pointer' }}
           >
@@ -120,8 +122,8 @@ export default function MemoryGrid({ onGameOver, savedStats }) {
         ))}
       </div>
       <div className="memory-stats">
-        <span>Moves: {moves}</span>
-        <span>Matched: {matched.length}/{cards.length}</span>
+        <span>{t('gamesContent.memoryGrid.moves')}: {moves}</span>
+        <span>{t('gamesContent.memoryGrid.matched')}: {matched.length}/{cards.length}</span>
       </div>
     </div>
   );
