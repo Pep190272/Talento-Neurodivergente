@@ -422,6 +422,41 @@ export const extendedTranslations = {
         attempts: 'Attempts',
         aiTips: 'Look for common letter patterns and try again if you get stuck!'
       }
+    },
+    quizContent: {
+      dashboard: {
+        title: 'Quiz & Assessment Dashboard',
+        neurodiversity: {
+          name: 'Neurodiversity Basics',
+          description: 'Test your knowledge of neurodiversity concepts and terminology.'
+        },
+        workplace: {
+          name: 'Workplace Skills',
+          description: 'Assess your understanding of inclusive workplace practices.'
+        },
+        cognitive: {
+          name: 'Cognitive Strengths',
+          description: 'Explore your unique cognitive strengths and learning styles.'
+        },
+        aiQuiz: {
+          name: 'AI-Generated Quiz',
+          description: 'Let our AI create a custom quiz just for you, based on your interests and profile.',
+          button: 'New AI Quiz',
+          generating: 'Generating...'
+        },
+        startQuiz: 'Start Quiz'
+      },
+      quiz: {
+        loading: 'Loading Quiz...',
+        question: 'Question',
+        back: 'Back',
+        next: 'Next',
+        submit: 'Submit',
+        showExplanation: 'Show Explanation',
+        backToDashboard: 'Back to dashboard',
+        closeQuiz: 'Close quiz',
+        replayVoice: 'Replay Voice'
+      }
     }
   },
   es: {
@@ -843,6 +878,41 @@ export const extendedTranslations = {
         pickLetter: 'Elegir letra',
         attempts: 'Intentos',
         aiTips: '¡Busca patrones de letras comunes e intenta de nuevo si te atascas!'
+      }
+    },
+    quizContent: {
+      dashboard: {
+        title: 'Panel de Evaluaciones y Cuestionarios',
+        neurodiversity: {
+          name: 'Fundamentos de Neurodiversidad',
+          description: 'Evalúa tu conocimiento sobre conceptos y terminología de neurodiversidad.'
+        },
+        workplace: {
+          name: 'Habilidades Laborales',
+          description: 'Evalúa tu comprensión de prácticas inclusivas en el lugar de trabajo.'
+        },
+        cognitive: {
+          name: 'Fortalezas Cognitivas',
+          description: 'Explora tus fortalezas cognitivas únicas y estilos de aprendizaje.'
+        },
+        aiQuiz: {
+          name: 'Cuestionario Generado por IA',
+          description: 'Deja que nuestra IA cree un cuestionario personalizado para ti, basado en tus intereses y perfil.',
+          button: 'Nuevo Cuestionario IA',
+          generating: 'Generando...'
+        },
+        startQuiz: 'Iniciar Cuestionario'
+      },
+      quiz: {
+        loading: 'Cargando Cuestionario...',
+        question: 'Pregunta',
+        back: 'Atrás',
+        next: 'Siguiente',
+        submit: 'Enviar',
+        showExplanation: 'Mostrar Explicación',
+        backToDashboard: 'Volver al panel',
+        closeQuiz: 'Cerrar cuestionario',
+        replayVoice: 'Reproducir Voz'
       }
     }
   }

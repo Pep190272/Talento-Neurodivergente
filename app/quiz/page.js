@@ -6,6 +6,7 @@ import StatsDisplay from "../components/quiz/StatsDisplay";
 import { FaBrain, FaCheck, FaListOl, FaRegClock, FaRobot, FaVolumeUp, FaRedo } from "react-icons/fa";
 import "./quiz.css";
 import QuizDashboard from "./dashboard";
+import { useLanguage } from '../hooks/useLanguage';
 
 // Local quiz sets
 const QUIZ_SETS = {
@@ -197,6 +198,7 @@ function getInitialState(quizKey, quizSet) {
 }
 
 export default function QuizPage() {
+  const { t } = useLanguage();
   const [quizKey, setQuizKey] = useState(null);
   const [quizSet, setQuizSet] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -319,7 +321,7 @@ export default function QuizPage() {
   }, [state && state.completed]);
 
   if (loading || !state) {
-    return <div className="quiz-area"><div className="quiz-title"><FaRobot /> Loading Quiz...</div></div>;
+    return <div className="quiz-area"><div className="quiz-title"><FaRobot /> {t('quizContent.quiz.loading')}</div></div>;
   }
 
   // If no quiz is selected, show the dashboard
@@ -337,7 +339,7 @@ export default function QuizPage() {
       <div className="quiz-area" style={{ position: 'relative' }}>
         <button
           onClick={handleCloseQuiz}
-          aria-label="Back to dashboard"
+          aria-label={t('quizContent.quiz.backToDashboard')}
           style={{ position: 'absolute', top: 18, right: 24, fontSize: '2.2rem', color: '#fff', background: '#e53935', border: 'none', borderRadius: '50%', width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 101, boxShadow: '0 2px 8px rgba(229,57,53,0.2)' }}
         >
           ×
@@ -356,7 +358,7 @@ export default function QuizPage() {
           className="quiz-btn"
           style={{ marginTop: 18 }}
         >
-          <FaVolumeUp style={{ marginRight: 8 }} /> Replay Voice
+          <FaVolumeUp style={{ marginRight: 8 }} /> {t('quizContent.quiz.replayVoice')}
         </button>
       </div>
     );
@@ -367,14 +369,14 @@ export default function QuizPage() {
     <div className="quiz-area" style={{ position: 'relative' }}>
       <button
         onClick={handleCloseQuiz}
-        aria-label="Close quiz"
+        aria-label={t('quizContent.quiz.closeQuiz')}
         style={{ position: 'absolute', top: 18, right: 24, fontSize: '2.2rem', color: '#fff', background: '#e53935', border: 'none', borderRadius: '50%', width: 48, height: 48, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 101, boxShadow: '0 2px 8px rgba(229,57,53,0.2)' }}
       >
         ×
       </button>
       <h1 className="quiz-title"><FaBrain /> Quiz: {quizKey && quizKey !== 'ai' ? quizKey.charAt(0).toUpperCase() + quizKey.slice(1) : 'AI-Generated'}</h1>
       <div className="quiz-progress">
-        <FaListOl /> Question {state.current + 1} / {quizSet.length}
+        <FaListOl /> {t('quizContent.quiz.question')} {state.current + 1} / {quizSet.length}
         <FaRegClock /> {timer}s
       </div>
       <QuizQuestion
@@ -388,12 +390,12 @@ export default function QuizPage() {
         <div className="ai-tips" style={{ marginBottom: 12 }}><FaRobot className="ai-icon" /> {q.explanation}</div>
       )}
       <div className="quiz-nav">
-        <button onClick={handlePrev} disabled={state.current === 0} className="quiz-btn">Back</button>
-        <button onClick={() => setShowExplanation(true)} className="quiz-btn" style={{ minWidth: 120 }}>Show Explanation</button>
+        <button onClick={handlePrev} disabled={state.current === 0} className="quiz-btn">{t('quizContent.quiz.back')}</button>
+        <button onClick={() => setShowExplanation(true)} className="quiz-btn" style={{ minWidth: 120 }}>{t('quizContent.quiz.showExplanation')}</button>
         {state.current < quizSet.length - 1 ? (
-          <button onClick={handleNext} className="quiz-btn" disabled={state.answers[state.current] == null}>Next</button>
+          <button onClick={handleNext} className="quiz-btn" disabled={state.answers[state.current] == null}>{t('quizContent.quiz.next')}</button>
         ) : (
-          <button onClick={handleSubmit} className="quiz-btn" disabled={state.answers[state.current] == null}>Submit</button>
+          <button onClick={handleSubmit} className="quiz-btn" disabled={state.answers[state.current] == null}>{t('quizContent.quiz.submit')}</button>
         )}
       </div>
     </div>

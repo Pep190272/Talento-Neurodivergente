@@ -2,29 +2,32 @@
 import React, { useState } from "react";
 import { FaBrain, FaRobot, FaUserCog, FaLightbulb, FaRocket } from "react-icons/fa";
 import "./quiz.css";
+import { useLanguage } from '../hooks/useLanguage';
 
-const QUIZZES = [
+const getQuizzes = (t) => [
   {
     key: "neurodiversity",
-    name: "Neurodiversity Basics",
+    name: t('quizContent.dashboard.neurodiversity.name'),
     icon: <FaBrain />,
-    description: "Test your knowledge of neurodiversity concepts and terminology.",
+    description: t('quizContent.dashboard.neurodiversity.description'),
   },
   {
     key: "workplace",
-    name: "Workplace Skills",
+    name: t('quizContent.dashboard.workplace.name'),
     icon: <FaUserCog />,
-    description: "Assess your understanding of inclusive workplace practices.",
+    description: t('quizContent.dashboard.workplace.description'),
   },
   {
     key: "cognitive",
-    name: "Cognitive Strengths",
+    name: t('quizContent.dashboard.cognitive.name'),
     icon: <FaLightbulb />,
-    description: "Explore your unique cognitive strengths and learning styles.",
+    description: t('quizContent.dashboard.cognitive.description'),
   },
 ];
 
 export default function QuizDashboard() {
+  const { t } = useLanguage();
+  const QUIZZES = getQuizzes(t);
   const [loadingAI, setLoadingAI] = useState(false);
 
   const handleStartQuiz = (quizKey) => {
@@ -42,22 +45,22 @@ export default function QuizDashboard() {
 
   return (
     <div className="quiz-area">
-      <h1 className="quiz-title"><FaRocket /> Quiz & Assessment Dashboard</h1>
+      <h1 className="quiz-title"><FaRocket /> {t('quizContent.dashboard.title')}</h1>
       <div className="quiz-dashboard-grid">
         {QUIZZES.map((quiz) => (
           <div className="quiz-card" key={quiz.key}>
             <div className="quiz-card-icon">{quiz.icon}</div>
             <div className="quiz-card-title">{quiz.name}</div>
             <div className="quiz-card-desc">{quiz.description}</div>
-            <button className="quiz-btn" onClick={() => handleStartQuiz(quiz.key)}>Start Quiz</button>
+            <button className="quiz-btn" onClick={() => handleStartQuiz(quiz.key)}>{t('quizContent.dashboard.startQuiz')}</button>
           </div>
         ))}
         <div className="quiz-card ai-quiz">
           <div className="quiz-card-icon"><FaRobot /></div>
-          <div className="quiz-card-title">AI-Generated Quiz</div>
-          <div className="quiz-card-desc">Let our AI create a custom quiz just for you, based on your interests and profile.</div>
+          <div className="quiz-card-title">{t('quizContent.dashboard.aiQuiz.name')}</div>
+          <div className="quiz-card-desc">{t('quizContent.dashboard.aiQuiz.description')}</div>
           <button className="quiz-btn" onClick={handleAIQuiz} disabled={loadingAI}>
-            {loadingAI ? "Generating..." : "New AI Quiz"}
+            {loadingAI ? t('quizContent.dashboard.aiQuiz.generating') : t('quizContent.dashboard.aiQuiz.button')}
           </button>
         </div>
       </div>
