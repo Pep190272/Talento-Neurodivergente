@@ -440,14 +440,14 @@ const GetStarted = () => {
   const renderCompanyForm = () => (
     <div className="formContainer">
       <div className="formHeader">
-        <button className="backButton" onClick={handleGoBack}>← Back</button>
-        <h2 className="formTitle">Company Registration</h2>
-        <p className="formSubtitle">Connect with exceptional neurodivergent talent</p>
+        <button className="backButton" onClick={handleGoBack}>← Volver</button>
+        <h2 className="formTitle">Registro de Empresa</h2>
+        <p className="formSubtitle">Conéctate con talento neurodivergente excepcional</p>
       </div>
       
       <form onSubmit={handleSubmit} className="form">
         <div className="formSection">
-          <h3 className="sectionTitle">Contact Information</h3>
+          <h3 className="sectionTitle">Información de Contacto</h3>
           <div className="formRow">
             <div className="formGroup">
               <label className="label">First Name *</label>
@@ -457,7 +457,7 @@ const GetStarted = () => {
                 value={formData.firstName}
                 onChange={handleInputChange}
                 className={`input ${errors.firstName ? 'inputError' : ''}`}
-                placeholder="Enter your first name"
+                placeholder="Ingresa tu nombre"
               />
               {errors.firstName && <span className="errorText">{errors.firstName}</span>}
             </div>
@@ -469,7 +469,7 @@ const GetStarted = () => {
                 value={formData.lastName}
                 onChange={handleInputChange}
                 className={`input ${errors.lastName ? 'inputError' : ''}`}
-                placeholder="Enter your last name"
+                placeholder="Ingresa tu apellido"
               />
               {errors.lastName && <span className="errorText">{errors.lastName}</span>}
             </div>
@@ -503,7 +503,7 @@ const GetStarted = () => {
         </div>
 
         <div className="formSection">
-          <h3 className="sectionTitle">Company Information</h3>
+          <h3 className="sectionTitle">Información de la Empresa</h3>
           <div className="formRow">
             <div className="formGroup">
               <label className="label">Company Name *</label>
@@ -513,7 +513,7 @@ const GetStarted = () => {
                 value={formData.companyName}
                 onChange={handleInputChange}
                 className={`input ${errors.companyName ? 'inputError' : ''}`}
-                placeholder="Enter company name"
+                placeholder="Ingresa el nombre de la empresa"
               />
               {errors.companyName && <span className="errorText">{errors.companyName}</span>}
             </div>
@@ -573,11 +573,11 @@ const GetStarted = () => {
         </div>
 
         <div className="formSection">
-          <h3 className="sectionTitle">Hiring Preferences</h3>
+          <h3 className="sectionTitle">Preferencias de Contratación</h3>
           <div className="formGroup">
-            <label className="label">Job Types You're Hiring For (Select all that apply)</label>
+            <label className="label">Tipos de Trabajo que Estás Contratando (Selecciona todos los que apliquen)</label>
             <div className="checkboxGrid">
-              {['Full-time', 'Part-time', 'Contract', 'Internship', 'Remote', 'Hybrid'].map(type => (
+              {['Tiempo Completo', 'Medio Tiempo', 'Contrato', 'Prácticas', 'Remoto', 'Híbrido'].map(type => (
                 <label key={type} className="checkboxLabel">
                   <input
                     type="checkbox"
@@ -600,7 +600,7 @@ const GetStarted = () => {
               value={formData.hiringGoals}
               onChange={handleInputChange}
               className="textarea"
-              placeholder="Describe your hiring goals and what roles you're looking to fill..."
+              placeholder="Describe tus objetivos de contratación y qué roles buscas cubrir..."
               rows="4"
             />
           </div>
@@ -637,9 +637,9 @@ const GetStarted = () => {
   const renderTherapistForm = () => (
     <div className="formContainer">
       <div className="formHeader">
-        <button className="backButton" onClick={handleGoBack}>← Back</button>
-        <h2 className="formTitle">Therapist Registration</h2>
-        <p className="formSubtitle">Join our network of neurodivergent support professionals</p>
+        <button className="backButton" onClick={handleGoBack}>← Volver</button>
+        <h2 className="formTitle">Registro de Terapeuta</h2>
+        <p className="formSubtitle">Únete a nuestra red de profesionales de apoyo neurodivergente</p>
       </div>
       
       <form onSubmit={handleSubmit} className="form">
@@ -654,7 +654,7 @@ const GetStarted = () => {
                 value={formData.firstName}
                 onChange={handleInputChange}
                 className={`input ${errors.firstName ? 'inputError' : ''}`}
-                placeholder="Enter your first name"
+                placeholder="Ingresa tu nombre"
               />
               {errors.firstName && <span className="errorText">{errors.firstName}</span>}
             </div>
@@ -666,7 +666,7 @@ const GetStarted = () => {
                 value={formData.lastName}
                 onChange={handleInputChange}
                 className={`input ${errors.lastName ? 'inputError' : ''}`}
-                placeholder="Enter your last name"
+                placeholder="Ingresa tu apellido"
               />
               {errors.lastName && <span className="errorText">{errors.lastName}</span>}
             </div>
@@ -700,7 +700,7 @@ const GetStarted = () => {
         </div>
 
         <div className="formSection">
-          <h3 className="sectionTitle">Professional Credentials</h3>
+          <h3 className="sectionTitle">Credenciales Profesionales</h3>
           <div className="formRow">
             <div className="formGroup">
               <label className="label">License Number *</label>
@@ -710,7 +710,7 @@ const GetStarted = () => {
                 value={formData.licenseNumber}
                 onChange={handleInputChange}
                 className={`input ${errors.licenseNumber ? 'inputError' : ''}`}
-                placeholder="Enter your professional license number"
+                placeholder="Ingresa tu número de licencia profesional"
               />
               {errors.licenseNumber && <span className="errorText">{errors.licenseNumber}</span>}
             </div>
@@ -756,9 +756,9 @@ const GetStarted = () => {
         </div>
 
         <div className="formSection">
-          <h3 className="sectionTitle">Certifications & Training</h3>
+          <h3 className="sectionTitle">Certificaciones y Capacitación</h3>
           <div className="formGroup">
-            <label className="label">Professional Certifications * (Select all that apply)</label>
+            <label className="label">Certificaciones Profesionales * (Selecciona todas las que apliquen)</label>
             <div className="checkboxGrid">
               {['Licensed Clinical Psychologist', 'Licensed Professional Counselor', 'Occupational Therapist', 'ADHD Coach', 'Autism Specialist', 'Dyslexia Specialist', 'Neurodivergent Coach', 'Career Counselor'].map(cert => (
                 <label key={cert} className="checkboxLabel">
@@ -778,7 +778,7 @@ const GetStarted = () => {
           </div>
           
           <div className="formGroup">
-            <label className="label">Therapy Types Offered (Select all that apply)</label>
+            <label className="label">Tipos de Terapia Ofrecidos (Selecciona todos los que apliquen)</label>
             <div className="checkboxGrid">
               {['Individual Therapy', 'Group Therapy', 'Family Therapy', 'Career Counseling', 'Assessment & Evaluation', 'Skills Training', 'Accommodation Planning', 'Workplace Support'].map(type => (
                 <label key={type} className="checkboxLabel">
@@ -798,7 +798,7 @@ const GetStarted = () => {
         </div>
 
         <div className="formSection">
-          <h3 className="sectionTitle">Practice Information</h3>
+          <h3 className="sectionTitle">Información de Práctica</h3>
           <div className="formRow">
             <div className="formGroup">
               <label className="label">Availability</label>
@@ -837,7 +837,7 @@ const GetStarted = () => {
               value={formData.bio}
               onChange={handleInputChange}
               className="textarea"
-              placeholder="Tell us about your experience, approach, and how you help neurodivergent individuals..."
+              placeholder="Cuéntanos sobre tu experiencia, enfoque y cómo ayudas a individuos neurodivergentes..."
               rows="4"
             />
           </div>

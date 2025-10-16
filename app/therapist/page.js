@@ -496,7 +496,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
           <div className="therapist-ai-input">
             <input 
               type="text" 
-              placeholder="Ask me anything..." 
+              placeholder="Pregúntame cualquier cosa..." 
               className="therapist-ai-text-input"
             />
             <button className="therapist-ai-send-btn">
@@ -597,7 +597,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
             <FaSearch className="therapist-search-icon" />
             <input 
               type="text" 
-              placeholder="Search referrals..." 
+              placeholder="Buscar referencias..." 
               className="therapist-search-input"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
@@ -756,7 +756,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
           </h4>
           <textarea 
             className="therapist-notes-textarea"
-            placeholder="Add clinical observations, recommendations, or notes..."
+            placeholder="Agregar observaciones clínicas, recomendaciones o notas..."
             defaultValue="Client shows significant improvement in attention regulation. Recommend continuing current accommodation plan with minor adjustments to break scheduling."
           />
           <div className="therapist-notes-footer">
@@ -864,8 +864,8 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
             <div className="therapist-builder-group">
               <label className="therapist-builder-label">Break Schedule</label>
               <div className="therapist-input-grid">
-                <input type="number" placeholder="Duration (min)" className="therapist-input" />
-                <input type="number" placeholder="Frequency (hrs)" className="therapist-input" />
+                <input type="number" placeholder="Duración (min)" className="therapist-input" />
+                <input type="number" placeholder="Frecuencia (hrs)" className="therapist-input" />
               </div>
             </div>
           </div>
@@ -901,7 +901,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
               <label className="therapist-builder-label">Additional Notes</label>
               <textarea 
                 className="therapist-textarea"
-                placeholder="Any specific accommodations or considerations..."
+                placeholder="Acomodaciones o consideraciones específicas..."
               />
             </div>
           </div>
@@ -993,7 +993,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
                 <FaSearch className="therapist-search-icon" />
                 <input 
                   type="text" 
-                  placeholder={`Search ${view}...`}
+                  placeholder={`Buscar ${view}...`}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="therapist-search-input"
@@ -1319,7 +1319,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
                 <textarea
                   value={applicationMessage}
                   onChange={(e) => setApplicationMessage(e.target.value)}
-                  placeholder={`Write a personalized message introducing ${candidate.name} to ${selectedCompany.name} for the ${selectedPosition.title} position. Highlight their unique strengths and how they align with the company's needs...`}
+                  placeholder={`Escribe un mensaje personalizado presentando a ${candidate.name} a ${selectedCompany.name} para el puesto de ${selectedPosition.title}. Destaca sus fortalezas únicas y cómo se alinean con las necesidades de la empresa...`}
                   className="therapist-message-textarea"
                   rows={6}
                 />
@@ -1571,7 +1571,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
                 <textarea
                   value={applicationMessage}
                   onChange={(e) => setApplicationMessage(e.target.value)}
-                  placeholder={`Write a personalized message introducing ${selectedCandidate.name} to ${company.name} for the ${selectedPosition.title} position. Highlight their unique strengths and how they align with the company's needs...`}
+                  placeholder={`Escribe un mensaje personalizado presentando a ${selectedCandidate.name} a ${company.name} para el puesto de ${selectedPosition.title}. Destaca sus fortalezas únicas y cómo se alinean con las necesidades de la empresa...`}
                   className="therapist-message-textarea"
                   rows={6}
                 />

@@ -6,26 +6,26 @@ import { useLanguage } from '../../hooks/useLanguage';
 const testimonials = [
   {
     name: 'Alex Kim',
-    role: 'Neurodivergent Professional',
-    text: 'This platform helped me discover my strengths and land a job that truly fits me. The assessment was spot-on and the support team is amazing!',
+    role: 'Profesional Neurodivergente',
+    text: 'Esta plataforma me ayudó a descubrir mis fortalezas y conseguir un trabajo que realmente me encaja. ¡La evaluación fue precisa y el equipo de soporte es increíble!',
     avatar: null
   },
   {
     name: 'Jordan Lee',
-    role: 'HR Manager, TechNova',
-    text: 'We found incredible talent through this platform. The matching process is seamless and the analytics gave us real insight into our team.',
+    role: 'Gerente de RRHH, TechNova',
+    text: 'Encontramos talento increíble a través de esta plataforma. El proceso de emparejamiento es perfecto y las analíticas nos dieron información real sobre nuestro equipo.',
     avatar: null
   },
   {
     name: 'Morgan Patel',
-    role: 'Therapist & Coach',
-    text: 'I recommend this to all my clients. The resources and games are engaging and the AI support is always helpful.',
+    role: 'Terapeuta y Coach',
+    text: 'Lo recomiendo a todos mis clientes. Los recursos y juegos son atractivos y el soporte de IA siempre es útil.',
     avatar: null
   },
   {
     name: 'Samantha Chen',
-    role: 'Diversity & Inclusion Lead, InnovateX',
-    text: 'Partnering with this platform has transformed our hiring process. We are now a more inclusive and innovative company.',
+    role: 'Líder de Diversidad e Inclusión, InnovateX',
+    text: 'Asociarnos con esta plataforma ha transformado nuestro proceso de contratación. Ahora somos una empresa más inclusiva e innovadora.',
     avatar: null
   }
 ];
