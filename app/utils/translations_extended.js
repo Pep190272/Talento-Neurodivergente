@@ -457,6 +457,13 @@ export const extendedTranslations = {
         closeQuiz: 'Close quiz',
         replayVoice: 'Replay Voice',
         textAnswer: 'Text answer',
+        quizLabel: 'Quiz:',
+        titles: {
+          neurodiversity: 'Neurodiversity',
+          workplace: 'Workplace',
+          cognitive: 'Cognitive',
+          ai: 'AI-Generated'
+        },
         results: {
           title: 'Quiz Results',
           score: 'Score:',
@@ -925,6 +932,13 @@ export const extendedTranslations = {
         closeQuiz: 'Cerrar cuestionario',
         replayVoice: 'Reproducir Voz',
         textAnswer: 'Respuesta de texto',
+        quizLabel: 'Cuestionario:',
+        titles: {
+          neurodiversity: 'Neurodiversidad',
+          workplace: 'Laboral',
+          cognitive: 'Cognitivo',
+          ai: 'Generado por IA'
+        },
         results: {
           title: 'Resultados del Cuestionario',
           score: 'Puntuación:',

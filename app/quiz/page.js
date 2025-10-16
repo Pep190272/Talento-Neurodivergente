@@ -398,7 +398,7 @@ export default function QuizPage() {
       >
         ×
       </button>
-      <h1 className="quiz-title"><FaBrain /> Quiz: {quizKey && quizKey !== 'ai' ? quizKey.charAt(0).toUpperCase() + quizKey.slice(1) : 'AI-Generated'}</h1>
+      <h1 className="quiz-title"><FaBrain /> {t('quizContent.quiz.quizLabel')} {t(`quizContent.quiz.titles.${quizKey}`)}</h1>
       <div className="quiz-progress">
         <FaListOl /> {t('quizContent.quiz.question')} {state.current + 1} / {quizSet.length}
         <FaRegClock /> {timer}s
