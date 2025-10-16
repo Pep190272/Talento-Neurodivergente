@@ -9,125 +9,140 @@ import QuizDashboard from "./dashboard";
 import { useLanguage } from '../hooks/useLanguage';
 
 // Local quiz sets
-const QUIZ_SETS = {
+const getQuizSets = (lang) => ({
   neurodiversity: [
     {
       id: 1,
       type: "mcq",
-      question: "Which of these is a common neurodivergent trait?",
-      options: ["Hyperfocus", "Telepathy", "Photosynthesis", "Levitation"],
+      question: lang === 'es' ? "¿Cuál de estos es un rasgo neurodivergente común?" : "Which of these is a common neurodivergent trait?",
+      options: lang === 'es' ? ["Hiperfoco", "Telepatía", "Fotosíntesis", "Levitación"] : ["Hyperfocus", "Telepathy", "Photosynthesis", "Levitation"],
       answer: 0,
-      explanation: "Hyperfocus is a common trait in ADHD and autism."
+      explanation: lang === 'es' ? "El hiperfoco es un rasgo común en TDAH y autismo." : "Hyperfocus is a common trait in ADHD and autism."
     },
     {
       id: 2,
       type: "slider",
-      question: "How comfortable are you with change?",
+      question: lang === 'es' ? "¿Qué tan cómodo te sientes con los cambios?" : "How comfortable are you with change?",
       min: 1,
       max: 10,
       answer: 7,
-      explanation: "Many neurodivergent people prefer routine, but comfort with change varies."
+      explanation: lang === 'es' ? "Muchas personas neurodivergentes prefieren la rutina, pero la comodidad con el cambio varía." : "Many neurodivergent people prefer routine, but comfort with change varies."
     },
     {
       id: 3,
       type: "text",
-      question: "Describe a strategy you use to stay organized:",
+      question: lang === 'es' ? "Describe una estrategia que uses para mantenerte organizado:" : "Describe a strategy you use to stay organized:",
       answer: "",
-      explanation: "Organization strategies are highly individual."
+      explanation: lang === 'es' ? "Las estrategias de organización son muy individuales." : "Organization strategies are highly individual."
     },
     {
       id: 4,
       type: "draggable",
-      question: "Rank these workplace accommodations from most to least important for neurodivergent employees:",
-      options: [
+      question: lang === 'es' ? "Ordena estas adaptaciones laborales de más a menos importantes para empleados neurodivergentes:" : "Rank these workplace accommodations from most to least important for neurodivergent employees:",
+      options: lang === 'es' ? [
+        "Horarios de trabajo flexibles",
+        "Espacio de trabajo tranquilo",
+        "Instrucciones escritas claras",
+        "Descansos regulares",
+      ] : [
         "Flexible work hours",
         "Quiet workspace",
         "Clear written instructions",
         "Regular breaks",
       ],
       answer: [0, 1, 2, 3],
-      explanation: "All are important; ranking depends on individual needs."
+      explanation: lang === 'es' ? "Todas son importantes; la clasificación depende de las necesidades individuales." : "All are important; ranking depends on individual needs."
     },
   ],
   workplace: [
     {
       id: 1,
       type: "mcq",
-      question: "What is an example of an inclusive workplace practice?",
-      options: ["Providing noise-cancelling headphones", "Ignoring accessibility", "Mandatory overtime", "No feedback"],
+      question: lang === 'es' ? "¿Qué es un ejemplo de práctica laboral inclusiva?" : "What is an example of an inclusive workplace practice?",
+      options: lang === 'es' ? ["Proporcionar auriculares con cancelación de ruido", "Ignorar la accesibilidad", "Horas extras obligatorias", "Sin retroalimentación"] : ["Providing noise-cancelling headphones", "Ignoring accessibility", "Mandatory overtime", "No feedback"],
       answer: 0,
-      explanation: "Providing accommodations is an inclusive practice."
+      explanation: lang === 'es' ? "Proporcionar adaptaciones es una práctica inclusiva." : "Providing accommodations is an inclusive practice."
     },
     {
       id: 2,
       type: "slider",
-      question: "How supported do you feel at work?",
+      question: lang === 'es' ? "¿Qué tan apoyado te sientes en el trabajo?" : "How supported do you feel at work?",
       min: 1,
       max: 10,
       answer: 8,
-      explanation: "Support can be improved with open communication."
+      explanation: lang === 'es' ? "El apoyo puede mejorarse con una comunicación abierta." : "Support can be improved with open communication."
     },
     {
       id: 3,
       type: "text",
-      question: "Describe a time you advocated for yourself or a colleague:",
+      question: lang === 'es' ? "Describe una vez que abogaste por ti mismo o por un colega:" : "Describe a time you advocated for yourself or a colleague:",
       answer: "",
-      explanation: "Self-advocacy is key to workplace inclusion."
+      explanation: lang === 'es' ? "La autodefensa es clave para la inclusión laboral." : "Self-advocacy is key to workplace inclusion."
     },
     {
       id: 4,
       type: "draggable",
-      question: "Rank these inclusive practices:",
-      options: [
+      question: lang === 'es' ? "Ordena estas prácticas inclusivas:" : "Rank these inclusive practices:",
+      options: lang === 'es' ? [
+        "Horarios flexibles",
+        "Reuniones accesibles",
+        "Comunicación clara",
+        "Programas de mentoría",
+      ] : [
         "Flexible scheduling",
         "Accessible meetings",
         "Clear communication",
         "Mentorship programs",
       ],
       answer: [0, 1, 2, 3],
-      explanation: "All are valuable; order may vary by context."
+      explanation: lang === 'es' ? "Todas son valiosas; el orden puede variar según el contexto." : "All are valuable; order may vary by context."
     },
   ],
   cognitive: [
     {
       id: 1,
       type: "mcq",
-      question: "Which is a cognitive strength?",
-      options: ["Pattern recognition", "Invisibility", "Time travel", "None"],
+      question: lang === 'es' ? "¿Cuál es una fortaleza cognitiva?" : "Which is a cognitive strength?",
+      options: lang === 'es' ? ["Reconocimiento de patrones", "Invisibilidad", "Viaje en el tiempo", "Ninguna"] : ["Pattern recognition", "Invisibility", "Time travel", "None"],
       answer: 0,
-      explanation: "Pattern recognition is a cognitive strength."
+      explanation: lang === 'es' ? "El reconocimiento de patrones es una fortaleza cognitiva." : "Pattern recognition is a cognitive strength."
     },
     {
       id: 2,
       type: "slider",
-      question: "How much do you enjoy solving puzzles?",
+      question: lang === 'es' ? "¿Cuánto disfrutas resolver acertijos?" : "How much do you enjoy solving puzzles?",
       min: 1,
       max: 10,
       answer: 9,
-      explanation: "Enjoyment of puzzles can indicate strong problem-solving skills."
+      explanation: lang === 'es' ? "El disfrute de los acertijos puede indicar fuertes habilidades de resolución de problemas." : "Enjoyment of puzzles can indicate strong problem-solving skills."
     },
     {
       id: 3,
       type: "text",
-      question: "Describe a time you solved a difficult problem:",
+      question: lang === 'es' ? "Describe una ocasión en que resolviste un problema difícil:" : "Describe a time you solved a difficult problem:",
       answer: "",
-      explanation: "Problem-solving is a valuable cognitive skill."
+      explanation: lang === 'es' ? "La resolución de problemas es una habilidad cognitiva valiosa." : "Problem-solving is a valuable cognitive skill."
     },
     {
       id: 4,
       type: "draggable",
-      question: "Rank these cognitive skills:",
-      options: [
+      question: lang === 'es' ? "Ordena estas habilidades cognitivas:" : "Rank these cognitive skills:",
+      options: lang === 'es' ? [
+        "Memoria",
+        "Atención al detalle",
+        "Creatividad",
+        "Razonamiento lógico",
+      ] : [
         "Memory",
         "Attention to detail",
         "Creativity",
         "Logical reasoning",
       ],
       answer: [0, 1, 2, 3],
-      explanation: "All are important; ranking depends on context."
+      explanation: lang === 'es' ? "Todas son importantes; la clasificación depende del contexto." : "All are important; ranking depends on context."
     },
   ],
-};
+});
 
 function getQueryParam(name) {
   if (typeof window === "undefined") return null;
@@ -136,46 +151,51 @@ function getQueryParam(name) {
 }
 
 // AI Quiz fetcher (stub)
-async function fetchAIQuiz() {
+async function fetchAIQuiz(lang) {
   // --- Replace with OpenAI or OpenTDB API call ---
   // For now, return a sample quiz
   return [
     {
       id: 1,
       type: "mcq",
-      question: "Which brain region is most associated with memory?",
-      options: ["Hippocampus", "Cerebellum", "Amygdala", "Thalamus"],
+      question: lang === 'es' ? "¿Qué región del cerebro está más asociada con la memoria?" : "Which brain region is most associated with memory?",
+      options: lang === 'es' ? ["Hipocampo", "Cerebelo", "Amígdala", "Tálamo"] : ["Hippocampus", "Cerebellum", "Amygdala", "Thalamus"],
       answer: 0,
-      explanation: "The hippocampus is crucial for memory formation."
+      explanation: lang === 'es' ? "El hipocampo es crucial para la formación de la memoria." : "The hippocampus is crucial for memory formation."
     },
     {
       id: 2,
       type: "slider",
-      question: "How confident are you in your problem-solving skills?",
+      question: lang === 'es' ? "¿Qué tan confiado te sientes en tus habilidades para resolver problemas?" : "How confident are you in your problem-solving skills?",
       min: 1,
       max: 10,
       answer: 8,
-      explanation: "Confidence can be built through practice."
+      explanation: lang === 'es' ? "La confianza se puede construir con la práctica." : "Confidence can be built through practice."
     },
     {
       id: 3,
       type: "text",
-      question: "Describe a creative solution you found recently:",
+      question: lang === 'es' ? "Describe una solución creativa que hayas encontrado recientemente:" : "Describe a creative solution you found recently:",
       answer: "",
-      explanation: "Creativity is a key cognitive strength."
+      explanation: lang === 'es' ? "La creatividad es una fortaleza cognitiva clave." : "Creativity is a key cognitive strength."
     },
     {
       id: 4,
       type: "draggable",
-      question: "Rank these learning styles:",
-      options: [
+      question: lang === 'es' ? "Ordena estos estilos de aprendizaje:" : "Rank these learning styles:",
+      options: lang === 'es' ? [
+        "Visual",
+        "Auditivo",
+        "Kinestésico",
+        "Lectura/Escritura",
+      ] : [
         "Visual",
         "Auditory",
         "Kinesthetic",
         "Reading/Writing",
       ],
       answer: [0, 1, 2, 3],
-      explanation: "Everyone has a preferred learning style."
+      explanation: lang === 'es' ? "Cada persona tiene un estilo de aprendizaje preferido." : "Everyone has a preferred learning style."
     },
   ];
 }
@@ -198,7 +218,7 @@ function getInitialState(quizKey, quizSet) {
 }
 
 export default function QuizPage() {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [quizKey, setQuizKey] = useState(null);
   const [quizSet, setQuizSet] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -214,8 +234,9 @@ export default function QuizPage() {
     async function loadQuiz() {
       setLoading(true);
       let set = [];
+      const QUIZ_SETS = getQuizSets(language);
       if (key === "ai") {
-        set = await fetchAIQuiz();
+        set = await fetchAIQuiz(language);
       } else {
         set = QUIZ_SETS[key] || QUIZ_SETS["neurodiversity"];
       }
@@ -225,7 +246,7 @@ export default function QuizPage() {
     }
     loadQuiz();
     // eslint-disable-next-line
-  }, []);
+  }, [language]);
 
   // Timer
   useEffect(() => {
