@@ -2,32 +2,19 @@
 
 import React, { useState } from 'react';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
-
-const faqs = [
-  {
-    question: 'What is neurodiversity?',
-    answer: 'Neurodiversity refers to the natural variation in human brains and minds. It includes conditions like autism, ADHD, dyslexia, and more, emphasizing strengths as well as challenges.'
-  },
-  {
-    question: 'How does the talent matching work?',
-    answer: 'Our AI-driven algorithm matches candidates with roles based on their unique strengths, preferences, and assessment results, ensuring the best fit for both individuals and companies.'
-  },
-  {
-    question: 'Is my data secure and private?',
-    answer: 'Yes. We use secure, encrypted storage and never share your personal data without your consent. You control your information at all times.'
-  },
-  {
-    question: 'Can companies and therapists join?',
-    answer: 'Absolutely! We support individuals, companies, and therapists with tailored resources, tools, and support.'
-  },
-  {
-    question: 'How do I get started?',
-    answer: 'Simply sign up, complete your profile, and take an assessment. Our platform will guide you through the next steps.'
-  }
-];
+import { useLanguage } from '../../hooks/useLanguage';
 
 export default function FAQSection() {
   const [openIndex, setOpenIndex] = useState(null);
+  const { t } = useLanguage();
+
+  const faqs = [
+    { question: t('faq.questions.q1.question'), answer: t('faq.questions.q1.answer') },
+    { question: t('faq.questions.q2.question'), answer: t('faq.questions.q2.answer') },
+    { question: t('faq.questions.q3.question'), answer: t('faq.questions.q3.answer') },
+    { question: t('faq.questions.q4.question'), answer: t('faq.questions.q4.answer') },
+    { question: t('faq.questions.q5.question'), answer: t('faq.questions.q5.answer') }
+  ];
   return (
     <section style={{
       padding: '4rem 2rem',
@@ -44,7 +31,7 @@ export default function FAQSection() {
           marginBottom: '2.5rem',
           letterSpacing: '-0.01em'
         }}>
-          Frequently Asked Questions
+          {t('faq.title')}
         </h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {faqs.map((faq, idx) => (

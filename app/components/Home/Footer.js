@@ -3,14 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { FaTwitter, FaLinkedin, FaGithub, FaEnvelope } from 'react-icons/fa';
-
-const navLinks = [
-  { label: 'Home', href: '/' },
-  { label: 'Features', href: '/features' },
-  { label: 'Forms', href: '/forms' },
-  { label: 'Games', href: '/games' },
-  { label: 'Quiz', href: '/quiz' }
-];
+import { useLanguage } from '../../hooks/useLanguage';
 
 const socialLinks = [
   { icon: <FaTwitter />, href: 'https://twitter.com/', label: 'Twitter' },
@@ -20,6 +13,15 @@ const socialLinks = [
 ];
 
 export default function Footer() {
+  const { t } = useLanguage();
+
+  const navLinks = [
+    { label: t('footer.home'), href: '/' },
+    { label: t('footer.features'), href: '/features' },
+    { label: t('footer.forms'), href: '/forms' },
+    { label: t('footer.games'), href: '/games' },
+    { label: t('footer.quiz'), href: '/quiz' }
+  ];
   return (
     <footer style={{
       background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%)',
@@ -59,7 +61,7 @@ export default function Footer() {
           ))}
         </div>
         <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: '1rem', textAlign: 'center', fontFamily: 'Rajdhani, sans-serif' }}>
-          &copy; {new Date().getFullYear()} Eternals NeuroTalent Platform. All rights reserved.
+          &copy; {new Date().getFullYear()} {t('footer.copyright')}
         </div>
       </div>
     </footer>

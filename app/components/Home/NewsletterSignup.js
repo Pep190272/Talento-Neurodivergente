@@ -2,17 +2,19 @@
 
 import React, { useState } from 'react';
 import { FaEnvelope, FaCheckCircle } from 'react-icons/fa';
+import { useLanguage } from '../../hooks/useLanguage';
 
 export default function NewsletterSignup() {
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
+  const { t } = useLanguage();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
     if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-      setError('Please enter a valid email address.');
+      setError(t('newsletter.error'));
       return;
     }
     setSubmitted(true);
@@ -35,14 +37,14 @@ export default function NewsletterSignup() {
           marginBottom: '1.5rem',
           letterSpacing: '-0.01em'
         }}>
-          Stay in the Loop
+          {t('newsletter.title')}
         </h2>
         <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.1rem', marginBottom: '2rem', fontFamily: 'Rajdhani, sans-serif' }}>
-          Subscribe to our newsletter for updates, resources, and neurodiversity insights.
+          {t('newsletter.description')}
         </p>
         {submitted ? (
           <div style={{ color: 'var(--primary-gold)', fontWeight: 700, fontSize: '1.2rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
-            <FaCheckCircle style={{ color: 'var(--primary-purple)' }} /> Thank you for subscribing!
+            <FaCheckCircle style={{ color: 'var(--primary-purple)' }} /> {t('newsletter.thankYou')}
           </div>
         ) : (
           <form onSubmit={handleSubmit} style={{ display: 'flex', gap: 0, maxWidth: 420, margin: '0 auto', background: '#23213a', borderRadius: 32, overflow: 'hidden', boxShadow: '0 2px 12px #9333ea22', border: '1px solid rgba(255,255,255,0.06)' }}>
@@ -51,7 +53,7 @@ export default function NewsletterSignup() {
               type="email"
               value={email}
               onChange={e => setEmail(e.target.value)}
-              placeholder="Your email address"
+              placeholder={t('newsletter.placeholder')}
               style={{
                 flex: 1,
                 border: 'none',
@@ -83,13 +85,13 @@ export default function NewsletterSignup() {
               }}
               disabled={submitted}
             >
-              Subscribe
+              {t('newsletter.subscribe')}
             </button>
           </form>
         )}
         {error && <div style={{ color: '#FFD700', marginTop: 12, fontWeight: 600 }}>{error}</div>}
         <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.98rem', marginTop: 24, fontFamily: 'Rajdhani, sans-serif' }}>
-          We respect your privacy. Unsubscribe at any time.
+          {t('newsletter.privacy')}
         </div>
       </div>
     </section>

@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react';
 import { translations } from '../utils/translations';
+import { extendedTranslations } from '../utils/translations_extended';
 
 export function useLanguage() {
   const [currentLang, setCurrentLang] = useState('en');
@@ -41,7 +42,7 @@ export function useLanguage() {
     if (!isClient) return '';
 
     const keys = key.split('.');
-    let value = translations[currentLang];
+    let value = extendedTranslations[currentLang];
 
     for (const k of keys) {
       if (value && typeof value === 'object') {
