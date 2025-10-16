@@ -3,39 +3,39 @@ import React, { useState, useEffect } from 'react';
 import { User, Building2, Stethoscope, CheckCircle, ArrowRight, Star, Shield, Clock } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
 
-const TABS = [
-  { 
-    label: 'Neurodivergent Individual', 
+const getTabs = (t) => [
+  {
+    label: t('forms.tabs.individual.label'),
     key: 'individual',
     icon: User,
-    description: 'Create your personal profile and connect with opportunities',
+    description: t('forms.tabs.individual.description'),
     color: 'from-purple-600 to-purple-800'
   },
-  { 
-    label: 'Company Placement Manager', 
+  {
+    label: t('forms.tabs.company.label'),
     key: 'company',
     icon: Building2,
-    description: 'Manage talent placement and recruitment processes',
+    description: t('forms.tabs.company.description'),
     color: 'from-yellow-600 to-yellow-800'
   },
-  { 
-    label: 'Therapist / Specialist', 
+  {
+    label: t('forms.tabs.therapist.label'),
     key: 'therapist',
     icon: Stethoscope,
-    description: 'Provide professional support and guidance',
+    description: t('forms.tabs.therapist.description'),
     color: 'from-purple-500 to-indigo-600'
   },
 ];
 
-const FEATURES = [
-  { icon: Shield, text: 'Secure & Private' },
-  { icon: CheckCircle, text: 'Quick Setup' },
-  { icon: Star, text: 'Premium Support' },
-  { icon: Clock, text: '24/7 Available' }
+const getFeatures = (t) => [
+  { icon: Shield, text: t('forms.features.secure') },
+  { icon: CheckCircle, text: t('forms.features.quick') },
+  { icon: Star, text: t('forms.features.premium') },
+  { icon: Clock, text: t('forms.features.available') }
 ];
 
 // Mock GenericForm component for demonstration
-const GenericForm = ({ type }) => {
+const GenericForm = ({ type, t }) => {
   const [formData, setFormData] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -54,27 +54,27 @@ const GenericForm = ({ type }) => {
     switch(type) {
       case 'individual':
         return [
-          { name: 'fullName', label: 'Full Name', type: 'text', required: true },
-          { name: 'email', label: 'Email Address', type: 'email', required: true },
-          { name: 'phone', label: 'Phone Number', type: 'tel', required: true },
-          { name: 'skills', label: 'Skills & Interests', type: 'textarea', required: true },
-          { name: 'experience', label: 'Work Experience', type: 'textarea', required: false },
+          { name: 'fullName', label: t('forms.fields.fullName'), type: 'text', required: true },
+          { name: 'email', label: t('forms.fields.email'), type: 'email', required: true },
+          { name: 'phone', label: t('forms.fields.phone'), type: 'tel', required: true },
+          { name: 'skills', label: t('forms.fields.skills'), type: 'textarea', required: true },
+          { name: 'experience', label: t('forms.fields.experience'), type: 'textarea', required: false },
         ];
       case 'company':
         return [
-          { name: 'companyName', label: 'Company Name', type: 'text', required: true },
-          { name: 'contactPerson', label: 'Contact Person', type: 'text', required: true },
-          { name: 'email', label: 'Business Email', type: 'email', required: true },
-          { name: 'industry', label: 'Industry', type: 'text', required: true },
-          { name: 'positions', label: 'Available Positions', type: 'textarea', required: true },
+          { name: 'companyName', label: t('forms.fields.companyName'), type: 'text', required: true },
+          { name: 'contactPerson', label: t('forms.fields.contactPerson'), type: 'text', required: true },
+          { name: 'email', label: t('forms.fields.businessEmail'), type: 'email', required: true },
+          { name: 'industry', label: t('forms.fields.industry'), type: 'text', required: true },
+          { name: 'positions', label: t('forms.fields.positions'), type: 'textarea', required: true },
         ];
       case 'therapist':
         return [
-          { name: 'fullName', label: 'Full Name', type: 'text', required: true },
-          { name: 'license', label: 'License Number', type: 'text', required: true },
-          { name: 'email', label: 'Professional Email', type: 'email', required: true },
-          { name: 'specialization', label: 'Specialization', type: 'text', required: true },
-          { name: 'experience', label: 'Years of Experience', type: 'number', required: true },
+          { name: 'fullName', label: t('forms.fields.fullName'), type: 'text', required: true },
+          { name: 'license', label: t('forms.fields.license'), type: 'text', required: true },
+          { name: 'email', label: t('forms.fields.professionalEmail'), type: 'email', required: true },
+          { name: 'specialization', label: t('forms.fields.specialization'), type: 'text', required: true },
+          { name: 'experience', label: t('forms.fields.yearsExperience'), type: 'number', required: true },
         ];
       default:
         return [];
@@ -87,11 +87,9 @@ const GenericForm = ({ type }) => {
     <div style={styles.formContainer}>
       <div style={styles.formHeader}>
         <h3 style={styles.formTitle}>
-          {type === 'individual' ? 'Individual Registration' : 
-           type === 'company' ? 'Company Registration' : 
-           'Therapist Registration'}
+          {t(`forms.formTitle.${type}`)}
         </h3>
-        <p style={styles.formDescription}>Please fill out all required fields to get started</p>
+        <p style={styles.formDescription}>{t('forms.formDescription')}</p>
       </div>
 
       <div style={styles.formContent}>
@@ -105,7 +103,7 @@ const GenericForm = ({ type }) => {
                 name={field.name}
                 rows={4}
                 style={styles.textarea}
-                placeholder={`Enter your ${field.label.toLowerCase()}`}
+                placeholder={field.label}
                 value={formData[field.name] || ''}
                 onChange={(e) => setFormData({...formData, [field.name]: e.target.value})}
               />
@@ -114,7 +112,7 @@ const GenericForm = ({ type }) => {
                 type={field.type}
                 name={field.name}
                 style={styles.input}
-                placeholder={`Enter your ${field.label.toLowerCase()}`}
+                placeholder={field.label}
                 value={formData[field.name] || ''}
                 onChange={(e) => setFormData({...formData, [field.name]: e.target.value})}
               />
@@ -133,16 +131,16 @@ const GenericForm = ({ type }) => {
           {isSubmitting ? (
             <>
               <div style={styles.spinner}></div>
-              Processing...
+              {t('forms.processing')}
             </>
           ) : submitted ? (
             <>
               <CheckCircle style={styles.buttonIcon} />
-              Submitted Successfully!
+              {t('forms.success')}
             </>
           ) : (
             <>
-              Submit Registration
+              {t('forms.submit')}
               <ArrowRight style={styles.buttonIcon} />
             </>
           )}
@@ -156,6 +154,8 @@ export default function FormsPage() {
   const [activeTab, setActiveTab] = useState('individual');
   const [mounted, setMounted] = useState(false);
   const { t } = useLanguage();
+  const TABS = getTabs(t);
+  const FEATURES = getFeatures(t);
 
   useEffect(() => {
     setMounted(true);
@@ -281,7 +281,7 @@ export default function FormsPage() {
 
         {/* Form Content */}
         <div style={styles.formContentWrapper}>
-          <GenericForm type={activeTab} />
+          <GenericForm type={activeTab} t={t} />
         </div>
 
         {/* Footer */}
