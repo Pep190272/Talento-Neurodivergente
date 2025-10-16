@@ -2,8 +2,10 @@
 import React, { useState, useEffect } from "react";
 import DraggableList from "./DraggableList";
 import { FaCheckCircle } from "react-icons/fa";
+import { useLanguage } from '../../hooks/useLanguage';
 
 export default function QuizQuestion({ idx, question, value, onAnswer }) {
+  const { t } = useLanguage();
   const [input, setInput] = useState(value ?? (question.type === "slider" ? question.min : question.type === "draggable" ? question.options : question.type === "mcq" ? null : ""));
   useEffect(() => { setInput(value ?? (question.type === "slider" ? question.min : question.type === "draggable" ? question.options : question.type === "mcq" ? null : "")); }, [value, question]);
 
@@ -62,7 +64,7 @@ export default function QuizQuestion({ idx, question, value, onAnswer }) {
           className="quiz-text-input"
           value={input}
           onChange={e => { setInput(e.target.value); onAnswer(idx, e.target.value, { time: Date.now() - start }); }}
-          aria-label="Text answer"
+          aria-label={t('quizContent.quiz.textAnswer')}
         />
       </div>
     );

@@ -455,7 +455,18 @@ export const extendedTranslations = {
         showExplanation: 'Show Explanation',
         backToDashboard: 'Back to dashboard',
         closeQuiz: 'Close quiz',
-        replayVoice: 'Replay Voice'
+        replayVoice: 'Replay Voice',
+        textAnswer: 'Text answer',
+        results: {
+          title: 'Quiz Results',
+          score: 'Score:',
+          questions: 'Questions:',
+          time: 'Time:',
+          restart: 'Restart Quiz',
+          congratulations: 'Congratulations! You completed the quiz. Great job! Here are your results and some tips for improvement.',
+          yourScore: 'Quiz complete. Your score is',
+          outOf: 'out of'
+        }
       }
     }
   },
@@ -912,7 +923,18 @@ export const extendedTranslations = {
         showExplanation: 'Mostrar Explicación',
         backToDashboard: 'Volver al panel',
         closeQuiz: 'Cerrar cuestionario',
-        replayVoice: 'Reproducir Voz'
+        replayVoice: 'Reproducir Voz',
+        textAnswer: 'Respuesta de texto',
+        results: {
+          title: 'Resultados del Cuestionario',
+          score: 'Puntuación:',
+          questions: 'Preguntas:',
+          time: 'Tiempo:',
+          restart: 'Reiniciar Cuestionario',
+          congratulations: '¡Felicidades! Has completado el cuestionario. ¡Excelente trabajo! Aquí están tus resultados y algunos consejos para mejorar.',
+          yourScore: 'Cuestionario completado. Tu puntuación es',
+          outOf: 'de'
+        }
       }
     }
   }

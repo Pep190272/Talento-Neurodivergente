@@ -293,8 +293,9 @@ export default function QuizPage() {
   const handleSubmit = () => {
     // --- AI Feedback Stub ---
     // Here you would call OpenAI or API with answers for feedback
-    setState((s) => ({ ...s, completed: true, aiTips: "Great job! Review your answers and try again for a higher score." }));
-    speak("Congratulations! You completed the quiz. Great job! Here are your results and some tips for improvement.");
+    const tips = language === 'es' ? "¡Excelente trabajo! Revisa tus respuestas e intenta nuevamente para obtener una puntuación más alta." : "Great job! Review your answers and try again for a higher score.";
+    setState((s) => ({ ...s, completed: true, aiTips: tips }));
+    speak(t('quizContent.quiz.results.congratulations'));
   };
   const handleRestart = () => {
     if (quizKey) localStorage.removeItem(`quiz-progress-${quizKey}`);
@@ -326,14 +327,15 @@ export default function QuizPage() {
       total: totalQuestions,
       time,
       percentage,
-      aiTips: state.aiTips || 'Great job! Review your answers and try again for a higher score.'
+      aiTips: state.aiTips || (language === 'es' ? '¡Excelente trabajo! Revisa tus respuestas e intenta nuevamente para obtener una puntuación más alta.' : 'Great job! Review your answers and try again for a higher score.')
     };
   }
 
   // --- FIX: Speak results only when completed and stats available ---
   useEffect(() => {
     if (state && state.completed && stats && typeof window !== 'undefined' && window.speechSynthesis && stats.aiTips) {
-      const utter = new window.SpeechSynthesisUtterance(`Quiz complete. Your score is ${stats.score} out of ${stats.total}. ${stats.aiTips}`);
+      const scoreMsg = `${t('quizContent.quiz.results.yourScore')} ${stats.score} ${t('quizContent.quiz.results.outOf')} ${stats.total}. ${stats.aiTips}`;
+      const utter = new window.SpeechSynthesisUtterance(scoreMsg);
       utter.rate = 1.05;
       utter.pitch = 1.1;
       utter.volume = 1;
@@ -369,7 +371,8 @@ export default function QuizPage() {
         <button
           onClick={() => {
             if (typeof window !== 'undefined' && window.speechSynthesis && stats.aiTips) {
-              const utter = new window.SpeechSynthesisUtterance(`Quiz complete. Your score is ${stats.score} out of ${stats.total}. ${stats.aiTips}`);
+              const scoreMsg = `${t('quizContent.quiz.results.yourScore')} ${stats.score} ${t('quizContent.quiz.results.outOf')} ${stats.total}. ${stats.aiTips}`;
+              const utter = new window.SpeechSynthesisUtterance(scoreMsg);
               utter.rate = 1.05;
               utter.pitch = 1.1;
               utter.volume = 1;
