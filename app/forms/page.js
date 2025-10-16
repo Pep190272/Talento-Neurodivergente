@@ -1,6 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { User, Building2, Stethoscope, CheckCircle, ArrowRight, Star, Shield, Clock } from 'lucide-react';
+import { useLanguage } from '../hooks/useLanguage';
 
 const TABS = [
   { 
@@ -154,6 +155,7 @@ const GenericForm = ({ type }) => {
 export default function FormsPage() {
   const [activeTab, setActiveTab] = useState('individual');
   const [mounted, setMounted] = useState(false);
+  const { t } = useLanguage();
 
   useEffect(() => {
     setMounted(true);
@@ -204,10 +206,10 @@ export default function FormsPage() {
             <User style={styles.headerIconSvg} />
           </div>
           <h1 style={styles.mainTitle}>
-            Registration & Profile Forms
+            {t('forms.title')}
           </h1>
           <p style={styles.mainDescription}>
-            Join our platform and connect with opportunities tailored to your unique needs and skills
+            {t('forms.subtitle')}
           </p>
         </div>
 
@@ -271,7 +273,7 @@ export default function FormsPage() {
             <div style={styles.activeTabBadge}>
               <activeTabData.icon style={styles.activeTabIcon} />
               <span style={styles.activeTabText}>
-                Setting up: {activeTabData.label}
+                {t('forms.settingUp')} {activeTabData.label}
               </span>
             </div>
           </div>
@@ -285,9 +287,9 @@ export default function FormsPage() {
         {/* Footer */}
         <div style={styles.footer}>
           <p style={styles.footerText}>
-            Need help? Contact our support team at{' '}
+            {t('forms.needHelp')}{' '}
             <a href="mailto:support@example.com" style={styles.footerLink}>
-              support@example.com
+              {t('forms.supportEmail')}
             </a>
           </p>
         </div>

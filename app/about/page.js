@@ -1,9 +1,11 @@
 'use client'
 import React, { useState, useEffect } from 'react';
+import { useLanguage } from '../hooks/useLanguage';
 
 export default function AboutPage() {
   const [isVisible, setIsVisible] = useState(false);
   const [activeSection, setActiveSection] = useState(0);
+  const { t } = useLanguage();
 
   useEffect(() => {
     setIsVisible(true);
@@ -110,7 +112,7 @@ export default function AboutPage() {
             animation: 'fadeInUp 0.8s ease 0.2s both',
           }}>
             <span style={{ fontSize: '1.2rem' }}>🌟</span>
-            About Eternals
+            {t('about.badge')}
           </div>
 
           <h1 style={{
@@ -126,7 +128,7 @@ export default function AboutPage() {
             backgroundClip: 'text',
             animation: 'textGradient 6s ease-in-out infinite, fadeInUp 0.8s ease 0.4s both',
           }}>
-            Neurodiversity & Innovation
+            {t('about.title')}
           </h1>
 
           <p style={{
@@ -138,7 +140,7 @@ export default function AboutPage() {
             lineHeight: '1.6',
             animation: 'fadeInUp 0.8s ease 0.6s both',
           }}>
-            A platform dedicated to celebrating cognitive diversity, fostering inclusive innovation, and empowering unique perspectives.
+            {t('about.subtitle')}
           </p>
         </div>
 
@@ -195,7 +197,7 @@ export default function AboutPage() {
                 margin: 0,
                 fontWeight: '600',
               }}>
-                Meet the Team
+                {t('about.team.title')}
               </h2>
             </div>
 
@@ -293,7 +295,7 @@ export default function AboutPage() {
                 margin: 0,
                 fontWeight: '600',
               }}>
-                Key Features
+                {t('about.keyFeatures.title')}
               </h2>
             </div>
 
@@ -383,7 +385,7 @@ export default function AboutPage() {
               margin: 0,
               fontWeight: '600',
             }}>
-              Get in Touch
+              {t('about.contact.title')}
             </h2>
           </div>
 
@@ -395,7 +397,7 @@ export default function AboutPage() {
             margin: '0 auto 24px auto',
             lineHeight: '1.6',
           }}>
-            This platform was designed with passion for accessibility, inclusion, and modern web technologies. We'd love to hear from you!
+            {t('about.contact.description')}
           </p>
 
           <div style={{
@@ -424,7 +426,7 @@ export default function AboutPage() {
             e.currentTarget.style.transform = 'translateY(0)';
           }}>
             <span>📬</span>
-            Contact: eternals@acelerai.com
+            {t('about.contact.email')}
           </div>
         </div>
       </div>

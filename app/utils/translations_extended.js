@@ -174,6 +174,154 @@ export const extendedTranslations = {
           certificationsRequired: 'Select at least one certification'
         }
       }
+    },
+    features: {
+      title: 'Welcome to the',
+      titleHighlight: 'Feature',
+      titleEnd: 'Page',
+      subtitle: 'Discover the comprehensive suite of tools and services designed to unlock neurodivergent potential and build inclusive, high-performing organizations.',
+      categories: {
+        all: 'All Features',
+        assessment: 'Assessment',
+        matching: 'Matching',
+        development: 'Development',
+        training: 'Training',
+        analytics: 'Analytics',
+        support: 'Support'
+      },
+      items: {
+        cognitive: { title: 'Cognitive Diversity Assessment', description: 'Advanced AI-powered assessment tools to identify and leverage unique cognitive strengths and neurodivergent superpowers.' },
+        matching: { title: 'Smart Talent Matching', description: 'AI-driven matching algorithm that connects neurodivergent candidates with roles that align with their strengths and preferences.' },
+        development: { title: 'Skills Development', description: 'Personalized learning paths and skill development programs tailored to individual neurodivergent profiles.' },
+        training: { title: 'Inclusive Team Building', description: 'Comprehensive training and resources for companies to build diverse, inclusive, and high-performing teams.' },
+        analytics: { title: 'Performance Analytics', description: 'Data-driven insights into team performance, productivity gains, and diversity impact metrics.' },
+        support: { title: 'Workplace Accommodations', description: 'Expert guidance on implementing effective workplace accommodations and support systems.' },
+        aiSupport: { title: 'AI-Powered Support', description: '24/7 AI assistant providing personalized guidance for both candidates and employers.' },
+        partnerships: { title: 'Employer Partnerships', description: 'Strategic partnerships with forward-thinking companies committed to neurodiversity inclusion.' },
+        career: { title: 'Career Acceleration', description: 'Fast-track career development programs designed for neurodivergent professionals.' },
+        innovation: { title: 'Innovation Labs', description: 'Collaborative spaces where neurodivergent talent can showcase their unique problem-solving approaches.' },
+        recognition: { title: 'Recognition Programs', description: 'Awards and recognition for companies and individuals leading in neurodiversity inclusion.' },
+        consulting: { title: 'Custom Solutions', description: 'Tailored solutions and consulting services for organizations of all sizes.' }
+      },
+      stats: {
+        productivity: { number: '85%', label: 'Productivity Increase', description: 'Average productivity boost in inclusive teams' },
+        placements: { number: '750+', label: 'Successful Placements', description: 'Neurodivergent professionals placed' },
+        partners: { number: '120+', label: 'Partner Companies', description: 'Organizations trust our solutions' },
+        satisfaction: { number: '95%', label: 'Satisfaction Rate', description: 'Candidate and employer satisfaction' }
+      },
+      cta: {
+        title: 'Ready to Transform Your Organization?',
+        subtitle: 'Join hundreds of companies already leveraging neurodivergent talent to drive innovation and growth.',
+        getStarted: 'Get Started Today',
+        watchDemo: 'Watch Demo'
+      },
+      learnMore: 'Learn More'
+    },
+    about: {
+      badge: 'About Eternals',
+      title: 'Neurodiversity & Innovation',
+      subtitle: 'A platform dedicated to celebrating cognitive diversity, fostering inclusive innovation, and empowering unique perspectives.',
+      team: {
+        title: 'Meet the Team',
+        members: {
+          developer: { role: 'Software Developer / AI Prompt Engineer', name: 'Mohit Rajput', description: 'Full-stack developer specializing in AI integration and modern web technologies' },
+          idea: { role: 'Idea Credit', name: 'Olga Cruz', description: 'Visionary behind the concept of neurodiversity and inclusive innovation' },
+          assist: { role: 'Tech Assist', name: 'José Miguel Moreno Carrillo', description: 'Technical consultant providing expertise in accessibility and user experience' }
+        }
+      },
+      keyFeatures: {
+        title: 'Key Features',
+        neuro: { title: 'Neurodiversity Focus', description: 'Celebrating cognitive diversity and unique perspectives' },
+        tech: { title: 'Modern Tech Stack', description: 'Built with cutting-edge web technologies and AI integration' },
+        accessibility: { title: 'Accessibility First', description: 'Designed with inclusive principles and universal access' },
+        innovation: { title: 'Innovation Hub', description: 'Platform for showcasing creative solutions and ideas' }
+      },
+      contact: {
+        title: 'Get in Touch',
+        description: 'This platform was designed with passion for accessibility, inclusion, and modern web technologies. We\'d love to hear from you!',
+        email: 'Contact: eternals@acelerai.com'
+      }
+    },
+    dashboard: {
+      welcome: 'Welcome back',
+      subtitle: {
+        individual: 'Neurodivergent Individual',
+        company: 'Company Placement Manager',
+        therapist: 'Therapist / Specialist'
+      },
+      logout: 'Logout',
+      noProfile: {
+        title: 'Welcome to the Dashboard',
+        description: 'Please complete your profile to access personalized features.',
+        button: 'Complete Profile'
+      },
+      quickActions: {
+        title: 'Quick Actions',
+        update: 'Update Profile',
+        games: 'Play Games',
+        assessment: 'Take Assessment'
+      },
+      aiInsights: {
+        title: 'AI Insights'
+      },
+      recentActivity: {
+        title: 'Recent Activity'
+      },
+      profileSummary: {
+        title: 'Profile Summary'
+      }
+    },
+    forms: {
+      title: 'Registration & Profile Forms',
+      subtitle: 'Join our platform and connect with opportunities tailored to your unique needs and skills',
+      features: {
+        secure: 'Secure & Private',
+        quick: 'Quick Setup',
+        premium: 'Premium Support',
+        available: '24/7 Available'
+      },
+      tabs: {
+        individual: {
+          label: 'Neurodivergent Individual',
+          description: 'Create your personal profile and connect with opportunities'
+        },
+        company: {
+          label: 'Company Placement Manager',
+          description: 'Manage talent placement and recruitment processes'
+        },
+        therapist: {
+          label: 'Therapist / Specialist',
+          description: 'Provide professional support and guidance'
+        }
+      },
+      formTitle: {
+        individual: 'Individual Registration',
+        company: 'Company Registration',
+        therapist: 'Therapist Registration'
+      },
+      formDescription: 'Please fill out all required fields to get started',
+      fields: {
+        fullName: 'Full Name',
+        email: 'Email Address',
+        phone: 'Phone Number',
+        skills: 'Skills & Interests',
+        experience: 'Work Experience',
+        companyName: 'Company Name',
+        contactPerson: 'Contact Person',
+        businessEmail: 'Business Email',
+        industry: 'Industry',
+        positions: 'Available Positions',
+        license: 'License Number',
+        professionalEmail: 'Professional Email',
+        specialization: 'Specialization',
+        yearsExperience: 'Years of Experience'
+      },
+      submit: 'Submit Registration',
+      processing: 'Processing...',
+      success: 'Submitted Successfully!',
+      settingUp: 'Setting up:',
+      needHelp: 'Need help? Contact our support team at',
+      supportEmail: 'support@example.com'
     }
   },
   es: {
@@ -348,6 +496,154 @@ export const extendedTranslations = {
           certificationsRequired: 'Selecciona al menos una certificación'
         }
       }
+    },
+    features: {
+      title: 'Bienvenido a la página de',
+      titleHighlight: 'Características',
+      titleEnd: '',
+      subtitle: 'Descubre el conjunto completo de herramientas y servicios diseñados para desbloquear el potencial neurodivergente y construir organizaciones inclusivas de alto rendimiento.',
+      categories: {
+        all: 'Todas las Características',
+        assessment: 'Evaluación',
+        matching: 'Emparejamiento',
+        development: 'Desarrollo',
+        training: 'Capacitación',
+        analytics: 'Análisis',
+        support: 'Soporte'
+      },
+      items: {
+        cognitive: { title: 'Evaluación de Diversidad Cognitiva', description: 'Herramientas de evaluación avanzadas impulsadas por IA para identificar y aprovechar fortalezas cognitivas únicas y superpoderes neurodivergentes.' },
+        matching: { title: 'Emparejamiento Inteligente de Talento', description: 'Algoritmo de emparejamiento impulsado por IA que conecta candidatos neurodivergentes con roles que se alinean con sus fortalezas y preferencias.' },
+        development: { title: 'Desarrollo de Habilidades', description: 'Rutas de aprendizaje personalizadas y programas de desarrollo de habilidades adaptados a perfiles neurodivergentes individuales.' },
+        training: { title: 'Construcción de Equipos Inclusivos', description: 'Capacitación integral y recursos para que las empresas construyan equipos diversos, inclusivos y de alto rendimiento.' },
+        analytics: { title: 'Análisis de Rendimiento', description: 'Perspectivas basadas en datos sobre el rendimiento del equipo, ganancias de productividad y métricas de impacto en diversidad.' },
+        support: { title: 'Adaptaciones en el Lugar de Trabajo', description: 'Orientación experta sobre la implementación de adaptaciones y sistemas de soporte efectivos en el lugar de trabajo.' },
+        aiSupport: { title: 'Soporte Impulsado por IA', description: 'Asistente de IA 24/7 que brinda orientación personalizada tanto para candidatos como para empleadores.' },
+        partnerships: { title: 'Asociaciones con Empleadores', description: 'Asociaciones estratégicas con empresas visionarias comprometidas con la inclusión de la neurodiversidad.' },
+        career: { title: 'Aceleración Profesional', description: 'Programas de desarrollo profesional acelerado diseñados para profesionales neurodivergentes.' },
+        innovation: { title: 'Laboratorios de Innovación', description: 'Espacios colaborativos donde el talento neurodivergente puede mostrar sus enfoques únicos para resolver problemas.' },
+        recognition: { title: 'Programas de Reconocimiento', description: 'Premios y reconocimiento para empresas e individuos líderes en inclusión de neurodiversidad.' },
+        consulting: { title: 'Soluciones Personalizadas', description: 'Soluciones a medida y servicios de consultoría para organizaciones de todos los tamaños.' }
+      },
+      stats: {
+        productivity: { number: '85%', label: 'Aumento de Productividad', description: 'Impulso promedio de productividad en equipos inclusivos' },
+        placements: { number: '750+', label: 'Colocaciones Exitosas', description: 'Profesionales neurodivergentes colocados' },
+        partners: { number: '120+', label: 'Empresas Asociadas', description: 'Organizaciones confían en nuestras soluciones' },
+        satisfaction: { number: '95%', label: 'Tasa de Satisfacción', description: 'Satisfacción de candidatos y empleadores' }
+      },
+      cta: {
+        title: '¿Listo para Transformar tu Organización?',
+        subtitle: 'Únete a cientos de empresas que ya están aprovechando el talento neurodivergente para impulsar la innovación y el crecimiento.',
+        getStarted: 'Comienza Hoy',
+        watchDemo: 'Ver Demostración'
+      },
+      learnMore: 'Saber Más'
+    },
+    about: {
+      badge: 'Acerca de Eternals',
+      title: 'Neurodiversidad e Innovación',
+      subtitle: 'Una plataforma dedicada a celebrar la diversidad cognitiva, fomentar la innovación inclusiva y empoderar perspectivas únicas.',
+      team: {
+        title: 'Conoce al Equipo',
+        members: {
+          developer: { role: 'Desarrollador de Software / Ingeniero de Prompts IA', name: 'Mohit Rajput', description: 'Desarrollador full-stack especializado en integración de IA y tecnologías web modernas' },
+          idea: { role: 'Crédito de Idea', name: 'Olga Cruz', description: 'Visionaria detrás del concepto de neurodiversidad e innovación inclusiva' },
+          assist: { role: 'Asistencia Técnica', name: 'José Miguel Moreno Carrillo', description: 'Consultor técnico que brinda experiencia en accesibilidad y experiencia de usuario' }
+        }
+      },
+      keyFeatures: {
+        title: 'Características Clave',
+        neuro: { title: 'Enfoque en Neurodiversidad', description: 'Celebrando la diversidad cognitiva y perspectivas únicas' },
+        tech: { title: 'Stack Tecnológico Moderno', description: 'Construido con tecnologías web de vanguardia e integración de IA' },
+        accessibility: { title: 'Accesibilidad Primero', description: 'Diseñado con principios inclusivos y acceso universal' },
+        innovation: { title: 'Centro de Innovación', description: 'Plataforma para mostrar soluciones creativas e ideas' }
+      },
+      contact: {
+        title: 'Ponte en Contacto',
+        description: 'Esta plataforma fue diseñada con pasión por la accesibilidad, inclusión y tecnologías web modernas. ¡Nos encantaría saber de ti!',
+        email: 'Contacto: eternals@acelerai.com'
+      }
+    },
+    dashboard: {
+      welcome: 'Bienvenido de nuevo',
+      subtitle: {
+        individual: 'Individual Neurodivergente',
+        company: 'Gerente de Colocación de Empresa',
+        therapist: 'Terapeuta / Especialista'
+      },
+      logout: 'Cerrar Sesión',
+      noProfile: {
+        title: 'Bienvenido al Panel',
+        description: 'Por favor completa tu perfil para acceder a funciones personalizadas.',
+        button: 'Completar Perfil'
+      },
+      quickActions: {
+        title: 'Acciones Rápidas',
+        update: 'Actualizar Perfil',
+        games: 'Jugar Juegos',
+        assessment: 'Realizar Evaluación'
+      },
+      aiInsights: {
+        title: 'Perspectivas de IA'
+      },
+      recentActivity: {
+        title: 'Actividad Reciente'
+      },
+      profileSummary: {
+        title: 'Resumen del Perfil'
+      }
+    },
+    forms: {
+      title: 'Formularios de Registro y Perfil',
+      subtitle: 'Únete a nuestra plataforma y conéctate con oportunidades adaptadas a tus necesidades y habilidades únicas',
+      features: {
+        secure: 'Seguro y Privado',
+        quick: 'Configuración Rápida',
+        premium: 'Soporte Premium',
+        available: 'Disponible 24/7'
+      },
+      tabs: {
+        individual: {
+          label: 'Individual Neurodivergente',
+          description: 'Crea tu perfil personal y conéctate con oportunidades'
+        },
+        company: {
+          label: 'Gerente de Colocación de Empresa',
+          description: 'Gestiona la colocación de talento y procesos de reclutamiento'
+        },
+        therapist: {
+          label: 'Terapeuta / Especialista',
+          description: 'Brinda soporte y orientación profesional'
+        }
+      },
+      formTitle: {
+        individual: 'Registro Individual',
+        company: 'Registro de Empresa',
+        therapist: 'Registro de Terapeuta'
+      },
+      formDescription: 'Por favor completa todos los campos requeridos para comenzar',
+      fields: {
+        fullName: 'Nombre Completo',
+        email: 'Dirección de Correo Electrónico',
+        phone: 'Número de Teléfono',
+        skills: 'Habilidades e Intereses',
+        experience: 'Experiencia Laboral',
+        companyName: 'Nombre de la Empresa',
+        contactPerson: 'Persona de Contacto',
+        businessEmail: 'Correo Empresarial',
+        industry: 'Industria',
+        positions: 'Posiciones Disponibles',
+        license: 'Número de Licencia',
+        professionalEmail: 'Correo Profesional',
+        specialization: 'Especialización',
+        yearsExperience: 'Años de Experiencia'
+      },
+      submit: 'Enviar Registro',
+      processing: 'Procesando...',
+      success: '¡Enviado Exitosamente!',
+      settingUp: 'Configurando:',
+      needHelp: '¿Necesitas ayuda? Contacta a nuestro equipo de soporte en',
+      supportEmail: 'support@example.com'
     }
   }
 };

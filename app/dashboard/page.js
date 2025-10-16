@@ -1,11 +1,13 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import NeuroAgent from '../components/NeuroAgent';
+import { useLanguage } from '../hooks/useLanguage';
 
 export default function DashboardPage() {
   const [userData, setUserData] = useState(null);
   const [recentActivity, setRecentActivity] = useState([]);
   const [insights, setInsights] = useState([]);
+  const { t } = useLanguage();
 
   useEffect(() => {
     // Load user data from localStorage
@@ -42,8 +44,8 @@ export default function DashboardPage() {
   if (!userData) {
     return (
       <div style={{ padding: '2rem', textAlign: 'center' }}>
-        <h2 style={{ color: 'var(--primary-gold)' }}>Welcome to the Dashboard</h2>
-        <p style={{ color: 'rgba(255,255,255,0.7)' }}>Please complete your profile to access personalized features.</p>
+        <h2 style={{ color: 'var(--primary-gold)' }}>{t('dashboard.noProfile.title')}</h2>
+        <p style={{ color: 'rgba(255,255,255,0.7)' }}>{t('dashboard.noProfile.description')}</p>
         <a href="/forms" style={{
           padding: '12px 24px',
           background: 'linear-gradient(135deg, #23213a 0%, #181024 100%)',
@@ -54,7 +56,7 @@ export default function DashboardPage() {
           marginTop: '16px',
           fontWeight: 700
         }}>
-          Complete Profile
+          {t('dashboard.noProfile.button')}
         </a>
       </div>
     );
@@ -72,11 +74,11 @@ export default function DashboardPage() {
         borderBottom: '1px solid var(--primary-purple)'
       }}>
         <div>
-          <h1 style={{ color: 'var(--primary-gold)' }}>Welcome back, {userData.name || 'User'}!</h1>
+          <h1 style={{ color: 'var(--primary-gold)' }}>{t('dashboard.welcome')}, {userData.name || 'User'}!</h1>
           <p style={{ color: 'var(--primary-purple)', margin: 0 }}>
-            {userData.type === 'individual' ? 'Neurodivergent Individual' : 
-             userData.type === 'company' ? 'Company Placement Manager' : 
-             'Therapist / Specialist'}
+            {userData.type === 'individual' ? t('dashboard.subtitle.individual') :
+             userData.type === 'company' ? t('dashboard.subtitle.company') :
+             t('dashboard.subtitle.therapist')}
           </p>
         </div>
         <button
@@ -91,7 +93,7 @@ export default function DashboardPage() {
             fontWeight: 700
           }}
         >
-          Logout
+          {t('dashboard.logout')}
         </button>
       </div>
 
@@ -112,7 +114,7 @@ export default function DashboardPage() {
             background: 'linear-gradient(135deg, #23213a 0%, #181024 100%)',
             boxShadow: '0 4px 24px rgba(147, 51, 234, 0.08)'
           }}>
-            <h3 style={{ margin: '0 0 16px 0', color: 'var(--primary-gold)' }}>Quick Actions</h3>
+            <h3 style={{ margin: '0 0 16px 0', color: 'var(--primary-gold)' }}>{t('dashboard.quickActions.title')}</h3>
             <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
@@ -128,7 +130,7 @@ export default function DashboardPage() {
                 fontWeight: 'bold',
                 border: '1px solid var(--primary-gold)'
               }}>
-                📝 Update Profile
+                📝 {t('dashboard.quickActions.update')}
               </a>
               <a href="/games" style={{
                 padding: '16px',
@@ -140,7 +142,7 @@ export default function DashboardPage() {
                 fontWeight: 'bold',
                 border: '1px solid var(--primary-purple)'
               }}>
-                🎮 Play Games
+                🎮 {t('dashboard.quickActions.games')}
               </a>
               <a href="/quiz" style={{
                 padding: '16px',
@@ -152,7 +154,7 @@ export default function DashboardPage() {
                 fontWeight: 'bold',
                 border: '1px solid #8bc34a'
               }}>
-                📊 Take Assessment
+                📊 {t('dashboard.quickActions.assessment')}
               </a>
             </div>
           </div>
@@ -165,7 +167,7 @@ export default function DashboardPage() {
             background: 'linear-gradient(135deg, #23213a 0%, #181024 100%)',
             boxShadow: '0 4px 24px rgba(147, 51, 234, 0.08)'
           }}>
-            <h3 style={{ margin: '0 0 16px 0', color: 'var(--primary-gold)' }}>🤖 AI Insights</h3>
+            <h3 style={{ margin: '0 0 16px 0', color: 'var(--primary-gold)' }}>🤖 {t('dashboard.aiInsights.title')}</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {insights.map((insight, index) => (
                 <div key={index} style={{
@@ -189,7 +191,7 @@ export default function DashboardPage() {
             background: 'linear-gradient(135deg, #23213a 0%, #181024 100%)',
             boxShadow: '0 4px 24px rgba(147, 51, 234, 0.08)'
           }}>
-            <h3 style={{ margin: '0 0 16px 0', color: 'var(--primary-gold)' }}>📈 Recent Activity</h3>
+            <h3 style={{ margin: '0 0 16px 0', color: 'var(--primary-gold)' }}>📈 {t('dashboard.recentActivity.title')}</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {recentActivity.map((activity, index) => (
                 <div key={index} style={{
@@ -231,7 +233,7 @@ export default function DashboardPage() {
           color: 'rgba(255,255,255,0.9)',
           boxShadow: '0 4px 24px rgba(147, 51, 234, 0.08)'
         }}>
-          <h3 style={{ margin: '0 0 16px 0', color: 'var(--primary-gold)' }}>📋 Profile Summary</h3>
+          <h3 style={{ margin: '0 0 16px 0', color: 'var(--primary-gold)' }}>📋 {t('dashboard.profileSummary.title')}</h3>
           <p style={{ color: 'rgba(255,255,255,0.8)', lineHeight: '1.6' }}>{userData.summary}</p>
         </div>
       )}
