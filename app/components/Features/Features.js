@@ -137,7 +137,7 @@ export default function Features() {
       <div className="features-header">
         <div className="header-content">
           <h1 className="main-title">
-            {t('features.title')} <span className="highlight">{t('features.titleHighlight')}</span> {t('features.titleEnd')}Page
+            {t('features.title')} <span className="highlight">{t('features.titleHighlight')}</span> {t('features.titleEnd')}
           </h1>
           <p className="subtitle">
             {t('features.subtitle')}
