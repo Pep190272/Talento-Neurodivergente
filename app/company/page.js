@@ -21,16 +21,16 @@ const sampleTalents = [
 ];
 
 const kpiData = [
-  { title: "Active Searches", value: 12, trend: "+2 this week", icon: "🎯" },
-  { title: "Candidates in Pipeline", value: 45, trend: "+8 this week", icon: "👥" },
-  { title: "Placement Success Rate", value: 92, trend: "+3% this month", icon: "🏆" },
+  { title: "Búsquedas Activas", value: 12, trend: "+2 esta semana", icon: "🎯" },
+  { title: "Candidatos en el Pipeline", value: 45, trend: "+8 esta semana", icon: "👥" },
+  { title: "Tasa de Éxito en Colocaciones", value: 92, trend: "+3% este mes", icon: "🏆" },
 ];
 
 const trainingModules = [
-  { name: "Understanding ADHD", progress: 85, certified: true },
-  { name: "Inclusive Communication", progress: 60, certified: false },
-  { name: "Autism Awareness", progress: 100, certified: true },
-  { name: "Dyslexia Support", progress: 30, certified: false },
+  { name: "Entendiendo el TDAH", progress: 85, certified: true },
+  { name: "Comunicación Inclusiva", progress: 60, certified: false },
+  { name: "Conciencia sobre Autismo", progress: 100, certified: true },
+  { name: "Apoyo para Dislexia", progress: 30, certified: false },
 ];
 
 export default function CompanyDashboard({ defaultView = 'overview' }) {
@@ -105,7 +105,7 @@ export default function CompanyDashboard({ defaultView = 'overview' }) {
     }
   };
 
-  const stages = ['Applied', 'Assessed', 'Interviewing', 'Offer', 'Hired'];
+  const stages = ['Aplicado', 'Evaluado', 'Entrevistando', 'Oferta', 'Contratado'];
 
   // Navigation function
   const handleNavigation = (view) => {
@@ -143,10 +143,10 @@ export default function CompanyDashboard({ defaultView = 'overview' }) {
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-bold text-yellow-400 flex items-center gap-2">
           <FaRobot className="text-purple-400" />
-          AI Superpower Matches
+          Coincidencias de Superpoderes IA
         </h3>
         <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
-          What-If Simulator
+          Simulador de Escenarios
         </button>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -159,13 +159,13 @@ export default function CompanyDashboard({ defaultView = 'overview' }) {
                 <div className="text-sm text-gray-400">{candidate.location}</div>
               </div>
             </div>
-            <div className="text-green-400 font-bold mb-3">Match: {candidate.match}%</div>
+            <div className="text-green-400 font-bold mb-3">Coincidencia: {candidate.match}%</div>
             <div className="flex gap-2">
               <button className="flex-1 px-3 py-1 bg-purple-600 text-white rounded text-sm hover:bg-purple-700 transition-colors">
-                <FaEnvelope className="inline mr-1" /> Invite
+                <FaEnvelope className="inline mr-1" /> Invitar
               </button>
               <button className="flex-1 px-3 py-1 bg-yellow-600 text-black rounded text-sm hover:bg-yellow-700 transition-colors">
-                <FaCalendarAlt className="inline mr-1" /> Schedule
+                <FaCalendarAlt className="inline mr-1" /> Agendar
               </button>
               <button className="px-3 py-1 bg-gray-600 text-white rounded text-sm hover:bg-gray-700 transition-colors">
                 <FaSave />
@@ -181,7 +181,7 @@ export default function CompanyDashboard({ defaultView = 'overview' }) {
     <div className="bg-zinc-800 rounded-xl p-6 border border-purple-500/20 mb-8">
       <h3 className="text-xl font-bold text-yellow-400 mb-6 flex items-center gap-2">
         <FaUsers className="text-purple-400" />
-        Candidate Pipeline
+        Pipeline de Candidatos
       </h3>
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
         {stages.map((stage) => (
@@ -205,10 +205,10 @@ export default function CompanyDashboard({ defaultView = 'overview' }) {
                     <div className="font-semibold text-white text-sm">{candidate.name}</div>
                     <FaGripVertical className="text-gray-500 ml-auto" />
                   </div>
-                  <div className="text-green-400 text-sm font-bold mb-2">Match: {candidate.match}%</div>
+                  <div className="text-green-400 text-sm font-bold mb-2">Coincidencia: {candidate.match}%</div>
                   <div className="text-gray-400 text-xs mb-2">{candidate.skills.join(', ')}</div>
                   <button className="w-full px-2 py-1 bg-purple-600 text-white rounded text-xs hover:bg-purple-700 transition-colors">
-                    <FaRobot className="inline mr-1" /> Ask NeuroAgent
+                    <FaRobot className="inline mr-1" /> Preguntar a NeuroAgent
                   </button>
                 </div>
               ))}
@@ -245,31 +245,31 @@ export default function CompanyDashboard({ defaultView = 'overview' }) {
             <div className="nav-item">
               <a href="#" className={`nav-link ${selectedView === 'overview' ? 'active' : ''}`} onClick={() => handleNavigation('overview')}>
                 <FaHome className="nav-icon" />
-                <span className="nav-text">Overview</span>
+                <span className="nav-text">Resumen</span>
               </a>
             </div>
             <div className="nav-item">
               <a href="#" className={`nav-link ${selectedView === 'candidates' ? 'active' : ''}`} onClick={() => handleNavigation('candidates')}>
                 <FaUsers className="nav-icon" />
-                <span className="nav-text">Candidates</span>
+                <span className="nav-text">Candidatos</span>
               </a>
             </div>
             <div className="nav-item">
               <a href="#" className={`nav-link ${selectedView === 'analytics' ? 'active' : ''}`} onClick={() => handleNavigation('analytics')}>
                 <FaChartBar className="nav-icon" />
-                <span className="nav-text">Analytics</span>
+                <span className="nav-text">Análisis</span>
               </a>
             </div>
             <div className="nav-item">
               <a href="#" className={`nav-link ${selectedView === 'training' ? 'active' : ''}`} onClick={() => handleNavigation('training')}>
                 <FaGraduationCap className="nav-icon" />
-                <span className="nav-text">Training</span>
+                <span className="nav-text">Capacitación</span>
               </a>
             </div>
             <div className="nav-item">
               <a href="#" className={`nav-link ${selectedView === 'settings' ? 'active' : ''}`} onClick={() => handleNavigation('settings')}>
                 <FaCog className="nav-icon" />
-                <span className="nav-text">Settings</span>
+                <span className="nav-text">Configuración</span>
               </a>
             </div>
           </nav>
@@ -281,13 +281,13 @@ export default function CompanyDashboard({ defaultView = 'overview' }) {
           <div className="top-bar">
             <h1 className="page-title">
               <FaUserTie className="page-title-icon" />
-              Company Dashboard
+              Panel de Empresa
             </h1>
             
             <div className="search-container">
               <input 
                 type="text" 
-                placeholder="Search talent..." 
+                placeholder="Buscar talento..." 
                 className="search-input focus-ring"
               />
               <button className="action-btn">
@@ -318,10 +318,10 @@ export default function CompanyDashboard({ defaultView = 'overview' }) {
             <div className="ai-header">
               <h3 className="ai-title">
                 <FaRobot className="ai-robot-icon" />
-                AI Superpower Matches
+                Coincidencias de Superpoderes IA
               </h3>
               <button className="simulator-btn">
-                What-If Simulator
+                Simulador de Escenarios
               </button>
             </div>
             <div className="talent-grid">
@@ -334,13 +334,13 @@ export default function CompanyDashboard({ defaultView = 'overview' }) {
                       <div className="talent-location">{candidate.location}</div>
                     </div>
                   </div>
-                  <div className="talent-match">Match: {candidate.match}%</div>
+                  <div className="talent-match">Coincidencia: {candidate.match}%</div>
                   <div className="talent-actions">
                     <button className="action-btn btn-invite">
-                      <FaEnvelope /> Invite
+                      <FaEnvelope /> Invitar
                     </button>
                     <button className="action-btn btn-schedule">
-                      <FaCalendarAlt /> Schedule
+                      <FaCalendarAlt /> Agendar
                     </button>
                     <button className="action-btn btn-save">
                       <FaSave />
@@ -356,7 +356,7 @@ export default function CompanyDashboard({ defaultView = 'overview' }) {
             <div className="kanban-header">
               <h3 className="kanban-title">
                 <FaUsers className="kanban-users-icon" />
-                Candidate Pipeline
+                Pipeline de Candidatos
               </h3>
             </div>
             <div className="kanban-grid">
@@ -381,10 +381,10 @@ export default function CompanyDashboard({ defaultView = 'overview' }) {
                           <div className="card-name">{candidate.name}</div>
                           <FaGripVertical className="card-drag-handle" />
                         </div>
-                        <div className="card-match">Match: {candidate.match}%</div>
+                        <div className="card-match">Coincidencia: {candidate.match}%</div>
                         <div className="card-skills">{candidate.skills.join(', ')}</div>
                         <button className="neuroagent-btn">
-                          <FaRobot /> Ask NeuroAgent
+                          <FaRobot /> Preguntar a NeuroAgent
                         </button>
                       </div>
                     ))}

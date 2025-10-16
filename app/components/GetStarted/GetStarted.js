@@ -82,30 +82,30 @@ const GetStarted = () => {
     const newErrors = {};
     
     // Common validation
-    if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
-    if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
-    if (!formData.email.trim()) newErrors.email = 'Email is required';
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Invalid email format';
+    if (!formData.firstName.trim()) newErrors.firstName = 'El nombre es requerido';
+    if (!formData.lastName.trim()) newErrors.lastName = 'El apellido es requerido';
+    if (!formData.email.trim()) newErrors.email = 'El correo electrónico es requerido';
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Formato de correo electrónico inválido';
     
     if (userType === 'candidate') {
-      if (!formData.age) newErrors.age = 'Age is required';
-      if (!formData.education) newErrors.education = 'Education level is required';
-      if (!formData.experience) newErrors.experience = 'Experience level is required';
-      if (formData.skills.length === 0) newErrors.skills = 'Select at least one skill';
+      if (!formData.age) newErrors.age = 'La edad es requerida';
+      if (!formData.education) newErrors.education = 'El nivel de educación es requerido';
+      if (!formData.experience) newErrors.experience = 'El nivel de experiencia es requerido';
+      if (formData.skills.length === 0) newErrors.skills = 'Selecciona al menos una habilidad';
     }
     
     if (userType === 'company') {
-      if (!formData.companyName.trim()) newErrors.companyName = 'Company name is required';
-      if (!formData.industry) newErrors.industry = 'Industry is required';
-      if (!formData.companySize) newErrors.companySize = 'Company size is required';
-      if (!formData.position.trim()) newErrors.position = 'Your position is required';
+      if (!formData.companyName.trim()) newErrors.companyName = 'El nombre de la empresa es requerido';
+      if (!formData.industry) newErrors.industry = 'La industria es requerida';
+      if (!formData.companySize) newErrors.companySize = 'El tamaño de la empresa es requerido';
+      if (!formData.position.trim()) newErrors.position = 'Tu posición es requerida';
     }
     
     if (userType === 'therapist') {
-      if (!formData.licenseNumber.trim()) newErrors.licenseNumber = 'License number is required';
-      if (!formData.specialization) newErrors.specialization = 'Specialization is required';
-      if (!formData.yearsOfExperience) newErrors.yearsOfExperience = 'Years of experience is required';
-      if (formData.certifications.length === 0) newErrors.certifications = 'Select at least one certification';
+      if (!formData.licenseNumber.trim()) newErrors.licenseNumber = 'El número de licencia es requerido';
+      if (!formData.specialization) newErrors.specialization = 'La especialización es requerida';
+      if (!formData.yearsOfExperience) newErrors.yearsOfExperience = 'Los años de experiencia son requeridos';
+      if (formData.certifications.length === 0) newErrors.certifications = 'Selecciona al menos una certificación';
     }
     
     setErrors(newErrors);
@@ -139,8 +139,8 @@ const GetStarted = () => {
       console.log('Form submitted:', userData);
       
       // Show success message
-      alert(`Welcome to DiversIA, ${formData.firstName}! Your profile has been created successfully.`);
-      
+      alert(`¡Bienvenido a DiversIA, ${formData.firstName}! Tu perfil ha sido creado exitosamente.`);
+
       // Redirect to appropriate dashboard
       if (userType === 'company') {
         window.location.href = '/company';
@@ -154,7 +154,7 @@ const GetStarted = () => {
       
     } catch (error) {
       console.error('Submission error:', error);
-      alert('Something went wrong. Please try again.');
+      alert('Algo salió mal. Por favor intenta de nuevo.');
     } finally {
       setIsSubmitting(false);
     }
@@ -171,10 +171,10 @@ const GetStarted = () => {
     <div className="selectionContainer">
       <div className="headerSection">
         <h1 className="mainTitle">
-          Get Started with <span className="brandText">DiversIA</span>
+          Comienza con <span className="brandText">DiversIA</span>
         </h1>
         <p className="subtitle">
-          Choose your path to unlock neurodivergent superpowers
+          Elige tu camino para desbloquear superpoderes neurodivergentes
         </p>
       </div>
       
@@ -184,16 +184,16 @@ const GetStarted = () => {
           onClick={() => handleUserTypeSelection('candidate')}
         >
           <div className="optionIcon">👤</div>
-          <h3 className="optionTitle">I'm a Candidate</h3>
+          <h3 className="optionTitle">Soy un Candidato</h3>
           <p className="optionDescription">
-            Discover your unique strengths and find roles that match your superpowers
+            Descubre tus fortalezas únicas y encuentra roles que coincidan con tus superpoderes
           </p>
           <div className="optionFeatures">
-            <span>✨ Superpower Assessment</span>
-            <span>🎯 Personalized Job Matching</span>
-            <span>📈 Career Development</span>
+            <span>✨ Evaluación de Superpoderes</span>
+            <span>🎯 Emparejamiento Personalizado</span>
+            <span>📈 Desarrollo Profesional</span>
           </div>
-          <button className="optionButton">Start Your Journey</button>
+          <button className="optionButton">Comienza tu Viaje</button>
         </div>
         
         <div 
@@ -201,16 +201,16 @@ const GetStarted = () => {
           onClick={() => handleUserTypeSelection('company')}
         >
           <div className="optionIcon">🏢</div>
-          <h3 className="optionTitle">I'm a Company</h3>
+          <h3 className="optionTitle">Soy una Empresa</h3>
           <p className="optionDescription">
-            Find exceptional neurodivergent talent and learn how to build inclusive teams
+            Encuentra talento neurodivergente excepcional y aprende a construir equipos inclusivos
           </p>
           <div className="optionFeatures">
-            <span>🔍 Access Top Talent</span>
-            <span>🎓 Team Training Resources</span>
-            <span>📊 Diversity Analytics</span>
+            <span>🔍 Acceso a Talento Premium</span>
+            <span>🎓 Recursos de Capacitación</span>
+            <span>📊 Análisis de Diversidad</span>
           </div>
-          <button className="optionButton">Find Talent</button>
+          <button className="optionButton">Buscar Talento</button>
         </div>
         
         <div 
@@ -218,16 +218,16 @@ const GetStarted = () => {
           onClick={() => handleUserTypeSelection('therapist')}
         >
           <div className="optionIcon">🩺</div>
-          <h3 className="optionTitle">I'm a Therapist</h3>
+          <h3 className="optionTitle">Soy un Terapeuta</h3>
           <p className="optionDescription">
-            Support neurodivergent individuals and help them thrive in their professional journey
+            Apoya a individuos neurodivergentes y ayúdales a prosperar en su camino profesional
           </p>
           <div className="optionFeatures">
-            <span>👥 Client Management</span>
-            <span>📋 Assessment Tools</span>
-            <span>💼 Professional Resources</span>
+            <span>👥 Gestión de Clientes</span>
+            <span>📋 Herramientas de Evaluación</span>
+            <span>💼 Recursos Profesionales</span>
           </div>
-          <button className="optionButton">Start Helping</button>
+          <button className="optionButton">Comenzar a Ayudar</button>
         </div>
       </div>
     </div>
@@ -237,70 +237,70 @@ const GetStarted = () => {
   const renderCandidateForm = () => (
     <div className="formContainer">
       <div className="formHeader">
-        <button className="backButton" onClick={handleGoBack}>← Back</button>
-        <h2 className="formTitle">Candidate Registration</h2>
-        <p className="formSubtitle">Let's discover your superpowers</p>
+        <button className="backButton" onClick={handleGoBack}>← Volver</button>
+        <h2 className="formTitle">Registro de Candidato</h2>
+        <p className="formSubtitle">Descubramos tus superpoderes</p>
       </div>
       
       <form onSubmit={handleSubmit} className="form">
         <div className="formSection">
-          <h3 className="sectionTitle">Personal Information</h3>
+          <h3 className="sectionTitle">Información Personal</h3>
           <div className="formRow">
             <div className="formGroup">
-              <label className="label">First Name *</label>
+              <label className="label">Nombre *</label>
               <input
                 type="text"
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleInputChange}
                 className={`input ${errors.firstName ? 'inputError' : ''}`}
-                placeholder="Enter your first name"
+                placeholder="Ingresa tu nombre"
               />
               {errors.firstName && <span className="errorText">{errors.firstName}</span>}
             </div>
             <div className="formGroup">
-              <label className="label">Last Name *</label>
+              <label className="label">Apellido *</label>
               <input
                 type="text"
                 name="lastName"
                 value={formData.lastName}
                 onChange={handleInputChange}
                 className={`input ${errors.lastName ? 'inputError' : ''}`}
-                placeholder="Enter your last name"
+                placeholder="Ingresa tu apellido"
               />
               {errors.lastName && <span className="errorText">{errors.lastName}</span>}
             </div>
           </div>
-          
+
           <div className="formRow">
             <div className="formGroup">
-              <label className="label">Email *</label>
+              <label className="label">Correo Electrónico *</label>
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleInputChange}
                 className={`input ${errors.email ? 'inputError' : ''}`}
-                placeholder="your.email@example.com"
+                placeholder="tu.correo@ejemplo.com"
               />
               {errors.email && <span className="errorText">{errors.email}</span>}
             </div>
             <div className="formGroup">
-              <label className="label">Phone</label>
+              <label className="label">Teléfono</label>
               <input
                 type="tel"
                 name="phone"
                 value={formData.phone}
                 onChange={handleInputChange}
                 className="input"
-                placeholder="+1 (555) 123-4567"
+                placeholder="+34 600 123 456"
               />
             </div>
           </div>
         </div>
 
         <div className="formSection">
-          <h3 className="sectionTitle">Professional Background</h3>
+          <h3 className="sectionTitle">Antecedentes Profesionales</h3>
           <div className="formRow">
             <div className="formGroup">
               <label className="label">Age Range *</label>

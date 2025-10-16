@@ -7,16 +7,16 @@ import { FaBrain, FaPuzzlePiece, FaRegClock, FaShapes, FaPalette, FaRoute, FaSor
 import './games.css';
 
 const gamesList = [
-  { key: 'memory', name: 'Memory Grid', icon: <FaBrain /> },
-  { key: 'pattern', name: 'Pattern Matrix', icon: <FaPuzzlePiece /> },
+  { key: 'memory', name: 'Cuadrícula de Memoria', icon: <FaBrain /> },
+  { key: 'pattern', name: 'Matriz de Patrones', icon: <FaPuzzlePiece /> },
   { key: 'operacion', name: 'Operación 2.0', icon: <FaHandPointer /> },
-  { key: 'reaction', name: 'Reaction Time', icon: <FaRegClock /> },
-  { key: 'simon', name: 'Simon Says', icon: <FaGripHorizontal /> },
-  { key: 'numberseq', name: 'Number Sequence', icon: <FaSortNumericDown /> },
-  { key: 'wordbuilder', name: 'Word Builder', icon: <FaFont /> },
-  { key: 'shapesorter', name: 'Shape Sorter', icon: <FaShapes /> },
-  { key: 'colormatch', name: 'Color Match', icon: <FaPalette /> },
-  { key: 'pathfinder', name: 'Path Finder', icon: <FaRoute /> },
+  { key: 'reaction', name: 'Tiempo de Reacción', icon: <FaRegClock /> },
+  { key: 'simon', name: 'Simón Dice', icon: <FaGripHorizontal /> },
+  { key: 'numberseq', name: 'Secuencia Numérica', icon: <FaSortNumericDown /> },
+  { key: 'wordbuilder', name: 'Constructor de Palabras', icon: <FaFont /> },
+  { key: 'shapesorter', name: 'Clasificador de Formas', icon: <FaShapes /> },
+  { key: 'colormatch', name: 'Emparejamiento de Colores', icon: <FaPalette /> },
+  { key: 'pathfinder', name: 'Buscador de Caminos', icon: <FaRoute /> },
 ];
 
 export default function GamesPage() {
@@ -25,15 +25,15 @@ export default function GamesPage() {
   return (
     <div className="games-hero-bg">
       <div className="games-container">
-        <h1 className="games-title">Brain Games Suite</h1>
-        <p className="games-subtitle">Sharpen your mind with 10 interactive, adaptive games. Progress and stats are saved automatically!</p>
+        <h1 className="games-title">Suite de Juegos Cerebrales</h1>
+        <p className="games-subtitle">Agudiza tu mente con 10 juegos interactivos y adaptables. ¡El progreso y las estadísticas se guardan automáticamente!</p>
         <div className="games-grid" role="list">
           {gamesList.map((game) => (
             <button
               key={game.key}
               className="game-card"
               onClick={() => setActiveGame(game.key)}
-              aria-label={`Play ${game.name}`}
+              aria-label={`Jugar ${game.name}`}
             >
               <span className="game-icon">{game.icon}</span>
               <span className="game-name">{game.name}</span>
@@ -58,7 +58,7 @@ export default function GamesPage() {
                 className="close-modal"
                 style={{ position: 'absolute', top: 16, right: 16, fontSize: '2.2rem', color: '#fff', background: '#e53935', border: 'none', borderRadius: '50%', width: 44, height: 44, display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', zIndex: 101, boxShadow: '0 2px 8px rgba(229,57,53,0.2)' }}
                 onClick={() => setActiveGame(null)}
-                aria-label="Close game"
+                aria-label="Cerrar juego"
                 tabIndex={0}
               >
                 ×
