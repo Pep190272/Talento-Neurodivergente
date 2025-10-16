@@ -2,15 +2,16 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useLanguage } from '../../hooks/useLanguage'
 import './Navbar.css'
 
 const navItems = [
-  { name: 'Home', href: '/', nameEs: 'Inicio' },
-  { name: 'Features', href: '/features', nameEs: 'Características' },
-  { name: 'Forms', href: '/forms', nameEs: 'Formularios' },
-  { name: 'Games', href: '/games', nameEs: 'Juegos' },
-  { name: 'Quiz', href: '/quiz', nameEs: 'Evaluación' },
-  { name: 'About', href: '/about', nameEs: 'Acerca de' },
+  { name: 'Home', href: '/', key: 'navbar.home' },
+  { name: 'Features', href: '/features', key: 'navbar.features' },
+  { name: 'Forms', href: '/forms', key: 'navbar.forms' },
+  { name: 'Games', href: '/games', key: 'navbar.games' },
+  { name: 'Quiz', href: '/quiz', key: 'navbar.quiz' },
+  { name: 'About', href: '/about', key: 'navbar.about' },
 ]
 
 const languages = [
@@ -22,13 +23,13 @@ export default function Navbar() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
-  const [currentLang, setCurrentLang] = useState('en')
   const [langDropdownOpen, setLangDropdownOpen] = useState(false)
   const [isVisible, setIsVisible] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
   const [userData, setUserData] = useState(null)
   const pathname = usePathname()
   const langDropdownRef = useRef(null)
+  const { currentLang, changeLanguage, t } = useLanguage()
 
   useEffect(() => {
     const onScroll = () => {
@@ -72,10 +73,8 @@ export default function Navbar() {
   }, [])
 
   const handleLanguageChange = (langCode) => {
-    setCurrentLang(langCode)
+    changeLanguage(langCode)
     setLangDropdownOpen(false)
-    // Here you would typically integrate with your i18n library
-    console.log(`Language changed to: ${langCode}`)
   }
 
   const logout = () => {
@@ -123,7 +122,7 @@ export default function Navbar() {
                   onClick={() => setOpen(false)}
                 >
                   <span className="link-text">
-                    {currentLang === 'en' ? item.name : item.nameEs}
+                    {t(item.key)}
                   </span>
                   <span className="link-bg"></span>
                 </Link>
@@ -136,7 +135,7 @@ export default function Navbar() {
                   className={`link${pathname === '/dashboard' ? ' active' : ''}`}
                   onClick={() => setOpen(false)}
                 >
-                  <span className="link-text">Dashboard</span>
+                  <span className="link-text">{t('navbar.dashboard')}</span>
                   <span className="link-bg"></span>
                 </Link>
               </li>
@@ -191,21 +190,21 @@ export default function Navbar() {
             <div className="user-profile">
               <div className="user-info">
                 <span className="user-name">
-                  {currentLang === 'en' ? `Hi, ${userData.name || 'User'}` : `Hola, ${userData.name || 'Usuario'}`}
+                  {t('navbar.hi')}, {userData.name || t('navbar.user')}
                 </span>
                 <span className="user-type">
-                  {userData.type === 'individual' ? 'Individual' : 
-                   userData.type === 'company' ? 'Company' : 'Therapist'}
+                  {userData.type === 'individual' ? t('navbar.individual') :
+                   userData.type === 'company' ? t('navbar.company') : t('navbar.therapist')}
                 </span>
               </div>
               <button onClick={logout} className="logout-btn">
-                <span className="logout-text">Logout</span>
+                <span className="logout-text">{t('navbar.logout')}</span>
               </button>
             </div>
           ) : (
             <Link href="/get-started" className="get-started">
               <span className="btn-text">
-                {currentLang === 'en' ? 'Get Started' : 'Comenzar'}
+                {t('navbar.getStarted')}
               </span>
               <span className="btn-glow"></span>
               <span className="btn-particles">

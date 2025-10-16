@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { FaChartLine, FaUsers, FaHandshake, FaStar } from 'react-icons/fa';
+import { useLanguage } from '../../hooks/useLanguage';
 
 const statsConfig = [
   {
@@ -60,6 +61,8 @@ function useAnimatedCounter(end, duration = 1800) {
 }
 
 export default function StatsImpact() {
+  const { t } = useLanguage();
+
   return (
     <section style={{
       padding: '4rem 2rem',
@@ -76,7 +79,7 @@ export default function StatsImpact() {
           marginBottom: '2.5rem',
           letterSpacing: '-0.01em'
         }}>
-          Stats & Impact
+          {t('statsImpact.title')}
         </h2>
         <div style={{
           display: 'grid',

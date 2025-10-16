@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react';
+import { useLanguage } from '../../hooks/useLanguage';
 
 const partners = [
   { name: 'TechNova', logo: 'https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=80&q=80' },
@@ -11,6 +12,8 @@ const partners = [
 ];
 
 export default function Partners() {
+  const { t } = useLanguage();
+
   return (
     <section style={{
       padding: '4rem 2rem',
@@ -27,7 +30,7 @@ export default function Partners() {
           marginBottom: '2.5rem',
           letterSpacing: '-0.01em'
         }}>
-          Partners & Integrations
+          {t('partners.title')}
         </h2>
         <div style={{
           display: 'grid',

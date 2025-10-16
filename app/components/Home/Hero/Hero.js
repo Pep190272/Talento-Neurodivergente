@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
+import { useLanguage } from '../../../hooks/useLanguage'
 import { 
   FaBrain, 
   FaRocket, 
@@ -22,11 +23,13 @@ import { MdPsychology } from 'react-icons/md'
 import './Hero.css'
 
 export default function Hero() {
+  const { t } = useLanguage()
+
   // Simplified typewriter effect
   const messages = [
-    "Transform neurodivergent talent into competitive advantage",
-    "Unlock hidden potential in your organization",
-    "Build inclusive teams that drive innovation"
+    t('hero.message1'),
+    t('hero.message2'),
+    t('hero.message3')
   ]
   
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0)
@@ -35,37 +38,37 @@ export default function Hero() {
 
   // Professional stats
   const statsConfig = [
-    { 
-      label: 'Untapped Talent Pool', 
-      end: 85, 
-      suffix: '%', 
-      icon: FaChartLine, 
+    {
+      label: t('hero.stats.untappedTalent.label'),
+      end: 85,
+      suffix: '%',
+      icon: FaChartLine,
       color: '#FFD700',
-      description: 'Of neurodivergent individuals remain unemployed'
+      description: t('hero.stats.untappedTalent.description')
     },
-    { 
-      label: 'Productivity Increase', 
-      end: 140, 
-      suffix: '%', 
-      icon: IoStatsChart, 
+    {
+      label: t('hero.stats.productivity.label'),
+      end: 140,
+      suffix: '%',
+      icon: IoStatsChart,
       color: '#9333EA',
-      description: 'In companies with inclusive practices'
+      description: t('hero.stats.productivity.description')
     },
-    { 
-      label: 'Partner Organizations', 
-      end: 120, 
-      suffix: '+', 
-      icon: FaHandshake, 
+    {
+      label: t('hero.stats.partners.label'),
+      end: 120,
+      suffix: '+',
+      icon: FaHandshake,
       color: '#FFD700',
-      description: 'Trust our neurodivergent talent solutions'
+      description: t('hero.stats.partners.description')
     },
-    { 
-      label: 'Successful Placements', 
-      end: 750, 
-      suffix: '+', 
-      icon: FaStar, 
+    {
+      label: t('hero.stats.placements.label'),
+      end: 750,
+      suffix: '+',
+      icon: FaStar,
       color: '#9333EA',
-      description: 'Neurodivergent professionals placed'
+      description: t('hero.stats.placements.description')
     }
   ]
   
@@ -114,18 +117,18 @@ export default function Hero() {
   const keyFeatures = [
     {
       icon: FaBrain,
-      title: "Cognitive Diversity",
-      description: "Leverage unique thinking patterns for innovation"
+      title: t('hero.features.cognitiveDiversity.title'),
+      description: t('hero.features.cognitiveDiversity.description')
     },
     {
       icon: FaLightbulb,
-      title: "Problem Solving",
-      description: "Access different approaches to complex challenges"
+      title: t('hero.features.problemSolving.title'),
+      description: t('hero.features.problemSolving.description')
     },
     {
       icon: FaUsers,
-      title: "Inclusive Culture",
-      description: "Build teams that value neurodiversity"
+      title: t('hero.features.inclusiveCulture.title'),
+      description: t('hero.features.inclusiveCulture.description')
     }
   ]
 
@@ -285,7 +288,7 @@ export default function Hero() {
           <FaRobot />
         </div>
         <div className="assistant-tooltip">
-          {chatOpen ? 'Close Assistant' : 'Ask Our AI Assistant'}
+          {chatOpen ? t('hero.closeAssistant') : t('hero.askAssistant')}
         </div>
       </div>
 
@@ -295,7 +298,7 @@ export default function Hero() {
           {/* Badge */}
           <div className="company-badge">
             <MdPsychology className="badge-icon" />
-            <span>Powered by Neurodivergent Intelligence</span>
+            <span>{t('hero.badge')}</span>
           </div>
           
           {/* Main Heading */}
@@ -306,21 +309,20 @@ export default function Hero() {
           
           {/* Subtitle */}
           <p className="hero-subtitle">
-            Partner with us to unlock the extraordinary potential of neurodivergent talent. 
-            Build more innovative, productive, and inclusive teams.
+            {t('hero.subtitle')}
           </p>
           
           {/* CTA Buttons */}
           <div className="hero-actions">
             <Link href="/get-started" className="btn-primary">
               <FaRocket className="btn-icon" />
-              Get Started
+              {t('hero.getStarted')}
               <HiOutlineChevronRight className="btn-arrow" />
             </Link>
-            
+
             <Link href="/demo" className="btn-secondary">
               <FaPlay className="btn-icon" />
-              Watch Demo
+              {t('hero.watchDemo')}
             </Link>
           </div>
 
@@ -344,7 +346,7 @@ export default function Hero() {
         <div className="stats-section">
           <div className="stats-header">
             <IoSparkles className="stats-icon" />
-            <h2>Impact by Numbers</h2>
+            <h2>{t('hero.impactByNumbers')}</h2>
           </div>
           
           <div className="stats-grid">
@@ -374,9 +376,9 @@ export default function Hero() {
                   <FaRobot />
                 </div>
                 <div className="chat-details">
-                  <h3>NeuroDialect Assistant</h3>
+                  <h3>{t('hero.chat.assistant')}</h3>
                   <p className="chat-status">
-                    {isTypingBot ? 'Typing...' : 'Online'}
+                    {isTypingBot ? t('hero.chat.typing') : t('hero.chat.online')}
                   </p>
                 </div>
               </div>
@@ -421,7 +423,7 @@ export default function Hero() {
                 ref={chatInputRef}
                 type="text"
                 className="chat-input"
-                placeholder="Ask about neurodivergent talent solutions..."
+                placeholder={t('hero.chat.placeholder')}
                 value={currentMessage}
                 onChange={(e) => setCurrentMessage(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}

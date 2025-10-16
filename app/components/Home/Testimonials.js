@@ -1,6 +1,7 @@
 'use client'
 import React from 'react';
 import { FaQuoteLeft, FaUserCircle } from 'react-icons/fa';
+import { useLanguage } from '../../hooks/useLanguage';
 
 const testimonials = [
   {
@@ -30,6 +31,8 @@ const testimonials = [
 ];
 
 export default function Testimonials() {
+  const { t } = useLanguage();
+
   return (
     <section style={{
       padding: '4rem 2rem',
@@ -46,7 +49,7 @@ export default function Testimonials() {
           marginBottom: '2.5rem',
           letterSpacing: '-0.01em'
         }}>
-          Success Stories
+          {t('testimonials.title')}
         </h2>
         <div style={{
           display: 'grid',

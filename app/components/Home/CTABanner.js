@@ -3,8 +3,11 @@
 import React from 'react';
 import Link from 'next/link';
 import { FaRocket, FaHandshake } from 'react-icons/fa';
+import { useLanguage } from '../../hooks/useLanguage';
 
 export default function CTABanner() {
+  const { t } = useLanguage();
+
   return (
     <section style={{
       padding: '3.5rem 2rem',
@@ -30,7 +33,7 @@ export default function CTABanner() {
         letterSpacing: '-0.01em',
         textShadow: '0 2px 12px #fff8'
       }}>
-        Ready to Transform Your Organization?
+        {t('cta.title')}
       </h2>
       <p style={{
         color: '#23213a',
@@ -41,7 +44,7 @@ export default function CTABanner() {
         maxWidth: 600,
         fontWeight: 500
       }}>
-        Join hundreds of companies and individuals unlocking the power of neurodiversity. Get started or partner with us today!
+        {t('cta.description')}
       </p>
       <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
         <Link href="/get-started" style={{
@@ -60,7 +63,7 @@ export default function CTABanner() {
           transition: 'background 0.2s, color 0.2s',
           border: '2px solid #FFD700'
         }}>
-          <FaRocket /> Get Started
+          <FaRocket /> {t('cta.getStarted')}
         </Link>
         <Link href="/features/partnerships" style={{
           background: '#fff',
@@ -78,7 +81,7 @@ export default function CTABanner() {
           transition: 'background 0.2s, color 0.2s',
           border: '2px solid #9333EA'
         }}>
-          <FaHandshake /> Become a Partner
+          <FaHandshake /> {t('cta.becomePartner')}
         </Link>
       </div>
     </section>
