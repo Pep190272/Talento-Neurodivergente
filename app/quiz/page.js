@@ -1,5 +1,6 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from 'next/navigation';
 import QuizQuestion from "../components/quiz/QuizQuestion";
 
 import StatsDisplay from "../components/quiz/StatsDisplay";
@@ -144,11 +145,7 @@ const getQuizSets = (lang) => ({
   ],
 });
 
-function getQueryParam(name) {
-  if (typeof window === "undefined") return null;
-  const url = new URL(window.location.href);
-  return url.searchParams.get(name);
-}
+// Removed getQueryParam - using useSearchParams hook instead
 
 // AI Quiz fetcher (stub)
 async function fetchAIQuiz(lang) {
@@ -217,8 +214,9 @@ function getInitialState(quizKey, quizSet) {
   };
 }
 
-export default function QuizPage() {
+function QuizPageContent() {
   const { t, language } = useLanguage();
+  const searchParams = useSearchParams();
   const [quizKey, setQuizKey] = useState(null);
   const [quizSet, setQuizSet] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -229,7 +227,7 @@ export default function QuizPage() {
 
   // Load quiz set based on query param
   useEffect(() => {
-    const key = getQueryParam("quiz") || "neurodiversity";
+    const key = searchParams.get("quiz") || "neurodiversity";
     setQuizKey(key);
     async function loadQuiz() {
       setLoading(true);
@@ -350,7 +348,7 @@ export default function QuizPage() {
   }
 
   // If no quiz is selected, show the dashboard
-  if (!getQueryParam("quiz")) {
+  if (!searchParams.get("quiz")) {
     return <QuizDashboard />;
   }
 
@@ -425,5 +423,13 @@ export default function QuizPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function QuizPage() {
+  return (
+    <Suspense fallback={<div className="quiz-area"><div className="quiz-title"><FaRobot /> Cargando...</div></div>}>
+      <QuizPageContent />
+    </Suspense>
   );
 } 
