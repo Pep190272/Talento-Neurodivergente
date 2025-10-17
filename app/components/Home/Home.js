@@ -1,3 +1,4 @@
+'use client'
 import React from 'react';
 import Hero from './Hero/Hero';
 import HowItWorks from './HowItWorks';
