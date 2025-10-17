@@ -91,21 +91,21 @@ const Analytics = () => {
 
   // Skill radar data
   const skillRadarData = [
-    { skill: 'Problem Solving', score: 92, market: 78 },
-    { skill: 'Pattern Recognition', score: 88, market: 65 },
-    { skill: 'Attention to Detail', score: 95, market: 72 },
-    { skill: 'Creative Thinking', score: 89, market: 68 },
-    { skill: 'Logical Reasoning', score: 91, market: 75 },
-    { skill: 'Data Analysis', score: 87, market: 71 }
+    { skill: 'Resolución de Problemas', score: 92, market: 78 },
+    { skill: 'Reconocimiento de Patrones', score: 88, market: 65 },
+    { skill: 'Atención al Detalle', score: 95, market: 72 },
+    { skill: 'Pensamiento Creativo', score: 89, market: 68 },
+    { skill: 'Razonamiento Lógico', score: 91, market: 75 },
+    { skill: 'Análisis de Datos', score: 87, market: 71 }
   ];
 
   // Geographic distribution
   const geoData = [
-    { region: 'North America', count: 1245, growth: 15.2 },
-    { region: 'Europe', count: 987, growth: 12.8 },
-    { region: 'Asia Pacific', count: 456, growth: 23.1 },
-    { region: 'Latin America', count: 123, growth: 18.7 },
-    { region: 'Middle East', count: 36, growth: 9.3 }
+    { region: 'América del Norte', count: 1245, growth: 15.2 },
+    { region: 'Europa', count: 987, growth: 12.8 },
+    { region: 'Asia Pacífico', count: 456, growth: 23.1 },
+    { region: 'América Latina', count: 123, growth: 18.7 },
+    { region: 'Medio Oriente', count: 36, growth: 9.3 }
   ];
 
   // Performance metrics over time
@@ -161,10 +161,10 @@ const Analytics = () => {
         <div className={styles.headerContent}>
           <div>
             <h1 className={styles.headerTitle}>
-              DiversIA Analytics Command Center
+              Centro de Comando de Análisis DiversIA
             </h1>
             <p className={styles.headerSubtitle}>
-              Neurodivergent talent intelligence & insights
+              Inteligencia e insights de talento neurodivergente
             </p>
           </div>
           <div className={styles.headerControls}>
@@ -173,7 +173,7 @@ const Analytics = () => {
               className={`${styles.controlButton} ${isRealTime ? styles.liveButton : styles.staticButton}`}
             >
               <Activity className="w-4 h-4" />
-              <span>{isRealTime ? 'Live' : 'Static'}</span>
+              <span>{isRealTime ? 'En Vivo' : 'Estático'}</span>
             </button>
             <button
               onClick={() => setDarkMode(!darkMode)}
@@ -197,27 +197,27 @@ const Analytics = () => {
               onChange={(e) => setTimeRange(e.target.value)}
               className={styles.select}
             >
-              <option value="7d">Last 7 days</option>
-              <option value="30d">Last 30 days</option>
-              <option value="90d">Last 90 days</option>
-              <option value="1y">Last year</option>
+              <option value="7d">Últimos 7 días</option>
+              <option value="30d">Últimos 30 días</option>
+              <option value="90d">Últimos 90 días</option>
+              <option value="1y">Último año</option>
             </select>
             <select
               value={selectedMetric}
               onChange={(e) => setSelectedMetric(e.target.value)}
               className={styles.select}
             >
-              <option value="all">All Metrics</option>
-              <option value="placements">Placements</option>
-              <option value="diversity">Diversity</option>
-              <option value="performance">Performance</option>
+              <option value="all">Todas las Métricas</option>
+              <option value="placements">Colocaciones</option>
+              <option value="diversity">Diversidad</option>
+              <option value="performance">Rendimiento</option>
             </select>
           </div>
           <div className={styles.controlsRight}>
             <div className={styles.statusIndicator}>
               <div className={styles.liveIndicator}></div>
               <span>
-                {isRealTime ? 'Live Data' : 'Updated 5 min ago'}
+                {isRealTime ? 'Datos en Vivo' : 'Actualizado hace 5 min'}
               </span>
             </div>
           </div>
@@ -263,7 +263,7 @@ const Analytics = () => {
           <div className={styles.chartCard}>
             <div className={styles.chartHeader}>
               <h3 className={styles.chartTitle}>
-                Hiring Pipeline Analytics
+                Análisis del Pipeline de Contratación
               </h3>
               <button
                 onClick={() => setExpandedChart(expandedChart === 'hiring' ? null : 'hiring')}
@@ -290,7 +290,7 @@ const Analytics = () => {
           {/* Neurotype Distribution */}
           <div className={styles.chartCard}>
             <h3 className={styles.chartTitle}>
-              Neurotype Distribution
+              Distribución de Neurotipos
             </h3>
             <div className={styles.chartContainer}>
               <ResponsiveContainer width="100%" height="100%">
@@ -338,7 +338,7 @@ const Analytics = () => {
           {/* Skill Radar */}
           <div className={styles.chartCard}>
             <h3 className={styles.chartTitle}>
-              Superpower Skills Analysis
+              Análisis de Habilidades Superpoder
             </h3>
             <div className={styles.chartContainer}>
               <ResponsiveContainer width="100%" height="100%">
@@ -346,8 +346,8 @@ const Analytics = () => {
                   <PolarGrid stroke="#374151" />
                   <PolarAngleAxis dataKey="skill" tick={{ fill: '#9CA3AF', fontSize: 12 }} />
                   <PolarRadiusAxis domain={[0, 100]} tick={{ fill: '#9CA3AF', fontSize: 10 }} />
-                  <Radar name="DiversIA Talent" dataKey="score" stroke="#8B5CF6" fill="#8B5CF6" fillOpacity={0.3} strokeWidth={2} />
-                  <Radar name="Market Average" dataKey="market" stroke="#EAB308" fill="#EAB308" fillOpacity={0.1} strokeWidth={2} />
+                  <Radar name="Talento DiversIA" dataKey="score" stroke="#8B5CF6" fill="#8B5CF6" fillOpacity={0.3} strokeWidth={2} />
+                  <Radar name="Promedio del Mercado" dataKey="market" stroke="#EAB308" fill="#EAB308" fillOpacity={0.1} strokeWidth={2} />
                   <Tooltip content={<CustomTooltip />} />
                 </RadarChart>
               </ResponsiveContainer>
@@ -357,7 +357,7 @@ const Analytics = () => {
           {/* Performance Metrics */}
           <div className={styles.chartCard}>
             <h3 className={styles.chartTitle}>
-              Performance Metrics
+              Métricas de Rendimiento
             </h3>
             <div className={styles.chartContainer}>
               <ResponsiveContainer width="100%" height="100%">
@@ -378,7 +378,7 @@ const Analytics = () => {
         {/* Geographic Distribution */}
         <div className={styles.geoCard}>
           <h3 className={styles.geoTitle}>
-            Global Talent Distribution
+            Distribución Global de Talento
           </h3>
           <div className={styles.geoGrid}>
             {geoData.map((region, index) => (
@@ -403,34 +403,34 @@ const Analytics = () => {
         {/* AI Insights Panel */}
         <div className={styles.aiInsightsPanel}>
           <h3 className={styles.aiTitle}>
-            🧠 AI-Powered Insights
+            🧠 Insights Impulsados por IA
           </h3>
           <div className={styles.aiGrid}>
             <div className={styles.aiCard}>
               <div className={styles.aiCardHeader}>
                 <Zap className={`${styles.aiCardIcon} text-yellow-500`} />
-                <span className={`${styles.aiCardType} ${styles.typeTrending}`}>Trending Up</span>
+                <span className={`${styles.aiCardType} ${styles.typeTrending}`}>En Tendencia</span>
               </div>
               <p className={styles.aiCardText}>
-                ADHD talent placements increased 23% this quarter, particularly in creative and problem-solving roles.
+                Las colocaciones de talento con TDAH aumentaron un 23% este trimestre, particularmente en roles creativos y de resolución de problemas.
               </p>
             </div>
             <div className={styles.aiCard}>
               <div className={styles.aiCardHeader}>
                 <Target className={`${styles.aiCardIcon} text-green-500`} />
-                <span className={`${styles.aiCardType} ${styles.typeOpportunity}`}>Opportunity</span>
+                <span className={`${styles.aiCardType} ${styles.typeOpportunity}`}>Oportunidad</span>
               </div>
               <p className={styles.aiCardText}>
-                Tech sector shows 89% success rate for autism talent in data analysis and software development.
+                El sector tecnológico muestra una tasa de éxito del 89% para talento autista en análisis de datos y desarrollo de software.
               </p>
             </div>
             <div className={styles.aiCard}>
               <div className={styles.aiCardHeader}>
                 <Brain className={`${styles.aiCardIcon} text-purple-500`} />
-                <span className={`${styles.aiCardType} ${styles.typePrediction}`}>Prediction</span>
+                <span className={`${styles.aiCardType} ${styles.typePrediction}`}>Predicción</span>
               </div>
               <p className={styles.aiCardText}>
-                AI models predict 31% increase in dyslexic talent demand for strategic and leadership positions.
+                Los modelos de IA predicen un aumento del 31% en la demanda de talento disléxico para posiciones estratégicas y de liderazgo.
               </p>
             </div>
           </div>
