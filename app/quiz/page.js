@@ -1,6 +1,5 @@
 "use client";
-import React, { useState, useEffect, Suspense } from "react";
-import { useSearchParams } from 'next/navigation';
+import React, { useState, useEffect } from "react";
 import QuizQuestion from "../components/quiz/QuizQuestion";
 
 import StatsDisplay from "../components/quiz/StatsDisplay";
@@ -145,7 +144,11 @@ const getQuizSets = (lang) => ({
   ],
 });
 
-// Removed getQueryParam - using useSearchParams hook instead
+function getQueryParam(name) {
+  if (typeof window === "undefined") return null;
+  const url = new URL(window.location.href);
+  return url.searchParams.get(name);
+}
 
 // AI Quiz fetcher (stub)
 async function fetchAIQuiz(lang) {
@@ -214,9 +217,8 @@ function getInitialState(quizKey, quizSet) {
   };
 }
 
-function QuizPageContent() {
+export default function QuizPage() {
   const { t, language } = useLanguage();
-  const searchParams = useSearchParams();
   const [quizKey, setQuizKey] = useState(null);
   const [quizSet, setQuizSet] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -224,10 +226,17 @@ function QuizPageContent() {
   const [timer, setTimer] = useState(0);
   const [showExplanation, setShowExplanation] = useState(false);
   const [voice, setVoice] = useState(null);
+  const [mounted, setMounted] = useState(false);
+
+  // Detect client-side mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Load quiz set based on query param
   useEffect(() => {
-    const key = searchParams.get("quiz") || "neurodiversity";
+    if (!mounted) return;
+    const key = getQueryParam("quiz") || "neurodiversity";
     setQuizKey(key);
     async function loadQuiz() {
       setLoading(true);
@@ -343,12 +352,12 @@ function QuizPageContent() {
     }
   }, [state && state.completed]);
 
-  if (loading || !state) {
+  if (!mounted || loading || !state) {
     return <div className="quiz-area"><div className="quiz-title"><FaRobot /> {t('quizContent.quiz.loading')}</div></div>;
   }
 
   // If no quiz is selected, show the dashboard
-  if (!searchParams.get("quiz")) {
+  if (!getQueryParam("quiz")) {
     return <QuizDashboard />;
   }
 
@@ -423,13 +432,5 @@ function QuizPageContent() {
         )}
       </div>
     </div>
-  );
-}
-
-export default function QuizPage() {
-  return (
-    <Suspense fallback={<div className="quiz-area"><div className="quiz-title"><FaRobot /> Cargando...</div></div>}>
-      <QuizPageContent />
-    </Suspense>
   );
 } 
