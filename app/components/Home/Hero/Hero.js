@@ -86,9 +86,11 @@ export default function Hero() {
 
   // Load user data from localStorage
   useEffect(() => {
-    const savedUserData = localStorage.getItem('diversia_user_data')
-    if (savedUserData) {
-      setUserData(JSON.parse(savedUserData))
+    if (typeof window !== 'undefined') {
+      const savedUserData = localStorage.getItem('diversia_user_data')
+      if (savedUserData) {
+        setUserData(JSON.parse(savedUserData))
+      }
     }
   }, [])
 

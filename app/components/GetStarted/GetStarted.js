@@ -133,25 +133,27 @@ const GetStarted = () => {
       };
       
       // Save to localStorage
-      localStorage.setItem('diversia_user_data', JSON.stringify(userData));
-      
-      // Here you would typically send data to your backend
-      console.log('Form submitted:', userData);
-      
-      // Show success message
-      alert(`¡Bienvenido a DiversIA, ${formData.firstName}! Tu perfil ha sido creado exitosamente.`);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('diversia_user_data', JSON.stringify(userData));
 
-      // Redirect to appropriate dashboard
-      if (userType === 'company') {
-        window.location.href = '/company';
-      } else if (userType === 'candidate') {
-        window.location.href = '/dashboard';
-      } else if (userType === 'therapist') {
-        window.location.href = '/therapist';
-      } else {
-        window.location.href = '/';
+        // Here you would typically send data to your backend
+        console.log('Form submitted:', userData);
+
+        // Show success message
+        alert(`¡Bienvenido a DiversIA, ${formData.firstName}! Tu perfil ha sido creado exitosamente.`);
+
+        // Redirect to appropriate dashboard
+        if (userType === 'company') {
+          window.location.href = '/company';
+        } else if (userType === 'candidate') {
+          window.location.href = '/dashboard';
+        } else if (userType === 'therapist') {
+          window.location.href = '/therapist';
+        } else {
+          window.location.href = '/';
+        }
       }
-      
+
     } catch (error) {
       console.error('Submission error:', error);
       alert('Algo salió mal. Por favor intenta de nuevo.');

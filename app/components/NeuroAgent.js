@@ -9,6 +9,7 @@ export default function NeuroAgent({ userData = null }) {
 
   // Load chat history from localStorage on mount
   useEffect(() => {
+    if (typeof window === 'undefined') return;
     const savedMessages = localStorage.getItem('chatHistory');
     if (savedMessages) {
       try {
@@ -30,7 +31,9 @@ export default function NeuroAgent({ userData = null }) {
 
   // Save chat history to localStorage whenever messages change
   useEffect(() => {
-    localStorage.setItem('chatHistory', JSON.stringify(messages));
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('chatHistory', JSON.stringify(messages));
+    }
   }, [messages]);
 
   // Auto-scroll to bottom when new messages arrive

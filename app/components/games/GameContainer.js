@@ -31,13 +31,17 @@ export default function GameContainer({ gameKey }) {
 
   // Load progress from localStorage
   useEffect(() => {
-    const saved = localStorage.getItem(`game-progress-${gameKey}`);
-    if (saved) setGameStats(JSON.parse(saved));
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem(`game-progress-${gameKey}`);
+      if (saved) setGameStats(JSON.parse(saved));
+    }
   }, [gameKey]);
 
   // Save progress to localStorage
   useEffect(() => {
-    if (gameStats) localStorage.setItem(`game-progress-${gameKey}`, JSON.stringify(gameStats));
+    if (typeof window !== 'undefined' && gameStats) {
+      localStorage.setItem(`game-progress-${gameKey}`, JSON.stringify(gameStats));
+    }
   }, [gameStats, gameKey]);
 
   const handleGameOver = (stats) => {
