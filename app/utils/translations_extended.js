@@ -224,7 +224,7 @@ export const extendedTranslations = {
       team: {
         title: 'Meet the Team',
         members: {
-          developer: { role: 'Software Developer / AI Prompt Engineer', name: 'Mohit Rajput', description: 'Full-stack developer specializing in AI integration and modern web technologies' },
+          developer: { role: 'Neurodiversity Conference Speaker', name: 'Elisa Farias', description: 'Diversia Ambassador in Mexico' },
           idea: { role: 'Idea Credit', name: 'Olga Cruz', description: 'Visionary behind the concept of neurodiversity and inclusive innovation' },
           assist: { role: 'Tech Assist', name: 'José Miguel Moreno Carrillo', description: 'Technical consultant providing expertise in accessibility and user experience' }
         }
@@ -699,7 +699,7 @@ export const extendedTranslations = {
       team: {
         title: 'Conoce al Equipo',
         members: {
-          developer: { role: 'Desarrollador de Software / Ingeniero de Prompts IA', name: 'Mohit Rajput', description: 'Desarrollador full-stack especializado en integración de IA y tecnologías web modernas' },
+          developer: { role: 'Conferenciante experta en neurodiversidad', name: 'Elisa Farias', description: 'Embajadora de Diversia en México' },
           idea: { role: 'Crédito de Idea', name: 'Olga Cruz', description: 'Visionaria detrás del concepto de neurodiversidad e innovación inclusiva' },
           assist: { role: 'Asistencia Técnica', name: 'José Miguel Moreno Carrillo', description: 'Consultor técnico que brinda experiencia en accesibilidad y experiencia de usuario' }
         }

@@ -17,30 +17,30 @@ export default function AboutPage() {
 
   const teamMembers = [
     {
-      role: "Software Developer / AI Prompt Engineer",
-      name: "Mohit Rajput",
+      role: "Conferenciante experta en neurodiversidad",
+      name: "Elisa Farias",
       icon: "🚀",
-      description: "Full-stack developer specializing in AI integration and modern web technologies"
+      description: "Embajadora de Diversia en México"
     },
     {
-      role: "Idea Credit",
+      role: "Crédito de Idea",
       name: "Olga Cruz",
       icon: "💡",
-      description: "Visionary behind the concept of neurodiversity and inclusive innovation"
+      description: "Visionaria detrás del concepto de neurodiversidad e innovación inclusiva"
     },
     {
-      role: "Tech Assist",
+      role: "Asistencia Técnica",
       name: "José Miguel Moreno Carrillo",
       icon: "⚡",
-      description: "Technical consultant providing expertise in accessibility and user experience"
+      description: "Consultor técnico que proporciona experiencia en accesibilidad y experiencia de usuario"
     }
   ];
 
   const features = [
-    { icon: "🧠", title: "Neurodiversity Focus", description: "Celebrating cognitive diversity and unique perspectives" },
-    { icon: "🔧", title: "Modern Tech Stack", description: "Built with cutting-edge web technologies and AI integration" },
-    { icon: "♿", title: "Accessibility First", description: "Designed with inclusive principles and universal access" },
-    { icon: "🌟", title: "Innovation Hub", description: "Platform for showcasing creative solutions and ideas" }
+    { icon: "🧠", title: "Enfoque en Neurodiversidad", description: "Celebrando la diversidad cognitiva y perspectivas únicas" },
+    { icon: "🔧", title: "Stack Tecnológico Moderno", description: "Construido con tecnologías web de vanguardia e integración de IA" },
+    { icon: "♿", title: "Accesibilidad Primero", description: "Diseñado con principios inclusivos y acceso universal" },
+    { icon: "🌟", title: "Centro de Innovación", description: "Plataforma para mostrar soluciones creativas e ideas" }
   ];
 
   return (
