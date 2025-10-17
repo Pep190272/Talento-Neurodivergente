@@ -219,20 +219,21 @@ export default function Hero() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            message: currentMessage,
+            prompt: currentMessage,
+            history: chatMessages,
             userData: userData
           }),
         })
 
         const data = await response.json()
-        
-        if (data.success) {
+
+        if (data.response) {
           const botResponse = {
             text: data.response,
             sender: 'bot',
             timestamp: Date.now()
           }
-          
+
           setChatMessages(prev => [...prev, botResponse])
         } else {
           // Fallback response if API fails
