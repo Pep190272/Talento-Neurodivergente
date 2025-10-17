@@ -1,16 +1,40 @@
 'use client'
-import Home from './components/Home/Home';
-import HowItWorks from './components/Home/HowItWorks';
-import StatsImpact from './components/Home/StatsImpact';
-import Testimonials from './components/Home/Testimonials';
-import Partners from './components/Home/Partners';
-import CTABanner from './components/Home/CTABanner';
-import FAQSection from './components/Home/FAQSection';
-import BlogPreview from './components/Home/BlogPreview';
-import NewsletterSignup from './components/Home/NewsletterSignup';
-import ContactSupportTeaser from './components/Home/ContactSupportTeaser';
-import Footer from './components/Home/Footer';
+import { Suspense } from 'react';
+import dynamic from 'next/dynamic';
+
+const Home = dynamic(() => import('./components/Home/Home'), {
+  loading: () => (
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100vh',
+      fontSize: '1.5rem',
+      background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)',
+      color: '#FFD700'
+    }}>
+      Cargando DiversIA...
+    </div>
+  ),
+  ssr: false
+});
 
 export default function HomePage() {
-  return <Home />;
+  return (
+    <Suspense fallback={
+      <div style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh',
+        fontSize: '1.5rem',
+        background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%)',
+        color: '#FFD700'
+      }}>
+        Inicializando...
+      </div>
+    }>
+      <Home />
+    </Suspense>
+  );
 }
