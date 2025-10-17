@@ -105,7 +105,7 @@ export default function CompanyDashboard({ defaultView = 'overview' }) {
     }
   };
 
-  const stages = ['Aplicado', 'Evaluado', 'Entrevistando', 'Oferta', 'Contratado'];
+  const stages = ['Postulado', 'Evaluado', 'Entrevistando', 'Oferta', 'Contratado'];
 
   // Navigation function
   const handleNavigation = (view) => {

@@ -13,10 +13,10 @@ const extendedTalents = [
     id: 1, 
     name: "Alex Kim", 
     avatar: "👨‍💻",
-    skills: ["Pattern Recognition", "Data Analysis", "Machine Learning", "Statistical Modeling"], 
+    skills: ["Reconocimiento de Patrones", "Análisis de Datos", "Aprendizaje Automático", "Modelado Estadístico"], 
     match: 98, 
     superpower: "🧠", 
-    stage: "Applied", 
+    stage: "Postulado", 
     location: "San Francisco",
     neurodivergence: "ADHD + Autism",
     iq: 142,
@@ -40,10 +40,10 @@ const extendedTalents = [
     id: 2, 
     name: "Jordan Lee", 
     avatar: "👩‍🎨",
-    skills: ["Creative Problem Solving", "UX Design", "User Research", "Prototyping"], 
+    skills: ["Resolución Creativa de Problemas", "Diseño UX", "Investigación de Usuarios", "Prototipado"], 
     match: 94, 
     superpower: "🎨", 
-    stage: "Interviewing", 
+    stage: "Entrevistando", 
     location: "New York",
     neurodivergence: "Dyslexia",
     iq: 128,
@@ -66,10 +66,10 @@ const extendedTalents = [
     id: 3, 
     name: "Morgan Patel", 
     avatar: "👨‍🔬",
-    skills: ["Attention to Detail", "QA Testing", "Bug Detection", "Process Improvement"], 
+    skills: ["Atención al Detalle", "Pruebas QA", "Detección de Errores", "Mejora de Procesos"], 
     match: 91, 
     superpower: "⚙️", 
-    stage: "Assessed", 
+    stage: "Evaluado", 
     location: "Austin",
     neurodivergence: "OCD",
     iq: 135,
@@ -90,10 +90,10 @@ const extendedTalents = [
     id: 4, 
     name: "Casey Rodriguez", 
     avatar: "👩‍💻",
-    skills: ["Hyperfocus", "Code Architecture", "System Design", "Performance Optimization"], 
+    skills: ["Hiperconcentración", "Arquitectura de Código", "Diseño de Sistemas", "Optimización de Rendimiento"], 
     match: 96, 
     superpower: "💻", 
-    stage: "Offer", 
+    stage: "Oferta", 
     location: "Seattle",
     neurodivergence: "ADHD",
     iq: 148,
@@ -117,10 +117,10 @@ const extendedTalents = [
     id: 5, 
     name: "River Chen", 
     avatar: "👨‍🔧",
-    skills: ["Systems Thinking", "Process Optimization", "Data Engineering", "Analytics"], 
+    skills: ["Pensamiento Sistémico", "Optimización de Procesos", "Ingeniería de Datos", "Analítica"], 
     match: 89, 
     superpower: "🔧", 
-    stage: "Applied", 
+    stage: "Postulado", 
     location: "Boston",
     neurodivergence: "Autism",
     iq: 139,
@@ -141,10 +141,10 @@ const extendedTalents = [
     id: 6, 
     name: "Sage Williams", 
     avatar: "👩‍🎓",
-    skills: ["Research", "Analysis", "Documentation", "Knowledge Management"], 
+    skills: ["Investigación", "Análisis", "Documentación", "Gestión del Conocimiento"], 
     match: 87, 
     superpower: "📚", 
-    stage: "Assessed", 
+    stage: "Evaluado", 
     location: "Chicago",
     neurodivergence: "Dyspraxia",
     iq: 144,
@@ -165,10 +165,10 @@ const extendedTalents = [
     id: 7, 
     name: "Avery Johnson", 
     avatar: "👨‍🎯",
-    skills: ["Strategy", "Planning", "Risk Assessment", "Business Analysis"], 
+    skills: ["Estrategia", "Planificación", "Evaluación de Riesgos", "Análisis de Negoc ios"], 
     match: 93, 
     superpower: "🎯", 
-    stage: "Interviewing", 
+    stage: "Entrevistando", 
     location: "Denver",
     neurodivergence: "ADHD + Dyslexia",
     iq: 133,
@@ -191,10 +191,10 @@ const extendedTalents = [
     id: 8, 
     name: "Quinn Torres", 
     avatar: "👩‍🔬",
-    skills: ["Innovation", "Experimentation", "Product Development", "Research"], 
+    skills: ["Innovación", "Experimentación", "Desarrollo de Productos", "Investigación"], 
     match: 90, 
     superpower: "🔬", 
-    stage: "Applied", 
+    stage: "Postulado", 
     location: "Portland",
     neurodivergence: "Autism + ADHD",
     iq: 151,
@@ -326,9 +326,9 @@ export default function AdvancedCandidates() {
 
       <div className={styles.gamePerformance}>
         <div className={styles.performanceHeader}>
-          <span className={styles.performanceTitle}>Game Performance</span>
+          <span className={styles.performanceTitle}>Rendimiento en Juegos</span>
           <span className={styles.performanceAverage}>
-            Avg: {Math.round(Object.values(candidate.gameScores).reduce((a, b) => a + b) / Object.values(candidate.gameScores).length)}
+            Prom: {Math.round(Object.values(candidate.gameScores).reduce((a, b) => a + b) / Object.values(candidate.gameScores).length)}
           </span>
         </div>
         <div className={styles.performanceBars}>
@@ -348,7 +348,7 @@ export default function AdvancedCandidates() {
 
       <div className={styles.skillsSection}>
         <div className={styles.skillsHeader}>
-          <span className={styles.skillsTitle}>Skills</span>
+          <span className={styles.skillsTitle}>Habilidades</span>
           <span className={`${styles.stageBadge} ${
             candidate.stage === 'Applied' ? styles.applied :
             candidate.stage === 'Assessed' ? styles.assessed :
@@ -365,7 +365,7 @@ export default function AdvancedCandidates() {
             </span>
           ))}
           {candidate.skills.length > 2 && (
-            <span className={styles.moreSkills}>+{candidate.skills.length - 2} more</span>
+            <span className={styles.moreSkills}>+{candidate.skills.length - 2} más</span>
           )}
         </div>
       </div>
@@ -373,11 +373,11 @@ export default function AdvancedCandidates() {
       <div className={styles.infoGrid}>
         <div className={styles.infoItem}>
           <div className={`${styles.infoValue} ${styles.salary}`}>{candidate.salary}</div>
-          <div className={styles.infoLabel}>Salary Range</div>
+          <div className={styles.infoLabel}>Rango Salarial</div>
         </div>
         <div className={styles.infoItem}>
           <div className={`${styles.infoValue} ${styles.availability}`}>{candidate.availability}</div>
-          <div className={styles.infoLabel}>Available</div>
+          <div className={styles.infoLabel}>Disponible</div>
         </div>
       </div>
 
@@ -386,13 +386,13 @@ export default function AdvancedCandidates() {
           onClick={() => setSelectedCandidate(candidate)}
           className={`${styles.actionButton} ${styles.view}`}
         >
-          <FaEye /> <span>View</span>
+          <FaEye /> <span>Ver</span>
         </button>
         <button className={`${styles.actionButton} ${styles.invite}`}>
-          <FaEnvelope /> <span>Invite</span>
+          <FaEnvelope /> <span>Invitar</span>
         </button>
         <button className={`${styles.actionButton} ${styles.schedule}`}>
-          <FaCalendarAlt /> <span>Schedule</span>
+          <FaCalendarAlt /> <span>Agendar</span>
         </button>
         <button 
           onClick={() => handleSaveCandidate(candidate.id)}
@@ -403,7 +403,7 @@ export default function AdvancedCandidates() {
       </div>
 
       <div className={styles.lastActive}>
-        Last active: {candidate.lastActive}
+        Última actividad: {candidate.lastActive}
       </div>
     </div>
   );
@@ -434,7 +434,7 @@ export default function AdvancedCandidates() {
           <div className={styles.modalGrid}>
             {/* Performance Radar Chart */}
             <div className={styles.modalSection}>
-              <h3 className={styles.modalSectionTitle}>Performance Profile</h3>
+              <h3 className={styles.modalSectionTitle}>Perfil de Rendimiento</h3>
               <ResponsiveContainer width="100%" height={200}>
                 <RadarChart data={Object.entries(candidate.gameScores).map(([key, value]) => ({
                   subject: key,
@@ -451,7 +451,7 @@ export default function AdvancedCandidates() {
 
             {/* Quiz Results */}
             <div className={styles.modalSection}>
-              <h3 className={styles.modalSectionTitle}>Assessment Results</h3>
+              <h3 className={styles.modalSectionTitle}>Resultados de Evaluación</h3>
               <div className="space-y-3">
                 {Object.entries(candidate.quizResults).map(([key, value]) => (
                   <div key={key}>
@@ -472,10 +472,10 @@ export default function AdvancedCandidates() {
 
             {/* Skills & Strengths */}
             <div className={styles.modalSection}>
-              <h3 className={styles.modalSectionTitle}>Skills & Strengths</h3>
+              <h3 className={styles.modalSectionTitle}>Habilidades y Fortalezas</h3>
               <div className="space-y-3">
                 <div>
-                  <h4 className="text-sm font-medium text-gray-300 mb-2">Technical Skills</h4>
+                  <h4 className="text-sm font-medium text-gray-300 mb-2">Habilidades Técnicas</h4>
                   <div className="flex flex-wrap gap-2">
                     {candidate.skills.map((skill, idx) => (
                       <span key={idx} className="bg-purple-500/20 text-purple-400 px-2 py-1 rounded-full text-xs">
@@ -485,7 +485,7 @@ export default function AdvancedCandidates() {
                   </div>
                 </div>
                 <div>
-                  <h4 className="text-sm font-medium text-gray-300 mb-2">Core Strengths</h4>
+                  <h4 className="text-sm font-medium text-gray-300 mb-2">Fortalezas Principales</h4>
                   <div className="flex flex-wrap gap-2">
                     {candidate.strengths.map((strength, idx) => (
                       <span key={idx} className="bg-green-500/20 text-green-400 px-2 py-1 rounded-full text-xs">
@@ -499,7 +499,7 @@ export default function AdvancedCandidates() {
 
             {/* Accommodations */}
             <div className={styles.modalSection}>
-              <h3 className={styles.modalSectionTitle}>Accommodations</h3>
+              <h3 className={styles.modalSectionTitle}>Adaptaciones</h3>
               <ul className="space-y-2">
                 {candidate.accommodations.map((accommodation, idx) => (
                   <li key={idx} className="text-sm text-gray-300 flex items-center space-x-2">
@@ -512,7 +512,7 @@ export default function AdvancedCandidates() {
 
             {/* Interview History */}
             <div className={styles.modalSection}>
-              <h3 className={styles.modalSectionTitle}>Interview History</h3>
+              <h3 className={styles.modalSectionTitle}>Historial de Entrevistas</h3>
               {candidate.interviewHistory.length > 0 ? (
                 <div className="space-y-2">
                   {candidate.interviewHistory.map((interview, idx) => (
@@ -532,30 +532,30 @@ export default function AdvancedCandidates() {
                   ))}
                 </div>
               ) : (
-                <p className="text-gray-400 text-sm">No interview history available</p>
+                <p className="text-gray-400 text-sm">No hay historial de entrevistas disponible</p>
               )}
             </div>
 
             {/* Additional Info */}
             <div className={styles.modalSection}>
-              <h3 className={styles.modalSectionTitle}>Additional Information</h3>
+              <h3 className={styles.modalSectionTitle}>Información Adicional</h3>
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div>
-                  <span className="text-gray-400">Experience:</span>
+                  <span className="text-gray-400">Experiencia:</span>
                   <span className="text-white ml-2">{candidate.experience}</span>
                 </div>
                 <div>
-                  <span className="text-gray-400">Availability:</span>
+                  <span className="text-gray-400">Disponibilidad:</span>
                   <span className="text-white ml-2">{candidate.availability}</span>
                 </div>
                 <div>
-                  <span className="text-gray-400">Portfolio:</span>
+                  <span className="text-gray-400">Portafolio:</span>
                   <a href={`https://${candidate.portfolio}`} className="text-blue-400 ml-2 hover:underline">
                     {candidate.portfolio}
                   </a>
                 </div>
                 <div>
-                  <span className="text-gray-400">Salary:</span>
+                  <span className="text-gray-400">Salario:</span>
                   <span className="text-green-400 ml-2">{candidate.salary}</span>
                 </div>
               </div>
@@ -564,13 +564,13 @@ export default function AdvancedCandidates() {
 
           <div className={styles.modalActions}>
             <button className={`${styles.modalActionButton} ${styles.primary}`}>
-              <FaEnvelope /> <span>Send Invitation</span>
+              <FaEnvelope /> <span>Enviar Invitación</span>
             </button>
             <button className={`${styles.modalActionButton} ${styles.secondary}`}>
-              <FaCalendarAlt /> <span>Schedule Interview</span>
+              <FaCalendarAlt /> <span>Agendar Entrevista</span>
             </button>
             <button className={`${styles.modalActionButton} ${styles.success}`}>
-              <FaDownload /> <span>Download Report</span>
+              <FaDownload /> <span>Descargar Informe</span>
             </button>
           </div>
         </div>
@@ -588,8 +588,8 @@ export default function AdvancedCandidates() {
               🧠 Neurodivergent Talent Hub
             </h1>
             <p className={styles.headerSubtitle}>
-              Discover exceptional minds • {filteredCandidates.length} candidates • 
-              Avg IQ: {analyticsData.avgScores.iq} • Avg Match: {analyticsData.avgScores.match}%
+              Descubre mentes excepcionales • {filteredCandidates.length} candidatos •
+              IQ Prom: {analyticsData.avgScores.iq} • Match Prom: {analyticsData.avgScores.match}%
             </p>
           </div>
           <div className={styles.headerStats}>
@@ -609,7 +609,7 @@ export default function AdvancedCandidates() {
           <div className={`${styles.statCardLarge} ${styles.statCardPurple}`}>
             <div className={styles.statCardContent}>
               <div className={styles.statCardInfo}>
-                <h3>Top Performers</h3>
+                <h3>Mejores Talentos</h3>
                 <div className={styles.statValue}>
                   {filteredCandidates.filter(c => c.match >= 95).length}
                 </div>
@@ -620,7 +620,7 @@ export default function AdvancedCandidates() {
           <div className={`${styles.statCardLarge} ${styles.statCardBlue}`}>
             <div className={styles.statCardContent}>
               <div className={styles.statCardInfo}>
-                <h3>Ready to Interview</h3>
+                <h3>Listos para Entrevistar</h3>
                 <div className={styles.statValue}>
                   {filteredCandidates.filter(c => c.stage === 'Assessed').length}
                 </div>
@@ -631,7 +631,7 @@ export default function AdvancedCandidates() {
           <div className={`${styles.statCardLarge} ${styles.statCardGreen}`}>
             <div className={styles.statCardContent}>
               <div className={styles.statCardInfo}>
-                <h3>High IQ (140+)</h3>
+                <h3>IQ Alto (140+)</h3>
                 <div className={styles.statValue}>
                   {filteredCandidates.filter(c => c.iq >= 140).length}
                 </div>
@@ -642,7 +642,7 @@ export default function AdvancedCandidates() {
           <div className={`${styles.statCardLarge} ${styles.statCardYellow}`}>
             <div className={styles.statCardContent}>
               <div className={styles.statCardInfo}>
-                <h3>Immediate Availability</h3>
+                <h3>Disponibilidad Inmediata</h3>
                 <div className={styles.statValue}>
                   {filteredCandidates.filter(c => c.availability === 'Immediate').length}
                 </div>
@@ -660,7 +660,7 @@ export default function AdvancedCandidates() {
                 <FaSearch className={styles.searchIcon} />
                 <input
                   type="text"
-                  placeholder="Search candidates..."
+                  placeholder="Buscar candidatos..."
                   className={styles.searchInput}
                   value={filters.search}
                   onChange={(e) => setFilters({...filters, search: e.target.value})}
@@ -670,7 +670,7 @@ export default function AdvancedCandidates() {
                 onClick={() => setShowFilters(!showFilters)}
                 className={styles.filterButton}
               >
-                <FaFilter /> <span>Filters</span>
+                <FaFilter /> <span>Filtros</span>
               </button>
             </div>
             
@@ -679,19 +679,19 @@ export default function AdvancedCandidates() {
                 onClick={() => setViewMode('grid')}
                 className={`${styles.viewModeButton} ${viewMode === 'grid' ? styles.active : ''}`}
               >
-                Grid
+                Cuadrícula
               </button>
               <button
                 onClick={() => setViewMode('table')}
                 className={`${styles.viewModeButton} ${viewMode === 'table' ? styles.active : ''}`}
               >
-                Table
+                Tabla
               </button>
               <button
                 onClick={() => setViewMode('analytics')}
                 className={`${styles.viewModeButton} ${viewMode === 'analytics' ? styles.active : ''}`}
               >
-                Analytics
+                Análisis
               </button>
             </div>
           </div>
@@ -700,18 +700,18 @@ export default function AdvancedCandidates() {
         {/* Advanced Filters */}
         {showFilters && (
           <div className={styles.advancedFilters}>
-            <h3 className={styles.filtersTitle}>Advanced Filters</h3>
+            <h3 className={styles.filtersTitle}>Filtros Avanzados</h3>
             <div className={styles.filtersGrid}>
               <select
                 className={styles.filterSelect}
                 value={filters.stage}
                 onChange={(e) => setFilters({...filters, stage: e.target.value})}
               >
-                <option value="all">All Stages</option>
-                <option value="Applied">Applied</option>
-                <option value="Assessed">Assessed</option>
-                <option value="Interviewing">Interviewing</option>
-                <option value="Offer">Offer</option>
+                <option value="all">Todas las Etapas</option>
+                <option value="Postulado">Postulado</option>
+                <option value="Evaluado">Evaluado</option>
+                <option value="Entrevistando">Entrevistando</option>
+                <option value="Oferta">Oferta</option>
               </select>
               
               <select
@@ -719,7 +719,7 @@ export default function AdvancedCandidates() {
                 value={filters.neurodivergence}
                 onChange={(e) => setFilters({...filters, neurodivergence: e.target.value})}
               >
-                <option value="all">All Types</option>
+                <option value="all">Todos los Tipos</option>
                 <option value="ADHD">ADHD</option>
                 <option value="Autism">Autism</option>
                 <option value="Dyslexia">Dyslexia</option>
@@ -732,7 +732,7 @@ export default function AdvancedCandidates() {
                 value={filters.location}
                 onChange={(e) => setFilters({...filters, location: e.target.value})}
               >
-                <option value="all">All Locations</option>
+                <option value="all">Todas las Ubicaciones</option>
                 <option value="San Francisco">San Francisco</option>
                 <option value="New York">New York</option>
                 <option value="Austin">Austin</option>
@@ -741,7 +741,7 @@ export default function AdvancedCandidates() {
               </select>
               
               <div className={styles.rangeContainer}>
-                <label className={styles.rangeLabel}>Min Match:</label>
+                <label className={styles.rangeLabel}>Match Mínimo:</label>
                 <input
                   type="range"
                   min="0"
@@ -758,10 +758,10 @@ export default function AdvancedCandidates() {
                 value={filters.sortBy}
                 onChange={(e) => setFilters({...filters, sortBy: e.target.value})}
               >
-                <option value="match">Sort by Match</option>
-                <option value="name">Sort by Name</option>
-                <option value="iq">Sort by IQ</option>
-                <option value="experience">Sort by Experience</option>
+                <option value="match">Ordenar por Match</option>
+                <option value="name">Ordenar por Nombre</option>
+                <option value="iq">Ordenar por IQ</option>
+                <option value="experience">Ordenar por Experiencia</option>
               </select>
               
               <button
@@ -775,7 +775,7 @@ export default function AdvancedCandidates() {
                 })}
                 className={styles.clearButton}
               >
-                Clear All
+                Limpiar Todo
               </button>
             </div>
           </div>
@@ -797,13 +797,13 @@ export default function AdvancedCandidates() {
             <table className={styles.table}>
               <thead className={styles.tableHeader}>
                 <tr>
-                  <th>Candidate</th>
+                  <th>Candidato</th>
                   <th>Match</th>
                   <th>IQ/EQ</th>
-                  <th>Stage</th>
-                  <th>Type</th>
-                  <th>Experience</th>
-                  <th>Actions</th>
+                  <th>Etapa</th>
+                  <th>Tipo</th>
+                  <th>Experiencia</th>
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -874,7 +874,7 @@ export default function AdvancedCandidates() {
         <div className={styles.analyticsGrid}>
           {/* Pipeline Distribution */}
           <div className={styles.analyticsCard}>
-            <h3 className={styles.analyticsTitle}>Pipeline Distribution</h3>
+            <h3 className={styles.analyticsTitle}>Distribución del Pipeline</h3>
             <div className={styles.analyticsContainer}>
               <ResponsiveContainer width="100%" height="100%">
                 <PieChart>
@@ -900,7 +900,7 @@ export default function AdvancedCandidates() {
 
           {/* Neurodivergence Types */}
           <div className={styles.analyticsCard}>
-            <h3 className={styles.analyticsTitle}>Neurodivergence Types</h3>
+            <h3 className={styles.analyticsTitle}>Tipos de Neurodivergencia</h3>
             <div className={styles.analyticsContainer}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={analyticsData.byNeurodivergence}>
@@ -916,7 +916,7 @@ export default function AdvancedCandidates() {
 
           {/* IQ Distribution */}
           <div className={styles.analyticsCard}>
-            <h3 className={styles.analyticsTitle}>IQ Distribution</h3>
+            <h3 className={styles.analyticsTitle}>Distribución de IQ</h3>
             <div className={styles.analyticsContainer}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={[
@@ -937,7 +937,7 @@ export default function AdvancedCandidates() {
 
           {/* Match Score Trends */}
           <div className={styles.analyticsCard}>
-            <h3 className={styles.analyticsTitle}>Match Score Distribution</h3>
+            <h3 className={styles.analyticsTitle}>Distribución de Puntuaciones Match</h3>
             <div className={styles.analyticsContainer}>
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={[

@@ -13,58 +13,58 @@ const Analytics = () => {
   // Advanced KPI Data
   const kpiData = [
     { 
-      title: "Active Talent Pool", 
+      title: "Pool de Talentos Activo", 
       value: 2847, 
       change: 12.3, 
       trend: "up", 
       icon: Users,
       color: "#8B5CF6",
-      description: "Neurodivergent professionals ready for matching"
+      description: "Profesionales neurodivergentes listos para emparejamiento"
     },
     { 
-      title: "Placement Velocity", 
+      title: "Velocidad de Colocación", 
       value: 18.2, 
       change: 5.7, 
       trend: "up", 
       icon: Zap,
       color: "#EAB308",
-      description: "Days avg. from profile to placement"
+      description: "Días promedio desde perfil hasta colocación"
     },
     { 
-      title: "Superpower Match Rate", 
+      title: "Tasa de Match de Superpoderes", 
       value: 94.8, 
       change: 2.1, 
       trend: "up", 
       icon: Target,
       color: "#10B981",
-      description: "AI-driven talent-role compatibility"
+      description: "Compatibilidad talento-rol impulsada por IA"
     },
     { 
-      title: "Retention Success", 
+      title: "Éxito de Retención", 
       value: 87.3, 
       change: -1.2, 
       trend: "down", 
       icon: Award,
       color: "#F59E0B",
-      description: "12-month retention rate"
+      description: "Tasa de retención a 12 meses"
     },
     { 
-      title: "Neurotype Diversity", 
+      title: "Diversidad de Neurotipos", 
       value: 15.7, 
       change: 8.9, 
       trend: "up", 
       icon: Brain,
       color: "#EF4444",
-      description: "Shannon diversity index"
+      description: "Índice de diversidad de Shannon"
     },
     { 
-      title: "Engagement Score", 
+      title: "Puntuación de Compromiso", 
       value: 8.6, 
       change: 0.4, 
       trend: "up", 
       icon: Activity,
       color: "#3B82F6",
-      description: "Platform interaction quality"
+      description: "Calidad de interacción en la plataforma"
     }
   ];
 

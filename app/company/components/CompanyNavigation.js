@@ -52,31 +52,31 @@ export default function CompanyNavigation() {
         <div className="nav-item">
           <a href="#" className={`nav-link ${selectedView === 'overview' ? 'active' : ''}`} onClick={() => handleNavigation('overview')}>
             <FaHome className="nav-icon" />
-            <span className="nav-text">Overview</span>
+            <span className="nav-text">Resumen</span>
           </a>
         </div>
         <div className="nav-item">
           <a href="#" className={`nav-link ${selectedView === 'candidates' ? 'active' : ''}`} onClick={() => handleNavigation('candidates')}>
             <FaUsers className="nav-icon" />
-            <span className="nav-text">Candidates</span>
+            <span className="nav-text">Candidatos</span>
           </a>
         </div>
         <div className="nav-item">
           <a href="#" className={`nav-link ${selectedView === 'analytics' ? 'active' : ''}`} onClick={() => handleNavigation('analytics')}>
             <FaChartBar className="nav-icon" />
-            <span className="nav-text">Analytics</span>
+            <span className="nav-text">Análisis</span>
           </a>
         </div>
         <div className="nav-item">
           <a href="#" className={`nav-link ${selectedView === 'training' ? 'active' : ''}`} onClick={() => handleNavigation('training')}>
             <FaGraduationCap className="nav-icon" />
-            <span className="nav-text">Training</span>
+            <span className="nav-text">Capacitación</span>
           </a>
         </div>
         <div className="nav-item">
           <a href="#" className={`nav-link ${selectedView === 'settings' ? 'active' : ''}`} onClick={() => handleNavigation('settings')}>
             <FaCog className="nav-icon" />
-            <span className="nav-text">Settings</span>
+            <span className="nav-text">Configuración</span>
           </a>
         </div>
       </nav>

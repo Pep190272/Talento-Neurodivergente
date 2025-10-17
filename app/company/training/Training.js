@@ -12,7 +12,7 @@ import styles from './Training.module.css';
 const trainingModules = [
   { 
     id: 1, 
-    name: "Understanding ADHD", 
+    name: "Entendiendo el TDAH", 
     progress: 85, 
     certified: true, 
     duration: "45 min",
@@ -20,11 +20,11 @@ const trainingModules = [
     difficulty: "Beginner",
     rating: 4.8,
     enrolled: 124,
-    description: "Comprehensive guide to ADHD in workplace environments"
+    description: "Guía completa sobre el TDAH en entornos laborales"
   },
   { 
     id: 2, 
-    name: "Inclusive Communication", 
+    name: "Comunicación Inclusiva", 
     progress: 60, 
     certified: false, 
     duration: "30 min",
@@ -32,11 +32,11 @@ const trainingModules = [
     difficulty: "Intermediate",
     rating: 4.6,
     enrolled: 98,
-    description: "Master communication techniques for neurodivergent teams"
+    description: "Domina técnicas de comunicación para equipos neurodivergentes"
   },
   { 
     id: 3, 
-    name: "Autism Awareness", 
+    name: "Conciencia sobre Autismo", 
     progress: 100, 
     certified: true, 
     duration: "1h 15min",
@@ -44,11 +44,11 @@ const trainingModules = [
     difficulty: "Advanced",
     rating: 4.9,
     enrolled: 156,
-    description: "Deep dive into autism spectrum and workplace adaptations"
+    description: "Profundización en el espectro autista y adaptaciones laborales"
   },
   { 
     id: 4, 
-    name: "Dyslexia Support", 
+    name: "Apoyo para Dislexia", 
     progress: 30, 
     certified: false, 
     duration: "50 min",
@@ -56,44 +56,44 @@ const trainingModules = [
     difficulty: "Beginner",
     rating: 4.7,
     enrolled: 87,
-    description: "Supporting dyslexic employees in various work scenarios"
+    description: "Apoyando a empleados disléxicos en diversos escenarios laborales"
   },
 ];
 
 const mentorVideos = [
   {
     id: 1,
-    title: "Neurodivergent Leadership Strategies",
+    title: "Estrategias de Liderazgo Neurodivergente",
     thumbnail: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=400&h=225&fit=crop",
     duration: "28:45",
     views: "2.3K",
     likes: 189,
     mentor: "Dr. Sarah Chen",
-    specialty: "ADHD Leadership",
+    specialty: "Liderazgo con TDAH",
     uploaded: "2 days ago",
     rating: 4.9
   },
   {
     id: 2,
-    title: "Building Inclusive Teams",
+    title: "Construyendo Equipos Inclusivos",
     thumbnail: "https://images.unsplash.com/photo-1552664730-d307ca884978?w=400&h=225&fit=crop",
     duration: "35:12",
     views: "1.8K",
     likes: 156,
     mentor: "James Rodriguez",
-    specialty: "Team Dynamics",
+    specialty: "Dinámicas de Equipo",
     uploaded: "1 week ago",
     rating: 4.8
   },
   {
     id: 3,
-    title: "Autism Interview Techniques",
+    title: "Técnicas de Entrevista para Autismo",
     thumbnail: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?w=400&h=225&fit=crop",
     duration: "42:18",
     views: "3.1K",
     likes: 234,
     mentor: "Dr. Emma Watson",
-    specialty: "Autism Support",
+    specialty: "Apoyo para Autismo",
     uploaded: "3 days ago",
     rating: 4.9
   }
@@ -102,27 +102,27 @@ const mentorVideos = [
 const upcomingEvents = [
   {
     id: 1,
-    title: "Neurodiversity Hiring Workshop",
+    title: "Taller de Contratación Neurodiversa",
     date: "July 15, 2025",
     time: "2:00 PM",
     attendees: 45,
-    type: "workshop"
+    type: "taller"
   },
   {
     id: 2,
-    title: "1-on-1 Mentor Session",
+    title: "Sesión de Mentoría 1-a-1",
     date: "July 12, 2025",
     time: "10:00 AM",
     attendees: 1,
-    type: "mentoring"
+    type: "mentoría"
   },
   {
     id: 3,
-    title: "Team Building Challenge",
+    title: "Desafío de Construcción de Equipo",
     date: "July 20, 2025",
     time: "3:30 PM",
     attendees: 28,
-    type: "challenge"
+    type: "desafío"
   }
 ];
 
