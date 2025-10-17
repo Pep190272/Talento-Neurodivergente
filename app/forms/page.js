@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { User, Building2, Stethoscope, CheckCircle, ArrowRight, Star, Shield, Clock } from 'lucide-react';
 import { useLanguage } from '../hooks/useLanguage';
+import RealGenericForm from '../components/GenericForm';
 
 const getTabs = (t) => [
   {
@@ -34,120 +35,9 @@ const getFeatures = (t) => [
   { icon: Clock, text: t('forms.features.available') }
 ];
 
-// Mock GenericForm component for demonstration
+// Use the real GenericForm component
 const GenericForm = ({ type, t }) => {
-  const [formData, setFormData] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    setIsSubmitting(false);
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 3000);
-  };
-
-  const getFormFields = () => {
-    switch(type) {
-      case 'individual':
-        return [
-          { name: 'fullName', label: t('forms.fields.fullName'), type: 'text', required: true },
-          { name: 'email', label: t('forms.fields.email'), type: 'email', required: true },
-          { name: 'phone', label: t('forms.fields.phone'), type: 'tel', required: true },
-          { name: 'skills', label: t('forms.fields.skills'), type: 'textarea', required: true },
-          { name: 'experience', label: t('forms.fields.experience'), type: 'textarea', required: false },
-        ];
-      case 'company':
-        return [
-          { name: 'companyName', label: t('forms.fields.companyName'), type: 'text', required: true },
-          { name: 'contactPerson', label: t('forms.fields.contactPerson'), type: 'text', required: true },
-          { name: 'email', label: t('forms.fields.businessEmail'), type: 'email', required: true },
-          { name: 'industry', label: t('forms.fields.industry'), type: 'text', required: true },
-          { name: 'positions', label: t('forms.fields.positions'), type: 'textarea', required: true },
-        ];
-      case 'therapist':
-        return [
-          { name: 'fullName', label: t('forms.fields.fullName'), type: 'text', required: true },
-          { name: 'license', label: t('forms.fields.license'), type: 'text', required: true },
-          { name: 'email', label: t('forms.fields.professionalEmail'), type: 'email', required: true },
-          { name: 'specialization', label: t('forms.fields.specialization'), type: 'text', required: true },
-          { name: 'experience', label: t('forms.fields.yearsExperience'), type: 'number', required: true },
-        ];
-      default:
-        return [];
-    }
-  };
-
-  const fields = getFormFields();
-
-  return (
-    <div style={styles.formContainer}>
-      <div style={styles.formHeader}>
-        <h3 style={styles.formTitle}>
-          {t(`forms.formTitle.${type}`)}
-        </h3>
-        <p style={styles.formDescription}>{t('forms.formDescription')}</p>
-      </div>
-
-      <div style={styles.formContent}>
-        {fields.map((field) => (
-          <div key={field.name} style={styles.fieldGroup}>
-            <div style={styles.fieldLabel}>
-              {field.label} {field.required && <span style={styles.requiredStar}>*</span>}
-            </div>
-            {field.type === 'textarea' ? (
-              <textarea
-                name={field.name}
-                rows={4}
-                style={styles.textarea}
-                placeholder={field.label}
-                value={formData[field.name] || ''}
-                onChange={(e) => setFormData({...formData, [field.name]: e.target.value})}
-              />
-            ) : (
-              <input
-                type={field.type}
-                name={field.name}
-                style={styles.input}
-                placeholder={field.label}
-                value={formData[field.name] || ''}
-                onChange={(e) => setFormData({...formData, [field.name]: e.target.value})}
-              />
-            )}
-          </div>
-        ))}
-
-        <button
-          onClick={handleSubmit}
-          disabled={isSubmitting || submitted}
-          style={{
-            ...styles.submitButton,
-            ...(isSubmitting || submitted ? styles.submitButtonDisabled : {}),
-          }}
-        >
-          {isSubmitting ? (
-            <>
-              <div style={styles.spinner}></div>
-              {t('forms.processing')}
-            </>
-          ) : submitted ? (
-            <>
-              <CheckCircle style={styles.buttonIcon} />
-              {t('forms.success')}
-            </>
-          ) : (
-            <>
-              {t('forms.submit')}
-              <ArrowRight style={styles.buttonIcon} />
-            </>
-          )}
-        </button>
-      </div>
-    </div>
-  );
+  return <RealGenericForm type={type} />;
 };
 
 export default function FormsPage() {
