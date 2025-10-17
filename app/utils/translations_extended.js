@@ -239,7 +239,7 @@ export const extendedTranslations = {
       contact: {
         title: 'Get in Touch',
         description: 'This platform was designed with passion for accessibility, inclusion, and modern web technologies. We\'d love to hear from you!',
-        email: 'Contact: eternals@acelerai.com'
+        email: 'Contact: diversiaeternals@gmail.com'
       }
     },
     dashboard: {
@@ -321,7 +321,7 @@ export const extendedTranslations = {
       success: 'Submitted Successfully!',
       settingUp: 'Setting up:',
       needHelp: 'Need help? Contact our support team at',
-      supportEmail: 'support@example.com'
+      supportEmail: 'diversiaeternals@gmail.com'
     },
     gamesContent: {
       memoryGrid: {
@@ -714,7 +714,7 @@ export const extendedTranslations = {
       contact: {
         title: 'Ponte en Contacto',
         description: 'Esta plataforma fue diseñada con pasión por la accesibilidad, inclusión y tecnologías web modernas. ¡Nos encantaría saber de ti!',
-        email: 'Contacto: eternals@acelerai.com'
+        email: 'Contacto: diversiaeternals@gmail.com'
       }
     },
     dashboard: {
@@ -796,7 +796,7 @@ export const extendedTranslations = {
       success: '¡Enviado Exitosamente!',
       settingUp: 'Configurando:',
       needHelp: '¿Necesitas ayuda? Contacta a nuestro equipo de soporte en',
-      supportEmail: 'support@example.com'
+      supportEmail: 'diversiaeternals@gmail.com'
     },
     gamesContent: {
       memoryGrid: {

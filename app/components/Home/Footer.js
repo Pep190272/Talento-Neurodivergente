@@ -2,14 +2,15 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { FaTwitter, FaLinkedin, FaGithub, FaEnvelope } from 'react-icons/fa';
+import { FaLinkedin, FaEnvelope, FaInstagram, FaTiktok, FaDiscord } from 'react-icons/fa';
 import { useLanguage } from '../../hooks/useLanguage';
 
 const socialLinks = [
-  { icon: <FaTwitter />, href: 'https://twitter.com/', label: 'Twitter' },
-  { icon: <FaLinkedin />, href: 'https://linkedin.com/', label: 'LinkedIn' },
-  { icon: <FaGithub />, href: 'https://github.com/', label: 'GitHub' },
-  { icon: <FaEnvelope />, href: 'mailto:info@neurotalent.com', label: 'Email' }
+  { icon: <FaInstagram />, href: 'https://www.instagram.com/diversiaeternals/', label: 'Instagram' },
+  { icon: <FaLinkedin />, href: 'https://www.linkedin.com/company/mydiversia/', label: 'LinkedIn' },
+  { icon: <FaTiktok />, href: 'https://www.tiktok.com/@diversia_eternals', label: 'TikTok' },
+  { icon: <FaDiscord />, href: 'https://discord.gg/6pRSdkdR', label: 'Discord' },
+  { icon: <FaEnvelope />, href: 'mailto:diversiaeternals@gmail.com', label: 'Email' }
 ];
 
 export default function Footer() {

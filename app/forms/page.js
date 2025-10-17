@@ -178,7 +178,7 @@ export default function FormsPage() {
         <div style={styles.footer}>
           <p style={styles.footerText}>
             {t('forms.needHelp')}{' '}
-            <a href="mailto:support@example.com" style={styles.footerLink}>
+            <a href="mailto:diversiaeternals@gmail.com" style={styles.footerLink}>
               {t('forms.supportEmail')}
             </a>
           </p>
