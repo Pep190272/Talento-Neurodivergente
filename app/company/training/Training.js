@@ -17,7 +17,7 @@ const trainingModules = [
     certified: true, 
     duration: "45 min",
     type: "video",
-    difficulty: "Beginner",
+    difficulty: "Principiante",
     rating: 4.8,
     enrolled: 124,
     description: "Guía completa sobre el TDAH en entornos laborales"
@@ -29,7 +29,7 @@ const trainingModules = [
     certified: false, 
     duration: "30 min",
     type: "interactive",
-    difficulty: "Intermediate",
+    difficulty: "Intermedio",
     rating: 4.6,
     enrolled: 98,
     description: "Domina técnicas de comunicación para equipos neurodivergentes"
@@ -41,7 +41,7 @@ const trainingModules = [
     certified: true, 
     duration: "1h 15min",
     type: "video",
-    difficulty: "Advanced",
+    difficulty: "Avanzado",
     rating: 4.9,
     enrolled: 156,
     description: "Profundización en el espectro autista y adaptaciones laborales"
@@ -53,7 +53,7 @@ const trainingModules = [
     certified: false, 
     duration: "50 min",
     type: "quiz",
-    difficulty: "Beginner",
+    difficulty: "Principiante",
     rating: 4.7,
     enrolled: 87,
     description: "Apoyando a empleados disléxicos en diversos escenarios laborales"
@@ -216,9 +216,9 @@ export default function Training() {
           <div className={styles.headerContent}>
             <div>
               <h1 className={styles.headerTitle}>
-                🧠 Training & Mentoring Hub
+                🧠 Hub de Capacitación y Mentoría
               </h1>
-              <p className={styles.headerSubtitle}>Empower your team with neurodiversity excellence</p>
+              <p className={styles.headerSubtitle}>Empodera a tu equipo con excelencia en neurodiversidad</p>
             </div>
             <div className={styles.headerStats}>
               <div className={styles.brainIcon}>
@@ -226,7 +226,7 @@ export default function Training() {
               </div>
               <div className={styles.completionRate}>
                 <div className={styles.completionValue}>94%</div>
-                <div className={styles.completionLabel}>Completion Rate</div>
+                <div className={styles.completionLabel}>Tasa de Finalización</div>
               </div>
             </div>
           </div>
@@ -237,7 +237,7 @@ export default function Training() {
               <div className={styles.statContent}>
                 <div className={styles.statInfo}>
                   <div className={`${styles.statValue} ${styles.purple}`}>124</div>
-                  <div className={styles.statLabel}>Active Learners</div>
+                  <div className={styles.statLabel}>Aprendices Activos</div>
                 </div>
                 <FaUsers className={`${styles.statIcon} ${styles.purple}`} />
               </div>
@@ -246,7 +246,7 @@ export default function Training() {
               <div className={styles.statContent}>
                 <div className={styles.statInfo}>
                   <div className={`${styles.statValue} ${styles.yellow}`}>48</div>
-                  <div className={styles.statLabel}>Certifications</div>
+                  <div className={styles.statLabel}>Certificaciones</div>
                 </div>
                 <FaAward className={`${styles.statIcon} ${styles.yellow}`} />
               </div>
@@ -255,7 +255,7 @@ export default function Training() {
               <div className={styles.statContent}>
                 <div className={styles.statInfo}>
                   <div className={`${styles.statValue} ${styles.green}`}>89%</div>
-                  <div className={styles.statLabel}>Satisfaction</div>
+                  <div className={styles.statLabel}>Satisfacción</div>
                 </div>
                 <FaHeart className={`${styles.statIcon} ${styles.green}`} />
               </div>
@@ -264,7 +264,7 @@ export default function Training() {
               <div className={styles.statContent}>
                 <div className={styles.statInfo}>
                   <div className={`${styles.statValue} ${styles.blue}`}>156h</div>
-                  <div className={styles.statLabel}>Total Hours</div>
+                  <div className={styles.statLabel}>Horas Totales</div>
                 </div>
                 <FaClock className={`${styles.statIcon} ${styles.blue}`} />
               </div>
@@ -275,11 +275,11 @@ export default function Training() {
         {/* Navigation Tabs */}
         <div className={styles.navigationTabs}>
           {[
-            { id: 'modules', label: 'Training Modules', icon: FaBookOpen },
-            { id: 'videos', label: 'Mentor Videos', icon: FaVideo },
-            { id: 'events', label: 'Upcoming Events', icon: FaCalendarAlt },
-            { id: 'analytics', label: 'Analytics', icon: FaChartLine },
-            { id: 'upload', label: 'Content Upload', icon: FaUpload }
+            { id: 'modules', label: 'Módulos de Capacitación', icon: FaBookOpen },
+            { id: 'videos', label: 'Videos de Mentores', icon: FaVideo },
+            { id: 'events', label: 'Eventos Próximos', icon: FaCalendarAlt },
+            { id: 'analytics', label: 'Análisis', icon: FaChartLine },
+            { id: 'upload', label: 'Subir Contenido', icon: FaUpload }
           ].map(tab => (
             <button
               key={tab.id}
@@ -301,7 +301,7 @@ export default function Training() {
                 <FaSearch className={styles.searchIcon} />
                 <input
                   type="text"
-                  placeholder="Search training modules..."
+                  placeholder="Buscar módulos de capacitación..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className={styles.searchInput}
@@ -312,10 +312,10 @@ export default function Training() {
                 onChange={(e) => setFilterType(e.target.value)}
                 className={styles.filterSelect}
               >
-                <option value="all">All Types</option>
+                <option value="all">Todos los Tipos</option>
                 <option value="video">Video</option>
-                <option value="interactive">Interactive</option>
-                <option value="quiz">Quiz</option>
+                <option value="interactive">Interactivo</option>
+                <option value="quiz">Cuestionario</option>
               </select>
             </div>
 
@@ -334,7 +334,7 @@ export default function Training() {
                         </span>
                         <span className={styles.metaItem}>
                           <FaUsers />
-                          <span>{module.enrolled} enrolled</span>
+                          <span>{module.enrolled} inscritos</span>
                         </span>
                         <span className={`${styles.metaItem} ${styles.rating}`}>
                           <FaStar />
@@ -346,7 +346,7 @@ export default function Training() {
                       {module.certified && (
                         <div className={styles.certifiedBadge}>
                           <FaCheckCircle />
-                          Certified
+                          Certificado
                         </div>
                       )}
                       <div className={`${styles.difficultyBadge} ${
@@ -361,7 +361,7 @@ export default function Training() {
                   
                   <div className={styles.progressSection}>
                     <div className={styles.progressHeader}>
-                      <span className={styles.progressLabel}>Progress</span>
+                      <span className={styles.progressLabel}>Progreso</span>
                       <span className={styles.progressValue}>{module.progress}%</span>
                     </div>
                     <div className={styles.progressBar}>
@@ -376,7 +376,7 @@ export default function Training() {
                     <div className={styles.actionButtons}>
                       <button className={styles.primaryButton}>
                         <FaPlay />
-                        Continue
+                        Continuar
                       </button>
                       <button className={styles.secondaryButton}>
                         <FaShare />
@@ -400,10 +400,10 @@ export default function Training() {
         {activeTab === 'videos' && (
           <div>
             <div className={styles.videosHeader}>
-              <h2 className={styles.sectionTitle}>Mentor Video Library</h2>
+              <h2 className={styles.sectionTitle}>Biblioteca de Videos de Mentores</h2>
               <button className={styles.primaryButton}>
                 <FaPlus />
-                Add New Video
+                Agregar Nuevo Video
               </button>
             </div>
             
@@ -463,10 +463,10 @@ export default function Training() {
         {activeTab === 'events' && (
           <div>
             <div className={styles.videosHeader}>
-              <h2 className={styles.sectionTitle}>Upcoming Training Events</h2>
+              <h2 className={styles.sectionTitle}>Eventos de Capacitación Próximos</h2>
               <button className={styles.primaryButton}>
                 <FaPlus />
-                Schedule Event
+                Programar Evento
               </button>
             </div>
             
@@ -490,9 +490,9 @@ export default function Training() {
                       </div>
                     </div>
                     <div className={styles.eventActions}>
-                      <span className={styles.eventAttendees}>{event.attendees} attending</span>
+                      <span className={styles.eventAttendees}>{event.attendees} asistirán</span>
                       <button className={styles.primaryButton}>
-                        Join
+                        Unirse
                       </button>
                     </div>
                   </div>
@@ -504,10 +504,10 @@ export default function Training() {
 
         {activeTab === 'analytics' && (
           <div>
-            <h2 className={styles.sectionTitle}>Training Analytics</h2>
+            <h2 className={styles.sectionTitle}>Análisis de Capacitación</h2>
             <div className={styles.analyticsGrid}>
               <div className={styles.analyticsCard}>
-                <h3 className={styles.analyticsTitle}>Completion Rates</h3>
+                <h3 className={styles.analyticsTitle}>Tasas de Finalización</h3>
                 <div className={styles.analyticsList}>
                   {trainingModules.map((module) => (
                     <div key={module.id}>
@@ -527,22 +527,22 @@ export default function Training() {
               </div>
               
               <div className={styles.analyticsCard}>
-                <h3 className={styles.analyticsTitle}>Engagement Metrics</h3>
+                <h3 className={styles.analyticsTitle}>Métricas de Participación</h3>
                 <div className={styles.analyticsList}>
                   <div className={styles.analyticsItem}>
-                    <span className={styles.analyticsLabel}>Average Session Time</span>
+                    <span className={styles.analyticsLabel}>Tiempo Promedio de Sesión</span>
                     <span className={styles.analyticsValue}>32 min</span>
                   </div>
                   <div className={styles.analyticsItem}>
-                    <span className={styles.analyticsLabel}>Video Watch Rate</span>
+                    <span className={styles.analyticsLabel}>Tasa de Visualización de Videos</span>
                     <span className={styles.analyticsValue}>87%</span>
                   </div>
                   <div className={styles.analyticsItem}>
-                    <span className={styles.analyticsLabel}>Quiz Success Rate</span>
+                    <span className={styles.analyticsLabel}>Tasa de Éxito en Cuestionarios</span>
                     <span className={styles.analyticsValue}>94%</span>
                   </div>
                   <div className={styles.analyticsItem}>
-                    <span className={styles.analyticsLabel}>Certification Rate</span>
+                    <span className={styles.analyticsLabel}>Tasa de Certificación</span>
                     <span className={styles.analyticsValue}>76%</span>
                   </div>
                 </div>
@@ -553,38 +553,38 @@ export default function Training() {
 
         {activeTab === 'upload' && (
           <div>
-            <h2 className={styles.sectionTitle}>Content Upload Center</h2>
+            <h2 className={styles.sectionTitle}>Centro de Subida de Contenido</h2>
             <div className={styles.uploadGrid}>
               <div className={styles.uploadCard}>
-                <h3 className={styles.uploadTitle}>Upload New Training Material</h3>
+                <h3 className={styles.uploadTitle}>Subir Nuevo Material de Capacitación</h3>
                 <div className={styles.uploadForm}>
                   <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>Content Type</label>
+                    <label className={styles.formLabel}>Tipo de Contenido</label>
                     <select className={styles.formInput}>
-                      <option>Training Module</option>
-                      <option>Mentor Video</option>
-                      <option>Interactive Quiz</option>
-                      <option>Workshop Material</option>
+                      <option>Módulo de Capacitación</option>
+                      <option>Video de Mentor</option>
+                      <option>Cuestionario Interactivo</option>
+                      <option>Material de Taller</option>
                     </select>
                   </div>
                   <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>Title</label>
+                    <label className={styles.formLabel}>Título</label>
                     <input 
                       type="text" 
                       className={styles.formInput}
-                      placeholder="Enter content title..."
+                      placeholder="Ingresa el título del contenido..."
                     />
                   </div>
                   <div className={styles.formGroup}>
-                    <label className={styles.formLabel}>Description</label>
+                    <label className={styles.formLabel}>Descripción</label>
                     <textarea 
                       className={`${styles.formInput} ${styles.formTextarea}`}
-                      placeholder="Enter description..."
+                      placeholder="Ingresa la descripción..."
                     />
                   </div>
                   <div className={styles.dropZone}>
                     <FaUpload className={styles.uploadIcon} />
-                    <p className={styles.uploadText}>Drag & drop your files here or click to browse</p>
+                    <p className={styles.uploadText}>Arrastra y suelta tus archivos aquí o haz clic para buscar</p>
                     <button 
                       onClick={handleFileUpload}
                       className={styles.uploadButton}
@@ -593,12 +593,12 @@ export default function Training() {
                       {isUploading ? (
                         <>
                           <FaSpinner />
-                          Uploading...
+                          Subiendo...
                         </>
                       ) : (
                         <>
                           <FaUpload />
-                          Select Files
+                          Seleccionar Archivos
                         </>
                       )}
                     </button>
@@ -607,12 +607,12 @@ export default function Training() {
               </div>
               
               <div className={styles.uploadCard}>
-                <h3 className={styles.uploadTitle}>Upload Progress</h3>
+                <h3 className={styles.uploadTitle}>Progreso de Subida</h3>
                 <div className={styles.analyticsList}>
                   <div className={styles.analyticsItem}>
-                    <span className={styles.analyticsLabel}>Processing Status</span>
+                    <span className={styles.analyticsLabel}>Estado de Procesamiento</span>
                     <span className={styles.progressValue}>
-                      {progress < 100 ? `${progress}%` : 'Complete'}
+                      {progress < 100 ? `${progress}%` : 'Completo'}
                     </span>
                   </div>
                   <div className={styles.progressBar}>
@@ -623,18 +623,18 @@ export default function Training() {
                   </div>
                   
                   <div className={styles.recentUploads}>
-                    <h4 className={styles.recentTitle}>Recent Uploads</h4>
+                    <h4 className={styles.recentTitle}>Subidas Recientes</h4>
                     <div className={styles.uploadList}>
                       <div className={styles.uploadItem}>
                         <div className={styles.uploadItemInfo}>
                           <FaVideo className={`${styles.uploadItemIcon} ${styles.video}`} />
                           <div className={styles.uploadItemDetails}>
                             <h4>ADHD Leadership.mp4</h4>
-                            <p>Uploaded 2 hours ago</p>
+                            <p>Subido hace 2 horas</p>
                           </div>
                         </div>
                         <div className={styles.uploadItemStatus}>
-                          <span className={`${styles.statusText} ${styles.processed}`}>✓ Processed</span>
+                          <span className={`${styles.statusText} ${styles.processed}`}>✓ Procesado</span>
                           <button className={styles.iconButton}>
                             <FaEye />
                           </button>
@@ -644,12 +644,12 @@ export default function Training() {
                         <div className={styles.uploadItemInfo}>
                           <FaBookOpen className={`${styles.uploadItemIcon} ${styles.document}`} />
                           <div className={styles.uploadItemDetails}>
-                            <h4>Autism Quiz Module</h4>
-                            <p>Uploaded 5 hours ago</p>
+                            <h4>Módulo de Cuestionario sobre Autismo</h4>
+                            <p>Subido hace 5 horas</p>
                           </div>
                         </div>
                         <div className={styles.uploadItemStatus}>
-                          <span className={`${styles.statusText} ${styles.processing}`}>⏳ Processing</span>
+                          <span className={`${styles.statusText} ${styles.processing}`}>⏳ Procesando</span>
                           <button className={styles.iconButton}>
                             <FaEdit />
                           </button>
@@ -665,23 +665,23 @@ export default function Training() {
 
         {/* Quick Actions Floating Panel */}
         <div className={styles.quickActions}>
-          <h4 className={styles.quickActionsTitle}>Quick Actions</h4>
+          <h4 className={styles.quickActionsTitle}>Acciones Rápidas</h4>
           <div className={styles.quickActionsList}>
             <button className={`${styles.quickActionButton} ${styles.purple}`}>
               <FaUserTie />
-              <span>Book Mentor</span>
+              <span>Reservar Mentor</span>
             </button>
             <button className={`${styles.quickActionButton} ${styles.yellow}`}>
               <FaGamepad />
-              <span>Launch Challenge</span>
+              <span>Lanzar Desafío</span>
             </button>
             <button className={`${styles.quickActionButton} ${styles.green}`}>
               <FaDownload />
-              <span>Export Report</span>
+              <span>Exportar Reporte</span>
             </button>
             <button className={`${styles.quickActionButton} ${styles.blue}`}>
               <FaRocket />
-              <span>AI Insights</span>
+              <span>Insights de IA</span>
             </button>
           </div>
         </div>
@@ -691,8 +691,8 @@ export default function Training() {
           <div className={styles.achievementContent}>
             <FaAward className={styles.achievementIcon} />
             <div className={styles.achievementText}>
-              <h4>New Achievement!</h4>
-              <p>100 employees certified this month</p>
+              <h4>¡Nuevo Logro!</h4>
+              <p>100 empleados certificados este mes</p>
             </div>
           </div>
         </div>
@@ -747,8 +747,8 @@ export default function Training() {
             <div className={styles.gamificationContent}>
               <FaLightbulb className={`${styles.gamificationIcon} ${styles.yellow}`} />
               <div className={`${styles.gamificationText} ${styles.yellow}`}>
-                <h5>Level 5</h5>
-                <p>Training Master</p>
+                <h5>Nivel 5</h5>
+                <p>Maestro de Capacitación</p>
               </div>
             </div>
           </div>
@@ -756,8 +756,8 @@ export default function Training() {
             <div className={styles.gamificationContent}>
               <FaRocket className={`${styles.gamificationIcon} ${styles.purple}`} />
               <div className={`${styles.gamificationText} ${styles.purple}`}>
-                <h5>Streak: 7 days</h5>
-                <p>Keep it up!</p>
+                <h5>Racha: 7 días</h5>
+                <p>¡Sigue así!</p>
               </div>
             </div>
           </div>
