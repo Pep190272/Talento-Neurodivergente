@@ -1,32 +1,16 @@
 import { NextResponse } from 'next/server';
-import OpenAI from 'openai';
-import fs from 'fs';
-import path from 'path';
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
-const DATA_FILE = path.join(process.cwd(), 'data', 'submissions.json');
-
-// Read submissions for context
-function readSubmissions() {
-  try {
-    if (fs.existsSync(DATA_FILE)) {
-      const data = fs.readFileSync(DATA_FILE, 'utf8');
-      return JSON.parse(data);
-    }
-    return [];
-  } catch (error) {
-    console.error('Error reading submissions:', error);
-    return [];
-  }
-}
+const fallbackResponses = [
+  "¡Hola! Soy NeuroDialect. Actualmente estoy en modo de demostración. ¿Te gustaría saber más sobre nuestras características de evaluación cognitiva?",
+  "¡Gracias por tu interés! Como asistente de IA especializado en talento neurodivergente, puedo ayudarte con información sobre juegos cognitivos, evaluaciones y estrategias de inclusión laboral.",
+  "¡Encantado de ayudarte! Puedes explorar nuestros juegos de evaluación cognitiva en la sección de JUEGOS, o conocer más sobre nuestros formularios en CARACTERÍSTICAS.",
+  "Soy NeuroDialect, tu asistente para descubrir y potenciar el talento neurodivergente. ¿Quieres saber sobre evaluaciones cognitivas, matching laboral o estrategias de inclusión?"
+];
 
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { prompt, history = [], userData = null } = body;
+    const { prompt, userData = null } = body;
 
     if (!prompt) {
       return NextResponse.json(
@@ -35,61 +19,41 @@ export async function POST(request) {
       );
     }
 
-    // Get context from submissions
-    const submissions = readSubmissions();
-    
-    // Build context-aware prompt
-    let contextPrompt = `Eres NeuroDialect, un asistente de IA especializado en ayudar a personas neurodivergentes, empresas y terapeutas.
+    await new Promise(resolve => setTimeout(resolve, 800));
 
-    Tu rol es:
-    - Proporcionar respuestas comprensivas y de apoyo
-    - Responder preguntas sobre neurodivergencia, adaptaciones e integración laboral
-    - Ofrecer consejos prácticos y recursos
-    - Traducir conceptos complejos en términos simples
-    - Recomendar próximos pasos según las necesidades del usuario
+    let response = '';
 
-    Contexto del usuario actual: ${userData ? JSON.stringify(userData, null, 2) : 'Sin datos de usuario disponibles'}
+    const lowerPrompt = prompt.toLowerCase();
 
-    Actividad reciente de la plataforma: ${submissions.length} envíos totales (${submissions.filter(s => s.type === 'individual').length} individuos, ${submissions.filter(s => s.type === 'company').length} empresas, ${submissions.filter(s => s.type === 'therapist').length} terapeutas)
-
-    Historial del chat: ${history.map(msg => `${msg.role}: ${msg.content}`).join('\n')}
-
-    Mensaje del usuario: ${prompt}
-
-    Por favor responde en un tono útil y de apoyo. Si el usuario pregunta sobre características específicas, juegos o evaluaciones, menciona que están disponibles en la plataforma. SIEMPRE responde en español.`;
-
-    const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "system",
-          content: "Eres NeuroDialect, un asistente de IA de apoyo para la comunidad neurodivergente. Sé útil, comprensivo y práctico en tus respuestas. SIEMPRE responde en español."
-        },
-        {
-          role: "user",
-          content: contextPrompt
-        }
-      ],
-      temperature: 0.7,
-      max_tokens: 500,
-    });
-
-    const response = completion.choices[0].message.content;
+    if (lowerPrompt.includes('juego') || lowerPrompt.includes('evalua') || lowerPrompt.includes('cognitiv')) {
+      response = "¡Excelente pregunta! Tenemos 11 juegos de evaluación cognitiva que miden memoria, atención, razonamiento lógico y velocidad de procesamiento. Puedes acceder a ellos en la sección JUEGOS del menú principal. Cada juego está diseñado científicamente para identificar fortalezas cognitivas únicas.";
+    } else if (lowerPrompt.includes('empresa') || lowerPrompt.includes('contratar') || lowerPrompt.includes('trabajo')) {
+      response = "Para empresas, ofrecemos: 1) Evaluaciones científicas de candidatos, 2) Matching inteligente basado en fortalezas cognitivas, 3) Formación en inclusión neurodivergente, y 4) Consultoría personalizada. Visita la sección EMPRESA para más detalles.";
+    } else if (lowerPrompt.includes('formulario') || lowerPrompt.includes('registro') || lowerPrompt.includes('inscrib')) {
+      response = "Puedes registrarte completando nuestro formulario dinámico en la sección FORMULARIOS. Allí podrás indicar tus fortalezas, experiencia y preferencias laborales. El proceso es 100% confidencial y adaptado a tus necesidades.";
+    } else if (lowerPrompt.includes('ayuda') || lowerPrompt.includes('como') || lowerPrompt.includes('funciona')) {
+      response = "DiversIA es una plataforma que conecta talento neurodivergente con empresas inclusivas. Ofrecemos: evaluaciones cognitivas (JUEGOS), formularios personalizados (FORMULARIOS), matching laboral, y recursos para empresas. ¿En qué área específica te gustaría más información?";
+    } else {
+      response = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
+    }
 
     return NextResponse.json({
       response,
       timestamp: new Date().toISOString(),
       context: {
         userData: userData ? 'available' : 'none',
-        submissionsCount: submissions.length
+        mode: 'demo'
       }
     });
 
   } catch (error) {
     console.error('Chat API error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
+      {
+        response: "Disculpa, estoy teniendo dificultades técnicas. Por favor intenta de nuevo en un momento.",
+        error: 'Internal server error'
+      },
+      { status: 200 }
     );
   }
 } 

@@ -1,11 +1,6 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
-import OpenAI from 'openai';
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
 
 const DATA_FILE = path.join(process.cwd(), 'data', 'submissions.json');
 
@@ -43,49 +38,59 @@ function writeSubmissions(submissions) {
   }
 }
 
-// OpenAI validation and normalization
+// Simple validation and normalization
 async function validateAndNormalize(formData, formType) {
   try {
-    const prompt = `Please validate and normalize the following ${formType} form data. 
-    Return a JSON object with:
-    1. "validated": boolean - whether the data is valid
-    2. "normalized": object - the cleaned/normalized data
-    3. "summary": string - a human-readable summary
-    4. "errors": array - any validation errors
-    
-    Form type: ${formType}
-    Form data: ${JSON.stringify(formData, null, 2)}
-    
-    For normalization:
-    - Standardize acronyms (e.g., "ADHD" not "adhd")
-    - Clean up formatting
-    - Ensure required fields are present
-    - Convert to consistent data types`;
+    const errors = [];
+    const normalized = { ...formData };
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-3.5-turbo",
-      messages: [
-        {
-          role: "system",
-          content: "You are a data validation and normalization expert. Always respond with valid JSON."
-        },
-        {
-          role: "user",
-          content: prompt
-        }
-      ],
-      temperature: 0.1,
-    });
+    if (formType === 'individual') {
+      if (!formData.firstName || formData.firstName.trim().length < 2) {
+        errors.push('First name is required and must be at least 2 characters');
+      }
+      if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        errors.push('Valid email is required');
+      }
+      normalized.firstName = formData.firstName?.trim();
+      normalized.email = formData.email?.toLowerCase().trim();
+    } else if (formType === 'company') {
+      if (!formData.companyName || formData.companyName.trim().length < 2) {
+        errors.push('Company name is required');
+      }
+      if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        errors.push('Valid email is required');
+      }
+      normalized.companyName = formData.companyName?.trim();
+      normalized.email = formData.email?.toLowerCase().trim();
+    } else if (formType === 'therapist') {
+      if (!formData.firstName || formData.firstName.trim().length < 2) {
+        errors.push('First name is required');
+      }
+      if (!formData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+        errors.push('Valid email is required');
+      }
+      normalized.firstName = formData.firstName?.trim();
+      normalized.email = formData.email?.toLowerCase().trim();
+    }
 
-    const response = completion.choices[0].message.content;
-    return JSON.parse(response);
+    const validated = errors.length === 0;
+    const summary = validated
+      ? `${formType} form validated successfully`
+      : `${formType} form has validation errors`;
+
+    return {
+      validated,
+      normalized,
+      summary,
+      errors
+    };
   } catch (error) {
-    console.error('OpenAI validation error:', error);
+    console.error('Validation error:', error);
     return {
       validated: false,
       normalized: formData,
-      summary: 'Validation failed due to API error',
-      errors: ['OpenAI API error occurred']
+      summary: 'Validation failed due to error',
+      errors: ['Validation error occurred']
     };
   }
 }
