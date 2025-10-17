@@ -303,14 +303,14 @@ const GetStarted = () => {
           <h3 className="sectionTitle">Antecedentes Profesionales</h3>
           <div className="formRow">
             <div className="formGroup">
-              <label className="label">Age Range *</label>
+              <label className="label">Rango de Edad *</label>
               <select
                 name="age"
                 value={formData.age}
                 onChange={handleInputChange}
                 className={`select ${errors.age ? 'inputError' : ''}`}
               >
-                <option value="">Select age range</option>
+                <option value="">Seleccionar rango de edad</option>
                 <option value="18-25">18-25</option>
                 <option value="26-35">26-35</option>
                 <option value="36-45">36-45</option>
@@ -320,49 +320,49 @@ const GetStarted = () => {
               {errors.age && <span className="errorText">{errors.age}</span>}
             </div>
             <div className="formGroup">
-              <label className="label">Education Level *</label>
+              <label className="label">Nivel Educativo *</label>
               <select
                 name="education"
                 value={formData.education}
                 onChange={handleInputChange}
                 className={`select ${errors.education ? 'inputError' : ''}`}
               >
-                <option value="">Select education level</option>
-                <option value="high-school">High School</option>
-                <option value="associate">Associate Degree</option>
-                <option value="bachelor">Bachelor's Degree</option>
-                <option value="master">Master's Degree</option>
-                <option value="phd">PhD/Doctorate</option>
-                <option value="other">Other</option>
+                <option value="">Seleccionar nivel educativo</option>
+                <option value="high-school">Bachillerato</option>
+                <option value="associate">Técnico Superior</option>
+                <option value="bachelor">Licenciatura</option>
+                <option value="master">Maestría</option>
+                <option value="phd">Doctorado</option>
+                <option value="other">Otro</option>
               </select>
               {errors.education && <span className="errorText">{errors.education}</span>}
             </div>
           </div>
           
           <div className="formGroup">
-            <label className="label">Experience Level *</label>
+            <label className="label">Nivel de Experiencia *</label>
             <select
               name="experience"
               value={formData.experience}
               onChange={handleInputChange}
               className={`select ${errors.experience ? 'inputError' : ''}`}
             >
-              <option value="">Select experience level</option>
-              <option value="entry">Entry Level (0-2 years)</option>
-              <option value="mid">Mid Level (3-5 years)</option>
-              <option value="senior">Senior Level (6-10 years)</option>
-              <option value="expert">Expert Level (10+ years)</option>
+              <option value="">Seleccionar nivel de experiencia</option>
+              <option value="entry">Nivel Inicial (0-2 años)</option>
+              <option value="mid">Nivel Intermedio (3-5 años)</option>
+              <option value="senior">Nivel Senior (6-10 años)</option>
+              <option value="expert">Nivel Experto (10+ años)</option>
             </select>
             {errors.experience && <span className="errorText">{errors.experience}</span>}
           </div>
         </div>
 
         <div className="formSection">
-          <h3 className="sectionTitle">Skills & Preferences</h3>
+          <h3 className="sectionTitle">Habilidades y Preferencias</h3>
           <div className="formGroup">
-            <label className="label">Core Skills * (Select all that apply)</label>
+            <label className="label">Habilidades Principales * (Selecciona todas las que apliquen)</label>
             <div className="checkboxGrid">
-              {['Programming', 'Data Analysis', 'Design', 'Writing', 'Research', 'Problem Solving', 'Pattern Recognition', 'Attention to Detail'].map(skill => (
+              {['Programación', 'Análisis de Datos', 'Diseño', 'Redacción', 'Investigación', 'Resolución de Problemas', 'Reconocimiento de Patrones', 'Atención al Detalle'].map(skill => (
                 <label key={skill} className="checkboxLabel">
                   <input
                     type="checkbox"
@@ -380,46 +380,46 @@ const GetStarted = () => {
           </div>
           
           <div className="formGroup">
-            <label className="label">Neurodivergent Type (Optional)</label>
+            <label className="label">Tipo de Neurodivergencia (Opcional)</label>
             <select
               name="neurodivergentType"
               value={formData.neurodivergentType}
               onChange={handleInputChange}
               className="select"
             >
-              <option value="">Prefer not to specify</option>
-              <option value="autism">Autism Spectrum</option>
-              <option value="adhd">ADHD</option>
-              <option value="dyslexia">Dyslexia</option>
-              <option value="dyspraxia">Dyspraxia</option>
-              <option value="other">Other</option>
+              <option value="">Prefiero no especificar</option>
+              <option value="autism">Espectro Autista</option>
+              <option value="adhd">TDAH</option>
+              <option value="dyslexia">Dislexia</option>
+              <option value="dyspraxia">Dispraxia</option>
+              <option value="other">Otro</option>
             </select>
           </div>
           
           <div className="formGroup">
-            <label className="label">Work Preference</label>
+            <label className="label">Preferencia de Trabajo</label>
             <select
               name="workPreference"
               value={formData.workPreference}
               onChange={handleInputChange}
               className="select"
             >
-              <option value="">Select preference</option>
-              <option value="remote">Remote</option>
-              <option value="hybrid">Hybrid</option>
-              <option value="onsite">On-site</option>
+              <option value="">Seleccionar preferencia</option>
+              <option value="remote">Remoto</option>
+              <option value="hybrid">Híbrido</option>
+              <option value="onsite">Presencial</option>
               <option value="flexible">Flexible</option>
             </select>
           </div>
           
           <div className="formGroup">
-            <label className="label">Accommodations Needed (Optional)</label>
+            <label className="label">Adaptaciones Necesarias (Opcional)</label>
             <textarea
               name="accommodations"
               value={formData.accommodations}
               onChange={handleInputChange}
               className="textarea"
-              placeholder="Describe any workplace accommodations that would help you perform your best..."
+              placeholder="Describe las adaptaciones laborales que te ayudarían a desempeñarte mejor..."
               rows="4"
             />
           </div>
@@ -430,7 +430,7 @@ const GetStarted = () => {
           className="submitButton"
           disabled={isSubmitting}
         >
-          {isSubmitting ? 'Creating Your Profile...' : 'Create My Profile'}
+          {isSubmitting ? 'Creando Tu Perfil...' : 'Crear Mi Perfil'}
         </button>
       </form>
     </div>
@@ -450,7 +450,7 @@ const GetStarted = () => {
           <h3 className="sectionTitle">Información de Contacto</h3>
           <div className="formRow">
             <div className="formGroup">
-              <label className="label">First Name *</label>
+              <label className="label">Nombre *</label>
               <input
                 type="text"
                 name="firstName"
@@ -462,7 +462,7 @@ const GetStarted = () => {
               {errors.firstName && <span className="errorText">{errors.firstName}</span>}
             </div>
             <div className="formGroup">
-              <label className="label">Last Name *</label>
+              <label className="label">Apellido *</label>
               <input
                 type="text"
                 name="lastName"
@@ -477,7 +477,7 @@ const GetStarted = () => {
           
           <div className="formRow">
             <div className="formGroup">
-              <label className="label">Email *</label>
+              <label className="label">Correo Electrónico *</label>
               <input
                 type="email"
                 name="email"
@@ -489,7 +489,7 @@ const GetStarted = () => {
               {errors.email && <span className="errorText">{errors.email}</span>}
             </div>
             <div className="formGroup">
-              <label className="label">Phone</label>
+              <label className="label">Teléfono</label>
               <input
                 type="tel"
                 name="phone"
@@ -506,7 +506,7 @@ const GetStarted = () => {
           <h3 className="sectionTitle">Información de la Empresa</h3>
           <div className="formRow">
             <div className="formGroup">
-              <label className="label">Company Name *</label>
+              <label className="label">Nombre de la Empresa *</label>
               <input
                 type="text"
                 name="companyName"
@@ -518,14 +518,14 @@ const GetStarted = () => {
               {errors.companyName && <span className="errorText">{errors.companyName}</span>}
             </div>
             <div className="formGroup">
-              <label className="label">Your Position *</label>
+              <label className="label">Tu Posición *</label>
               <input
                 type="text"
                 name="position"
                 value={formData.position}
                 onChange={handleInputChange}
                 className={`input ${errors.position ? 'inputError' : ''}`}
-                placeholder="e.g., HR Manager, CEO, Recruiter"
+                placeholder="ej. Gerente de RH, CEO, Reclutador"
               />
               {errors.position && <span className="errorText">{errors.position}</span>}
             </div>
@@ -533,39 +533,39 @@ const GetStarted = () => {
           
           <div className="formRow">
             <div className="formGroup">
-              <label className="label">Industry *</label>
+              <label className="label">Industria *</label>
               <select
                 name="industry"
                 value={formData.industry}
                 onChange={handleInputChange}
                 className={`select ${errors.industry ? 'inputError' : ''}`}
               >
-                <option value="">Select industry</option>
-                <option value="technology">Technology</option>
-                <option value="healthcare">Healthcare</option>
-                <option value="finance">Finance</option>
-                <option value="education">Education</option>
-                <option value="manufacturing">Manufacturing</option>
+                <option value="">Seleccionar industria</option>
+                <option value="technology">Tecnología</option>
+                <option value="healthcare">Salud</option>
+                <option value="finance">Finanzas</option>
+                <option value="education">Educación</option>
+                <option value="manufacturing">Manufactura</option>
                 <option value="retail">Retail</option>
-                <option value="consulting">Consulting</option>
-                <option value="other">Other</option>
+                <option value="consulting">Consultoría</option>
+                <option value="other">Otro</option>
               </select>
               {errors.industry && <span className="errorText">{errors.industry}</span>}
             </div>
             <div className="formGroup">
-              <label className="label">Company Size *</label>
+              <label className="label">Tamaño de la Empresa *</label>
               <select
                 name="companySize"
                 value={formData.companySize}
                 onChange={handleInputChange}
                 className={`select ${errors.companySize ? 'inputError' : ''}`}
               >
-                <option value="">Select company size</option>
-                <option value="1-10">1-10 employees</option>
-                <option value="11-50">11-50 employees</option>
-                <option value="51-200">51-200 employees</option>
-                <option value="201-1000">201-1000 employees</option>
-                <option value="1000+">1000+ employees</option>
+                <option value="">Seleccionar tamaño de empresa</option>
+                <option value="1-10">1-10 empleados</option>
+                <option value="11-50">11-50 empleados</option>
+                <option value="51-200">51-200 empleados</option>
+                <option value="201-1000">201-1000 empleados</option>
+                <option value="1000+">1000+ empleados</option>
               </select>
               {errors.companySize && <span className="errorText">{errors.companySize}</span>}
             </div>
@@ -594,7 +594,7 @@ const GetStarted = () => {
           </div>
           
           <div className="formGroup">
-            <label className="label">Hiring Goals</label>
+            <label className="label">Objetivos de Contratación</label>
             <textarea
               name="hiringGoals"
               value={formData.hiringGoals}
@@ -606,18 +606,18 @@ const GetStarted = () => {
           </div>
           
           <div className="formGroup">
-            <label className="label">Diversity & Inclusion Experience</label>
+            <label className="label">Experiencia en Diversidad e Inclusión</label>
             <select
               name="diversityExperience"
               value={formData.diversityExperience}
               onChange={handleInputChange}
               className="select"
             >
-              <option value="">Select experience level</option>
-              <option value="beginner">Just getting started</option>
-              <option value="some">Some experience</option>
-              <option value="experienced">Very experienced</option>
-              <option value="expert">Leading industry practices</option>
+              <option value="">Seleccionar nivel de experiencia</option>
+              <option value="beginner">Comenzando</option>
+              <option value="some">Algo de experiencia</option>
+              <option value="experienced">Muy experimentado</option>
+              <option value="expert">Líder en prácticas de la industria</option>
             </select>
           </div>
         </div>
@@ -627,7 +627,7 @@ const GetStarted = () => {
           className="submitButton"
           disabled={isSubmitting}
         >
-          {isSubmitting ? 'Creating Your Account...' : 'Start Finding Talent'}
+          {isSubmitting ? 'Creando Tu Cuenta...' : 'Comenzar a Encontrar Talento'}
         </button>
       </form>
     </div>
@@ -644,10 +644,10 @@ const GetStarted = () => {
       
       <form onSubmit={handleSubmit} className="form">
         <div className="formSection">
-          <h3 className="sectionTitle">Personal Information</h3>
+          <h3 className="sectionTitle">Información Personal</h3>
           <div className="formRow">
             <div className="formGroup">
-              <label className="label">First Name *</label>
+              <label className="label">Nombre *</label>
               <input
                 type="text"
                 name="firstName"
@@ -659,7 +659,7 @@ const GetStarted = () => {
               {errors.firstName && <span className="errorText">{errors.firstName}</span>}
             </div>
             <div className="formGroup">
-              <label className="label">Last Name *</label>
+              <label className="label">Apellido *</label>
               <input
                 type="text"
                 name="lastName"
@@ -674,7 +674,7 @@ const GetStarted = () => {
           
           <div className="formRow">
             <div className="formGroup">
-              <label className="label">Email *</label>
+              <label className="label">Correo Electrónico *</label>
               <input
                 type="email"
                 name="email"
@@ -686,7 +686,7 @@ const GetStarted = () => {
               {errors.email && <span className="errorText">{errors.email}</span>}
             </div>
             <div className="formGroup">
-              <label className="label">Phone</label>
+              <label className="label">Teléfono</label>
               <input
                 type="tel"
                 name="phone"
@@ -703,7 +703,7 @@ const GetStarted = () => {
           <h3 className="sectionTitle">Credenciales Profesionales</h3>
           <div className="formRow">
             <div className="formGroup">
-              <label className="label">License Number *</label>
+              <label className="label">Número de Licencia *</label>
               <input
                 type="text"
                 name="licenseNumber"
@@ -715,41 +715,41 @@ const GetStarted = () => {
               {errors.licenseNumber && <span className="errorText">{errors.licenseNumber}</span>}
             </div>
             <div className="formGroup">
-              <label className="label">Years of Experience *</label>
+              <label className="label">Años de Experiencia *</label>
               <select
                 name="yearsOfExperience"
                 value={formData.yearsOfExperience}
                 onChange={handleInputChange}
                 className={`select ${errors.yearsOfExperience ? 'inputError' : ''}`}
               >
-                <option value="">Select experience level</option>
-                <option value="0-2">0-2 years</option>
-                <option value="3-5">3-5 years</option>
-                <option value="6-10">6-10 years</option>
-                <option value="11-15">11-15 years</option>
-                <option value="15+">15+ years</option>
+                <option value="">Seleccionar nivel de experiencia</option>
+                <option value="0-2">0-2 años</option>
+                <option value="3-5">3-5 años</option>
+                <option value="6-10">6-10 años</option>
+                <option value="11-15">11-15 años</option>
+                <option value="15+">15+ años</option>
               </select>
               {errors.yearsOfExperience && <span className="errorText">{errors.yearsOfExperience}</span>}
             </div>
           </div>
           
           <div className="formGroup">
-            <label className="label">Primary Specialization *</label>
+            <label className="label">Especialización Principal *</label>
             <select
               name="specialization"
               value={formData.specialization}
               onChange={handleInputChange}
               className={`select ${errors.specialization ? 'inputError' : ''}`}
             >
-              <option value="">Select specialization</option>
-              <option value="adhd">ADHD Specialist</option>
-              <option value="autism">Autism Spectrum Specialist</option>
-              <option value="dyslexia">Dyslexia Specialist</option>
-              <option value="dyspraxia">Dyspraxia Specialist</option>
-              <option value="general">General Neurodivergent Support</option>
-              <option value="occupational">Occupational Therapy</option>
-              <option value="psychology">Clinical Psychology</option>
-              <option value="other">Other</option>
+              <option value="">Seleccionar especialización</option>
+              <option value="adhd">Especialista en TDAH</option>
+              <option value="autism">Especialista en Espectro Autista</option>
+              <option value="dyslexia">Especialista en Dislexia</option>
+              <option value="dyspraxia">Especialista en Dispraxia</option>
+              <option value="general">Apoyo General Neurodivergente</option>
+              <option value="occupational">Terapia Ocupacional</option>
+              <option value="psychology">Psicología Clínica</option>
+              <option value="other">Otro</option>
             </select>
             {errors.specialization && <span className="errorText">{errors.specialization}</span>}
           </div>
@@ -760,7 +760,7 @@ const GetStarted = () => {
           <div className="formGroup">
             <label className="label">Certificaciones Profesionales * (Selecciona todas las que apliquen)</label>
             <div className="checkboxGrid">
-              {['Licensed Clinical Psychologist', 'Licensed Professional Counselor', 'Occupational Therapist', 'ADHD Coach', 'Autism Specialist', 'Dyslexia Specialist', 'Neurodivergent Coach', 'Career Counselor'].map(cert => (
+              {['Psicólogo Clínico Licenciado', 'Consejero Profesional Licenciado', 'Terapeuta Ocupacional', 'Coach de TDAH', 'Especialista en Autismo', 'Especialista en Dislexia', 'Coach Neurodivergente', 'Consejero de Carrera'].map(cert => (
                 <label key={cert} className="checkboxLabel">
                   <input
                     type="checkbox"
@@ -780,7 +780,7 @@ const GetStarted = () => {
           <div className="formGroup">
             <label className="label">Tipos de Terapia Ofrecidos (Selecciona todos los que apliquen)</label>
             <div className="checkboxGrid">
-              {['Individual Therapy', 'Group Therapy', 'Family Therapy', 'Career Counseling', 'Assessment & Evaluation', 'Skills Training', 'Accommodation Planning', 'Workplace Support'].map(type => (
+              {['Terapia Individual', 'Terapia Grupal', 'Terapia Familiar', 'Asesoría Profesional', 'Evaluación y Valoración', 'Entrenamiento de Habilidades', 'Planificación de Adaptaciones', 'Apoyo Laboral'].map(type => (
                 <label key={type} className="checkboxLabel">
                   <input
                     type="checkbox"
@@ -801,23 +801,23 @@ const GetStarted = () => {
           <h3 className="sectionTitle">Información de Práctica</h3>
           <div className="formRow">
             <div className="formGroup">
-              <label className="label">Availability</label>
+              <label className="label">Disponibilidad</label>
               <select
                 name="availability"
                 value={formData.availability}
                 onChange={handleInputChange}
                 className="select"
               >
-                <option value="">Select availability</option>
-                <option value="full-time">Full-time</option>
-                <option value="part-time">Part-time</option>
-                <option value="weekends">Weekends only</option>
-                <option value="evenings">Evenings only</option>
-                <option value="flexible">Flexible schedule</option>
+                <option value="">Seleccionar disponibilidad</option>
+                <option value="full-time">Tiempo Completo</option>
+                <option value="part-time">Medio Tiempo</option>
+                <option value="weekends">Solo Fines de Semana</option>
+                <option value="evenings">Solo Tardes</option>
+                <option value="flexible">Horario Flexible</option>
               </select>
             </div>
             <div className="formGroup">
-              <label className="label">Consultation Fee (USD)</label>
+              <label className="label">Tarifa de Consulta (USD)</label>
               <input
                 type="number"
                 name="consultationFee"
@@ -831,7 +831,7 @@ const GetStarted = () => {
           </div>
           
           <div className="formGroup">
-            <label className="label">Professional Bio</label>
+            <label className="label">Biografía Profesional</label>
             <textarea
               name="bio"
               value={formData.bio}
@@ -848,7 +848,7 @@ const GetStarted = () => {
           className="submitButton"
           disabled={isSubmitting}
         >
-          {isSubmitting ? 'Creating Your Profile...' : 'Join Our Network'}
+          {isSubmitting ? 'Creando Tu Perfil...' : 'Unirme a la Red'}
         </button>
       </form>
     </div>
