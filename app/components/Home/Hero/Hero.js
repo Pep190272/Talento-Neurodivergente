@@ -95,9 +95,9 @@ export default function Hero() {
   // Initialize chat with personalized welcome message
   useEffect(() => {
     if (userData) {
-      const welcomeMessage = userData.userType === 'candidate' 
-        ? `Hello ${userData.firstName}! I'm NeuroDialect, your AI assistant. I can help you with career guidance, skill development, and finding opportunities that match your unique strengths. What would you like to know?`
-        : `Hello ${userData.firstName}! I'm NeuroDialect, your AI assistant. I can help you with building inclusive teams, hiring neurodivergent talent, and creating supportive workplace environments. What would you like to know?`
+      const welcomeMessage = userData.userType === 'candidate'
+        ? `¡Hola ${userData.firstName}! Soy NeuroDialect, tu asistente de IA. Puedo ayudarte con orientación profesional, desarrollo de habilidades y encontrar oportunidades que coincidan con tus fortalezas únicas. ¿Qué te gustaría saber?`
+        : `¡Hola ${userData.firstName}! Soy NeuroDialect, tu asistente de IA. Puedo ayudarte a construir equipos inclusivos, contratar talento neurodivergente y crear entornos laborales de apoyo. ¿Qué te gustaría saber?`
       
       setChatMessages([{ 
         text: welcomeMessage, 
@@ -105,10 +105,10 @@ export default function Hero() {
         timestamp: Date.now() 
       }])
     } else {
-      setChatMessages([{ 
-        text: "Hello! I'm NeuroDialect, your AI assistant specializing in neurodivergent talent and workplace inclusion. What would you like to know?", 
-        sender: 'bot', 
-        timestamp: Date.now() 
+      setChatMessages([{
+        text: "¡Hola! Soy NeuroDialect, tu asistente de IA especializado en talento neurodivergente e inclusión laboral. ¿Qué te gustaría saber?",
+        sender: 'bot',
+        timestamp: Date.now()
       }])
     }
   }, [userData])
@@ -237,9 +237,9 @@ export default function Hero() {
         } else {
           // Fallback response if API fails
           const fallbackResponses = [
-            "I apologize, but I'm having trouble connecting right now. Please try again in a moment.",
-            "Thank you for your message! I'm currently experiencing some technical difficulties. Please try again shortly.",
-            "I'd love to help you with that! However, I'm temporarily unavailable. Please try again in a few moments."
+            "Disculpa, estoy teniendo problemas de conexión ahora mismo. Por favor intenta de nuevo en un momento.",
+            "¡Gracias por tu mensaje! Actualmente estoy experimentando algunas dificultades técnicas. Por favor intenta de nuevo en breve.",
+            "¡Me encantaría ayudarte con eso! Sin embargo, no estoy disponible temporalmente. Por favor intenta de nuevo en unos momentos."
           ]
           
           const fallbackResponse = {
@@ -255,7 +255,7 @@ export default function Hero() {
         
         // Fallback response on error
         const errorResponse = {
-          text: "I'm sorry, I'm having trouble connecting right now. Please try again in a moment.",
+          text: "Lo siento, estoy teniendo problemas de conexión ahora mismo. Por favor intenta de nuevo en un momento.",
           sender: 'bot',
           timestamp: Date.now()
         }
