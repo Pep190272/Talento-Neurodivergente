@@ -239,12 +239,12 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
   ];
 
   const kpiData = [
-    { title: "Active Clients", value: 18, trend: "+3 this month", icon: "👥", color: "purple" },
-    { title: "Sessions This Week", value: 24, trend: "+5 this week", icon: "📅", color: "blue" },
-    { title: "Success Rate", value: 87, trend: "+2% this month", icon: "📈", color: "green" },
-    { title: "Pending Referrals", value: 12, trend: "+4 pending", icon: "⏳", color: "orange" },
-    { title: "Accommodations Created", value: 34, trend: "+8 this month", icon: "🎯", color: "pink" },
-    { title: "Average Well-being", value: 8.1, trend: "+0.3 this month", icon: "💚", color: "emerald" },
+    { title: "Clientes Activos", value: 18, trend: "+3 este mes", icon: "👥", color: "purple" },
+    { title: "Sesiones Esta Semana", value: 24, trend: "+5 esta semana", icon: "📅", color: "blue" },
+    { title: "Tasa de Éxito", value: 87, trend: "+2% este mes", icon: "📈", color: "green" },
+    { title: "Referencias Pendientes", value: 12, trend: "+4 pendientes", icon: "⏳", color: "orange" },
+    { title: "Acomodaciones Creadas", value: 34, trend: "+8 este mes", icon: "🎯", color: "pink" },
+    { title: "Bienestar Promedio", value: 8.1, trend: "+0.3 este mes", icon: "💚", color: "emerald" },
   ];
 
   const upcomingSessions = [
@@ -359,11 +359,11 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
       <div className="therapist-bookings-header">
         <h3 className="therapist-bookings-title">
           <FaCalendarAlt className="therapist-bookings-icon" />
-          Bookings Calendar
+          Calendario de Reservas
         </h3>
         <div className="therapist-bookings-controls">
-          <button className="therapist-btn therapist-btn-active">Week View</button>
-          <button className="therapist-btn therapist-btn-secondary">Month View</button>
+          <button className="therapist-btn therapist-btn-active">Vista Semanal</button>
+          <button className="therapist-btn therapist-btn-secondary">Vista Mensual</button>
         </div>
       </div>
       <div className="therapist-bookings-list">
@@ -384,10 +384,10 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
                 <div className="therapist-booking-time">{session.time}</div>
                 <div className="therapist-booking-buttons">
                   <button className="therapist-btn therapist-btn-join">
-                    <FaVideo className="therapist-btn-icon" /> Join
+                    <FaVideo className="therapist-btn-icon" /> Unirse
                   </button>
                   <button className="therapist-btn therapist-btn-remind">
-                    <FaEnvelope className="therapist-btn-icon" /> Remind
+                    <FaEnvelope className="therapist-btn-icon" /> Recordar
                   </button>
                 </div>
               </div>
@@ -398,7 +398,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
       <div className="therapist-bookings-footer">
         <button className="therapist-btn therapist-btn-add-session">
           <FaPlus className="therapist-btn-icon" />
-          Add New Session Slot
+          Agregar Nuevo Espacio de Sesión
         </button>
       </div>
     </div>
@@ -409,11 +409,11 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
     <div className="therapist-impact-section">
       <h3 className="therapist-impact-title">
         <FaChartBar className="therapist-impact-icon" />
-        Impact Dashboard
+        Panel de Impacto
       </h3>
       <div className="therapist-impact-grid">
         <div className="therapist-wellbeing-card">
-          <h4 className="therapist-wellbeing-title">Well-being Trends</h4>
+          <h4 className="therapist-wellbeing-title">Tendencias de Bienestar</h4>
           <div className="therapist-wellbeing-chart">
             {[
               { month: "Jan", score: 7.2 },
@@ -437,31 +437,31 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
           </div>
         </div>
         <div className="therapist-retention-card">
-          <h4 className="therapist-retention-title">Retention Metrics</h4>
+          <h4 className="therapist-retention-title">Métricas de Retención</h4>
           <div className="therapist-retention-content">
             <div className="therapist-retention-rate">94%</div>
-            <div className="therapist-retention-label">6-Month Retention Rate</div>
+            <div className="therapist-retention-label">Tasa de Retención a 6 Meses</div>
             <div className="therapist-retention-breakdown">
               <div className="therapist-retention-item">
-                <span className="therapist-retention-risk">High Risk</span>
-                <span className="therapist-retention-count therapist-retention-high">2 clients</span>
+                <span className="therapist-retention-risk">Riesgo Alto</span>
+                <span className="therapist-retention-count therapist-retention-high">2 clientes</span>
               </div>
               <div className="therapist-retention-item">
-                <span className="therapist-retention-risk">Medium Risk</span>
-                <span className="therapist-retention-count therapist-retention-medium">5 clients</span>
+                <span className="therapist-retention-risk">Riesgo Medio</span>
+                <span className="therapist-retention-count therapist-retention-medium">5 clientes</span>
               </div>
               <div className="therapist-retention-item">
-                <span className="therapist-retention-risk">Low Risk</span>
-                <span className="therapist-retention-count therapist-retention-low">11 clients</span>
+                <span className="therapist-retention-risk">Riesgo Bajo</span>
+                <span className="therapist-retention-count therapist-retention-low">11 clientes</span>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div className="therapist-success-stories">
-        <h4 className="therapist-success-title">Success Stories</h4>
+        <h4 className="therapist-success-title">Historias de Éxito</h4>
         <div className="therapist-success-quote">
-          "The accommodation plan has been life-changing. I'm more productive and less stressed at work." - Alex C.
+          "El plan de acomodaciones ha cambiado mi vida. Soy más productivo y menos estresado en el trabajo." - Alex C.
         </div>
       </div>
     </div>
@@ -485,12 +485,12 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
       {aiAssistant && (
         <div className="therapist-ai-content">
           <div className="therapist-ai-intro">
-            <p className="therapist-ai-intro-text">Hi Dr. Therapist! I can help you with:</p>
+            <p className="therapist-ai-intro-text">¡Hola Dr. Terapeuta! Puedo ayudarte con:</p>
             <ul className="therapist-ai-features">
-              <li>• Clinical note suggestions</li>
-              <li>• Accommodation planning</li>
-              <li>• Assessment analysis</li>
-              <li>• Progress tracking</li>
+              <li>• Sugerencias de notas clínicas</li>
+              <li>• Planificación de acomodaciones</li>
+              <li>• Análisis de evaluaciones</li>
+              <li>• Seguimiento de progreso</li>
             </ul>
           </div>
           <div className="therapist-ai-input">
@@ -515,8 +515,8 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
         <div className="therapist-video-header">
           <div className="therapist-video-info">
             <FaVideo className="therapist-video-icon" />
-            <span className="therapist-video-title">Live Consultation - Alex Chen</span>
-            <span className="therapist-video-status">LIVE</span>
+            <span className="therapist-video-title">Consulta en Vivo - Alex Chen</span>
+            <span className="therapist-video-status">EN VIVO</span>
           </div>
           <button 
             onClick={() => setVideoCall(false)}
@@ -531,7 +531,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
               <FaUser className="therapist-video-avatar-icon" />
             </div>
             <p className="therapist-video-client-name">Alex Chen</p>
-            <p className="therapist-video-status-text">Connected</p>
+            <p className="therapist-video-status-text">Conectado</p>
           </div>
         </div>
         <div className="therapist-video-controls">
@@ -589,7 +589,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
       <div className="therapist-referral-header">
         <h3 className="therapist-referral-title">
           <FaClipboard className="therapist-referral-icon" />
-          Referral Queue
+          Cola de Referencias
           <span className="therapist-referral-count">{referralQueue.filter(r => r.status === 'Pending').length}</span>
         </h3>
         <div className="therapist-referral-controls">
@@ -608,10 +608,10 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
           >
-            <option value="all">All Status</option>
-            <option value="Pending">Pending</option>
-            <option value="In Review">In Review</option>
-            <option value="Completed">Completed</option>
+            <option value="all">Todos los Estados</option>
+            <option value="Pending">Pendiente</option>
+            <option value="In Review">En Revisión</option>
+            <option value="Completed">Completado</option>
           </select>
         </div>
       </div>
@@ -637,10 +637,10 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
                   onClick={() => setSelectedClient(referral)}
                   className="therapist-btn therapist-btn-primary"
                 >
-                  <FaEye className="therapist-btn-icon" /> Review
+                  <FaEye className="therapist-btn-icon" /> Revisar
                 </button>
                 <button className="therapist-btn therapist-btn-secondary">
-                  <FaCalendarAlt className="therapist-btn-icon" /> Schedule
+                  <FaCalendarAlt className="therapist-btn-icon" /> Programar
                 </button>
               </div>
             </div>
@@ -676,11 +676,11 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
           </div>
           <div className="therapist-client-stats">
             <div className="therapist-client-progress-value">{client.progress}%</div>
-            <div className="therapist-client-progress-label">Progress</div>
+            <div className="therapist-client-progress-label">Progreso</div>
             <div className="therapist-client-wellbeing">
-              <span className="therapist-wellbeing-score">Well-being: {client.wellbeingScore}/10</span>
+              <span className="therapist-wellbeing-score">Bienestar: {client.wellbeingScore}/10</span>
               <span className={`therapist-risk-badge therapist-risk-${client.retentionRisk.toLowerCase()}`}>
-                {client.retentionRisk} Risk
+                Riesgo {client.retentionRisk}
               </span>
             </div>
           </div>
@@ -691,7 +691,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
       <div className="therapist-assessment-section">
         <h4 className="therapist-section-title">
           <FaGamepad className="therapist-section-icon" />
-          Game Assessment Results
+          Resultados de Evaluación de Juegos
         </h4>
         <div className="therapist-game-metrics">
           {Object.entries(client.gameMetrics).map(([game, metrics]) => (
@@ -699,15 +699,15 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
               <h5 className="therapist-game-metric-title">{game.replace(/([A-Z])/g, ' $1').trim()}</h5>
               <div className="therapist-game-metric-stats">
                 <div className="therapist-metric-row">
-                  <span className="therapist-metric-label">Score</span>
+                  <span className="therapist-metric-label">Puntuación</span>
                   <span className="therapist-metric-value therapist-metric-score">{metrics.score}</span>
                 </div>
                 <div className="therapist-metric-row">
-                  <span className="therapist-metric-label">Accuracy</span>
+                  <span className="therapist-metric-label">Precisión</span>
                   <span className="therapist-metric-value therapist-metric-accuracy">{metrics.accuracy}%</span>
                 </div>
                 <div className="therapist-metric-row">
-                  <span className="therapist-metric-label">Reaction Time</span>
+                  <span className="therapist-metric-label">Tiempo de Reacción</span>
                   <span className="therapist-metric-value therapist-metric-reaction">{metrics.reactionTime}s</span>
                 </div>
               </div>
@@ -727,12 +727,12 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
         <div className="therapist-ai-analysis">
           <h4 className="therapist-section-title">
             <FaRobot className="therapist-section-icon" />
-            AI Analysis Summary
+            Resumen de Análisis de IA
           </h4>
           <div className="therapist-superpower-card">
             <div className="therapist-superpower-header">
               <FaStar className="therapist-superpower-icon" />
-              <span className="therapist-superpower-label">Identified Superpower</span>
+              <span className="therapist-superpower-label">Superpoder Identificado</span>
             </div>
             <p className="therapist-superpower-value">{client.superpower}</p>
           </div>
@@ -752,7 +752,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
         <div className="therapist-clinical-notes">
           <h4 className="therapist-section-title">
             <FaEdit className="therapist-section-icon" />
-            Clinical Notes
+            Notas Clínicas
           </h4>
           <textarea 
             className="therapist-notes-textarea"
@@ -765,7 +765,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
               <span className="therapist-ai-hint-text">AI Assistant can help with phrasing</span>
             </div>
             <button className="therapist-btn therapist-btn-primary">
-              <FaSave className="therapist-btn-icon" /> Save Notes
+              <FaSave className="therapist-btn-icon" /> Guardar Notas
             </button>
           </div>
         </div>
@@ -778,18 +778,18 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
           className="therapist-btn therapist-btn-accommodation"
         >
           <FaBullseye className="therapist-btn-icon" />
-          Build Accommodation Plan
+          Crear Plan de Acomodaciones
         </button>
         <button 
           onClick={() => setVideoCall(true)}
           className="therapist-btn therapist-btn-video"
         >
           <FaVideo className="therapist-btn-icon" />
-          Start Video Session
+          Iniciar Sesión de Video
         </button>
         <button className="therapist-btn therapist-btn-schedule">
           <FaCalendarAlt className="therapist-btn-icon" />
-          Schedule Follow-up
+          Programar Seguimiento
         </button>
       </div>
     </div>
@@ -801,7 +801,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
       <div className="therapist-accommodation-header">
         <h3 className="therapist-accommodation-title">
           <FaBullseye className="therapist-accommodation-icon" />
-          Accommodation Plan Builder
+          Constructor de Plan de Acomodaciones
         </h3>
         <button 
           onClick={() => setAccommodationBuilder(false)}
@@ -813,7 +813,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
       <div className="therapist-accommodation-content">
         {/* Template Selection */}
         <div className="therapist-template-section">
-          <h4 className="therapist-template-title">Quick Start Templates</h4>
+          <h4 className="therapist-template-title">Plantillas de Inicio Rápido</h4>
           <div className="therapist-template-grid">
             {accommodationTemplates.map((template, index) => (
               <div key={index} className="therapist-template-card">
@@ -825,7 +825,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
                   {template.features.join(" • ")}
                 </div>
                 <button className="therapist-btn therapist-btn-template">
-                  Use Template
+                  Usar Plantilla
                 </button>
               </div>
             ))}
@@ -835,17 +835,17 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
         {/* Custom Builder */}
         <div className="therapist-custom-builder">
           <div className="therapist-builder-column">
-            <h4 className="therapist-builder-title">Environment & Workspace</h4>
+            <h4 className="therapist-builder-title">Entorno y Espacio de Trabajo</h4>
             <div className="therapist-builder-group">
-              <label className="therapist-builder-label">Noise Level Preference</label>
+              <label className="therapist-builder-label">Preferencia de Nivel de Ruido</label>
               <div className="therapist-option-buttons">
-                <button className="therapist-option-btn therapist-option-btn-active">Quiet</button>
-                <button className="therapist-option-btn">Moderate</button>
-                <button className="therapist-option-btn">Background</button>
+                <button className="therapist-option-btn therapist-option-btn-active">Silencioso</button>
+                <button className="therapist-option-btn">Moderado</button>
+                <button className="therapist-option-btn">Fondo</button>
               </div>
             </div>
             <div className="therapist-builder-group">
-              <label className="therapist-builder-label">Lighting Adjustments</label>
+              <label className="therapist-builder-label">Ajustes de Iluminación</label>
               <div className="therapist-checkbox-group">
                 <label className="therapist-checkbox-item">
                   <input type="checkbox" className="therapist-checkbox" />
@@ -862,7 +862,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
               </div>
             </div>
             <div className="therapist-builder-group">
-              <label className="therapist-builder-label">Break Schedule</label>
+              <label className="therapist-builder-label">Horario de Descansos</label>
               <div className="therapist-input-grid">
                 <input type="number" placeholder="Duración (min)" className="therapist-input" />
                 <input type="number" placeholder="Frecuencia (hrs)" className="therapist-input" />
@@ -870,18 +870,18 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
             </div>
           </div>
           <div className="therapist-builder-column">
-            <h4 className="therapist-builder-title">Communication & Support</h4>
+            <h4 className="therapist-builder-title">Comunicación y Soporte</h4>
             <div className="therapist-builder-group">
-              <label className="therapist-builder-label">Preferred Communication Style</label>
+              <label className="therapist-builder-label">Estilo de Comunicación Preferido</label>
               <select className="therapist-select">
-                <option>Written instructions</option>
-                <option>Verbal with follow-up</option>
-                <option>Visual aids</option>
-                <option>One-on-one meetings</option>
+                <option>Instrucciones escritas</option>
+                <option>Verbal con seguimiento</option>
+                <option>Ayudas visuales</option>
+                <option>Reuniones uno a uno</option>
               </select>
             </div>
             <div className="therapist-builder-group">
-              <label className="therapist-builder-label">Technology Accommodations</label>
+              <label className="therapist-builder-label">Acomodaciones Tecnológicas</label>
               <div className="therapist-checkbox-group">
                 <label className="therapist-checkbox-item">
                   <input type="checkbox" className="therapist-checkbox" />
@@ -898,7 +898,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
               </div>
             </div>
             <div className="therapist-builder-group">
-              <label className="therapist-builder-label">Additional Notes</label>
+              <label className="therapist-builder-label">Notas Adicionales</label>
               <textarea 
                 className="therapist-textarea"
                 placeholder="Acomodaciones o consideraciones específicas..."
@@ -911,7 +911,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
         <div className="therapist-ai-suggestions">
           <div className="therapist-ai-header">
             <FaRobot className="therapist-ai-icon" />
-            <span className="therapist-ai-title">AI Recommendations</span>
+            <span className="therapist-ai-title">Recomendaciones de IA</span>
           </div>
           <div className="therapist-ai-content">
             <div className="therapist-ai-recommendation">
@@ -931,17 +931,17 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
         <div className="therapist-accommodation-footer">
           <div className="therapist-preview-info">
             <FaFileAlt className="therapist-preview-icon" />
-            <span className="therapist-preview-text">Preview accommodation plan</span>
+            <span className="therapist-preview-text">Vista previa del plan de acomodaciones</span>
           </div>
           <div className="therapist-footer-actions">
             <button className="therapist-btn therapist-btn-secondary">
-              Save Draft
+              Guardar Borrador
             </button>
             <button className="therapist-btn therapist-btn-export">
               <FaDownload className="therapist-btn-icon" /> Export PDF
             </button>
             <button className="therapist-btn therapist-btn-share">
-              <FaShareAlt className="therapist-btn-icon" /> Share Plan
+              <FaShareAlt className="therapist-btn-icon" /> Compartir Plan
             </button>
           </div>
         </div>
@@ -970,7 +970,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
     return (
       <div className="therapist-browse-section">
         <div className="therapist-browse-header">
-          <h2 className="therapist-browse-title">Browse Matches</h2>
+          <h2 className="therapist-browse-title">Explorar Coincidencias</h2>
           <div className="therapist-browse-controls">
             <div className="therapist-view-toggle">
               <button 
@@ -978,14 +978,14 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
                 onClick={() => setView('candidates')}
               >
                 <FaUser className="therapist-toggle-icon" />
-                Candidates ({candidates.length})
+                Candidatos ({candidates.length})
               </button>
               <button 
                 className={`therapist-toggle-btn ${view === 'companies' ? 'active' : ''}`}
                 onClick={() => setView('companies')}
               >
                 <FaBuilding className="therapist-toggle-icon" />
-                Companies ({companies.length})
+                Empresas ({companies.length})
               </button>
             </div>
             <div className="therapist-search-controls">
@@ -1005,7 +1005,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
                   onChange={(e) => setFilterCondition(e.target.value)}
                   className="therapist-filter-select"
                 >
-                  <option value="all">All Conditions</option>
+                  <option value="all">Todas las Condiciones</option>
                   <option value="ADHD">ADHD</option>
                   <option value="Autism">Autism</option>
                   <option value="Dyslexia">Dyslexia</option>
@@ -1033,7 +1033,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
                     </div>
                   </div>
                   <div className="therapist-candidate-skills">
-                    <h4>Key Skills:</h4>
+                    <h4>Habilidades Clave:</h4>
                     <div className="therapist-skills-tags">
                       {candidate.skills.slice(0, 3).map((skill, index) => (
                         <span key={index} className="therapist-skill-tag">{skill}</span>
@@ -1050,7 +1050,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
                       className="therapist-btn therapist-btn-primary"
                     >
                       <FaEye className="therapist-btn-icon" />
-                      View Details
+                      Ver Detalles
                     </button>
                     <button 
                       onClick={() => {
@@ -1060,7 +1060,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
                       className="therapist-btn therapist-btn-secondary"
                     >
                       <FaHandshake className="therapist-btn-icon" />
-                      Start Matching
+                      Iniciar Emparejamiento
                     </button>
                   </div>
                 </div>
@@ -1079,15 +1079,15 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
                     </div>
                     <div className="therapist-company-positions">
                       <span className="therapist-positions-count">{company.openPositions.length}</span>
-                      <span className="therapist-positions-label">Open Positions</span>
+                      <span className="therapist-positions-label">Posiciones Abiertas</span>
                     </div>
                   </div>
                   <div className="therapist-company-culture">
-                    <h4>Culture:</h4>
+                    <h4>Cultura:</h4>
                     <p>{company.culture}</p>
                   </div>
                   <div className="therapist-company-support">
-                    <h4>Neurodiversity Support:</h4>
+                    <h4>Soporte de Neurodiversidad:</h4>
                     <p>{company.neurodiversitySupport}</p>
                   </div>
                   <div className="therapist-company-actions">
@@ -1096,7 +1096,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
                       className="therapist-btn therapist-btn-primary"
                     >
                       <FaEye className="therapist-btn-icon" />
-                      View Details
+                      Ver Detalles
                     </button>
                     <button 
                       onClick={() => {
@@ -1106,7 +1106,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
                       className="therapist-btn therapist-btn-secondary"
                     >
                       <FaHandshake className="therapist-btn-icon" />
-                      Find Candidates
+                      Encontrar Candidatos
                     </button>
                   </div>
                 </div>
@@ -1177,9 +1177,9 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
         <div className="therapist-matching-header">
           <button onClick={onBack} className="therapist-back-btn">
             <FaArrowLeft className="therapist-back-icon" />
-            Back to Browse
+            Volver a Explorar
           </button>
-          <h2 className="therapist-matching-title">Match Candidate: {candidate.name}</h2>
+          <h2 className="therapist-matching-title">Emparejar Candidato: {candidate.name}</h2>
         </div>
 
         <div className="therapist-matching-content">
@@ -1228,7 +1228,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
           <div className="therapist-company-selection">
             <h3 className="therapist-section-title">
               <FaBuilding className="therapist-section-icon" />
-              Select Company to Match
+              Seleccionar Empresa para Emparejar
             </h3>
             <div className="therapist-companies-grid-matching">
               {companies.map(company => (
@@ -1267,7 +1267,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
             <div className="therapist-position-selection-matching">
               <h3 className="therapist-section-title">
                 <FaBriefcase className="therapist-section-icon" />
-                Select Position at {selectedCompany.name}
+                Seleccionar Posición en {selectedCompany.name}
               </h3>
               <div className="therapist-positions-grid">
                 {selectedCompany.openPositions.map(position => (
@@ -1281,7 +1281,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
                       <span className="therapist-position-department-matching">{position.department}</span>
                     </div>
                     <div className="therapist-position-requirements-matching">
-                      <h5>Requirements:</h5>
+                      <h5>Requisitos:</h5>
                       <div className="therapist-requirements-tags">
                         {position.requirements.map((req, index) => (
                           <span key={index} className="therapist-requirement-tag-matching">{req}</span>
@@ -1289,7 +1289,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
                       </div>
                     </div>
                     <div className="therapist-position-accommodations-matching">
-                      <h5>Available Accommodations:</h5>
+                      <h5>Acomodaciones Disponibles:</h5>
                       <div className="therapist-accommodations-tags">
                         {position.accommodations.map((acc, index) => (
                           <span key={index} className="therapist-accommodation-tag-matching">{acc}</span>
@@ -1313,7 +1313,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
             <div className="therapist-application-message">
               <h3 className="therapist-section-title">
                 <FaEnvelope className="therapist-section-icon" />
-                Application Message
+                Mensaje de Aplicación
               </h3>
               <div className="therapist-message-container">
                 <textarea
@@ -1324,9 +1324,9 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
                   rows={6}
                 />
                 <div className="therapist-message-preview">
-                  <h4>Message Preview:</h4>
+                  <h4>Vista Previa del Mensaje:</h4>
                   <div className="therapist-message-content">
-                    {applicationMessage || "Your message will appear here..."}
+                    {applicationMessage || "Tu mensaje aparecerá aquí..."}
                   </div>
                 </div>
               </div>
@@ -1338,19 +1338,19 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
             <div className="therapist-send-application">
               <div className="therapist-match-summary">
                 <div className="therapist-match-summary-item">
-                  <span className="therapist-match-label">Candidate:</span>
+                  <span className="therapist-match-label">Candidato:</span>
                   <span className="therapist-match-value">{candidate.name}</span>
                 </div>
                 <div className="therapist-match-summary-item">
-                  <span className="therapist-match-label">Company:</span>
+                  <span className="therapist-match-label">Empresa:</span>
                   <span className="therapist-match-value">{selectedCompany.name}</span>
                 </div>
                 <div className="therapist-match-summary-item">
-                  <span className="therapist-match-label">Position:</span>
+                  <span className="therapist-match-label">Posición:</span>
                   <span className="therapist-match-value">{selectedPosition.title}</span>
                 </div>
                 <div className="therapist-match-summary-item">
-                  <span className="therapist-match-label">Match Score:</span>
+                  <span className="therapist-match-label">Puntuación de Coincidencia:</span>
                   <span className="therapist-match-value therapist-match-score-highlight">{matchScore}%</span>
                 </div>
               </div>
@@ -1359,7 +1359,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
                 className="therapist-btn therapist-btn-send-application"
               >
                 <FaEnvelope className="therapist-btn-icon" />
-                Send Candidate Application
+                Enviar Aplicación de Candidato
               </button>
             </div>
           )}
@@ -1427,9 +1427,9 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
         <div className="therapist-matching-header">
           <button onClick={onBack} className="therapist-back-btn">
             <FaArrowLeft className="therapist-back-icon" />
-            Back to Browse
+            Volver a Explorar
           </button>
-          <h2 className="therapist-matching-title">Find Candidates for: {company.name}</h2>
+          <h2 className="therapist-matching-title">Encontrar Candidatos para: {company.name}</h2>
         </div>
 
         <div className="therapist-matching-content">
@@ -1473,7 +1473,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
           <div className="therapist-position-selection-matching">
             <h3 className="therapist-section-title">
               <FaBriefcase className="therapist-section-icon" />
-              Select Position to Fill
+              Seleccionar Posición a Llenar
             </h3>
             <div className="therapist-positions-grid">
               {company.openPositions.map(position => (
@@ -1487,7 +1487,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
                     <span className="therapist-position-department-matching">{position.department}</span>
                   </div>
                   <div className="therapist-position-requirements-matching">
-                    <h5>Requirements:</h5>
+                    <h5>Requisitos:</h5>
                     <div className="therapist-requirements-tags">
                       {position.requirements.map((req, index) => (
                         <span key={index} className="therapist-requirement-tag-matching">{req}</span>
@@ -1495,7 +1495,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
                     </div>
                   </div>
                   <div className="therapist-position-accommodations-matching">
-                    <h5>Available Accommodations:</h5>
+                    <h5>Acomodaciones Disponibles:</h5>
                     <div className="therapist-accommodations-tags">
                       {position.accommodations.map((acc, index) => (
                         <span key={index} className="therapist-accommodation-tag-matching">{acc}</span>
@@ -1512,7 +1512,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
             <div className="therapist-candidate-selection">
               <h3 className="therapist-section-title">
                 <FaUser className="therapist-section-icon" />
-                Select Candidate for {selectedPosition.title}
+                Seleccionar Candidato para {selectedPosition.title}
               </h3>
               <div className="therapist-candidates-grid-matching">
                 {candidates.map(candidate => (
@@ -1565,7 +1565,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
             <div className="therapist-application-message">
               <h3 className="therapist-section-title">
                 <FaEnvelope className="therapist-section-icon" />
-                Application Message
+                Mensaje de Aplicación
               </h3>
               <div className="therapist-message-container">
                 <textarea
@@ -1576,9 +1576,9 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
                   rows={6}
                 />
                 <div className="therapist-message-preview">
-                  <h4>Message Preview:</h4>
+                  <h4>Vista Previa del Mensaje:</h4>
                   <div className="therapist-message-content">
-                    {applicationMessage || "Your message will appear here..."}
+                    {applicationMessage || "Tu mensaje aparecerá aquí..."}
                   </div>
                 </div>
               </div>
@@ -1590,19 +1590,19 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
             <div className="therapist-send-application">
               <div className="therapist-match-summary">
                 <div className="therapist-match-summary-item">
-                  <span className="therapist-match-label">Candidate:</span>
+                  <span className="therapist-match-label">Candidato:</span>
                   <span className="therapist-match-value">{selectedCandidate.name}</span>
                 </div>
                 <div className="therapist-match-summary-item">
-                  <span className="therapist-match-label">Company:</span>
+                  <span className="therapist-match-label">Empresa:</span>
                   <span className="therapist-match-value">{company.name}</span>
                 </div>
                 <div className="therapist-match-summary-item">
-                  <span className="therapist-match-label">Position:</span>
+                  <span className="therapist-match-label">Posición:</span>
                   <span className="therapist-match-value">{selectedPosition.title}</span>
                 </div>
                 <div className="therapist-match-summary-item">
-                  <span className="therapist-match-label">Match Score:</span>
+                  <span className="therapist-match-label">Puntuación de Coincidencia:</span>
                   <span className="therapist-match-value therapist-match-score-highlight">{matchScore}%</span>
                 </div>
               </div>
@@ -1611,7 +1611,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
                 className="therapist-btn therapist-btn-send-application"
               >
                 <FaEnvelope className="therapist-btn-icon" />
-                Send Candidate Application
+                Enviar Aplicación de Candidato
               </button>
             </div>
           )}
@@ -1640,15 +1640,15 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
         </div>
         <nav className="therapist-nav">
           {[
-            { icon: FaHome, label: 'Overview', view: 'overview' },
-            { icon: FaUsers, label: 'Referral Queue', view: 'referrals' },
-            { icon: FaUserCheck, label: 'Client Profiles', view: 'clients' },
-            { icon: FaHandshake, label: 'Perfect Matches', view: 'matching' },
-            { icon: FaBullseye, label: 'Accommodations', view: 'accommodations' },
-            { icon: FaCalendarAlt, label: 'Bookings', view: 'bookings' },
-            { icon: FaClipboardList, label: 'Resources', view: 'resources' },
-            { icon: FaChartBar, label: 'Impact', view: 'impact' },
-            { icon: FaCog, label: 'Settings', view: 'settings' },
+            { icon: FaHome, label: 'Resumen', view: 'overview' },
+            { icon: FaUsers, label: 'Cola de Referencias', view: 'referrals' },
+            { icon: FaUserCheck, label: 'Perfiles de Clientes', view: 'clients' },
+            { icon: FaHandshake, label: 'Coincidencias Perfectas', view: 'matching' },
+            { icon: FaBullseye, label: 'Acomodaciones', view: 'accommodations' },
+            { icon: FaCalendarAlt, label: 'Reservas', view: 'bookings' },
+            { icon: FaClipboardList, label: 'Recursos', view: 'resources' },
+            { icon: FaChartBar, label: 'Impacto', view: 'impact' },
+            { icon: FaCog, label: 'Configuración', view: 'settings' },
           ].map((item) => (
             <button
               key={item.view}
@@ -1681,7 +1681,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
       case 'referrals':
         return <ReferralQueue />;
       case 'clients':
-        return selectedClient ? <ClientProfileReview client={selectedClient} /> : <div className="therapist-empty-state">Select a client to view their profile</div>;
+        return selectedClient ? <ClientProfileReview client={selectedClient} /> : <div className="therapist-empty-state">Selecciona un cliente para ver su perfil</div>;
       case 'matching':
         return renderMatchingContent();
       case 'accommodations':
@@ -1691,7 +1691,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
       case 'impact':
         return <ImpactDashboard />;
       default:
-        return <div className="therapist-empty-state">View under development</div>;
+        return <div className="therapist-empty-state">Vista en desarrollo</div>;
     }
   };
 
@@ -1762,8 +1762,8 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
           {/* Header */}
           <div className="therapist-page-header">
             <div>
-              <h1 className="therapist-page-title">Dr. Therapist Portal</h1>
-              <p className="therapist-page-subtitle">Clinical expertise for neurodivergent talent matching & workplace success</p>
+              <h1 className="therapist-page-title">Portal del Dr. Terapeuta</h1>
+              <p className="therapist-page-subtitle">Experiencia clínica para el emparejamiento de talento neurodivergente y el éxito laboral</p>
             </div>
             <div className="therapist-header-actions">
               <button className="therapist-notification-btn">
@@ -1776,7 +1776,7 @@ const TherapistDashboard = ({ defaultView = 'overview' }) => {
               <div className="therapist-user-profile">
                 <FaUserMd className="therapist-user-icon" />
                 <span className="therapist-user-name">Dr. Therapist</span>
-                <span className="therapist-user-status">Online</span>
+                <span className="therapist-user-status">En línea</span>
               </div>
             </div>
           </div>
@@ -1821,7 +1821,7 @@ const CandidateDetail = ({ candidate, onBack, onMatch }) => {
           <FaArrowLeft className="therapist-back-icon" />
           Back to Browse
         </button>
-        <h2 className="therapist-matching-title">Candidate Details</h2>
+        <h2 className="therapist-matching-title">Detalles del Candidato</h2>
       </div>
       <div className="therapist-candidate-card-large">
         <div className="therapist-candidate-header-large">
