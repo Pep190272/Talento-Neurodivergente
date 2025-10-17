@@ -7,6 +7,7 @@ export const translations = {
       games: 'Games',
       quiz: 'Quiz',
       about: 'About',
+      settings: 'Settings',
       getStarted: 'Get Started',
       dashboard: 'Dashboard',
       logout: 'Logout',
@@ -152,6 +153,10 @@ export const translations = {
       rights: 'All rights reserved',
       privacy: 'Privacy Policy',
       terms: 'Terms of Service'
+    },
+    settings: {
+      title: 'Settings',
+      subtitle: 'Configure your OpenAI key to use the neurological agent'
     }
   },
   es: {
@@ -162,6 +167,7 @@ export const translations = {
       games: 'Juegos',
       quiz: 'Evaluación',
       about: 'Acerca de',
+      settings: 'Configuración',
       getStarted: 'Comenzar',
       dashboard: 'Panel',
       logout: 'Cerrar Sesión',
@@ -307,6 +313,10 @@ export const translations = {
       rights: 'Todos los derechos reservados',
       privacy: 'Política de Privacidad',
       terms: 'Términos de Servicio'
+    },
+    settings: {
+      title: 'Configuración',
+      subtitle: 'Configura tu clave de OpenAI para usar el agente neurológico'
     }
   }
 };

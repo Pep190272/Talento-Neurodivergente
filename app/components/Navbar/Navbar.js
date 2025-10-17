@@ -12,6 +12,7 @@ const navItems = [
   { name: 'Games', href: '/games', key: 'navbar.games' },
   { name: 'Quiz', href: '/quiz', key: 'navbar.quiz' },
   { name: 'About', href: '/about', key: 'navbar.about' },
+  { name: 'Settings', href: '/settings', key: 'navbar.settings' },
 ]
 
 export default function Navbar() {
