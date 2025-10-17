@@ -53,9 +53,6 @@ export default function NeuroAgent({ userData = null }) {
     setIsLoading(true);
 
     try {
-      // Get API key from localStorage
-      const apiKey = localStorage.getItem('openai_api_key');
-
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
@@ -64,8 +61,7 @@ export default function NeuroAgent({ userData = null }) {
         body: JSON.stringify({
           prompt: input.trim(),
           history: messages.map(msg => ({ role: msg.role, content: msg.content })),
-          userData,
-          apiKey
+          userData
         })
       });
 

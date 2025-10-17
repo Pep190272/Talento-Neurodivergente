@@ -3,6 +3,10 @@ import OpenAI from 'openai';
 import fs from 'fs';
 import path from 'path';
 
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
 const DATA_FILE = path.join(process.cwd(), 'data', 'submissions.json');
 
 // Read submissions for context
@@ -22,7 +26,7 @@ function readSubmissions() {
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { prompt, history = [], userData = null, apiKey = null } = body;
+    const { prompt, history = [], userData = null } = body;
 
     if (!prompt) {
       return NextResponse.json(
@@ -31,41 +35,27 @@ export async function POST(request) {
       );
     }
 
-    // Use provided API key from client or fallback to server env
-    const effectiveApiKey = apiKey || process.env.OPENAI_API_KEY;
-
-    if (!effectiveApiKey || effectiveApiKey === 'sk-placeholder-key-replace-with-real-openai-key') {
-      return NextResponse.json(
-        { error: 'OpenAI API key not configured. Please add your API key in Settings.' },
-        { status: 400 }
-      );
-    }
-
-    const openai = new OpenAI({
-      apiKey: effectiveApiKey,
-    });
-
     // Get context from submissions
     const submissions = readSubmissions();
-
+    
     // Build context-aware prompt
-    let contextPrompt = `You are NeuroAgent, a helpful AI assistant for neurodivergent individuals, companies, and therapists.
-
+    let contextPrompt = `You are NeuroAgent, a helpful AI assistant for neurodivergent individuals, companies, and therapists. 
+    
     Your role is to:
     - Provide supportive, understanding responses
     - Answer questions about neurodivergence, accommodations, and workplace integration
     - Offer practical advice and resources
     - Translate complex concepts into simple terms
     - Recommend next steps based on user needs
-
+    
     Current user context: ${userData ? JSON.stringify(userData, null, 2) : 'No user data available'}
-
+    
     Recent platform activity: ${submissions.length} total submissions (${submissions.filter(s => s.type === 'individual').length} individuals, ${submissions.filter(s => s.type === 'company').length} companies, ${submissions.filter(s => s.type === 'therapist').length} therapists)
-
+    
     Chat history: ${history.map(msg => `${msg.role}: ${msg.content}`).join('\n')}
-
+    
     User message: ${prompt}
-
+    
     Please respond in a helpful, supportive tone. If the user asks about specific features, games, or assessments, mention that they're available on the platform.`;
 
     const completion = await openai.chat.completions.create({
@@ -97,16 +87,8 @@ export async function POST(request) {
 
   } catch (error) {
     console.error('Chat API error:', error);
-
-    if (error.code === 'invalid_api_key') {
-      return NextResponse.json(
-        { error: 'Invalid OpenAI API key. Please check your Settings.' },
-        { status: 401 }
-      );
-    }
-
     return NextResponse.json(
-      { error: 'Internal server error: ' + error.message },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }
