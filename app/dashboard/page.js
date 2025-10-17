@@ -11,12 +11,14 @@ export default function DashboardPage() {
 
   useEffect(() => {
     // Load user data from localStorage
-    const savedUserData = localStorage.getItem('userData');
-    if (savedUserData) {
-      try {
-        setUserData(JSON.parse(savedUserData));
-      } catch (error) {
-        console.error('Error loading user data:', error);
+    if (typeof window !== 'undefined') {
+      const savedUserData = localStorage.getItem('userData');
+      if (savedUserData) {
+        try {
+          setUserData(JSON.parse(savedUserData));
+        } catch (error) {
+          console.error('Error loading user data:', error);
+        }
       }
     }
 
@@ -36,9 +38,11 @@ export default function DashboardPage() {
   }, []);
 
   const logout = () => {
-    localStorage.removeItem('userData');
-    localStorage.removeItem('chatHistory');
-    window.location.href = '/';
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('userData');
+      localStorage.removeItem('chatHistory');
+      window.location.href = '/';
+    }
   };
 
   if (!userData) {

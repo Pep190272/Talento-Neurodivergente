@@ -46,20 +46,24 @@ export default function Navbar() {
 
   // Load user data from localStorage
   useEffect(() => {
-    const savedUserData = localStorage.getItem('userData')
-    if (savedUserData) {
-      try {
-        setUserData(JSON.parse(savedUserData))
-      } catch (error) {
-        console.error('Error loading user data:', error)
+    if (typeof window !== 'undefined') {
+      const savedUserData = localStorage.getItem('userData')
+      if (savedUserData) {
+        try {
+          setUserData(JSON.parse(savedUserData))
+        } catch (error) {
+          console.error('Error loading user data:', error)
+        }
       }
     }
   }, [])
 
   const logout = () => {
-    localStorage.removeItem('userData')
-    localStorage.removeItem('chatHistory')
-    window.location.href = '/'
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('userData')
+      localStorage.removeItem('chatHistory')
+      window.location.href = '/'
+    }
   }
 
   return (

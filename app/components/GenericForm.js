@@ -58,22 +58,24 @@ export default function GenericForm({ type = 'individual', onSubmit }) {
       }
 
       // Save user data to localStorage for session continuity
-      const userData = {
-        type,
-        ...form,
-        submittedAt: new Date().toISOString(),
-        summary: result.submission.summary
-      };
-      localStorage.setItem('userData', JSON.stringify(userData));
+      if (typeof window !== 'undefined') {
+        const userData = {
+          type,
+          ...form,
+          submittedAt: new Date().toISOString(),
+          summary: result.submission.summary
+        };
+        localStorage.setItem('userData', JSON.stringify(userData));
 
-      if (onSubmit) onSubmit(result.submission);
-      alert(`Form submitted successfully! ${result.submission.summary}`);
+        if (onSubmit) onSubmit(result.submission);
+        alert(`Form submitted successfully! ${result.submission.summary}`);
 
-      // Redirect to appropriate dashboard
-      const redirectUrl = type === 'individual' ? '/dashboard' :
-                         type === 'company' ? '/company' :
-                         '/therapist';
-      window.location.href = redirectUrl;
+        // Redirect to appropriate dashboard
+        const redirectUrl = type === 'individual' ? '/dashboard' :
+                           type === 'company' ? '/company' :
+                           '/therapist';
+        window.location.href = redirectUrl;
+      }
 
     } catch (err) {
       setError(err.message);
