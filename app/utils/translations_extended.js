@@ -39,7 +39,7 @@ export const extendedTranslations = {
       privacy: 'We respect your privacy. Unsubscribe at any time.'
     },
     footer: {
-      copyright: 'Eternals NeuroTalent Platform. All rights reserved.',
+      copyright: 'Diversia Eternals NeuroTalent Platform. All rights reserved.',
       home: 'Home',
       features: 'Features',
       forms: 'Forms',
@@ -218,7 +218,7 @@ export const extendedTranslations = {
       learnMore: 'Learn More'
     },
     about: {
-      badge: 'About Eternals',
+      badge: 'About Diversia Eternals',
       title: 'Neurodiversity & Innovation',
       subtitle: 'A platform dedicated to celebrating cognitive diversity, fostering inclusive innovation, and empowering unique perspectives.',
       team: {
@@ -514,7 +514,7 @@ export const extendedTranslations = {
       privacy: 'Respetamos tu privacidad. Cancela la suscripción en cualquier momento.'
     },
     footer: {
-      copyright: 'Eternals NeuroTalent Platform. Todos los derechos reservados.',
+      copyright: 'Diversia Eternals NeuroTalent Platform. Todos los derechos reservados.',
       home: 'Inicio',
       features: 'Características',
       forms: 'Formularios',
@@ -693,7 +693,7 @@ export const extendedTranslations = {
       learnMore: 'Saber Más'
     },
     about: {
-      badge: 'Acerca de Eternals',
+      badge: 'Acerca de Diversia Eternals',
       title: 'Neurodiversidad e Innovación',
       subtitle: 'Una plataforma dedicada a celebrar la diversidad cognitiva, fomentar la innovación inclusiva y empoderar perspectivas únicas.',
       team: {

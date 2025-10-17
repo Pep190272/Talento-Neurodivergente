@@ -98,7 +98,7 @@
 /* Enhanced Logo */
 .logo {
   font-family: 'Orbitron', monospace;
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 900;
   color: var(--primary-gold);
   text-decoration: none;
@@ -107,6 +107,7 @@
   align-items: center;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+  white-space: nowrap;
 }
 
 .logo:hover {
@@ -649,7 +650,7 @@
   }
 
   .logo {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
 
   .hamburger {
@@ -760,7 +761,7 @@
   }
 
   .logo {
-    font-size: 1.25rem;
+    font-size: 1rem;
   }
 
   .menu {

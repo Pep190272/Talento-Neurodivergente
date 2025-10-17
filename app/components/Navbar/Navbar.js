@@ -72,7 +72,7 @@ export default function Navbar() {
         {/* Logo - Far Left */}
         <div className="logo-section">
           <Link href="/" className="logo">
-            <span className="logo-text">Eternals</span>
+            <span className="logo-text">Diversia Eternals</span>
             <div className="logo-particles">
               <span className="particle"></span>
               <span className="particle"></span>
