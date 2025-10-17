@@ -24,19 +24,19 @@ export default function CTABanner() {
       overflow: 'hidden'
     }}>
       <h2 style={{
-        color: '#181024',
+        color: '#FFD700',
         fontFamily: 'Orbitron, Rajdhani, sans-serif',
         fontSize: '2.2rem',
         textAlign: 'center',
         marginBottom: '1.5rem',
         fontWeight: 900,
         letterSpacing: '-0.01em',
-        textShadow: '0 2px 12px #fff8'
+        textShadow: '0 2px 12px rgba(255, 215, 0, 0.5)'
       }}>
         {t('cta.title')}
       </h2>
       <p style={{
-        color: '#23213a',
+        color: '#fff',
         fontFamily: 'Rajdhani, sans-serif',
         fontSize: '1.2rem',
         textAlign: 'center',
