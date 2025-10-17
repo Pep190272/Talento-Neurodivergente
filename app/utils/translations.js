@@ -129,6 +129,25 @@ export const translations = {
       description: 'Our support team is here to help you',
       contact: 'Contact Support'
     },
+    forms: {
+      individual: {
+        fullName: 'Full Name',
+        diagnoses: 'Diagnoses',
+        preferences: 'Preferences'
+      },
+      company: {
+        companyName: 'Company Name',
+        roles: 'Role/Tasks',
+        timeline: 'Timeline'
+      },
+      therapist: {
+        fullName: 'Full Name',
+        specialties: 'Specialties',
+        rates: 'Rates/Availability'
+      },
+      submit: 'Submit',
+      submitting: 'Submitting...'
+    },
     footer: {
       rights: 'All rights reserved',
       privacy: 'Privacy Policy',
@@ -264,6 +283,25 @@ export const translations = {
       title: '¿Necesitas Ayuda?',
       description: 'Nuestro equipo de soporte está aquí para ayudarte',
       contact: 'Contactar Soporte'
+    },
+    forms: {
+      individual: {
+        fullName: 'Nombre Completo',
+        diagnoses: 'Diagnósticos',
+        preferences: 'Preferencias'
+      },
+      company: {
+        companyName: 'Nombre de la Empresa',
+        roles: 'Rol/Tareas',
+        timeline: 'Cronograma'
+      },
+      therapist: {
+        fullName: 'Nombre Completo',
+        specialties: 'Especialidades',
+        rates: 'Tarifas/Disponibilidad'
+      },
+      submit: 'Enviar',
+      submitting: 'Enviando...'
     },
     footer: {
       rights: 'Todos los derechos reservados',

@@ -1,30 +1,31 @@
 'use client'
 import React, { useState } from 'react';
+import { useLanguage } from '../hooks/useLanguage';
+import { translations } from '../utils/translations';
 
-// Placeholder schemas for each form type
-const SCHEMAS = {
+// Schema generator function
+const getSchemas = (t) => ({
   individual: [
-    { label: 'Full Name', name: 'name', type: 'text', required: true },
-    { label: 'Diagnoses', name: 'diagnoses', type: 'text', required: false },
-    { label: 'Preferences', name: 'preferences', type: 'textarea', required: false },
-    // ...add more fields as needed
+    { label: t.forms.individual.fullName, name: 'name', type: 'text', required: true },
+    { label: t.forms.individual.diagnoses, name: 'diagnoses', type: 'text', required: false },
+    { label: t.forms.individual.preferences, name: 'preferences', type: 'textarea', required: false },
   ],
   company: [
-    { label: 'Company Name', name: 'companyName', type: 'text', required: true },
-    { label: 'Role/Tasks', name: 'roles', type: 'textarea', required: true },
-    { label: 'Timeline', name: 'timeline', type: 'text', required: false },
-    // ...add more fields as needed
+    { label: t.forms.company.companyName, name: 'companyName', type: 'text', required: true },
+    { label: t.forms.company.roles, name: 'roles', type: 'textarea', required: true },
+    { label: t.forms.company.timeline, name: 'timeline', type: 'text', required: false },
   ],
   therapist: [
-    { label: 'Full Name', name: 'name', type: 'text', required: true },
-    { label: 'Specialties', name: 'specialties', type: 'text', required: true },
-    { label: 'Rates/Availability', name: 'rates', type: 'text', required: false },
-    // ...add more fields as needed
+    { label: t.forms.therapist.fullName, name: 'name', type: 'text', required: true },
+    { label: t.forms.therapist.specialties, name: 'specialties', type: 'text', required: true },
+    { label: t.forms.therapist.rates, name: 'rates', type: 'text', required: false },
   ],
-};
+});
 
 export default function GenericForm({ type = 'individual', onSubmit }) {
-  const schema = SCHEMAS[type] || [];
+  const { language } = useLanguage();
+  const t = translations[language];
+  const schema = getSchemas(t)[type] || [];
   const [form, setForm] = useState(() => Object.fromEntries(schema.map(f => [f.name, ''])));
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -144,7 +145,7 @@ export default function GenericForm({ type = 'individual', onSubmit }) {
       ))}
       {error && <div style={{ color: '#e53935', background: 'rgba(229,57,53,0.08)', borderRadius: 8, padding: '8px 14px', marginBottom: 8, fontWeight: 500 }}>{error}</div>}
       <button type="submit" disabled={submitting} style={{ padding: '0.85rem 2.2rem', borderRadius: 10, background: 'linear-gradient(90deg, #9333ea 60%, #ffd700 100%)', color: '#18181b', fontWeight: 700, fontFamily: 'Orbitron, Rajdhani, sans-serif', fontSize: '1.08rem', border: 'none', cursor: 'pointer', boxShadow: '0 2px 12px #9333ea22', letterSpacing: '0.04em', marginTop: 8, transition: 'background 0.2s, color 0.2s' }}>
-        {submitting ? 'Submitting...' : 'Submit'}
+        {submitting ? t.forms.submitting : t.forms.submit}
       </button>
     </form>
   );
