@@ -67,7 +67,13 @@ export default function GenericForm({ type = 'individual', onSubmit }) {
 
       if (onSubmit) onSubmit(result.submission);
       alert(`Form submitted successfully! ${result.submission.summary}`);
-      
+
+      // Redirect to appropriate dashboard
+      const redirectUrl = type === 'individual' ? '/dashboard' :
+                         type === 'company' ? '/company' :
+                         '/therapist';
+      window.location.href = redirectUrl;
+
     } catch (err) {
       setError(err.message);
       console.error('Form submission error:', err);
