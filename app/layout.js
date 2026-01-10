@@ -7,7 +7,7 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  const maintenanceMode = true;
+  const maintenanceMode = false;
 
   if (maintenanceMode) {
     return (
