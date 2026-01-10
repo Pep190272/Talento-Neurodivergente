@@ -1,5 +1,6 @@
 export const translations = {
   en: {
+    brandName: 'Diversia Eternals',
     navbar: {
       home: 'Home',
       features: 'Features',
@@ -155,6 +156,7 @@ export const translations = {
     }
   },
   es: {
+    brandName: 'Diversia Eternals',
     navbar: {
       home: 'Inicio',
       features: 'Características',
