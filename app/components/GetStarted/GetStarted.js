@@ -140,7 +140,7 @@ const GetStarted = () => {
         console.log('Form submitted:', userData);
 
         // Show success message
-        alert(`¡Bienvenido a DiversIA, ${formData.firstName}! Tu perfil ha sido creado exitosamente.`);
+        alert(`¡Bienvenido a Diversia Eternals, ${formData.firstName}! Tu perfil ha sido creado exitosamente.`);
 
         // Redirect to appropriate dashboard
         if (userType === 'company') {
@@ -173,7 +173,7 @@ const GetStarted = () => {
     <div className="selectionContainer">
       <div className="headerSection">
         <h1 className="mainTitle">
-          Comienza con <span className="brandText">DiversIA</span>
+          Comienza con <span className="brandText">Diversia Eternals</span>
         </h1>
         <p className="subtitle">
           Elige tu camino para desbloquear superpoderes neurodivergentes

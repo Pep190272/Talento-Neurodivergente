@@ -39,7 +39,7 @@ export const extendedTranslations = {
       privacy: 'We respect your privacy. Unsubscribe at any time.'
     },
     footer: {
-      copyright: 'Diversia Eternals NeuroTalent Platform. All rights reserved.',
+      copyright: 'Diversia Eternals. All rights reserved.',
       home: 'Home',
       features: 'Features',
       forms: 'Forms',
@@ -48,7 +48,7 @@ export const extendedTranslations = {
     },
     getStarted: {
       mainTitle: 'Get Started with',
-      brandText: 'DiversIA',
+      brandText: 'Diversia Eternals',
       subtitle: 'Choose your path to unlock neurodivergent superpowers',
       back: 'Back',
       candidate: {
@@ -514,7 +514,7 @@ export const extendedTranslations = {
       privacy: 'Respetamos tu privacidad. Cancela la suscripción en cualquier momento.'
     },
     footer: {
-      copyright: 'Diversia Eternals NeuroTalent Platform. Todos los derechos reservados.',
+      copyright: 'Diversia Eternals. Todos los derechos reservados.',
       home: 'Inicio',
       features: 'Características',
       forms: 'Formularios',
@@ -523,7 +523,7 @@ export const extendedTranslations = {
     },
     getStarted: {
       mainTitle: 'Comienza con',
-      brandText: 'DiversIA',
+      brandText: 'Diversia Eternals',
       subtitle: 'Elige tu camino para desbloquear superpoderes neurodivergentes',
       back: 'Atrás',
       candidate: {
