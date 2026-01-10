@@ -2,8 +2,8 @@ import "./globals.css";
 import Navbar from "./components/Navbar/Navbar";
 
 export const metadata = {
-  title: "DiversIA - Neurodivergent Talent Platform",
-  description: "Unlock neurodivergent superpowers and build inclusive, high-performing organizations",
+  title: "Diversia Eternals - Neurodivergent Talent Platform",
+  description: "Unlock neurodivergent superpowers and build inclusive, high-performing organizations with Diversia Eternals",
 };
 
 export default function RootLayout({ children }) {

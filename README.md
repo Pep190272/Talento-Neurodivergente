@@ -1,4 +1,4 @@
-# NeuroTalent Platform
+# Diversia Eternals
 
 A comprehensive, AI-powered platform designed for neurodivergent individuals, companies, and therapists. Built with Next.js, OpenAI integration, and a databaseless architecture using JSON storage.
 
@@ -35,7 +35,7 @@ A comprehensive, AI-powered platform designed for neurodivergent individuals, co
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd tnd
+   cd diversia-eternals
    ```
 
 2. **Install dependencies**
@@ -62,7 +62,7 @@ A comprehensive, AI-powered platform designed for neurodivergent individuals, co
 ## 📁 Project Structure
 
 ```
-tnd/
+diversia-eternals/
 ├── app/
 │   ├── api/                    # API routes
 │   │   ├── chat/              # NeuroAgent chatbot API
