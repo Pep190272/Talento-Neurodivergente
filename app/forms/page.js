@@ -10,21 +10,21 @@ const getTabs = (t) => [
     key: 'individual',
     icon: User,
     description: t('forms.tabs.individual.description'),
-    color: 'from-purple-600 to-purple-800'
+    color: 'from-blue-600 to-blue-800'
   },
   {
     label: t('forms.tabs.company.label'),
     key: 'company',
     icon: Building2,
     description: t('forms.tabs.company.description'),
-    color: 'from-yellow-600 to-yellow-800'
+    color: 'from-blue-600 to-blue-800'
   },
   {
     label: t('forms.tabs.therapist.label'),
     key: 'therapist',
     icon: Stethoscope,
     description: t('forms.tabs.therapist.description'),
-    color: 'from-purple-500 to-indigo-600'
+    color: 'from-blue-500 to-blue-700'
   },
 ];
 
@@ -61,13 +61,13 @@ export default function FormsPage() {
           100% { transform: rotate(360deg); }
         }
         input:focus, textarea:focus {
-          border-color: #9333ea !important;
-          box-shadow: 0 0 0 2px rgba(147, 51, 234, 0.2) !important;
+          border-color: #046BD2 !important;
+          box-shadow: 0 0 0 2px rgba(4, 107, 210, 0.2) !important;
         }
         button:hover:not(:disabled) {
-          background: linear-gradient(45deg, #7c3aed, #6d28d9) !important;
+          background: #045CB4 !important;
           transform: scale(1.05) !important;
-          box-shadow: 0 10px 25px -5px rgba(147, 51, 234, 0.4) !important;
+          box-shadow: 0 10px 25px -5px rgba(4, 107, 210, 0.4) !important;
         }
         .tab-button:hover:not(.tab-button-active) {
           border-color: #4b5563 !important;
@@ -191,13 +191,13 @@ export default function FormsPage() {
 const styles = {
   pageContainer: {
     minHeight: '100vh',
-    background: 'linear-gradient(135deg, #1a1a1a 0%, #000000 50%, #1a1a1a 100%)',
+    background: '#FFFFFF',
     position: 'relative',
   },
   backgroundPattern: {
     position: 'absolute',
     inset: 0,
-    background: 'radial-gradient(ellipse at top right, rgba(147, 51, 234, 0.2) 0%, transparent 50%, rgba(234, 179, 8, 0.2) 100%)',
+    background: 'radial-gradient(ellipse at top right, rgba(4, 107, 210, 0.06) 0%, transparent 50%, rgba(4, 92, 180, 0.04) 100%)',
   },
   contentWrapper: {
     position: 'relative',
@@ -216,7 +216,7 @@ const styles = {
     justifyContent: 'center',
     width: '4rem',
     height: '4rem',
-    background: 'linear-gradient(45deg, #9333ea, #eab308)',
+    background: '#046BD2',
     borderRadius: '50%',
     marginBottom: '1.5rem',
   },
@@ -228,16 +228,12 @@ const styles = {
   mainTitle: {
     fontSize: '3rem',
     fontWeight: 'bold',
-    color: 'white',
+    color: '#1E293B',
     marginBottom: '1rem',
-    background: 'linear-gradient(45deg, #a855f7, #eab308)',
-    WebkitBackgroundClip: 'text',
-    WebkitTextFillColor: 'transparent',
-    backgroundClip: 'text',
   },
   mainDescription: {
     fontSize: '1.25rem',
-    color: '#d1d5db',
+    color: '#334155',
     maxWidth: '32rem',
     margin: '0 auto',
     lineHeight: 1.6,
@@ -253,20 +249,20 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     gap: '0.5rem',
-    backgroundColor: 'rgba(31, 41, 55, 0.5)',
+    backgroundColor: '#F0F5FA',
     backdropFilter: 'blur(12px)',
     padding: '0.5rem 1rem',
     borderRadius: '9999px',
-    border: '1px solid #374151',
+    border: '1px solid #E5E7EB',
   },
   featureIcon: {
     width: '1rem',
     height: '1rem',
-    color: '#eab308',
+    color: '#046BD2',
   },
   featureText: {
     fontSize: '0.875rem',
-    color: '#d1d5db',
+    color: '#334155',
   },
   tabsContainer: {
     display: 'flex',
@@ -280,17 +276,17 @@ const styles = {
     overflow: 'hidden',
     borderRadius: '0.75rem',
     padding: '1.5rem',
-    border: '2px solid #374151',
-    background: 'rgba(31, 41, 55, 0.5)',
+    border: '2px solid #E5E7EB',
+    background: '#FFFFFF',
     cursor: 'pointer',
     transition: 'all 0.3s ease',
     transform: 'scale(1)',
     minWidth: '280px',
   },
   tabButtonActive: {
-    borderColor: '#9333ea',
-    background: 'rgba(147, 51, 234, 0.2)',
-    boxShadow: '0 25px 50px -12px rgba(147, 51, 234, 0.2)',
+    borderColor: '#046BD2',
+    background: 'rgba(4, 107, 210, 0.08)',
+    boxShadow: '0 25px 50px -12px rgba(4, 107, 210, 0.15)',
     transform: 'scale(1.05)',
   },
   tabContent: {
@@ -304,11 +300,11 @@ const styles = {
     width: '3rem',
     height: '3rem',
     borderRadius: '0.5rem',
-    backgroundColor: '#374151',
+    backgroundColor: '#F0F5FA',
     marginBottom: '1rem',
   },
   tabIconContainerActive: {
-    background: 'linear-gradient(45deg, #9333ea, #7c3aed)',
+    background: '#046BD2',
   },
   tabIcon: {
     width: '1.5rem',
@@ -319,22 +315,22 @@ const styles = {
     fontWeight: 'bold',
     fontSize: '1.125rem',
     marginBottom: '0.5rem',
-    color: '#d1d5db',
+    color: '#334155',
   },
   tabTitleActive: {
-    color: 'white',
+    color: '#1E293B',
   },
   tabDescription: {
     fontSize: '0.875rem',
-    color: '#9ca3af',
+    color: '#64748B',
   },
   tabDescriptionActive: {
-    color: '#e9d5ff',
+    color: '#046BD2',
   },
   tabActiveOverlay: {
     position: 'absolute',
     inset: 0,
-    background: 'linear-gradient(45deg, rgba(147, 51, 234, 0.1), rgba(124, 58, 237, 0.1))',
+    background: 'rgba(4, 107, 210, 0.04)',
     borderRadius: '0.75rem',
   },
   activeTabIndicator: {
@@ -345,30 +341,30 @@ const styles = {
     display: 'inline-flex',
     alignItems: 'center',
     gap: '0.75rem',
-    background: 'linear-gradient(45deg, rgba(147, 51, 234, 0.2), rgba(234, 179, 8, 0.2))',
+    background: 'rgba(4, 107, 210, 0.08)',
     backdropFilter: 'blur(12px)',
     padding: '0.75rem 1.5rem',
     borderRadius: '9999px',
-    border: '1px solid rgba(147, 51, 234, 0.3)',
+    border: '1px solid rgba(4, 107, 210, 0.2)',
   },
   activeTabIcon: {
     width: '1.25rem',
     height: '1.25rem',
-    color: '#a855f7',
+    color: '#046BD2',
   },
   activeTabText: {
-    color: 'white',
+    color: '#1E293B',
     fontWeight: '500',
   },
   formContentWrapper: {
     marginBottom: '3rem',
   },
   formContainer: {
-    backgroundColor: '#111827',
+    backgroundColor: '#FFFFFF',
     borderRadius: '1rem',
     padding: '2rem',
-    border: '1px solid #1f2937',
-    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+    border: '1px solid #E5E7EB',
+    boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.1)',
   },
   formHeader: {
     marginBottom: '1.5rem',
@@ -376,11 +372,11 @@ const styles = {
   formTitle: {
     fontSize: '1.5rem',
     fontWeight: 'bold',
-    color: 'white',
+    color: '#1E293B',
     marginBottom: '0.5rem',
   },
   formDescription: {
-    color: '#9ca3af',
+    color: '#64748B',
   },
   formContent: {
     display: 'flex',
@@ -394,19 +390,19 @@ const styles = {
   fieldLabel: {
     fontSize: '0.875rem',
     fontWeight: '500',
-    color: '#e5e7eb',
+    color: '#334155',
     marginBottom: '0.5rem',
   },
   requiredStar: {
-    color: '#eab308',
+    color: '#046BD2',
   },
   input: {
     width: '100%',
     padding: '0.75rem 1rem',
-    backgroundColor: '#1f2937',
-    border: '1px solid #374151',
+    backgroundColor: '#F0F5FA',
+    border: '1px solid #E5E7EB',
     borderRadius: '0.5rem',
-    color: 'white',
+    color: '#1E293B',
     fontSize: '1rem',
     transition: 'all 0.2s ease',
     outline: 'none',
@@ -415,10 +411,10 @@ const styles = {
   textarea: {
     width: '100%',
     padding: '0.75rem 1rem',
-    backgroundColor: '#1f2937',
-    border: '1px solid #374151',
+    backgroundColor: '#F0F5FA',
+    border: '1px solid #E5E7EB',
     borderRadius: '0.5rem',
-    color: 'white',
+    color: '#1E293B',
     fontSize: '1rem',
     transition: 'all 0.2s ease',
     outline: 'none',
@@ -428,7 +424,7 @@ const styles = {
   },
   submitButton: {
     width: '100%',
-    background: 'linear-gradient(45deg, #9333ea, #7c3aed)',
+    background: '#046BD2',
     color: 'white',
     fontWeight: 'bold',
     padding: '1rem 1.5rem',
@@ -442,7 +438,7 @@ const styles = {
     gap: '0.5rem',
     fontSize: '1rem',
     transform: 'scale(1)',
-    boxShadow: '0 4px 14px 0 rgba(147, 51, 234, 0.3)',
+    boxShadow: '0 4px 14px 0 rgba(4, 107, 210, 0.3)',
   },
   submitButtonDisabled: {
     background: 'linear-gradient(45deg, #4b5563, #6b7280)',
@@ -466,14 +462,14 @@ const styles = {
     textAlign: 'center',
     marginTop: '3rem',
     paddingTop: '2rem',
-    borderTop: '1px solid #1f2937',
+    borderTop: '1px solid #E5E7EB',
   },
   footerText: {
-    color: '#9ca3af',
+    color: '#64748B',
     margin: 0,
   },
   footerLink: {
-    color: '#eab308',
+    color: '#046BD2',
     textDecoration: 'none',
     transition: 'color 0.2s ease',
   },

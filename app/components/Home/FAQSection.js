@@ -18,14 +18,14 @@ export default function FAQSection() {
   return (
     <section style={{
       padding: '4rem 2rem',
-      background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%)',
-      borderTop: '1px solid rgba(147, 51, 234, 0.10)',
-      borderBottom: '1px solid rgba(147, 51, 234, 0.10)'
+      background: '#FFFFFF',
+      borderTop: '1px solid rgba(4, 107, 210, 0.15)',
+      borderBottom: '1px solid rgba(4, 107, 210, 0.15)'
     }}>
       <div style={{ maxWidth: 900, margin: '0 auto' }}>
         <h2 style={{
-          color: 'var(--primary-gold)',
-          fontFamily: 'Orbitron, Rajdhani, sans-serif',
+          color: '#046BD2',
+          fontFamily: 'inherit, sans-serif',
           fontSize: '2.3rem',
           textAlign: 'center',
           marginBottom: '2.5rem',
@@ -36,12 +36,12 @@ export default function FAQSection() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           {faqs.map((faq, idx) => (
             <div key={idx} style={{
-              background: '#23213a',
+              background: '#F0F5FA',
               borderRadius: '14px',
-              boxShadow: '0 2px 12px #9333ea22',
-              border: '1px solid rgba(255,255,255,0.06)',
+              boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+              border: '1px solid #E5E7EB',
               overflow: 'hidden',
-              fontFamily: 'Rajdhani, sans-serif'
+              fontFamily: 'inherit, sans-serif'
             }}>
               <button
                 onClick={() => setOpenIndex(openIndex === idx ? null : idx)}
@@ -49,7 +49,7 @@ export default function FAQSection() {
                   width: '100%',
                   background: 'none',
                   border: 'none',
-                  color: 'var(--primary-gold)',
+                  color: '#046BD2',
                   fontWeight: 700,
                   fontSize: '1.15rem',
                   padding: '1.2rem 1.5rem',
@@ -58,7 +58,7 @@ export default function FAQSection() {
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   cursor: 'pointer',
-                  fontFamily: 'Orbitron, Rajdhani, sans-serif',
+                  fontFamily: 'inherit, sans-serif',
                   outline: 'none',
                   transition: 'background 0.2s'
                 }}
@@ -66,18 +66,18 @@ export default function FAQSection() {
               >
                 {faq.question}
                 {openIndex === idx ? (
-                  <FaChevronUp style={{ color: 'var(--primary-purple)' }} />
+                  <FaChevronUp style={{ color: '#046BD2' }} />
                 ) : (
-                  <FaChevronDown style={{ color: 'var(--primary-purple)' }} />
+                  <FaChevronDown style={{ color: '#046BD2' }} />
                 )}
               </button>
               {openIndex === idx && (
                 <div style={{
                   padding: '1.2rem 1.5rem',
-                  color: 'rgba(255,255,255,0.92)',
+                  color: '#334155',
                   fontSize: '1.08rem',
-                  background: '#181024',
-                  borderTop: '1px solid rgba(147, 51, 234, 0.10)',
+                  background: '#FFFFFF',
+                  borderTop: '1px solid rgba(4, 107, 210, 0.15)',
                   animation: 'fadeIn 0.3s'
                 }}>
                   {faq.answer}

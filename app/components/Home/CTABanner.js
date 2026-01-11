@@ -11,33 +11,33 @@ export default function CTABanner() {
   return (
     <section style={{
       padding: '3.5rem 2rem',
-      background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%)',
+      background: 'rgba(4, 107, 210, 0.06)',
       borderRadius: '24px',
       margin: '3rem auto',
       maxWidth: 1100,
-      boxShadow: '0 8px 32px rgba(147, 51, 234, 0.12)',
+      boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       justifyContent: 'center',
       position: 'relative',
-      overflow: 'hidden'
+      overflow: 'hidden',
+      border: '1px solid rgba(4, 107, 210, 0.15)'
     }}>
       <h2 style={{
-        color: '#FFD700',
-        fontFamily: 'Orbitron, Rajdhani, sans-serif',
+        color: '#046BD2',
+        fontFamily: 'inherit, sans-serif',
         fontSize: '2.2rem',
         textAlign: 'center',
         marginBottom: '1.5rem',
         fontWeight: 900,
-        letterSpacing: '-0.01em',
-        textShadow: '0 2px 12px rgba(255, 215, 0, 0.5)'
+        letterSpacing: '-0.01em'
       }}>
         {t('cta.title')}
       </h2>
       <p style={{
-        color: '#fff',
-        fontFamily: 'Rajdhani, sans-serif',
+        color: '#334155',
+        fontFamily: 'inherit, sans-serif',
         fontSize: '1.2rem',
         textAlign: 'center',
         marginBottom: '2.2rem',
@@ -48,38 +48,38 @@ export default function CTABanner() {
       </p>
       <div style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', justifyContent: 'center' }}>
         <Link href="/get-started" style={{
-          background: '#181024',
-          color: 'var(--primary-gold)',
-          fontFamily: 'Orbitron, Rajdhani, sans-serif',
+          background: '#046BD2',
+          color: '#FFFFFF',
+          fontFamily: 'inherit, sans-serif',
           fontWeight: 700,
           fontSize: '1.1rem',
           padding: '1rem 2.5rem',
           borderRadius: '24px',
           textDecoration: 'none',
-          boxShadow: '0 2px 12px #ffd70033',
+          boxShadow: '0 4px 14px 0 rgba(4, 107, 210, 0.3)',
           display: 'flex',
           alignItems: 'center',
           gap: '0.7rem',
-          transition: 'background 0.2s, color 0.2s',
-          border: '2px solid #FFD700'
+          transition: 'all 0.3s ease',
+          border: '2px solid #046BD2'
         }}>
           <FaRocket /> {t('cta.getStarted')}
         </Link>
         <Link href="/features/partnerships" style={{
-          background: '#fff',
-          color: '#9333EA',
-          fontFamily: 'Orbitron, Rajdhani, sans-serif',
+          background: '#FFFFFF',
+          color: '#046BD2',
+          fontFamily: 'inherit, sans-serif',
           fontWeight: 700,
           fontSize: '1.1rem',
           padding: '1rem 2.5rem',
           borderRadius: '24px',
           textDecoration: 'none',
-          boxShadow: '0 2px 12px #9333ea22',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
           display: 'flex',
           alignItems: 'center',
           gap: '0.7rem',
-          transition: 'background 0.2s, color 0.2s',
-          border: '2px solid #9333EA'
+          transition: 'all 0.3s ease',
+          border: '2px solid #046BD2'
         }}>
           <FaHandshake /> {t('cta.becomePartner')}
         </Link>

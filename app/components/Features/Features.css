@@ -80,18 +80,15 @@
   font-family: inherit, sans-serif;
   font-size: clamp(2.5rem, 6vw, 4.5rem);
   font-weight: 900;
-  color: var(--white);
+  color: #1E293B;
   margin: 0 0 1.5rem 0;
   line-height: 1.2;
   text-shadow: none;
 }
 
 .highlight {
-  background: var(--primary-gold);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  animation: brandGlow 3s ease-in-out infinite alternate;
+  color: #046BD2;
+  font-weight: 900;
 }
 
 .subtitle {
@@ -141,7 +138,7 @@
   font-family: inherit, sans-serif;
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--white);
+  color: #1E293B;
   margin-bottom: 0.5rem;
 }
 
