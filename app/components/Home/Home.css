@@ -1,12 +1,12 @@
 :root {
-    --primary: #6e0d9a;
-    --primary-light: #9c27b0;
-    --primary-dark: #4a148c;
-    --secondary: #ffd700;
-    --dark: #121212;
+    --primary: #046BD2;
+    --primary-light: #046BD2;
+    --primary-dark: #045CB4;
+    --secondary: #046BD2;
+    --dark: #1E293B;
     --light: #ffffff;
-    --gray: #f5f5f5;
-    --dark-gray: #333;
+    --gray: #F0F5FA;
+    --dark-gray: #334155;
   }
   
   /* Base Styles */
@@ -17,7 +17,7 @@
   }
   
   body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: inherit, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     color: var(--dark);
     background: var(--light);
     line-height: 1.6;
@@ -105,15 +105,16 @@
   }
   
   .cta-button.primary {
-    background: linear-gradient(135deg, var(--primary), var(--primary-light));
+    background: var(--primary);
     color: white;
     border: none;
-    box-shadow: 0 4px 15px rgba(110, 13, 154, 0.3);
+    box-shadow: 0 4px 15px rgba(4, 107, 210, 0.3);
   }
-  
+
   .cta-button.primary:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(110, 13, 154, 0.4);
+    background: var(--primary-dark);
+    box-shadow: 0 6px 20px rgba(4, 107, 210, 0.4);
   }
   
   .cta-button.secondary {
@@ -123,7 +124,7 @@
   }
   
   .cta-button.secondary:hover {
-    background: rgba(110, 13, 154, 0.05);
+    background: rgba(4, 107, 210, 0.05);
   }
   
   .nav-cta {
@@ -285,8 +286,8 @@
   /* Stats */
   .stats-section {
     padding: 5rem 5%;
-    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
-    color: white;
+    background: var(--gray);
+    color: var(--dark);
     display: flex;
     justify-content: space-around;
     flex-wrap: wrap;
@@ -301,18 +302,19 @@
   .stat-icon {
     font-size: 2.5rem;
     margin-bottom: 1rem;
-    color: var(--secondary);
+    color: var(--primary);
   }
-  
+
   .stat-item h3 {
     font-size: 3rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
+    color: var(--primary);
   }
-  
+
   .stat-item p {
     font-size: 1.1rem;
-    opacity: 0.9;
+    color: var(--dark-gray);
   }
   
   /* How It Works */
@@ -438,13 +440,10 @@
   .final-cta {
     padding: 5rem 5%;
     text-align: center;
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
-                url('https://images.unsplash.com/photo-1522071820081-009f0129c71c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');
-    background-size: cover;
-    background-position: center;
+    background: var(--primary);
     color: white;
   }
-  
+
   .final-cta h2 {
     font-size: 2.5rem;
     margin-bottom: 2rem;
@@ -452,11 +451,11 @@
   
   /* Footer */
   .footer {
-    background: var(--dark);
-    color: white;
+    background: var(--gray);
+    color: var(--dark);
     padding: 3rem 5% 1rem;
   }
-  
+
   .footer-content {
     display: flex;
     flex-wrap: wrap;
@@ -465,59 +464,59 @@
     max-width: 1200px;
     margin: 0 auto;
   }
-  
+
   .footer-logo {
     flex: 1;
     min-width: 250px;
   }
-  
+
   .footer-logo span {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--secondary);
+    color: var(--primary);
   }
-  
+
   .footer-logo p {
     margin-top: 0.5rem;
-    opacity: 0.8;
+    color: var(--dark-gray);
   }
-  
+
   .footer-links {
     flex: 2;
     display: flex;
     flex-wrap: wrap;
     gap: 3rem;
   }
-  
+
   .link-column {
     flex: 1;
     min-width: 150px;
   }
-  
+
   .link-column h4 {
     font-size: 1.1rem;
     margin-bottom: 1.5rem;
-    color: var(--secondary);
+    color: var(--primary);
   }
-  
+
   .link-column a {
     display: block;
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--dark-gray);
     text-decoration: none;
     margin-bottom: 0.8rem;
     transition: color 0.3s;
   }
-  
+
   .link-column a:hover {
-    color: white;
+    color: var(--primary);
   }
-  
+
   .footer-bottom {
     text-align: center;
     margin-top: 3rem;
     padding-top: 1.5rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    opacity: 0.7;
+    border-top: 1px solid var(--gray);
+    color: var(--dark-gray);
     font-size: 0.9rem;
   }
   
