@@ -28,7 +28,7 @@ export default function Navbar() {
     const onScroll = () => {
       const currentScrollY = window.scrollY
       setScrolled(currentScrollY > 50)
-      setIsVisible(currentScrollY < lastScrollY || currentScrollY < 100)
+      setIsVisible(true) // Always visible - no auto-hide
       setLastScrollY(currentScrollY)
     }
     window.addEventListener('scroll', onScroll)
