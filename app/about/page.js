@@ -18,6 +18,7 @@ export default function AboutPage() {
   const teamMembers = [
     {
       role: "Conferenciante experta en neurodiversidad",
+
       name: "Elisa Farias",
       icon: "🚀",
       description: "Embajadora de Diversia en México"
@@ -46,7 +47,7 @@ export default function AboutPage() {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%)',
+      background: '#FFFFFF',
       position: 'relative',
       overflow: 'hidden',
     }}>
@@ -58,13 +59,13 @@ export default function AboutPage() {
         width: '100%',
         height: '100%',
         background: `
-          radial-gradient(ellipse at 20% 30%, rgba(255, 215, 0, 0.08) 0%, transparent 50%),
-          radial-gradient(ellipse at 80% 70%, rgba(147, 51, 234, 0.08) 0%, transparent 50%)
+          radial-gradient(ellipse at 20% 30%, rgba(4, 107, 210, 0.06) 0%, transparent 50%),
+          radial-gradient(ellipse at 80% 70%, rgba(4, 92, 180, 0.04) 0%, transparent 50%)
         `,
         animation: 'gradientShift 8s ease-in-out infinite',
         zIndex: 1,
       }} />
-      
+
       {/* Grid Pattern */}
       <div style={{
         position: 'absolute',
@@ -73,8 +74,8 @@ export default function AboutPage() {
         width: '100%',
         height: '100%',
         backgroundImage: `
-          linear-gradient(rgba(255, 215, 0, 0.03) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(255, 215, 0, 0.03) 1px, transparent 1px)
+          linear-gradient(rgba(4, 107, 210, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(4, 107, 210, 0.03) 1px, transparent 1px)
         `,
         backgroundSize: '50px 50px',
         opacity: 0.3,
@@ -101,12 +102,12 @@ export default function AboutPage() {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '12px',
-            background: 'rgba(16, 16, 16, 0.8)',
-            border: '1px solid rgba(255, 215, 0, 0.3)',
+            background: 'rgba(4, 107, 210, 0.08)',
+            border: '1px solid rgba(4, 107, 210, 0.2)',
             padding: '8px 16px',
             borderRadius: '20px',
             fontSize: '0.9rem',
-            color: '#FFD700',
+            color: '#046BD2',
             marginBottom: '32px',
             backdropFilter: 'blur(10px)',
             animation: 'fadeInUp 0.8s ease 0.2s both',
@@ -116,25 +117,21 @@ export default function AboutPage() {
           </div>
 
           <h1 style={{
-            fontFamily: 'Orbitron, monospace',
+            fontFamily: 'inherit, sans-serif',
             fontSize: 'clamp(2.5rem, 5vw, 3.5rem)',
             fontWeight: '700',
             margin: '0 0 24px 0',
             lineHeight: '1.2',
-            background: 'linear-gradient(135deg, #ffffff 0%, #FFD700 50%, #9333EA 100%)',
-            backgroundSize: '200% 200%',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            animation: 'textGradient 6s ease-in-out infinite, fadeInUp 0.8s ease 0.4s both',
+            color: '#1E293B',
+            animation: 'fadeInUp 0.8s ease 0.4s both',
           }}>
             {t('about.title')}
           </h1>
 
           <p style={{
-            fontFamily: 'Rajdhani, sans-serif',
+            fontFamily: 'inherit, sans-serif',
             fontSize: '1.3rem',
-            color: 'rgba(255, 255, 255, 0.8)',
+            color: '#334155',
             maxWidth: '600px',
             margin: '0 auto',
             lineHeight: '1.6',
@@ -154,22 +151,23 @@ export default function AboutPage() {
           
           {/* Team Section */}
           <div style={{
-            background: 'rgba(16, 16, 16, 0.6)',
-            border: '1px solid rgba(255, 215, 0, 0.2)',
+            background: '#FFFFFF',
+            border: '1px solid #E5E7EB',
             borderRadius: '16px',
             padding: '32px',
             backdropFilter: 'blur(10px)',
             animation: 'fadeInUp 0.8s ease 0.8s both',
             transition: 'all 0.3s ease',
+            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(255, 215, 0, 0.4)';
-            e.currentTarget.style.background = 'rgba(16, 16, 16, 0.8)';
+            e.currentTarget.style.borderColor = '#046BD2';
+            e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(4, 107, 210, 0.15)';
             e.currentTarget.style.transform = 'translateY(-8px)';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(255, 215, 0, 0.2)';
-            e.currentTarget.style.background = 'rgba(16, 16, 16, 0.6)';
+            e.currentTarget.style.borderColor = '#E5E7EB';
+            e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1)';
             e.currentTarget.style.transform = 'translateY(0)';
           }}>
             <div style={{
@@ -181,7 +179,7 @@ export default function AboutPage() {
               <div style={{
                 width: '48px',
                 height: '48px',
-                background: 'linear-gradient(135deg, #FFD700, #9333EA)',
+                background: '#046BD2',
                 borderRadius: '12px',
                 display: 'flex',
                 alignItems: 'center',
@@ -191,8 +189,8 @@ export default function AboutPage() {
                 👥
               </div>
               <h2 style={{
-                fontFamily: 'Orbitron, monospace',
-                color: '#FFD700',
+                fontFamily: 'inherit, sans-serif',
+                color: '#046BD2',
                 fontSize: '1.4rem',
                 margin: 0,
                 fontWeight: '600',
@@ -203,8 +201,8 @@ export default function AboutPage() {
 
             {teamMembers.map((member, index) => (
               <div key={index} style={{
-                background: activeSection === index ? 'rgba(147, 51, 234, 0.1)' : 'rgba(255, 255, 255, 0.03)',
-                border: activeSection === index ? '1px solid rgba(147, 51, 234, 0.3)' : '1px solid rgba(255, 255, 255, 0.1)',
+                background: activeSection === index ? 'rgba(4, 107, 210, 0.08)' : '#F0F5FA',
+                border: activeSection === index ? '1px solid rgba(4, 107, 210, 0.3)' : '1px solid #E5E7EB',
                 borderRadius: '12px',
                 padding: '20px',
                 marginBottom: '16px',
@@ -220,16 +218,16 @@ export default function AboutPage() {
                   <span style={{ fontSize: '1.5rem' }}>{member.icon}</span>
                   <div>
                     <div style={{
-                      fontFamily: 'Rajdhani, sans-serif',
-                      color: '#FFD700',
+                      fontFamily: 'inherit, sans-serif',
+                      color: '#046BD2',
                       fontSize: '0.9rem',
                       fontWeight: '600',
                     }}>
                       {member.role}
                     </div>
                     <div style={{
-                      fontFamily: 'Orbitron, monospace',
-                      color: '#9333EA',
+                      fontFamily: 'inherit, sans-serif',
+                      color: '#1E293B',
                       fontSize: '1.1rem',
                       fontWeight: '700',
                     }}>
@@ -238,8 +236,8 @@ export default function AboutPage() {
                   </div>
                 </div>
                 <p style={{
-                  fontFamily: 'Rajdhani, sans-serif',
-                  color: 'rgba(255, 255, 255, 0.7)',
+                  fontFamily: 'inherit, sans-serif',
+                  color: '#64748B',
                   fontSize: '0.9rem',
                   margin: 0,
                   lineHeight: '1.4',
@@ -252,22 +250,23 @@ export default function AboutPage() {
 
           {/* Features Section */}
           <div style={{
-            background: 'rgba(16, 16, 16, 0.6)',
-            border: '1px solid rgba(255, 215, 0, 0.2)',
+            background: '#FFFFFF',
+            border: '1px solid #E5E7EB',
             borderRadius: '16px',
             padding: '32px',
             backdropFilter: 'blur(10px)',
             animation: 'fadeInUp 0.8s ease 1s both',
             transition: 'all 0.3s ease',
+            boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(255, 215, 0, 0.4)';
-            e.currentTarget.style.background = 'rgba(16, 16, 16, 0.8)';
+            e.currentTarget.style.borderColor = '#046BD2';
+            e.currentTarget.style.boxShadow = '0 10px 25px -5px rgba(4, 107, 210, 0.15)';
             e.currentTarget.style.transform = 'translateY(-8px)';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.borderColor = 'rgba(255, 215, 0, 0.2)';
-            e.currentTarget.style.background = 'rgba(16, 16, 16, 0.6)';
+            e.currentTarget.style.borderColor = '#E5E7EB';
+            e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.1)';
             e.currentTarget.style.transform = 'translateY(0)';
           }}>
             <div style={{
@@ -279,7 +278,7 @@ export default function AboutPage() {
               <div style={{
                 width: '48px',
                 height: '48px',
-                background: 'linear-gradient(135deg, #FFD700, #9333EA)',
+                background: '#046BD2',
                 borderRadius: '12px',
                 display: 'flex',
                 alignItems: 'center',
@@ -289,8 +288,8 @@ export default function AboutPage() {
                 ⚡
               </div>
               <h2 style={{
-                fontFamily: 'Orbitron, monospace',
-                color: '#FFD700',
+                fontFamily: 'inherit, sans-serif',
+                color: '#046BD2',
                 fontSize: '1.4rem',
                 margin: 0,
                 fontWeight: '600',
@@ -309,24 +308,24 @@ export default function AboutPage() {
                   alignItems: 'flex-start',
                   gap: '12px',
                   padding: '16px',
-                  background: 'rgba(255, 255, 255, 0.03)',
+                  background: '#F0F5FA',
                   borderRadius: '8px',
                   transition: 'all 0.3s ease',
                   cursor: 'pointer',
                 }}
                 onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(255, 215, 0, 0.05)';
+                  e.currentTarget.style.background = 'rgba(4, 107, 210, 0.08)';
                   e.currentTarget.style.transform = 'translateX(8px)';
                 }}
                 onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'rgba(255, 255, 255, 0.03)';
+                  e.currentTarget.style.background = '#F0F5FA';
                   e.currentTarget.style.transform = 'translateX(0)';
                 }}>
                   <span style={{ fontSize: '1.2rem' }}>{feature.icon}</span>
                   <div>
                     <h3 style={{
-                      fontFamily: 'Orbitron, monospace',
-                      color: '#FFD700',
+                      fontFamily: 'inherit, sans-serif',
+                      color: '#046BD2',
                       fontSize: '1rem',
                       margin: '0 0 4px 0',
                       fontWeight: '600',
@@ -334,8 +333,8 @@ export default function AboutPage() {
                       {feature.title}
                     </h3>
                     <p style={{
-                      fontFamily: 'Rajdhani, sans-serif',
-                      color: 'rgba(255, 255, 255, 0.7)',
+                      fontFamily: 'inherit, sans-serif',
+                      color: '#64748B',
                       fontSize: '0.9rem',
                       margin: 0,
                       lineHeight: '1.4',
@@ -351,13 +350,14 @@ export default function AboutPage() {
 
         {/* Contact Section */}
         <div style={{
-          background: 'rgba(16, 16, 16, 0.4)',
-          border: '1px solid rgba(255, 215, 0, 0.2)',
+          background: '#FFFFFF',
+          border: '1px solid #E5E7EB',
           borderRadius: '16px',
           padding: '48px 32px',
           textAlign: 'center',
           backdropFilter: 'blur(10px)',
           animation: 'fadeInUp 0.8s ease 1.2s both',
+          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
         }}>
           <div style={{
             display: 'flex',
@@ -369,7 +369,7 @@ export default function AboutPage() {
             <div style={{
               width: '48px',
               height: '48px',
-              background: 'linear-gradient(135deg, #FFD700, #9333EA)',
+              background: '#046BD2',
               borderRadius: '12px',
               display: 'flex',
               alignItems: 'center',
@@ -379,8 +379,8 @@ export default function AboutPage() {
               📧
             </div>
             <h2 style={{
-              fontFamily: 'Orbitron, monospace',
-              color: '#FFD700',
+              fontFamily: 'inherit, sans-serif',
+              color: '#046BD2',
               fontSize: '1.6rem',
               margin: 0,
               fontWeight: '600',
@@ -390,8 +390,8 @@ export default function AboutPage() {
           </div>
 
           <p style={{
-            fontFamily: 'Rajdhani, sans-serif',
-            color: 'rgba(255, 255, 255, 0.8)',
+            fontFamily: 'inherit, sans-serif',
+            color: '#334155',
             fontSize: '1.1rem',
             maxWidth: '500px',
             margin: '0 auto 24px auto',
@@ -404,25 +404,25 @@ export default function AboutPage() {
             display: 'inline-flex',
             alignItems: 'center',
             gap: '8px',
-            background: 'rgba(255, 215, 0, 0.1)',
-            border: '1px solid rgba(255, 215, 0, 0.3)',
+            background: 'rgba(4, 107, 210, 0.08)',
+            border: '1px solid rgba(4, 107, 210, 0.2)',
             padding: '12px 24px',
             borderRadius: '12px',
             fontSize: '1rem',
-            color: '#FFD700',
-            fontFamily: 'Rajdhani, sans-serif',
+            color: '#046BD2',
+            fontFamily: 'inherit, sans-serif',
             fontWeight: '600',
             transition: 'all 0.3s ease',
             cursor: 'pointer',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.background = 'rgba(255, 215, 0, 0.2)';
-            e.currentTarget.style.borderColor = 'rgba(255, 215, 0, 0.5)';
+            e.currentTarget.style.background = 'rgba(4, 107, 210, 0.15)';
+            e.currentTarget.style.borderColor = 'rgba(4, 107, 210, 0.4)';
             e.currentTarget.style.transform = 'translateY(-2px)';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.background = 'rgba(255, 215, 0, 0.1)';
-            e.currentTarget.style.borderColor = 'rgba(255, 215, 0, 0.3)';
+            e.currentTarget.style.background = 'rgba(4, 107, 210, 0.08)';
+            e.currentTarget.style.borderColor = 'rgba(4, 107, 210, 0.2)';
             e.currentTarget.style.transform = 'translateY(0)';
           }}>
             <span>📬</span>

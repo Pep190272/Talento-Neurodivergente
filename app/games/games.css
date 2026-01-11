@@ -1,21 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --primary-dark: #0a0a0a;
-  --secondary-dark: #1a1a1a;
-  --accent-purple: #9333ea;
-  --accent-gold: #ffd700;
-  --accent-yellow: #ffe066;
-  --text-main: #fff;
-  --text-subtle: #e0e0e0;
-  --card-bg: #18181b;
-  --card-border: rgba(255, 215, 0, 0.15);
-  --focus-outline: 2px solid #ffd700;
+  --primary-dark: #FFFFFF;
+  --secondary-dark: #F0F5FA;
+  --accent-purple: #046BD2;
+  --accent-gold: #046BD2;
+  --accent-yellow: #046BD2;
+  --text-main: #1E293B;
+  --text-subtle: #334155;
+  --card-bg: #FFFFFF;
+  --card-border: rgba(4, 107, 210, 0.2);
+  --focus-outline: 2px solid #046BD2;
 }
 
 .games-hero-bg {
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary-dark) 50%, #0f0f0f 100%);
+  background: var(--primary-dark);
   position: relative;
   overflow: hidden;
 }
@@ -29,14 +29,14 @@
 }
 
 .games-title {
-  font-family: 'Orbitron', monospace;
+  font-family: inherit, sans-serif;
   font-size: 2.8rem;
   color: var(--accent-gold);
   text-align: center;
   margin-bottom: 8px;
   letter-spacing: -0.01em;
   animation: textGradient 6s ease-in-out infinite;
-  background: linear-gradient(90deg, #fff 0%, var(--accent-gold) 50%, var(--accent-purple) 100%);
+  background: var(--accent-gold);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -48,7 +48,7 @@
 }
 
 .games-subtitle {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: inherit, sans-serif;
   color: var(--text-subtle);
   text-align: center;
   margin-bottom: 32px;
@@ -75,7 +75,7 @@
   transition: transform 0.18s cubic-bezier(.4,2,.6,1), box-shadow 0.18s, border 0.18s;
   outline: none;
   position: relative;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: inherit, sans-serif;
   color: var(--text-main);
   font-size: 1.1rem;
   user-select: none;
@@ -105,7 +105,7 @@
 }
 
 .game-name {
-  font-family: 'Orbitron', monospace;
+  font-family: inherit, sans-serif;
   font-size: 1.15rem;
   color: var(--accent-yellow);
   margin-top: 4px;
@@ -164,13 +164,13 @@
 
 /* --- General Game Area Styles --- */
 .gameplay-title {
-  font-family: 'Orbitron', monospace;
+  font-family: inherit, sans-serif;
   font-size: 2rem;
   color: var(--accent-gold);
   text-align: center;
   margin-bottom: 18px;
   letter-spacing: 0.01em;
-  background: linear-gradient(90deg, #fff 0%, var(--accent-gold) 50%, var(--accent-purple) 100%);
+  background: var(--accent-gold);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -212,14 +212,14 @@
 }
 .card-face {
   font-size: 2rem;
-  font-family: 'Orbitron', monospace;
+  font-family: inherit, sans-serif;
 }
 .memory-stats {
   display: flex;
   justify-content: center;
   gap: 24px;
   color: var(--accent-yellow);
-  font-family: 'Rajdhani', sans-serif;
+  font-family: inherit, sans-serif;
   margin-bottom: 8px;
 }
 
@@ -266,7 +266,7 @@
   justify-content: center;
   gap: 18px;
   color: var(--accent-yellow);
-  font-family: 'Rajdhani', sans-serif;
+  font-family: inherit, sans-serif;
   margin-bottom: 8px;
 }
 
@@ -305,7 +305,7 @@
   justify-content: center;
   gap: 18px;
   color: var(--accent-yellow);
-  font-family: 'Rajdhani', sans-serif;
+  font-family: inherit, sans-serif;
   margin-bottom: 8px;
 }
 
@@ -344,7 +344,7 @@
   justify-content: center;
   gap: 18px;
   color: var(--accent-yellow);
-  font-family: 'Rajdhani', sans-serif;
+  font-family: inherit, sans-serif;
   margin-bottom: 8px;
 }
 
@@ -355,7 +355,7 @@
   gap: 10px;
   justify-content: center;
   color: var(--accent-gold);
-  font-family: 'Rajdhani', sans-serif;
+  font-family: inherit, sans-serif;
   margin-bottom: 10px;
 }
 .word-icon {
@@ -388,7 +388,7 @@
   margin-bottom: 10px;
 }
 .input-letter {
-  font-family: 'Orbitron', monospace;
+  font-family: inherit, sans-serif;
   font-size: 1.2rem;
   color: var(--accent-yellow);
 }
@@ -397,7 +397,7 @@
   justify-content: center;
   gap: 18px;
   color: var(--accent-yellow);
-  font-family: 'Rajdhani', sans-serif;
+  font-family: inherit, sans-serif;
   margin-bottom: 8px;
 }
 
@@ -453,7 +453,7 @@
   justify-content: center;
   gap: 18px;
   color: var(--accent-yellow);
-  font-family: 'Rajdhani', sans-serif;
+  font-family: inherit, sans-serif;
   margin-bottom: 8px;
 }
 
@@ -464,7 +464,7 @@
   gap: 10px;
   justify-content: center;
   color: var(--accent-gold);
-  font-family: 'Rajdhani', sans-serif;
+  font-family: inherit, sans-serif;
   margin-bottom: 10px;
 }
 .color-match-icon {
@@ -481,7 +481,7 @@
   border-radius: 8px;
   font-size: 1.1rem;
   padding: 10px 18px;
-  font-family: 'Orbitron', monospace;
+  font-family: inherit, sans-serif;
   font-weight: 700;
   transition: background 0.18s, border 0.18s, color 0.18s;
   outline: none;
@@ -494,7 +494,7 @@
   justify-content: center;
   gap: 18px;
   color: var(--accent-yellow);
-  font-family: 'Rajdhani', sans-serif;
+  font-family: inherit, sans-serif;
   margin-bottom: 8px;
 }
 
@@ -568,7 +568,7 @@
   justify-content: center;
   gap: 18px;
   color: var(--accent-yellow);
-  font-family: 'Rajdhani', sans-serif;
+  font-family: inherit, sans-serif;
   margin-bottom: 8px;
 }
 

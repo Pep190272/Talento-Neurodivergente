@@ -10,7 +10,7 @@ const statsConfig = [
     label: 'Incremento de Productividad',
     end: 85,
     suffix: '%',
-    color: 'var(--primary-gold)',
+    color: '#046BD2',
     description: 'Aumento promedio de productividad en equipos inclusivos'
   },
   {
@@ -18,7 +18,7 @@ const statsConfig = [
     label: 'Colocaciones Exitosas',
     end: 750,
     suffix: '+',
-    color: 'var(--primary-purple)',
+    color: '#045CB4',
     description: 'Profesionales neurodivergentes colocados'
   },
   {
@@ -26,7 +26,7 @@ const statsConfig = [
     label: 'Empresas Asociadas',
     end: 120,
     suffix: '+',
-    color: 'var(--primary-gold)',
+    color: '#046BD2',
     description: 'Organizaciones confían en nuestras soluciones'
   },
   {
@@ -34,7 +34,7 @@ const statsConfig = [
     label: 'Tasa de Satisfacción',
     end: 95,
     suffix: '%',
-    color: 'var(--primary-purple)',
+    color: '#045CB4',
     description: 'Satisfacción de candidatos y empleadores'
   }
 ];
@@ -66,14 +66,14 @@ export default function StatsImpact() {
   return (
     <section style={{
       padding: '4rem 2rem',
-      background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%)',
-      borderTop: '1px solid rgba(147, 51, 234, 0.10)',
-      borderBottom: '1px solid rgba(147, 51, 234, 0.10)'
+      background: '#FFFFFF',
+      borderTop: '1px solid rgba(4, 107, 210, 0.15)',
+      borderBottom: '1px solid rgba(4, 107, 210, 0.15)'
     }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <h2 style={{
-          color: 'var(--primary-gold)',
-          fontFamily: 'Orbitron, Rajdhani, sans-serif',
+          color: '#046BD2',
+          fontFamily: 'inherit, sans-serif',
           fontSize: '2.3rem',
           textAlign: 'center',
           marginBottom: '2.5rem',
@@ -92,16 +92,16 @@ export default function StatsImpact() {
             const value = useAnimatedCounter(stat.end);
             return (
               <div key={idx} style={{
-                background: '#181024',
+                background: '#F0F5FA',
                 borderRadius: '16px',
                 padding: '2rem 1.5rem',
-                boxShadow: '0 4px 24px rgba(147, 51, 234, 0.08)',
+                boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 textAlign: 'center',
-                border: '1px solid rgba(255,255,255,0.06)',
-                fontFamily: 'Rajdhani, sans-serif',
+                border: '1px solid #E5E7EB',
+                fontFamily: 'inherit, sans-serif',
                 position: 'relative',
                 zIndex: 2
               }}>
@@ -112,15 +112,15 @@ export default function StatsImpact() {
                   fontSize: '2.2rem',
                   fontWeight: 700,
                   color: stat.color,
-                  fontFamily: 'Orbitron, Rajdhani, sans-serif',
+                  fontFamily: 'inherit, sans-serif',
                   marginBottom: 8,
                   letterSpacing: '-0.01em',
                   transition: 'color 0.3s'
                 }}>
                   {value}{stat.suffix}
                 </div>
-                <div style={{ color: '#fff', fontWeight: 600, fontSize: '1.1rem', marginBottom: 6 }}>{stat.label}</div>
-                <div style={{ color: 'rgba(255,255,255,0.7)', fontSize: '1rem' }}>{stat.description}</div>
+                <div style={{ color: '#1E293B', fontWeight: 600, fontSize: '1.1rem', marginBottom: 6 }}>{stat.label}</div>
+                <div style={{ color: '#64748B', fontSize: '1rem' }}>{stat.description}</div>
               </div>
             );
           })}

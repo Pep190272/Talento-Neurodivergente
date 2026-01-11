@@ -8,42 +8,42 @@ export default function ContactSupportTeaser() {
   return (
     <section style={{
       padding: '3.5rem 2rem',
-      background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%)',
-      borderTop: '1px solid rgba(147, 51, 234, 0.10)',
-      borderBottom: '1px solid rgba(147, 51, 234, 0.10)',
+      background: '#F0F5FA',
+      borderTop: '1px solid rgba(4, 107, 210, 0.15)',
+      borderBottom: '1px solid rgba(4, 107, 210, 0.15)',
       textAlign: 'center'
     }}>
       <div style={{ maxWidth: 700, margin: '0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <div style={{ fontSize: 48, color: 'var(--primary-gold)', marginBottom: 18 }}>
+        <div style={{ fontSize: 48, color: '#046BD2', marginBottom: 18 }}>
           <FaLifeRing />
         </div>
         <h2 style={{
-          color: 'var(--primary-gold)',
-          fontFamily: 'Orbitron, Rajdhani, sans-serif',
+          color: '#046BD2',
+          fontFamily: 'inherit, sans-serif',
           fontSize: '2rem',
           marginBottom: '1.2rem',
           letterSpacing: '-0.01em'
         }}>
           ¿Necesitas Ayuda o Tienes Preguntas?
         </h2>
-        <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.1rem', marginBottom: '2rem', fontFamily: 'Rajdhani, sans-serif' }}>
+        <p style={{ color: '#334155', fontSize: '1.1rem', marginBottom: '2rem', fontFamily: 'inherit, sans-serif' }}>
           Nuestro equipo está aquí para apoyarte. Contáctanos para asistencia, comentarios o consultas de asociación.
         </p>
         <Link href="/forms" style={{
-          background: 'linear-gradient(135deg, #FFD700 0%, #9333EA 100%)',
-          color: '#181024',
+          background: '#046BD2',
+          color: '#FFFFFF',
           fontWeight: 700,
-          fontFamily: 'Orbitron, Rajdhani, sans-serif',
+          fontFamily: 'inherit, sans-serif',
           fontSize: '1.1rem',
           padding: '1rem 2.5rem',
           borderRadius: '24px',
           textDecoration: 'none',
-          boxShadow: '0 2px 12px #ffd70033',
+          boxShadow: '0 4px 14px 0 rgba(4, 107, 210, 0.3)',
           display: 'inline-flex',
           alignItems: 'center',
           gap: '0.7rem',
-          transition: 'background 0.2s, color 0.2s',
-          border: '2px solid #FFD700'
+          transition: 'all 0.3s ease',
+          border: '2px solid #046BD2'
         }}>
           <FaLifeRing /> Contactar Soporte
         </Link>

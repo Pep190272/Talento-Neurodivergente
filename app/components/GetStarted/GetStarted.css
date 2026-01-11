@@ -3,13 +3,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap');
 
 :root {
-  --primary-gold: #FFD700;
-  --primary-purple: #9333EA;
-  --deep-purple: #6B21A8;
-  --dark-purple: #4C1D95;
-  --black: #000000;
-  --dark-gray: #0A0A0A;
-  --medium-gray: #1A1A1A;
+  --primary-gold: #046BD2;
+  --primary-purple: #046BD2;
+  --deep-purple: #045CB4;
+  --dark-purple: #045CB4;
+  --black: #1E293B;
+  --dark-gray: #334155;
+  --medium-gray: #F0F5FA;
   --light-gray: #E5E7EB;
   --white: #FFFFFF;
 }
@@ -17,10 +17,10 @@
 /* Main Container */
 .container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%);
+  background: var(--white);
   position: relative;
   overflow: hidden;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: inherit, sans-serif;
 }
 
 /* Background Elements */
@@ -39,7 +39,7 @@
   right: -20%;
   width: 60%;
   height: 200%;
-  background: radial-gradient(ellipse, rgba(255, 215, 0, 0.1) 0%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(4, 107, 210, 0.06) 0%, transparent 70%);
   animation: float 8s ease-in-out infinite;
 }
 
@@ -89,7 +89,7 @@
 }
 
 .mainTitle {
-  font-family: 'Orbitron', monospace;
+  font-family: inherit, sans-serif;
   font-size: clamp(2.5rem, 5vw, 4rem);
   font-weight: 900;
   color: var(--white);
@@ -99,7 +99,7 @@
 }
 
 .brandText {
-  background: linear-gradient(135deg, var(--primary-gold), var(--primary-purple));
+  background: var(--primary-gold);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -107,9 +107,9 @@
 }
 
 .subtitle {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: inherit, sans-serif;
   font-size: 1.3rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--dark-gray);
   margin: 0;
   line-height: 1.6;
   font-weight: 400;
@@ -127,8 +127,8 @@
 }
 
 .optionCard {
-  background: rgba(26, 26, 26, 0.8);
-  border: 2px solid rgba(255, 215, 0, 0.2);
+  background: var(--medium-gray);
+  border: 2px solid var(--light-gray);
   border-radius: 20px;
   padding: 2.5rem 1.5rem;
   cursor: pointer;
@@ -170,7 +170,7 @@
 }
 
 .optionTitle {
-  font-family: 'Orbitron', monospace;
+  font-family: inherit, sans-serif;
   font-size: 1.6rem;
   font-weight: 700;
   color: var(--primary-gold);
@@ -178,9 +178,9 @@
 }
 
 .optionDescription {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: inherit, sans-serif;
   font-size: 1rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--dark-gray);
   margin: 0 0 1.5rem 0;
   line-height: 1.6;
 }
@@ -194,7 +194,7 @@
 }
 
 .optionFeatures span {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: inherit, sans-serif;
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.7);
   padding: 0.4rem 0.8rem;
@@ -204,10 +204,10 @@
 }
 
 .optionButton {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: inherit, sans-serif;
   font-size: 1rem;
   font-weight: 600;
-  background: linear-gradient(135deg, var(--primary-gold), var(--primary-purple));
+  background: var(--primary-gold);
   color: var(--black);
   border: none;
   padding: 1rem 2rem;
@@ -227,7 +227,7 @@
 .formContainer {
   width: 100%;
   max-width: 800px;
-  background: rgba(26, 26, 26, 0.9);
+  background: var(--white);
   border: 2px solid rgba(255, 215, 0, 0.3);
   border-radius: 20px;
   padding: 3rem;
@@ -251,7 +251,7 @@
   padding: 0.8rem 1.5rem;
   border-radius: 10px;
   cursor: pointer;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: inherit, sans-serif;
   font-weight: 500;
   transition: all 0.3s ease;
 }
@@ -262,7 +262,7 @@
 }
 
 .formTitle {
-  font-family: 'Orbitron', monospace;
+  font-family: inherit, sans-serif;
   font-size: 2.5rem;
   font-weight: 700;
   color: var(--primary-gold);
@@ -270,9 +270,9 @@
 }
 
 .formSubtitle {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: inherit, sans-serif;
   font-size: 1.2rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--dark-gray);
   margin: 0;
 }
 
@@ -291,7 +291,7 @@
 }
 
 .sectionTitle {
-  font-family: 'Orbitron', monospace;
+  font-family: inherit, sans-serif;
   font-size: 1.5rem;
   font-weight: 600;
   color: var(--primary-gold);
@@ -313,7 +313,7 @@
 }
 
 .label {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: inherit, sans-serif;
   font-size: 1rem;
   font-weight: 500;
   color: var(--white);
@@ -321,10 +321,10 @@
 }
 
 .input, .select, .textarea {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: inherit, sans-serif;
   font-size: 1rem;
   background: rgba(255, 255, 255, 0.05);
-  border: 2px solid rgba(255, 215, 0, 0.2);
+  border: 2px solid var(--light-gray);
   border-radius: 10px;
   padding: 1rem;
   color: var(--white);
@@ -348,7 +348,7 @@
 }
 
 .errorText {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: inherit, sans-serif;
   font-size: 0.9rem;
   color: #ef4444;
   margin: 0;
@@ -366,9 +366,9 @@
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  font-family: 'Rajdhani', sans-serif;
+  font-family: inherit, sans-serif;
   font-size: 0.95rem;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--dark-gray);
   cursor: pointer;
   padding: 0.8rem;
   background: rgba(255, 215, 0, 0.05);
@@ -390,10 +390,10 @@
 
 /* Submit Button */
 .submitButton {
-  font-family: 'Rajdhani', sans-serif;
+  font-family: inherit, sans-serif;
   font-size: 1.2rem;
   font-weight: 600;
-  background: linear-gradient(135deg, var(--primary-gold), var(--primary-purple));
+  background: var(--primary-gold);
   color: var(--black);
   border: none;
   padding: 1.2rem 3rem;

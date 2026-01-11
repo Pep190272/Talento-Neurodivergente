@@ -86,12 +86,12 @@ export default function GenericForm({ type = 'individual', onSubmit }) {
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 24, background: 'rgba(24, 24, 27, 0.95)', borderRadius: 16, boxShadow: '0 4px 32px #9333ea22', padding: 32, border: '1.5px solid #9333ea', marginTop: 8 }}>
+    <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 24, background: '#FFFFFF', borderRadius: 16, boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.1)', padding: 32, border: '1px solid #E5E7EB', marginTop: 8 }}>
       {schema.map(field => (
         <div key={field.name} style={{ marginBottom: 8 }}>
-          <label style={{ color: '#ffd700', fontWeight: 600, fontFamily: 'Rajdhani, Orbitron, sans-serif', fontSize: '1.08rem', marginBottom: 6, display: 'block' }}>
+          <label style={{ color: '#334155', fontWeight: 600, fontFamily: 'inherit, sans-serif', fontSize: '1.08rem', marginBottom: 6, display: 'block' }}>
             {field.label}
-            {field.required && <span style={{ color: '#e53935', marginLeft: 4 }}> *</span>}
+            {field.required && <span style={{ color: '#046BD2', marginLeft: 4 }}> *</span>}
             {field.type === 'textarea' ? (
               <textarea
                 name={field.name}
@@ -101,21 +101,27 @@ export default function GenericForm({ type = 'individual', onSubmit }) {
                 style={{
                   width: '100%',
                   minHeight: 70,
-                  background: 'rgba(34, 24, 44, 0.95)',
-                  border: '1.5px solid #9333ea',
+                  background: '#F0F5FA',
+                  border: '1px solid #E5E7EB',
                   borderRadius: 10,
-                  color: '#fff',
-                  fontFamily: 'Rajdhani, Orbitron, sans-serif',
+                  color: '#1E293B',
+                  fontFamily: 'inherit, sans-serif',
                   fontSize: '1rem',
                   padding: '12px 14px',
                   marginTop: 6,
                   outline: 'none',
-                  boxShadow: '0 2px 8px #9333ea11',
+                  boxShadow: 'none',
                   transition: 'border 0.2s, box-shadow 0.2s',
                   resize: 'vertical',
                 }}
-                onFocus={e => e.target.style.border = '1.5px solid #ffd700'}
-                onBlur={e => e.target.style.border = '1.5px solid #9333ea'}
+                onFocus={e => {
+                  e.target.style.border = '1px solid #046BD2';
+                  e.target.style.boxShadow = '0 0 0 2px rgba(4, 107, 210, 0.2)';
+                }}
+                onBlur={e => {
+                  e.target.style.border = '1px solid #E5E7EB';
+                  e.target.style.boxShadow = 'none';
+                }}
               />
             ) : (
               <input
@@ -126,27 +132,33 @@ export default function GenericForm({ type = 'individual', onSubmit }) {
                 required={field.required}
                 style={{
                   width: '100%',
-                  background: 'rgba(34, 24, 44, 0.95)',
-                  border: '1.5px solid #9333ea',
+                  background: '#F0F5FA',
+                  border: '1px solid #E5E7EB',
                   borderRadius: 10,
-                  color: '#fff',
-                  fontFamily: 'Rajdhani, Orbitron, sans-serif',
+                  color: '#1E293B',
+                  fontFamily: 'inherit, sans-serif',
                   fontSize: '1rem',
                   padding: '12px 14px',
                   marginTop: 6,
                   outline: 'none',
-                  boxShadow: '0 2px 8px #9333ea11',
+                  boxShadow: 'none',
                   transition: 'border 0.2s, box-shadow 0.2s',
                 }}
-                onFocus={e => e.target.style.border = '1.5px solid #ffd700'}
-                onBlur={e => e.target.style.border = '1.5px solid #9333ea'}
+                onFocus={e => {
+                  e.target.style.border = '1px solid #046BD2';
+                  e.target.style.boxShadow = '0 0 0 2px rgba(4, 107, 210, 0.2)';
+                }}
+                onBlur={e => {
+                  e.target.style.border = '1px solid #E5E7EB';
+                  e.target.style.boxShadow = 'none';
+                }}
               />
             )}
           </label>
         </div>
       ))}
       {error && <div style={{ color: '#e53935', background: 'rgba(229,57,53,0.08)', borderRadius: 8, padding: '8px 14px', marginBottom: 8, fontWeight: 500 }}>{error}</div>}
-      <button type="submit" disabled={submitting} style={{ padding: '0.85rem 2.2rem', borderRadius: 10, background: 'linear-gradient(90deg, #9333ea 60%, #ffd700 100%)', color: '#18181b', fontWeight: 700, fontFamily: 'Orbitron, Rajdhani, sans-serif', fontSize: '1.08rem', border: 'none', cursor: 'pointer', boxShadow: '0 2px 12px #9333ea22', letterSpacing: '0.04em', marginTop: 8, transition: 'background 0.2s, color 0.2s' }}>
+      <button type="submit" disabled={submitting} style={{ padding: '0.85rem 2.2rem', borderRadius: 10, background: '#046BD2', color: '#FFFFFF', fontWeight: 700, fontFamily: 'inherit, sans-serif', fontSize: '1.08rem', border: 'none', cursor: submitting ? 'not-allowed' : 'pointer', boxShadow: '0 4px 14px 0 rgba(4, 107, 210, 0.3)', letterSpacing: '0.04em', marginTop: 8, transition: 'all 0.3s ease', opacity: submitting ? 0.7 : 1 }}>
         {submitting ? t.forms.submitting : t.forms.submit}
       </button>
     </form>

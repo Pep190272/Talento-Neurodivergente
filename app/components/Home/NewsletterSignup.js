@@ -25,30 +25,30 @@ export default function NewsletterSignup() {
   return (
     <section style={{
       padding: '4rem 2rem',
-      background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%)',
-      borderTop: '1px solid rgba(147, 51, 234, 0.10)',
-      borderBottom: '1px solid rgba(147, 51, 234, 0.10)'
+      background: '#FFFFFF',
+      borderTop: '1px solid rgba(4, 107, 210, 0.15)',
+      borderBottom: '1px solid rgba(4, 107, 210, 0.15)'
     }}>
       <div style={{ maxWidth: 600, margin: '0 auto', textAlign: 'center' }}>
         <h2 style={{
-          color: 'var(--primary-gold)',
-          fontFamily: 'Orbitron, Rajdhani, sans-serif',
+          color: '#046BD2',
+          fontFamily: 'inherit, sans-serif',
           fontSize: '2.3rem',
           marginBottom: '1.5rem',
           letterSpacing: '-0.01em'
         }}>
           {t('newsletter.title')}
         </h2>
-        <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.1rem', marginBottom: '2rem', fontFamily: 'Rajdhani, sans-serif' }}>
+        <p style={{ color: '#334155', fontSize: '1.1rem', marginBottom: '2rem', fontFamily: 'inherit, sans-serif' }}>
           {t('newsletter.description')}
         </p>
         {submitted ? (
-          <div style={{ color: 'var(--primary-gold)', fontWeight: 700, fontSize: '1.2rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
-            <FaCheckCircle style={{ color: 'var(--primary-purple)' }} /> {t('newsletter.thankYou')}
+          <div style={{ color: '#046BD2', fontWeight: 700, fontSize: '1.2rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 10 }}>
+            <FaCheckCircle style={{ color: '#046BD2' }} /> {t('newsletter.thankYou')}
           </div>
         ) : (
-          <form onSubmit={handleSubmit} style={{ display: 'flex', gap: 0, maxWidth: 420, margin: '0 auto', background: '#23213a', borderRadius: 32, overflow: 'hidden', boxShadow: '0 2px 12px #9333ea22', border: '1px solid rgba(255,255,255,0.06)' }}>
-            <span style={{ display: 'flex', alignItems: 'center', padding: '0 1rem', color: 'var(--primary-gold)', fontSize: 22, background: 'none' }}><FaEnvelope /></span>
+          <form onSubmit={handleSubmit} style={{ display: 'flex', gap: 0, maxWidth: 420, margin: '0 auto', background: '#F0F5FA', borderRadius: 32, overflow: 'hidden', boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)', border: '1px solid #E5E7EB' }}>
+            <span style={{ display: 'flex', alignItems: 'center', padding: '0 1rem', color: '#046BD2', fontSize: 22, background: 'none' }}><FaEnvelope /></span>
             <input
               type="email"
               value={email}
@@ -60,9 +60,9 @@ export default function NewsletterSignup() {
                 outline: 'none',
                 padding: '1rem',
                 fontSize: '1.1rem',
-                fontFamily: 'Rajdhani, sans-serif',
+                fontFamily: 'inherit, sans-serif',
                 background: 'none',
-                color: '#fff',
+                color: '#1E293B',
                 minWidth: 0
               }}
               disabled={submitted}
@@ -71,16 +71,16 @@ export default function NewsletterSignup() {
             <button
               type="submit"
               style={{
-                background: 'linear-gradient(135deg, #FFD700 0%, #9333EA 100%)',
-                color: '#181024',
+                background: '#046BD2',
+                color: '#FFFFFF',
                 fontWeight: 700,
-                fontFamily: 'Orbitron, Rajdhani, sans-serif',
+                fontFamily: 'inherit, sans-serif',
                 fontSize: '1.1rem',
                 border: 'none',
                 padding: '0 2rem',
                 borderRadius: 32,
                 cursor: 'pointer',
-                transition: 'background 0.2s',
+                transition: 'all 0.3s ease',
                 minHeight: 56
               }}
               disabled={submitted}
@@ -89,8 +89,8 @@ export default function NewsletterSignup() {
             </button>
           </form>
         )}
-        {error && <div style={{ color: '#FFD700', marginTop: 12, fontWeight: 600 }}>{error}</div>}
-        <div style={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.98rem', marginTop: 24, fontFamily: 'Rajdhani, sans-serif' }}>
+        {error && <div style={{ color: '#046BD2', marginTop: 12, fontWeight: 600 }}>{error}</div>}
+        <div style={{ color: '#64748B', fontSize: '0.98rem', marginTop: 24, fontFamily: 'inherit, sans-serif' }}>
           {t('newsletter.privacy')}
         </div>
       </div>

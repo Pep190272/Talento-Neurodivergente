@@ -17,14 +17,14 @@ export default function Partners() {
   return (
     <section style={{
       padding: '4rem 2rem',
-      background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%)',
-      borderTop: '1px solid rgba(147, 51, 234, 0.10)',
-      borderBottom: '1px solid rgba(147, 51, 234, 0.10)'
+      background: '#FFFFFF',
+      borderTop: '1px solid rgba(4, 107, 210, 0.15)',
+      borderBottom: '1px solid rgba(4, 107, 210, 0.15)'
     }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <h2 style={{
-          color: 'var(--primary-gold)',
-          fontFamily: 'Orbitron, Rajdhani, sans-serif',
+          color: '#046BD2',
+          fontFamily: 'inherit, sans-serif',
           fontSize: '2.3rem',
           textAlign: 'center',
           marginBottom: '2.5rem',
@@ -42,18 +42,18 @@ export default function Partners() {
         }}>
           {partners.map((p, idx) => (
             <div key={idx} style={{
-              background: '#181024',
+              background: '#F0F5FA',
               borderRadius: '14px',
               padding: '2rem 1rem',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              boxShadow: '0 2px 12px #9333ea22',
-              border: '1px solid rgba(255,255,255,0.06)',
+              boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+              border: '1px solid #E5E7EB',
               minHeight: 120
             }}>
-              <img src={p.logo} alt={p.name} style={{ width: 56, height: 56, objectFit: 'cover', marginBottom: 16, filter: 'brightness(1.2) drop-shadow(0 2px 8px #FFD70033)', borderRadius: '50%' }} />
-              <div style={{ color: 'var(--primary-gold)', fontWeight: 700, fontSize: '1.1rem', fontFamily: 'Orbitron, Rajdhani, sans-serif', textAlign: 'center' }}>{p.name}</div>
+              <img src={p.logo} alt={p.name} style={{ width: 56, height: 56, objectFit: 'cover', marginBottom: 16, filter: 'brightness(1) drop-shadow(0 2px 8px rgba(4, 107, 210, 0.2))', borderRadius: '50%' }} />
+              <div style={{ color: '#046BD2', fontWeight: 700, fontSize: '1.1rem', fontFamily: 'inherit, sans-serif', textAlign: 'center' }}>{p.name}</div>
             </div>
           ))}
         </div>

@@ -28,14 +28,14 @@ export default function BlogPreview() {
   return (
     <section style={{
       padding: '4rem 2rem',
-      background: 'linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0f0f0f 100%)',
-      borderTop: '1px solid rgba(147, 51, 234, 0.10)',
-      borderBottom: '1px solid rgba(147, 51, 234, 0.10)'
+      background: '#F0F5FA',
+      borderTop: '1px solid rgba(4, 107, 210, 0.15)',
+      borderBottom: '1px solid rgba(4, 107, 210, 0.15)'
     }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <h2 style={{
-          color: 'var(--primary-gold)',
-          fontFamily: 'Orbitron, Rajdhani, sans-serif',
+          color: '#046BD2',
+          fontFamily: 'inherit, sans-serif',
           fontSize: '2.3rem',
           textAlign: 'center',
           marginBottom: '2.5rem',
@@ -52,26 +52,26 @@ export default function BlogPreview() {
         }}>
           {posts.map((post, idx) => (
             <div key={idx} style={{
-              background: '#181024',
+              background: '#FFFFFF',
               borderRadius: '16px',
-              boxShadow: '0 4px 24px rgba(147, 51, 234, 0.08)',
-              border: '1px solid rgba(255,255,255,0.06)',
+              boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
+              border: '1px solid #E5E7EB',
               overflow: 'hidden',
               display: 'flex',
               flexDirection: 'column',
               minHeight: 380
             }}>
-              <div style={{ width: '100%', height: 180, overflow: 'hidden', background: '#23213a' }}>
+              <div style={{ width: '100%', height: 180, overflow: 'hidden', background: '#F0F5FA' }}>
                 <img src={post.image} alt={post.title} style={{ width: '100%', height: '100%', objectFit: 'cover', borderTopLeftRadius: 16, borderTopRightRadius: 16 }} />
               </div>
               <div style={{ padding: '1.5rem 1.2rem', flex: 1, display: 'flex', flexDirection: 'column' }}>
-                <h3 style={{ color: 'var(--primary-gold)', fontFamily: 'Orbitron, Rajdhani, sans-serif', fontSize: '1.25rem', marginBottom: 10 }}>{post.title}</h3>
-                <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: '1.05rem', marginBottom: 18, flex: 1 }}>{post.summary}</p>
+                <h3 style={{ color: '#046BD2', fontFamily: 'inherit, sans-serif', fontSize: '1.25rem', marginBottom: 10, fontWeight: 600 }}>{post.title}</h3>
+                <p style={{ color: '#64748B', fontSize: '1.05rem', marginBottom: 18, flex: 1 }}>{post.summary}</p>
                 <Link href={post.link} style={{
-                  color: 'var(--primary-purple)',
+                  color: '#046BD2',
                   fontWeight: 700,
                   textDecoration: 'none',
-                  fontFamily: 'Orbitron, Rajdhani, sans-serif',
+                  fontFamily: 'inherit, sans-serif',
                   fontSize: '1.05rem',
                   marginTop: 'auto',
                   display: 'inline-block'
