@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# data files (JSON storage for tests and development)
+/data/
+
+# temporary files
+tmpclaude-*
+*.tmp
