@@ -162,12 +162,12 @@
 }
 .draggable-item:focus {
   border: var(--focus-outline);
-  box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.18);
+  box-shadow: 0 0 0 4px rgba(4, 107, 210, 0.18);
 }
 .draggable-item.dragging {
   background: linear-gradient(135deg, #18181b 80%, var(--accent-gold) 100%);
   color: var(--accent-purple);
-  box-shadow: 0 8px 32px rgba(255, 215, 0, 0.12);
+  box-shadow: 0 8px 32px rgba(4, 107, 210, 0.12);
   opacity: 0.8;
   cursor: grabbing;
 }
@@ -175,7 +175,7 @@
 .stats-modal {
   background: var(--card-bg);
   border-radius: 16px;
-  box-shadow: 0 4px 24px rgba(147, 51, 234, 0.08);
+  box-shadow: 0 4px 24px rgba(4, 107, 210, 0.08);
   padding: 32px 24px;
   text-align: center;
   color: var(--accent-gold);
@@ -206,7 +206,7 @@
   font-size: 1.2rem;
 }
 .ai-tips {
-  background: rgba(147, 51, 234, 0.08);
+  background: rgba(4, 107, 210, 0.08);
   color: var(--accent-yellow);
   border-radius: 8px;
   padding: 10px 14px;
@@ -243,7 +243,7 @@
   background: var(--card-bg);
   border: 2px solid var(--card-border);
   border-radius: 18px;
-  box-shadow: 0 4px 24px rgba(147, 51, 234, 0.08);
+  box-shadow: 0 4px 24px rgba(4, 107, 210, 0.08);
   padding: 32px 16px 24px 16px;
   display: flex;
   flex-direction: column;
@@ -258,12 +258,12 @@
 }
 .quiz-card:focus {
   border: var(--focus-outline);
-  box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.18);
+  box-shadow: 0 0 0 4px rgba(4, 107, 210, 0.18);
 }
 .quiz-card:hover, .quiz-card:active {
   transform: translateY(-6px) scale(1.04);
   border-color: var(--accent-gold);
-  box-shadow: 0 8px 32px rgba(255, 215, 0, 0.12);
+  box-shadow: 0 8px 32px rgba(4, 107, 210, 0.12);
   background: linear-gradient(135deg, #18181b 80%, var(--accent-purple) 100%);
 }
 .quiz-card-icon {

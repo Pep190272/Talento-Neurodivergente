@@ -33,15 +33,15 @@ export default function RootLayout({ children }) {
               background: 'rgba(255, 255, 255, 0.05)',
               backdropFilter: 'blur(10px)',
               borderRadius: '20px',
-              border: '1px solid rgba(255, 215, 0, 0.3)',
+              border: '1px solid rgba(4, 107, 210, 0.3)',
               padding: '60px 40px',
               maxWidth: '600px',
-              boxShadow: '0 8px 32px rgba(147, 51, 234, 0.2)'
+              boxShadow: '0 8px 32px rgba(4, 107, 210, 0.2)'
             }}>
               <h1 style={{
                 fontFamily: 'Orbitron, sans-serif',
                 fontSize: '3rem',
-                background: 'linear-gradient(135deg, #FFD700 0%, #9333EA 100%)',
+                background: 'linear-gradient(135deg, #046BD2 0%, #046BD2 100%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 marginBottom: '20px'
@@ -62,10 +62,10 @@ export default function RootLayout({ children }) {
               <div style={{
                 display: 'inline-block',
                 padding: '12px 24px',
-                background: 'rgba(255, 215, 0, 0.1)',
-                border: '1px solid #FFD700',
+                background: 'rgba(4, 107, 210, 0.1)',
+                border: '1px solid #046BD2',
                 borderRadius: '10px',
-                color: '#FFD700',
+                color: '#046BD2',
                 fontFamily: 'Orbitron, sans-serif',
                 fontSize: '0.9rem'
               }}>

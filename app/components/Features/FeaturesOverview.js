@@ -61,8 +61,8 @@ export default function FeaturesOverview() {
     <section style={{
       padding: '4rem 2rem',
       background: 'linear-gradient(135deg, #181024 0%, #23213a 100%)',
-      borderTop: '1px solid rgba(147, 51, 234, 0.10)',
-      borderBottom: '1px solid rgba(147, 51, 234, 0.10)'
+      borderTop: '1px solid rgba(4, 107, 210, 0.10)',
+      borderBottom: '1px solid rgba(4, 107, 210, 0.10)'
     }}>
       <div style={{ maxWidth: 1200, margin: '0 auto' }}>
         <h2 style={{ color: 'var(--primary-gold)', marginBottom: '2rem', textAlign: 'center', fontSize: '2.5rem', fontFamily: 'Orbitron, Rajdhani, sans-serif' }}>
@@ -79,7 +79,7 @@ export default function FeaturesOverview() {
               background: '#23213a',
               borderRadius: '16px',
               padding: '2rem',
-              boxShadow: '0 4px 24px rgba(147, 51, 234, 0.08)',
+              boxShadow: '0 4px 24px rgba(4, 107, 210, 0.08)',
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',

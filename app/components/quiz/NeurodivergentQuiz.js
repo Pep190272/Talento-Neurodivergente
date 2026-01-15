@@ -460,12 +460,12 @@ export default function NeurodivergentQuiz({ onQuizComplete }) {
         }
         
         .question-category {
-          background: rgba(255, 215, 0, 0.2);
+          background: rgba(4, 107, 210, 0.2);
           color: var(--primary-gold);
         }
         
         .question-difficulty {
-          background: rgba(147, 51, 234, 0.2);
+          background: rgba(4, 107, 210, 0.2);
           color: var(--primary-purple);
         }
         
@@ -499,7 +499,7 @@ export default function NeurodivergentQuiz({ onQuizComplete }) {
         }
         
         .option-button.selected {
-          background: rgba(255, 215, 0, 0.2);
+          background: rgba(4, 107, 210, 0.2);
           border-color: var(--primary-gold);
           color: var(--primary-gold);
         }
@@ -543,7 +543,7 @@ export default function NeurodivergentQuiz({ onQuizComplete }) {
         }
         
         .explanation {
-          background: rgba(255, 215, 0, 0.1);
+          background: rgba(4, 107, 210, 0.1);
           border: 1px solid var(--primary-gold);
           border-radius: 8px;
           padding: 1rem;

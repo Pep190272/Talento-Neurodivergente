@@ -43,7 +43,7 @@ export default function Hero() {
       end: 85,
       suffix: '%',
       icon: FaChartLine,
-      color: '#FFD700',
+      color: '#046BD2',
       description: t('hero.stats.untappedTalent.description')
     },
     {
@@ -51,7 +51,7 @@ export default function Hero() {
       end: 140,
       suffix: '%',
       icon: IoStatsChart,
-      color: '#9333EA',
+      color: '#046BD2',
       description: t('hero.stats.productivity.description')
     },
     {
@@ -59,7 +59,7 @@ export default function Hero() {
       end: 120,
       suffix: '+',
       icon: FaHandshake,
-      color: '#FFD700',
+      color: '#046BD2',
       description: t('hero.stats.partners.description')
     },
     {
@@ -67,7 +67,7 @@ export default function Hero() {
       end: 750,
       suffix: '+',
       icon: FaStar,
-      color: '#9333EA',
+      color: '#046BD2',
       description: t('hero.stats.placements.description')
     }
   ]

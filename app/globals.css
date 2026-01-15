@@ -4,21 +4,21 @@
 @import url('./styles/tokens.css');
 
 :root {
-  /* Color Palette - Consistent with Hero/Navbar */
-  --primary-gold: #FFD700;
-  --primary-purple: #9333EA;
-  --deep-purple: #6B21A8;
-  --dark-purple: #4C1D95;
+  /* Color Palette - Corporate Blue Theme */
+  --primary-gold: #046BD2;
+  --primary-purple: #046BD2;
+  --deep-purple: #045CB4;
+  --dark-purple: #034A9A;
   --black: #000000;
-  --dark-gray: #0A0A0A;
-  --medium-gray: #1A1A1A;
+  --dark-gray: #1E293B;
+  --medium-gray: #334155;
   --light-gray: #E5E7EB;
   --white: #FFFFFF;
-  
+
   /* Typography */
   --font-primary: 'Orbitron', monospace;
   --font-secondary: 'Rajdhani', sans-serif;
-  
+
   /* Spacing */
   --spacing-xs: 0.5rem;
   --spacing-sm: 1rem;
@@ -26,19 +26,19 @@
   --spacing-lg: 2rem;
   --spacing-xl: 3rem;
   --spacing-2xl: 4rem;
-  
+
   /* Border Radius */
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 12px;
   --radius-xl: 16px;
-  
+
   /* Shadows */
   --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.2);
-  --shadow-glow: 0 0 20px rgba(255, 215, 0, 0.3);
-  
+  --shadow-glow: 0 0 20px rgba(4, 107, 210, 0.3);
+
   /* Transitions */
   --transition-fast: 0.2s ease;
   --transition-normal: 0.3s ease;

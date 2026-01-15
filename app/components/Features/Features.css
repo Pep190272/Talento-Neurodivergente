@@ -390,7 +390,7 @@
 
 .cta-btn.primary:hover {
   transform: translateY(-3px);
-  box-shadow: 0 15px 40px rgba(255, 215, 0, 0.3);
+  box-shadow: 0 15px 40px rgba(4, 107, 210, 0.3);
 }
 
 .cta-btn.secondary {
@@ -417,8 +417,8 @@
 }
 
 @keyframes brandGlow {
-  0% { filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5)); }
-  100% { filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.8)); }
+  0% { filter: drop-shadow(0 0 10px rgba(4, 107, 210, 0.5)); }
+  100% { filter: drop-shadow(0 0 20px rgba(4, 107, 210, 0.8)); }
 }
 
 /* Responsive Design */
