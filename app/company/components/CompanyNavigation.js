@@ -28,7 +28,7 @@ export default function CompanyNavigation() {
       setSelectedView('overview');
       router.push('/company');
     } else if (view === 'candidates') {
-      router.push('/company/candidates');
+      router.push('/candidates');
     } else {
       setSelectedView(view);
       router.push(`/company/${view}`);
