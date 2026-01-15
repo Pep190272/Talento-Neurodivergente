@@ -598,7 +598,7 @@ export default function AdvancedCandidates() {
               <span className={styles.statValue}>{filteredCandidates.length}</span>
             </div>
             <div className={styles.statCard}>
-              <FaSave className={styles.statIcon} style={{color: '#F59E0B'}} />
+              <FaSave className={styles.statIcon} style={{color: '#046BD2'}} />
               <span className={styles.statValue}>{savedCandidates.length}</span>
             </div>
           </div>
@@ -625,7 +625,7 @@ export default function AdvancedCandidates() {
                   {filteredCandidates.filter(c => c.stage === 'Assessed').length}
                 </div>
               </div>
-              <FaUserGraduate className={styles.statCardIcon} style={{color: '#E0E7FF'}} />
+              <FaUserGraduate className={styles.statCardIcon} style={{color: '#BAE6FD'}} />
             </div>
           </div>
           <div className={`${styles.statCardLarge} ${styles.statCardGreen}`}>
@@ -636,7 +636,7 @@ export default function AdvancedCandidates() {
                   {filteredCandidates.filter(c => c.iq >= 140).length}
                 </div>
               </div>
-              <FaBrain className={styles.statCardIcon} style={{color: '#D1FAE5'}} />
+              <FaBrain className={styles.statCardIcon} style={{color: '#7DD3FC'}} />
             </div>
           </div>
           <div className={`${styles.statCardLarge} ${styles.statCardYellow}`}>
@@ -647,7 +647,7 @@ export default function AdvancedCandidates() {
                   {filteredCandidates.filter(c => c.availability === 'Immediate').length}
                 </div>
               </div>
-              <FaRocket className={styles.statCardIcon} style={{color: '#FEF3C7'}} />
+              <FaRocket className={styles.statCardIcon} style={{color: '#38BDF8'}} />
             </div>
           </div>
         </div>

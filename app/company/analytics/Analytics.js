@@ -7,63 +7,63 @@ const Analytics = () => {
   const [timeRange, setTimeRange] = useState('30d');
   const [selectedMetric, setSelectedMetric] = useState('all');
   const [isRealTime, setIsRealTime] = useState(false);
-  const [darkMode, setDarkMode] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
   const [expandedChart, setExpandedChart] = useState(null);
 
   // Advanced KPI Data
   const kpiData = [
-    { 
-      title: "Pool de Talentos Activo", 
-      value: 2847, 
-      change: 12.3, 
-      trend: "up", 
+    {
+      title: "Pool de Talentos Activo",
+      value: 2847,
+      change: 12.3,
+      trend: "up",
       icon: Users,
-      color: "#8B5CF6",
+      color: "#046BD2",
       description: "Profesionales neurodivergentes listos para emparejamiento"
     },
-    { 
-      title: "Velocidad de Colocación", 
-      value: 18.2, 
-      change: 5.7, 
-      trend: "up", 
+    {
+      title: "Velocidad de Colocación",
+      value: 18.2,
+      change: 5.7,
+      trend: "up",
       icon: Zap,
-      color: "#EAB308",
+      color: "#0EA5E9",
       description: "Días promedio desde perfil hasta colocación"
     },
-    { 
-      title: "Tasa de Match de Superpoderes", 
-      value: 94.8, 
-      change: 2.1, 
-      trend: "up", 
+    {
+      title: "Tasa de Match de Superpoderes",
+      value: 94.8,
+      change: 2.1,
+      trend: "up",
       icon: Target,
       color: "#10B981",
       description: "Compatibilidad talento-rol impulsada por IA"
     },
-    { 
-      title: "Éxito de Retención", 
-      value: 87.3, 
-      change: -1.2, 
-      trend: "down", 
+    {
+      title: "Éxito de Retención",
+      value: 87.3,
+      change: -1.2,
+      trend: "down",
       icon: Award,
-      color: "#F59E0B",
+      color: "#0284C7",
       description: "Tasa de retención a 12 meses"
     },
-    { 
-      title: "Diversidad de Neurotipos", 
-      value: 15.7, 
-      change: 8.9, 
-      trend: "up", 
+    {
+      title: "Diversidad de Neurotipos",
+      value: 15.7,
+      change: 8.9,
+      trend: "up",
       icon: Brain,
-      color: "#EF4444",
+      color: "#0369A1",
       description: "Índice de diversidad de Shannon"
     },
-    { 
-      title: "Puntuación de Compromiso", 
-      value: 8.6, 
-      change: 0.4, 
-      trend: "up", 
+    {
+      title: "Puntuación de Compromiso",
+      value: 8.6,
+      change: 0.4,
+      trend: "up",
       icon: Activity,
-      color: "#3B82F6",
+      color: "#046BD2",
       description: "Calidad de interacción en la plataforma"
     }
   ];
@@ -81,12 +81,12 @@ const Analytics = () => {
 
   // Neurotype distribution
   const neurotypeData = [
-    { name: 'ADHD', value: 35, count: 997, color: '#8B5CF6' },
-    { name: 'Autism', value: 28, count: 797, color: '#EAB308' },
+    { name: 'ADHD', value: 35, count: 997, color: '#046BD2' },
+    { name: 'Autism', value: 28, count: 797, color: '#0EA5E9' },
     { name: 'Dyslexia', value: 22, count: 626, color: '#10B981' },
-    { name: 'Dyscalculia', value: 8, count: 228, color: '#F59E0B' },
-    { name: 'Tourette\'s', value: 4, count: 114, color: '#EF4444' },
-    { name: 'Other', value: 3, count: 85, color: '#6B7280' }
+    { name: 'Dyscalculia', value: 8, count: 228, color: '#0284C7' },
+    { name: 'Tourette\'s', value: 4, count: 114, color: '#0369A1' },
+    { name: 'Other', value: 3, count: 85, color: '#64748B' }
   ];
 
   // Skill radar data
