@@ -721,7 +721,7 @@ export default function Training() {
                 a 15.9155 15.9155 0 0 1 0 31.831
                 a 15.9155 15.9155 0 0 1 0 -31.831"
               fill="none"
-              stroke="rgba(147, 51, 234, 0.3)"
+              stroke="rgba(4, 107, 210, 0.3)"
               strokeWidth="2"
               className={styles.progressRingPath}
             />
@@ -730,7 +730,7 @@ export default function Training() {
                 a 15.9155 15.9155 0 0 1 0 31.831
                 a 15.9155 15.9155 0 0 1 0 -31.831"
               fill="none"
-              stroke="rgb(147, 51, 234)"
+              stroke="rgb(4, 107, 210)"
               strokeWidth="2"
               strokeDasharray={`${progress}, 100`}
               className={styles.progressRingFill}

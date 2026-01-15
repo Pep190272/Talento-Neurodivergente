@@ -1,39 +1,40 @@
 .settingsPage {
   padding: 2rem;
-  color: #fff;
+  color: #334155;
 }
 .title {
   font-size: 2rem;
   font-weight: bold;
-  color: #FFD700;
+  color: #046BD2;
   margin-bottom: 1.5rem;
 }
 .section {
-  background: #18181b;
+  background: #FFFFFF;
   border-radius: 16px;
   padding: 2rem;
   margin-bottom: 2rem;
-  border: 1px solid #9333EA33;
+  border: 1px solid #E5E7EB;
   max-width: 500px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 .sectionTitle {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #FFD700;
+  color: #046BD2;
   margin-bottom: 1rem;
 }
 .input {
-  background: rgba(26, 26, 26, 0.8);
-  border: 1px solid #FFD70033;
+  background: #F9FAFB;
+  border: 1px solid #D1D5DB;
   border-radius: 8px;
   padding: 0.75rem 1rem;
-  color: #fff;
+  color: #1E293B;
   width: 100%;
   margin-bottom: 0.75rem;
   font-family: 'Rajdhani', sans-serif;
 }
 .saveBtn {
-  background: linear-gradient(135deg, #9333EA, #FFD700);
+  background: #046BD2;
   color: #fff;
   border: none;
   border-radius: 8px;
@@ -45,8 +46,9 @@
   transition: all 0.3s;
 }
 .saveBtn:hover {
-  background: linear-gradient(135deg, #FFD700, #9333EA);
-  color: #000;
+  background: #045CB4;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(4, 107, 210, 0.3);
 }
 .deleteBtn {
   background: #e11d48;
@@ -66,9 +68,9 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  color: #fff;
+  color: #334155;
   margin-bottom: 0.5rem;
 }
 .checkbox {
-  accent-color: #FFD700;
+  accent-color: #046BD2;
 } 

@@ -594,7 +594,7 @@ export default function AdvancedCandidates() {
           </div>
           <div className={styles.headerStats}>
             <div className={styles.statCard}>
-              <FaUsers className={styles.statIcon} style={{color: '#9333EA'}} />
+              <FaUsers className={styles.statIcon} style={{color: '#046BD2'}} />
               <span className={styles.statValue}>{filteredCandidates.length}</span>
             </div>
             <div className={styles.statCard}>
@@ -614,7 +614,7 @@ export default function AdvancedCandidates() {
                   {filteredCandidates.filter(c => c.match >= 95).length}
                 </div>
               </div>
-              <FaTrophy className={styles.statCardIcon} style={{color: '#FFD700'}} />
+              <FaTrophy className={styles.statCardIcon} style={{color: '#046BD2'}} />
             </div>
           </div>
           <div className={`${styles.statCardLarge} ${styles.statCardBlue}`}>
@@ -836,7 +836,7 @@ export default function AdvancedCandidates() {
                         {candidate.stage}
                       </span>
                     </td>
-                    <td className={styles.tableCell} style={{color: '#9333EA'}}>
+                    <td className={styles.tableCell} style={{color: '#046BD2'}}>
                       {candidate.neurodivergence}
                     </td>
                     <td className={styles.tableCell} style={{color: 'rgba(255, 255, 255, 0.7)'}}>
