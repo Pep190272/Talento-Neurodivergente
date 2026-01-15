@@ -48,12 +48,12 @@ export default function DashboardPage() {
   if (!userData) {
     return (
       <div style={{ padding: '2rem', textAlign: 'center' }}>
-        <h2 style={{ color: 'var(--primary-gold)' }}>{t('dashboard.noProfile.title')}</h2>
-        <p style={{ color: 'rgba(255,255,255,0.7)' }}>{t('dashboard.noProfile.description')}</p>
+        <h2 style={{ color: '#046BD2', fontFamily: 'var(--font-heading, Orbitron, monospace)' }}>{t('dashboard.noProfile.title')}</h2>
+        <p style={{ color: '#334155' }}>{t('dashboard.noProfile.description')}</p>
         <a href="/forms" style={{
           padding: '12px 24px',
-          background: 'linear-gradient(135deg, #23213a 0%, #181024 100%)',
-          color: 'var(--primary-gold)',
+          background: '#046BD2',
+          color: '#FFFFFF',
           textDecoration: 'none',
           borderRadius: '8px',
           display: 'inline-block',
@@ -69,17 +69,17 @@ export default function DashboardPage() {
   return (
     <div style={{ padding: '2rem', maxWidth: 1400, margin: '0 auto' }}>
       {/* Header */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: '2rem',
         paddingBottom: '1rem',
-        borderBottom: '1px solid var(--primary-purple)'
+        borderBottom: '1px solid #D1D5DB'
       }}>
         <div>
-          <h1 style={{ color: 'var(--primary-gold)' }}>{t('dashboard.welcome')}, {userData.name || 'User'}!</h1>
-          <p style={{ color: 'var(--primary-purple)', margin: 0 }}>
+          <h1 style={{ color: '#046BD2', fontFamily: 'var(--font-heading, Orbitron, monospace)' }}>{t('dashboard.welcome')}, {userData.name || 'User'}!</h1>
+          <p style={{ color: '#64748B', margin: 0 }}>
             {userData.type === 'individual' ? t('dashboard.subtitle.individual') :
              userData.type === 'company' ? t('dashboard.subtitle.company') :
              t('dashboard.subtitle.therapist')}
@@ -89,12 +89,13 @@ export default function DashboardPage() {
           onClick={logout}
           style={{
             padding: '8px 16px',
-            background: 'linear-gradient(135deg, #23213a 0%, #181024 100%)',
-            color: 'var(--primary-gold)',
-            border: '1px solid rgba(255, 215, 0, 0.12)',
+            background: '#FFFFFF',
+            color: '#046BD2',
+            border: '2px solid #046BD2',
             borderRadius: '8px',
             cursor: 'pointer',
-            fontWeight: 700
+            fontWeight: 700,
+            fontFamily: 'var(--font-body, Rajdhani, sans-serif)'
           }}
         >
           {t('dashboard.logout')}
@@ -112,13 +113,13 @@ export default function DashboardPage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
           {/* Quick Actions */}
           <div style={{
-            border: '1px solid var(--primary-purple)',
+            border: '1px solid #D1D5DB',
             borderRadius: '12px',
             padding: '24px',
-            background: 'linear-gradient(135deg, #23213a 0%, #181024 100%)',
-            boxShadow: '0 4px 24px rgba(147, 51, 234, 0.08)'
+            background: '#FFFFFF',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)'
           }}>
-            <h3 style={{ margin: '0 0 16px 0', color: 'var(--primary-gold)' }}>{t('dashboard.quickActions.title')}</h3>
+            <h3 style={{ margin: '0 0 16px 0', color: '#046BD2', fontFamily: 'var(--font-heading, Orbitron, monospace)' }}>{t('dashboard.quickActions.title')}</h3>
             <div style={{
               display: 'grid',
               gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
@@ -126,37 +127,40 @@ export default function DashboardPage() {
             }}>
               <a href="/forms" style={{
                 padding: '16px',
-                background: 'rgba(26, 10, 40, 0.7)',
-                color: 'var(--primary-gold)',
+                background: '#F0F5FA',
+                color: '#046BD2',
                 textDecoration: 'none',
                 borderRadius: '8px',
                 textAlign: 'center',
                 fontWeight: 'bold',
-                border: '1px solid var(--primary-gold)'
+                border: '2px solid #046BD2',
+                fontFamily: 'var(--font-body, Rajdhani, sans-serif)'
               }}>
                 📝 {t('dashboard.quickActions.update')}
               </a>
               <a href="/games" style={{
                 padding: '16px',
-                background: 'rgba(26, 10, 40, 0.7)',
-                color: 'var(--primary-purple)',
+                background: '#F0F5FA',
+                color: '#046BD2',
                 textDecoration: 'none',
                 borderRadius: '8px',
                 textAlign: 'center',
                 fontWeight: 'bold',
-                border: '1px solid var(--primary-purple)'
+                border: '2px solid #046BD2',
+                fontFamily: 'var(--font-body, Rajdhani, sans-serif)'
               }}>
                 🎮 {t('dashboard.quickActions.games')}
               </a>
               <a href="/quiz" style={{
                 padding: '16px',
-                background: 'rgba(26, 10, 40, 0.7)',
-                color: '#8bc34a',
+                background: '#F0F5FA',
+                color: '#046BD2',
                 textDecoration: 'none',
                 borderRadius: '8px',
                 textAlign: 'center',
                 fontWeight: 'bold',
-                border: '1px solid #8bc34a'
+                border: '2px solid #046BD2',
+                fontFamily: 'var(--font-body, Rajdhani, sans-serif)'
               }}>
                 📊 {t('dashboard.quickActions.assessment')}
               </a>
@@ -165,21 +169,22 @@ export default function DashboardPage() {
 
           {/* AI Insights */}
           <div style={{
-            border: '1px solid var(--primary-purple)',
+            border: '1px solid #D1D5DB',
             borderRadius: '12px',
             padding: '24px',
-            background: 'linear-gradient(135deg, #23213a 0%, #181024 100%)',
-            boxShadow: '0 4px 24px rgba(147, 51, 234, 0.08)'
+            background: '#FFFFFF',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)'
           }}>
-            <h3 style={{ margin: '0 0 16px 0', color: 'var(--primary-gold)' }}>🤖 {t('dashboard.aiInsights.title')}</h3>
+            <h3 style={{ margin: '0 0 16px 0', color: '#046BD2', fontFamily: 'var(--font-heading, Orbitron, monospace)' }}>🤖 {t('dashboard.aiInsights.title')}</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {insights.map((insight, index) => (
                 <div key={index} style={{
                   padding: '12px',
-                  background: 'rgba(26, 10, 40, 0.7)',
+                  background: '#F0F5FA',
                   borderRadius: '8px',
-                  borderLeft: '4px solid var(--primary-gold)',
-                  color: 'rgba(255,255,255,0.9)'
+                  borderLeft: '4px solid #046BD2',
+                  color: '#334155',
+                  fontFamily: 'var(--font-body, Rajdhani, sans-serif)'
                 }}>
                   {insight}
                 </div>
@@ -189,13 +194,13 @@ export default function DashboardPage() {
 
           {/* Recent Activity */}
           <div style={{
-            border: '1px solid var(--primary-purple)',
+            border: '1px solid #D1D5DB',
             borderRadius: '12px',
             padding: '24px',
-            background: 'linear-gradient(135deg, #23213a 0%, #181024 100%)',
-            boxShadow: '0 4px 24px rgba(147, 51, 234, 0.08)'
+            background: '#FFFFFF',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)'
           }}>
-            <h3 style={{ margin: '0 0 16px 0', color: 'var(--primary-gold)' }}>📈 {t('dashboard.recentActivity.title')}</h3>
+            <h3 style={{ margin: '0 0 16px 0', color: '#046BD2', fontFamily: 'var(--font-heading, Orbitron, monospace)' }}>📈 {t('dashboard.recentActivity.title')}</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {recentActivity.map((activity, index) => (
                 <div key={index} style={{
@@ -203,11 +208,12 @@ export default function DashboardPage() {
                   justifyContent: 'space-between',
                   alignItems: 'center',
                   padding: '8px 0',
-                  borderBottom: index < recentActivity.length - 1 ? '1px solid rgba(255,255,255,0.08)' : 'none',
-                  color: 'rgba(255,255,255,0.8)'
+                  borderBottom: index < recentActivity.length - 1 ? '1px solid #E5E7EB' : 'none',
+                  color: '#334155',
+                  fontFamily: 'var(--font-body, Rajdhani, sans-serif)'
                 }}>
                   <span>{activity.action}</span>
-                  <span style={{ color: 'var(--primary-gold)', fontSize: '14px' }}>{activity.timestamp}</span>
+                  <span style={{ color: '#64748B', fontSize: '14px' }}>{activity.timestamp}</span>
                 </div>
               ))}
             </div>
@@ -216,11 +222,11 @@ export default function DashboardPage() {
 
         {/* Right Column - NeuroAgent Chat */}
         <div style={{
-          border: '1px solid var(--primary-purple)',
+          border: '1px solid #D1D5DB',
           borderRadius: '12px',
-          background: 'linear-gradient(135deg, #23213a 0%, #181024 100%)',
+          background: '#FFFFFF',
           overflow: 'hidden',
-          boxShadow: '0 4px 24px rgba(147, 51, 234, 0.08)'
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)'
         }}>
           <NeuroAgent userData={userData} />
         </div>
@@ -230,15 +236,15 @@ export default function DashboardPage() {
       {userData.summary && (
         <div style={{
           marginTop: '2rem',
-          border: '1px solid var(--primary-gold)',
+          border: '1px solid #D1D5DB',
           borderRadius: '12px',
           padding: '24px',
-          background: 'linear-gradient(135deg, #23213a 0%, #181024 100%)',
-          color: 'rgba(255,255,255,0.9)',
-          boxShadow: '0 4px 24px rgba(147, 51, 234, 0.08)'
+          background: '#FFFFFF',
+          color: '#334155',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)'
         }}>
-          <h3 style={{ margin: '0 0 16px 0', color: 'var(--primary-gold)' }}>📋 {t('dashboard.profileSummary.title')}</h3>
-          <p style={{ color: 'rgba(255,255,255,0.8)', lineHeight: '1.6' }}>{userData.summary}</p>
+          <h3 style={{ margin: '0 0 16px 0', color: '#046BD2', fontFamily: 'var(--font-heading, Orbitron, monospace)' }}>📋 {t('dashboard.profileSummary.title')}</h3>
+          <p style={{ color: '#334155', lineHeight: '1.6', fontFamily: 'var(--font-body, Rajdhani, sans-serif)' }}>{userData.summary}</p>
         </div>
       )}
     </div>

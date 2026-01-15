@@ -121,53 +121,53 @@ export default function CompanyDashboard({ defaultView = 'overview' }) {
   };
 
   const renderKPICards = () => (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div className="kpi-grid">
       {kpiData.map((kpi, index) => (
-        <div key={index} className="bg-zinc-800 rounded-xl p-6 border border-purple-500/20 hover:border-yellow-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20 cursor-pointer group">
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-2xl">{kpi.icon}</span>
-            <FaExpand className="text-purple-400 opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div key={index} className="kpi-card">
+          <div className="kpi-header">
+            <span className="kpi-icon">{kpi.icon}</span>
+            <FaExpand className="kpi-expand" />
           </div>
-          <div className="text-3xl font-bold text-yellow-400 mb-2">
+          <div className="kpi-value">
             {index === 2 ? `${animatedKPIs[index]}%` : animatedKPIs[index]}
           </div>
-          <div className="text-white font-semibold mb-1">{kpi.title}</div>
-          <div className="text-green-400 text-sm">{kpi.trend}</div>
+          <div className="kpi-title">{kpi.title}</div>
+          <div className="kpi-trend">{kpi.trend}</div>
         </div>
       ))}
     </div>
   );
 
   const renderAIRecommendations = () => (
-    <div className="bg-zinc-800 rounded-xl p-6 border border-purple-500/20 mb-8">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-xl font-bold text-yellow-400 flex items-center gap-2">
-          <FaRobot className="text-purple-400" />
+    <div className="ai-section">
+      <div className="ai-header">
+        <h3 className="ai-title">
+          <FaRobot className="ai-robot-icon" />
           Coincidencias de Superpoderes IA
         </h3>
-        <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+        <button className="simulator-btn">
           Simulador de Escenarios
         </button>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="talent-grid">
         {candidates.slice(0, 5).map((candidate) => (
-          <div key={candidate.id} className="bg-zinc-900 rounded-lg p-4 border border-yellow-500/20 hover:border-yellow-500/50 transition-all">
-            <div className="flex items-center gap-3 mb-3">
-              <div className="text-2xl">{candidate.superpower}</div>
-              <div>
-                <div className="font-semibold text-white">{candidate.name}</div>
-                <div className="text-sm text-gray-400">{candidate.location}</div>
+          <div key={candidate.id} className="talent-card">
+            <div className="talent-header">
+              <div className="talent-superpower">{candidate.superpower}</div>
+              <div className="talent-info">
+                <h4>{candidate.name}</h4>
+                <div className="talent-location">{candidate.location}</div>
               </div>
             </div>
-            <div className="text-green-400 font-bold mb-3">Coincidencia: {candidate.match}%</div>
-            <div className="flex gap-2">
-              <button className="flex-1 px-3 py-1 bg-purple-600 text-white rounded text-sm hover:bg-purple-700 transition-colors">
-                <FaEnvelope className="inline mr-1" /> Invitar
+            <div className="talent-match">Coincidencia: {candidate.match}%</div>
+            <div className="talent-actions">
+              <button className="action-btn btn-invite">
+                <FaEnvelope /> Invitar
               </button>
-              <button className="flex-1 px-3 py-1 bg-yellow-600 text-black rounded text-sm hover:bg-yellow-700 transition-colors">
-                <FaCalendarAlt className="inline mr-1" /> Agendar
+              <button className="action-btn btn-schedule">
+                <FaCalendarAlt /> Agendar
               </button>
-              <button className="px-3 py-1 bg-gray-600 text-white rounded text-sm hover:bg-gray-700 transition-colors">
+              <button className="action-btn btn-save">
                 <FaSave />
               </button>
             </div>
@@ -178,37 +178,37 @@ export default function CompanyDashboard({ defaultView = 'overview' }) {
   );
 
   const renderKanbanBoard = () => (
-    <div className="bg-zinc-800 rounded-xl p-6 border border-purple-500/20 mb-8">
-      <h3 className="text-xl font-bold text-yellow-400 mb-6 flex items-center gap-2">
-        <FaUsers className="text-purple-400" />
-        Pipeline de Candidatos
-      </h3>
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+    <div className="kanban-section">
+      <div className="kanban-header">
+        <FaUsers className="kanban-users-icon" />
+        <h3 className="kanban-title">Pipeline de Candidatos</h3>
+      </div>
+      <div className="kanban-grid">
         {stages.map((stage) => (
-          <div 
+          <div
             key={stage}
-            className="bg-zinc-900 rounded-lg p-4 min-h-96"
+            className="kanban-column"
             onDragOver={handleDragOver}
             onDrop={(e) => handleDrop(e, stage)}
           >
-            <h4 className="font-semibold text-white mb-4 text-center">{stage}</h4>
-            <div className="space-y-3">
+            <h4 className="kanban-column-title">{stage}</h4>
+            <div className="kanban-cards">
               {candidates.filter(c => c.stage === stage).map((candidate) => (
                 <div
                   key={candidate.id}
                   draggable
                   onDragStart={(e) => handleDragStart(e, candidate)}
-                  className="bg-zinc-800 rounded-lg p-3 border border-purple-500/20 cursor-move hover:border-yellow-500/50 transition-all"
+                  className="kanban-card"
                 >
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="text-lg">{candidate.superpower}</div>
-                    <div className="font-semibold text-white text-sm">{candidate.name}</div>
-                    <FaGripVertical className="text-gray-500 ml-auto" />
+                  <div className="card-header">
+                    <div className="card-superpower">{candidate.superpower}</div>
+                    <div className="card-name">{candidate.name}</div>
+                    <FaGripVertical className="card-drag-handle" />
                   </div>
-                  <div className="text-green-400 text-sm font-bold mb-2">Coincidencia: {candidate.match}%</div>
-                  <div className="text-gray-400 text-xs mb-2">{candidate.skills.join(', ')}</div>
-                  <button className="w-full px-2 py-1 bg-purple-600 text-white rounded text-xs hover:bg-purple-700 transition-colors">
-                    <FaRobot className="inline mr-1" /> Preguntar a NeuroAgent
+                  <div className="card-match">Coincidencia: {candidate.match}%</div>
+                  <div className="card-skills">{candidate.skills.join(', ')}</div>
+                  <button className="neuroagent-btn">
+                    <FaRobot /> Preguntar a NeuroAgent
                   </button>
                 </div>
               ))}

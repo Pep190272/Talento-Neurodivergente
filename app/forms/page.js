@@ -228,8 +228,9 @@ const styles = {
   mainTitle: {
     fontSize: '3rem',
     fontWeight: 'bold',
-    color: '#1E293B',
+    color: '#046BD2',
     marginBottom: '1rem',
+    fontFamily: 'Orbitron, monospace',
   },
   mainDescription: {
     fontSize: '1.25rem',

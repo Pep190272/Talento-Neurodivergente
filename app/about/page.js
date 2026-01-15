@@ -117,12 +117,12 @@ export default function AboutPage() {
           </div>
 
           <h1 style={{
-            fontFamily: 'inherit, sans-serif',
+            fontFamily: 'Orbitron, monospace',
             fontSize: 'clamp(2.5rem, 5vw, 3.5rem)',
             fontWeight: '700',
             margin: '0 0 24px 0',
             lineHeight: '1.2',
-            color: '#1E293B',
+            color: '#046BD2',
             animation: 'fadeInUp 0.8s ease 0.4s both',
           }}>
             {t('about.title')}

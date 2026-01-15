@@ -107,7 +107,7 @@
   font-family: var(--font-heading);
   font-size: clamp(2.5rem, 5vw, 4rem);
   font-weight: 900;
-  color: var(--text-heading);
+  color: var(--primary-blue);
   margin: 0 0 1.5rem 0;
   line-height: 1.2;
 }
