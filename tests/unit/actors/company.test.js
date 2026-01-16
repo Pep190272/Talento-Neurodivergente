@@ -7,7 +7,7 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { createCompany, createJobPosting, analyzeJobInclusivity } from '@/lib/companies'
+import { createCompany, createJobPosting, analyzeJobInclusivity, getCompanyById, getJobById } from '@/lib/companies'
 import { generateUserId, generateJobId } from '@/lib/utils'
 
 describe('UC-003: Company Registration & Job Posting', () => {

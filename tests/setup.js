@@ -1,10 +1,53 @@
 import '@testing-library/jest-dom'
-import { expect, afterEach, vi } from 'vitest'
+import { expect, afterEach, beforeEach, vi } from 'vitest'
 import { cleanup } from '@testing-library/react'
+import fs from 'fs/promises'
+import path from 'path'
+
+const DATA_DIR = path.join(process.cwd(), 'data')
+
+// Clean test data before each test
+beforeEach(async () => {
+  // Clean up data directory for isolated tests
+  try {
+    const directories = [
+      'users/individuals',
+      'users/companies',
+      'users/therapists',
+      'jobs',
+      'matches',
+      'connections',
+      'audit_logs'
+    ]
+
+    for (const dir of directories) {
+      const fullPath = path.join(DATA_DIR, dir)
+      try {
+        const files = await fs.readdir(fullPath)
+        for (const file of files) {
+          if (file.endsWith('.json')) {
+            await fs.unlink(path.join(fullPath, file))
+          }
+        }
+      } catch (error) {
+        // Directory doesn't exist yet, that's ok
+        if (error.code !== 'ENOENT') {
+          // Silently ignore
+        }
+      }
+    }
+  } catch (error) {
+    // Ignore cleanup errors
+  }
+
+  // Reset mocks
+  vi.clearAllMocks()
+})
 
 // Cleanup after each test
 afterEach(() => {
   cleanup()
+  vi.clearAllMocks()
 })
 
 // Mock OpenAI API globalmente

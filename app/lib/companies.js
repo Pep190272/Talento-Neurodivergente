@@ -42,7 +42,11 @@ export async function createCompany(data) {
   await initializeDataStructure()
 
   // Validate required fields
-  validateRequiredFields(data, ['email', 'name'])
+  validateRequiredFields(data, ['email'])
+
+  if (!data.name) {
+    throw new Error('Company name is required')
+  }
 
   const email = data.email.toLowerCase().trim()
 
@@ -54,13 +58,13 @@ export async function createCompany(data) {
   // Check for duplicate email
   const existingUser = await findUserByEmail(email)
   if (existingUser) {
-    throw new Error('Email already exists')
+    throw new Error('Company email already exists')
   }
 
   // Generate unique company ID
   const companyId = generateUserId('company')
 
-  // Create company object
+  // Create company object (flat structure for easier access)
   const company = {
     companyId,
     email,
@@ -69,16 +73,16 @@ export async function createCompany(data) {
     createdAt: new Date(),
     updatedAt: new Date(),
 
-    profile: {
-      name: sanitizeInput(data.name),
-      industry: data.industry || null,
-      size: data.size || null,
-      location: data.location || null,
-      website: data.website || null,
-      description: sanitizeInput(data.description || ''),
-      diversityCommitment: data.diversityCommitment || null,
-      neurodiversityPrograms: data.neurodiversityPrograms || []
-    },
+    // Company info (flat structure)
+    name: sanitizeInput(data.name),
+    industry: data.industry || null,
+    size: data.size || null,
+    location: data.location || null,
+    website: data.website || null,
+    description: sanitizeInput(data.description || ''),
+    contact: data.contact || null,
+    diversityCommitment: data.diversityCommitment || null,
+    neurodiversityPrograms: data.neurodiversityPrograms || [],
 
     jobs: [],
 
@@ -96,7 +100,10 @@ export async function createCompany(data) {
       jobsPosted: 0,
       candidatesHired: 0,
       averageTimeToHire: null
-    }
+    },
+
+    // Integration metadata
+    redirectTo: '/dashboard/company'
   }
 
   // Save to file
@@ -183,32 +190,35 @@ export async function createJobPosting(companyId, jobData) {
   // Generate job ID
   const jobId = generateJobId()
 
-  // Create job object
+  // Create job object (flat structure for easier access)
   const job = {
     jobId,
     companyId,
-    status: 'open',
+    status: 'active',
     createdAt: new Date(),
     updatedAt: new Date(),
     closedAt: null,
 
-    details: {
-      title: sanitizeInput(jobData.title),
-      description: sanitizeInput(jobData.description || ''),
-      skills: jobData.skills,
-      accommodations: jobData.accommodations,
-      salaryRange: jobData.salaryRange || null,
-      location: jobData.location || null,
-      workMode: jobData.workMode || 'remote',
-      benefits: jobData.benefits || [],
-      teamSize: jobData.teamSize || null,
-      reportingStructure: jobData.reportingStructure || null
-    },
+    // Job details (flat structure)
+    title: sanitizeInput(jobData.title),
+    description: sanitizeInput(jobData.description || ''),
+    skills: jobData.skills,
+    accommodations: jobData.accommodations,
+    salaryRange: jobData.salaryRange || null,
+    location: jobData.location || null,
+    workMode: jobData.workMode || 'remote',
+    benefits: jobData.benefits || [],
+    teamSize: jobData.teamSize || null,
+    reportingStructure: jobData.reportingStructure || null,
+    visibility: jobData.visibility || 'public',
 
     inclusivityScore: inclusivityAnalysis.score,
-    inclusivitySuggestions: inclusivityAnalysis.suggestions,
+    inclusivityAnalysis,
 
-    matches: [],
+    matches: {
+      pending: [],
+      accepted: []
+    },
 
     pipeline: {
       newMatches: [],
@@ -566,4 +576,22 @@ export async function getCompanyDashboard(companyId) {
       averageTimeToHire: company.metadata.averageTimeToHire
     }
   }
+}
+
+/**
+ * Get company by ID (alias for compatibility)
+ * @param {string} companyId - Company ID
+ * @returns {object|null} - Company profile or null
+ */
+export async function getCompanyById(companyId) {
+  return await getCompany(companyId)
+}
+
+/**
+ * Get job by ID (alias for compatibility)
+ * @param {string} jobId - Job ID
+ * @returns {object|null} - Job posting or null
+ */
+export async function getJobById(jobId) {
+  return await getJobPosting(jobId)
 }

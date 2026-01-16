@@ -276,9 +276,14 @@ export async function initializeDataStructure() {
  */
 export async function findUserByEmail(email) {
   const userTypes = ['individual', 'company', 'therapist']
+  const dirMap = {
+    'individual': 'users/individuals',
+    'company': 'users/companies',
+    'therapist': 'users/therapists'
+  }
 
   for (const type of userTypes) {
-    const dirPath = `users/${type}s` // individuals, companies, therapists
+    const dirPath = dirMap[type]
     const user = await findByField(dirPath, 'email', email)
 
     if (user) {
