@@ -6,6 +6,8 @@ const nextConfig = {
       bodySizeLimit: '2mb',
     },
   },
+  // Webpack config solo se usa en builds de producción
+  // Turbopack (modo dev) maneja automáticamente los polyfills de Node.js
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.resolve.fallback = {
