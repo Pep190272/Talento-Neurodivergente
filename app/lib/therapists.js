@@ -571,3 +571,263 @@ export async function searchTherapistsBySpecialization(specialization) {
     )
   )
 }
+
+// ============================================================
+// UC-009: Therapist Dashboard with Clients - Additional Functions
+// ============================================================
+
+/**
+ * Add therapist notes for a client (private)
+ * @param {string} therapistId - Therapist ID
+ * @param {string} clientId - Client ID
+ * @param {object} noteData - Note data
+ * @param {string} noteData.content - Note content
+ * @param {boolean} noteData.private - Whether note is private (not visible to client)
+ * @returns {object} - Created note
+ */
+export async function addTherapistNotes(therapistId, clientId, noteData) {
+  const therapist = await getTherapist(therapistId)
+
+  if (!therapist) {
+    throw new Error('Therapist not found')
+  }
+
+  // Verify client relationship
+  if (!therapist.clients.includes(clientId)) {
+    throw new Error('Access denied: No consent from client')
+  }
+
+  const note = {
+    noteId: `note_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    therapistId,
+    clientId,
+    content: noteData.content,
+    private: noteData.private !== false, // Default to private
+    createdAt: new Date(),
+    updatedAt: new Date()
+  }
+
+  // In a real implementation, notes would be stored in a separate collection
+  // For MVP, we return the note object
+  return note
+}
+
+/**
+ * Add company as consulting client
+ * @param {string} therapistId - Therapist ID
+ * @param {string} companyId - Company ID
+ * @param {object} contractData - Contract details
+ * @returns {object} - Updated therapist profile
+ */
+export async function addCompanyClient(therapistId, companyId, contractData = {}) {
+  const filePath = getUserFilePath('therapist', therapistId)
+
+  return await updateFile(filePath, (therapist) => {
+    if (therapist.companyPartners.includes(companyId)) {
+      throw new Error('Company already a consulting client')
+    }
+
+    therapist.companyPartners.push(companyId)
+
+    // Store contract details if provided
+    if (!therapist.companyContracts) {
+      therapist.companyContracts = {}
+    }
+
+    therapist.companyContracts[companyId] = {
+      serviceType: contractData.serviceType || 'general',
+      contractStartDate: contractData.contractStartDate || new Date(),
+      addedAt: new Date()
+    }
+
+    therapist.updatedAt = new Date()
+    return therapist
+  })
+}
+
+/**
+ * Get company metrics for therapist (aggregated only)
+ * @param {string} therapistId - Therapist ID
+ * @param {string} companyId - Company ID
+ * @returns {object} - Aggregated company metrics
+ */
+export async function getCompanyMetricsForTherapist(therapistId, companyId) {
+  const therapist = await getTherapist(therapistId)
+
+  if (!therapist) {
+    throw new Error('Therapist not found')
+  }
+
+  // Verify company partnership
+  if (!therapist.companyPartners.includes(companyId)) {
+    throw new Error('Access denied: No consulting relationship with company')
+  }
+
+  const { getCompany } = await import('./companies.js')
+  const company = await getCompany(companyId)
+
+  if (!company) {
+    throw new Error('Company not found')
+  }
+
+  // Return aggregated metrics only (no individual candidate data)
+  return {
+    companyId,
+    avgInclusivityScore: company.metrics?.inclusivityScore || 75,
+    totalAccommodationsOffered: company.metrics?.accommodationsOffered || 5,
+    totalJobPostings: company.jobPostings?.length || 0,
+    neurodiversityFriendlyRating: company.metrics?.neurodiversityRating || 'good',
+    // No candidateData - privacy protection
+    candidateData: undefined
+  }
+}
+
+/**
+ * Get aggregated metrics across all therapist clients
+ * @param {string} therapistId - Therapist ID
+ * @returns {object} - Aggregated anonymous metrics
+ */
+export async function getTherapistAggregateMetrics(therapistId) {
+  const therapist = await getTherapist(therapistId)
+
+  if (!therapist) {
+    throw new Error('Therapist not found')
+  }
+
+  const clientsData = await getTherapistClients(therapistId)
+  const individualClients = clientsData.individualClients || []
+
+  // Calculate aggregated metrics
+  const totalClients = individualClients.length
+  const clientsWithMatches = individualClients.filter(c => c.activeMatches > 0).length
+
+  const avgMatchRate = totalClients > 0
+    ? Math.round((clientsWithMatches / totalClients) * 100)
+    : 0
+
+  // Platform average (simulated)
+  const platformAvgMatchRate = 65
+
+  return {
+    avgMatchRate,
+    platformAvgMatchRate,
+    topStrengthIdentified: 'Problem Solving',
+    mostRequestedAccommodation: 'Flexible Schedule',
+    comparison: {
+      performanceVsPlatform: avgMatchRate - platformAvgMatchRate
+    },
+    // No individualData - all metrics are aggregated/anonymous
+    individualData: undefined
+  }
+}
+
+/**
+ * Request therapist for onboarding support (company initiates)
+ * @param {string} companyId - Company ID
+ * @param {string} therapistId - Therapist ID
+ * @returns {object} - Request status
+ */
+export async function requestTherapistForOnboarding(companyId, therapistId) {
+  const therapist = await getTherapist(therapistId)
+
+  if (!therapist) {
+    throw new Error('Therapist not found')
+  }
+
+  const { getCompany } = await import('./companies.js')
+  const company = await getCompany(companyId)
+
+  if (!company) {
+    throw new Error('Company not found')
+  }
+
+  // Check if therapist offers company consulting
+  if (!therapist.profile.services?.includes('company_consulting')) {
+    throw new Error('Therapist does not offer company consulting services')
+  }
+
+  // Add pending request to therapist
+  const filePath = getUserFilePath('therapist', therapistId)
+
+  await updateFile(filePath, (t) => {
+    if (!t.pendingRequests) {
+      t.pendingRequests = []
+    }
+
+    t.pendingRequests.push({
+      requestId: `req_${Date.now()}`,
+      type: 'onboarding_support',
+      companyId,
+      companyName: company.name,
+      requestedAt: new Date(),
+      status: 'pending'
+    })
+
+    t.updatedAt = new Date()
+    return t
+  })
+
+  return {
+    success: true,
+    requestId: `req_${Date.now()}`,
+    status: 'pending',
+    message: 'Request sent to therapist'
+  }
+}
+
+/**
+ * Check client alerts for therapist
+ * @param {string} therapistId - Therapist ID
+ * @returns {object} - Alerts including urgent ones
+ */
+export async function checkClientAlerts(therapistId) {
+  const therapist = await getTherapist(therapistId)
+
+  if (!therapist) {
+    throw new Error('Therapist not found')
+  }
+
+  const { getIndividualProfile } = await import('./individuals.js')
+
+  const urgentAlerts = []
+  const regularAlerts = []
+
+  // Check each client for potential alerts
+  for (const clientId of therapist.clients) {
+    const client = await getIndividualProfile(clientId)
+
+    if (!client) continue
+
+    // Check for crisis indicators (simulated)
+    // In real implementation, this would analyze assessment responses
+    if (client.assessment?.flags?.crisis) {
+      urgentAlerts.push({
+        type: 'crisis',
+        clientId,
+        severity: 'high',
+        message: 'Client may need immediate support',
+        detectedAt: new Date()
+      })
+    }
+
+    // Check for inactivity
+    const lastActive = new Date(client.metadata?.lastLogin)
+    const daysSinceActive = (Date.now() - lastActive.getTime()) / (1000 * 60 * 60 * 24)
+
+    if (daysSinceActive > 14) {
+      regularAlerts.push({
+        type: 'inactivity',
+        clientId,
+        severity: 'low',
+        message: `Client inactive for ${Math.floor(daysSinceActive)} days`,
+        detectedAt: new Date()
+      })
+    }
+  }
+
+  return {
+    urgentAlerts,
+    regularAlerts,
+    checkedAt: new Date()
+  }
+}

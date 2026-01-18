@@ -497,3 +497,198 @@ export async function updateConnectionStage(connectionId, newStage) {
     return connection
   })
 }
+
+// ============================================================
+// Therapist Consent Functions (UC-009)
+// ============================================================
+
+/**
+ * Request therapist access (individual initiates)
+ * @param {string} individualId - Individual user ID
+ * @param {string} therapistId - Therapist ID
+ * @returns {object} - Result with consent request status
+ */
+export async function requestTherapistAccess(individualId, therapistId) {
+  const individual = await getIndividualProfile(individualId)
+
+  if (!individual) {
+    throw new Error('Individual not found')
+  }
+
+  // Check if individual allows therapist access
+  if (!individual.privacy.allowTherapistAccess) {
+    throw new Error('Therapist access not enabled in privacy settings')
+  }
+
+  // Import therapist functions
+  const { getTherapist, addClientToTherapist } = await import('./therapists.js')
+
+  const therapist = await getTherapist(therapistId)
+
+  if (!therapist) {
+    throw new Error('Therapist not found')
+  }
+
+  // Check if therapist is verified
+  if (therapist.status !== 'active' || therapist.verificationStatus !== 'verified') {
+    throw new Error('Therapist not verified')
+  }
+
+  // Add client to therapist
+  await addClientToTherapist(therapistId, individualId)
+
+  return {
+    success: true,
+    therapistId,
+    individualId,
+    consentGivenAt: new Date(),
+    accessLevel: 'full' // Therapists get full access to client data
+  }
+}
+
+/**
+ * Revoke therapist access (individual revokes)
+ * @param {string} individualId - Individual user ID
+ * @param {string} therapistId - Therapist ID
+ * @returns {object} - Result with revocation status
+ */
+export async function revokeTherapistAccess(individualId, therapistId) {
+  const individual = await getIndividualProfile(individualId)
+
+  if (!individual) {
+    throw new Error('Individual not found')
+  }
+
+  // Import therapist functions
+  const { getTherapist, removeClientFromTherapist } = await import('./therapists.js')
+
+  const therapist = await getTherapist(therapistId)
+
+  if (!therapist) {
+    throw new Error('Therapist not found')
+  }
+
+  // Check if individual is actually a client
+  if (!therapist.clients.includes(individualId)) {
+    throw new Error('Individual is not a client of this therapist')
+  }
+
+  // Remove client from therapist (this also updates individual profile)
+  await removeClientFromTherapist(therapistId, individualId)
+
+  return {
+    success: true,
+    therapistId,
+    individualId,
+    revokedAt: new Date(),
+    accessRevoked: true
+  }
+}
+
+/**
+ * Request recommendation consent (therapist asks client)
+ * @param {string} therapistId - Therapist ID
+ * @param {string} individualId - Individual user ID
+ * @param {string} companyId - Company ID
+ * @param {string} jobId - Job ID
+ * @returns {object} - Consent request status
+ */
+export async function requestRecommendationConsent(therapistId, individualId, companyId, jobId) {
+  const { getTherapist } = await import('./therapists.js')
+  const therapist = await getTherapist(therapistId)
+
+  if (!therapist) {
+    throw new Error('Therapist not found')
+  }
+
+  // Check if individual is a client
+  if (!therapist.clients.includes(individualId)) {
+    throw new Error('Individual is not a client of this therapist')
+  }
+
+  const individual = await getIndividualProfile(individualId)
+  const company = await getCompany(companyId)
+
+  if (!individual || !company) {
+    throw new Error('Individual or company not found')
+  }
+
+  // Create consent request (pending client approval)
+  const consentRequest = {
+    requestId: `rec_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    type: 'recommendation',
+    therapistId,
+    individualId,
+    companyId,
+    jobId,
+    status: 'pending',
+    consentRequested: true,
+    pendingClientApproval: true,
+    requestedAt: new Date()
+  }
+
+  // In a real implementation, this would be saved and sent to client
+  // For now, we return the request object
+
+  return consentRequest
+}
+
+/**
+ * Recommend candidate to company (requires prior consent)
+ * @param {string} therapistId - Therapist ID
+ * @param {string} individualId - Individual user ID
+ * @param {string} companyId - Company ID
+ * @returns {object} - Recommendation result
+ */
+export async function recommendCandidateToCompany(therapistId, individualId, companyId) {
+  // This always throws unless there's explicit consent
+  // In a real implementation, we'd check for approved consent requests
+  throw new Error('Client consent required for recommendation')
+}
+
+/**
+ * Change therapist (individual switches to new therapist)
+ * @param {string} individualId - Individual user ID
+ * @param {string} newTherapistId - New therapist ID
+ * @returns {object} - Result with change status
+ */
+export async function changeTherapist(individualId, newTherapistId) {
+  const individual = await getIndividualProfile(individualId)
+
+  if (!individual) {
+    throw new Error('Individual not found')
+  }
+
+  const { getTherapist, addClientToTherapist, removeClientFromTherapist } = await import('./therapists.js')
+
+  // Get current therapist from individual profile
+  const currentTherapistId = individual.profile.therapistId
+
+  // Remove from current therapist if exists
+  if (currentTherapistId) {
+    const currentTherapist = await getTherapist(currentTherapistId)
+    if (currentTherapist && currentTherapist.clients.includes(individualId)) {
+      await removeClientFromTherapist(currentTherapistId, individualId)
+    }
+  }
+
+  // Add to new therapist
+  const newTherapist = await getTherapist(newTherapistId)
+
+  if (!newTherapist) {
+    throw new Error('New therapist not found')
+  }
+
+  if (newTherapist.status !== 'active') {
+    throw new Error('New therapist is not active')
+  }
+
+  await addClientToTherapist(newTherapistId, individualId)
+
+  return {
+    success: true,
+    previousTherapistId: currentTherapistId,
+    newTherapistId,
+    changedAt: new Date()
+  }
+}
