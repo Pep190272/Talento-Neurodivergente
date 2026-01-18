@@ -97,7 +97,7 @@ describe('UC-001: Individual Registration', () => {
 
       // Diagnosis should NOT be in public view without consent
       const publicView = getPublicProfileView(result)
-      expect(publicView.profile.diagnoses).toBeUndefined()
+      expect(publicView.diagnoses).toBeUndefined()
     })
 
     it('should reject registration without required fields', async () => {
@@ -188,9 +188,9 @@ describe('UC-001: Individual Registration', () => {
       const publicView = getPublicProfileView(result)
 
       // Cuando showRealName es false, debe usar nombre anonimizado
-      expect(publicView.profile.name).not.toBe('John Doe')
-      expect(publicView.profile.name).toMatch(/Anonymous User \d+/)
-      expect(publicView.profile.diagnoses).toBeUndefined() // private by default
+      expect(publicView.name).not.toBe('John Doe')
+      expect(publicView.name).toMatch(/Anonymous User \d+/)
+      expect(publicView.diagnoses).toBeUndefined() // private by default
     })
 
     it('should hide sensitive data by default in matches', async () => {

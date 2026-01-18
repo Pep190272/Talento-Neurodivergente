@@ -277,17 +277,6 @@ describe('TDD Masterclass: Draft Mode', () => {
     })
   })
 
-  describe('🟢 GREEN Phase: Implementación mínima', () => {
-    /**
-     * Estos tests se ejecutarán cuando implementemos las funciones
-     * Por ahora, todos fallarán porque las funciones no existen
-     */
-  })
-
-  describe('🔵 REFACTOR Phase: Mejorar sin romper', () => {
-    /**
-     * Después de implementar, refactorizaremos
-     * Los tests NO cambiarán, solo la implementación
-     */
-  })
+  // Note: GREEN and REFACTOR phases were completed in implementation
+  // All 8 tests above cover the full TDD cycle for Draft Mode feature
 })
