@@ -2,6 +2,18 @@
 
 A comprehensive, AI-powered platform designed for neurodivergent individuals, companies, and therapists. Built with Next.js, OpenAI integration, and a databaseless architecture using JSON storage.
 
+## 📊 Project Status
+
+**Current Phase:** 🟡 DESARROLLO AVANZADO (MVP en Testing) - 75% completo  
+**Production Ready:** ❌ NO (3-4 semanas estimadas)  
+**Tests:** ✅ 148/156 passing (95%)  
+**Build:** ⚠️ Requiere fixes críticos  
+**Security:** ⚠️ No activada  
+
+📖 **Para análisis completo de la fase del proyecto, ver:**
+- [RESPUESTA_RAPIDA.md](RESPUESTA_RAPIDA.md) - Resumen ejecutivo (2 min)
+- [FASE_DEL_PROYECTO.md](FASE_DEL_PROYECTO.md) - Análisis completo (10 min)
+
 ## 🚀 Features
 
 ### Core Functionality
