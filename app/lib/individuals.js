@@ -623,7 +623,7 @@ export async function getIndividualById(userId) {
  * @param {object} profile - Full profile object
  * @returns {object} - Public profile data
  */
-function getPublicProfileView(profile) {
+export function getPublicProfileView(profile) {
   // Base public data
   const publicData = {
     userId: profile.userId,
