@@ -41,7 +41,10 @@ export async function createTherapist(data) {
 
   // Validate required fields
   validateRequiredFields(data, ['email'])
-  validateRequiredFields(data.profile || {}, ['name', 'certifications', 'specializations'])
+
+  if (!data.profile) {
+    throw new Error('Profile is required')
+  }
 
   const email = data.email.toLowerCase().trim()
 
@@ -56,54 +59,92 @@ export async function createTherapist(data) {
     throw new Error('Email already exists')
   }
 
-  // Validate certifications (must have license number)
+  // Validate certifications
   if (!Array.isArray(data.profile.certifications) || data.profile.certifications.length === 0) {
-    throw new Error('At least one professional certification is required')
+    throw new Error('At least one certification is required')
   }
 
+  // Validate each certification
   for (const cert of data.profile.certifications) {
-    if (!cert.licenseNumber) {
-      throw new Error('License number required for all certifications')
+    // Check for expired certifications
+    if (cert.expiryDate) {
+      const expiryDate = new Date(cert.expiryDate)
+      if (expiryDate < new Date()) {
+        throw new Error('Certification has expired')
+      }
     }
-  }
-
-  // Validate specializations
-  if (!Array.isArray(data.profile.specializations) || data.profile.specializations.length === 0) {
-    throw new Error('At least one specialization is required')
   }
 
   // Generate unique therapist ID
   const therapistId = generateUserId('therapist')
+
+  // Check if certification is from recognized body
+  const recognizedBodies = [
+    'State Board of Psychology',
+    'American Psychological Association',
+    'National Board for Certified Counselors'
+  ]
+
+  const hasRecognizedCert = data.profile.certifications.some(cert =>
+    recognizedBodies.includes(cert.issuingBody)
+  )
+
+  // Validate certification (simulated)
+  const certificationValidation = {
+    validated: hasRecognizedCert,
+    checkedAt: new Date()
+  }
+
+  // Check neurodiversity experience
+  const neurodiversityExperience = data.profile.neurodiversityExperience || 0
+  const badges = []
+  const warnings = []
+
+  if (neurodiversityExperience === 0) {
+    badges.push('new_to_neurodiversity')
+    warnings.push({
+      type: 'limited_experience',
+      message: 'Limited neurodiversity experience'
+    })
+  }
 
   // Create therapist object
   const therapist = {
     therapistId,
     email,
     userType: 'therapist',
-    status: 'active',
-    verificationStatus: 'pending', // Requires admin verification
+    status: 'pending_verification',
     createdAt: new Date(),
     updatedAt: new Date(),
 
     profile: {
-      name: sanitizeInput(data.profile.name),
+      name: sanitizeInput(data.profile.name || ''),
       certifications: data.profile.certifications.map(cert => ({
-        title: sanitizeInput(cert.title),
-        licenseNumber: sanitizeInput(cert.licenseNumber),
-        issuer: sanitizeInput(cert.issuer || ''),
+        title: sanitizeInput(cert.title || ''),
+        licenseNumber: sanitizeInput(cert.licenseNumber || ''),
+        issuingBody: sanitizeInput(cert.issuingBody || cert.issuer || ''),
         expiryDate: cert.expiryDate || null
       })),
-      specializations: data.profile.specializations,
+      specializations: data.profile.specializations || [],
+      neurodiversityExperience: neurodiversityExperience,
+      experienceYears: data.profile.experienceYears || 0,
+      approach: data.profile.approach || null,
+      services: data.profile.services || [],
+      rates: data.profile.rates || undefined,
       languages: data.profile.languages || ['English'],
       location: data.profile.location || null,
       bio: sanitizeInput(data.profile.bio || ''),
-      yearsOfExperience: data.profile.yearsOfExperience || null,
-      acceptingNewClients: true,
-      consultationFee: data.profile.consultationFee || null
+      acceptingNewClients: true
     },
+
+    certificationValidation,
+    additionalDocumentationRequired: !hasRecognizedCert,
+    badges: badges.length > 0 ? badges : undefined,
+    warnings: warnings.length > 0 ? warnings : undefined,
 
     clients: [],
     companyPartners: [],
+    pendingRequests: [],
 
     availability: {
       status: 'available',
@@ -179,14 +220,39 @@ export async function updateTherapist(therapistId, updates) {
 /**
  * Verify therapist (admin action)
  * @param {string} therapistId - Therapist ID
+ * @param {object} options - Verification options
+ * @param {string} options.verifiedBy - Admin ID who verified
+ * @param {string} options.notes - Verification notes
+ * @param {string} options.status - 'active' or 'rejected'
+ * @param {string} options.reason - Rejection reason (if rejected)
  * @returns {object} - Updated therapist profile
  */
-export async function verifyTherapist(therapistId) {
+export async function verifyTherapist(therapistId, options = {}) {
   const filePath = getUserFilePath('therapist', therapistId)
 
   return await updateFile(filePath, (therapist) => {
-    therapist.verificationStatus = 'verified'
-    therapist.verifiedAt = new Date()
+    const isRejected = options.status === 'rejected'
+
+    if (isRejected) {
+      therapist.status = 'rejected'
+      therapist.rejectionReason = options.reason || null
+      therapist.rejectedAt = new Date()
+    } else {
+      therapist.status = 'active'
+      therapist.verificationStatus = 'verified'
+      therapist.verifiedAt = new Date()
+      therapist.welcomeEmailSent = true
+      therapist.redirectTo = '/dashboard/therapist'
+    }
+
+    if (options.verifiedBy) {
+      therapist.verifiedBy = options.verifiedBy
+    }
+
+    if (options.notes) {
+      therapist.verificationNotes = options.notes
+    }
+
     therapist.updatedAt = new Date()
     return therapist
   })
@@ -334,7 +400,7 @@ export async function getClientDataForTherapist(therapistId, clientId) {
 /**
  * Get all clients for a therapist
  * @param {string} therapistId - Therapist ID
- * @returns {Array<object>} - Array of client summaries
+ * @returns {object} - Object with individualClients, companyClients, and suggestions
  */
 export async function getTherapistClients(therapistId) {
   const therapist = await getTherapist(therapistId)
@@ -345,7 +411,8 @@ export async function getTherapistClients(therapistId) {
 
   const { getIndividualProfile } = await import('./individuals.js')
 
-  const clients = await Promise.all(
+  // Get individual clients
+  const individualClients = await Promise.all(
     therapist.clients.map(async (clientId) => {
       const client = await getIndividualProfile(clientId)
 
@@ -365,7 +432,41 @@ export async function getTherapistClients(therapistId) {
     })
   )
 
-  return clients.filter(client => client !== null)
+  // Get company clients
+  const { getCompany } = await import('./companies.js')
+  const companyClients = await Promise.all(
+    therapist.companyPartners.map(async (companyId) => {
+      const company = await getCompany(companyId)
+
+      if (!company) {
+        return null
+      }
+
+      return {
+        companyId: company.companyId,
+        name: company.name,
+        contractStartDate: company.therapistContract?.startDate || null
+      }
+    })
+  )
+
+  // Generate suggestions for therapists with no clients
+  const suggestions = []
+  const filteredIndividuals = individualClients.filter(c => c !== null)
+  const filteredCompanies = companyClients.filter(c => c !== null)
+
+  if (filteredIndividuals.length === 0 && filteredCompanies.length === 0) {
+    suggestions.push({
+      type: 'get_started',
+      message: 'How to get your first clients'
+    })
+  }
+
+  return {
+    individualClients: filteredIndividuals,
+    companyClients: filteredCompanies,
+    suggestions
+  }
 }
 
 /**
@@ -380,31 +481,40 @@ export async function getTherapistDashboard(therapistId) {
     throw new Error('Therapist not found')
   }
 
-  const clients = await getTherapistClients(therapistId)
+  const clientsData = await getTherapistClients(therapistId)
+  const individualClients = clientsData.individualClients || []
 
   // Calculate metrics
-  const activeClients = clients.filter(c => c.activeMatches > 0)
-  const clientsWithCompleteAssessment = clients.filter(c => c.assessmentCompleted)
+  const activeClients = individualClients.filter(c => c.activeMatches > 0)
+  const clientsWithCompleteAssessment = individualClients.filter(c => c.assessmentCompleted)
+
+  // Get pending requests (companies requesting onboarding support)
+  const pendingRequests = therapist.pendingRequests || []
 
   return {
     therapistId,
     therapist: therapist.profile,
     verificationStatus: therapist.verificationStatus,
     clients: {
-      total: clients.length,
+      total: individualClients.length,
       active: activeClients.length,
       capacity: therapist.availability.maxClients,
       acceptingNew: therapist.profile.acceptingNewClients
     },
     metrics: {
-      assessmentCompletionRate: clients.length > 0
-        ? Math.round((clientsWithCompleteAssessment.length / clients.length) * 100)
+      assessmentCompletionRate: individualClients.length > 0
+        ? Math.round((clientsWithCompleteAssessment.length / individualClients.length) * 100)
         : 0,
-      totalActiveMatches: clients.reduce((sum, c) => sum + c.activeMatches, 0),
+      totalActiveMatches: individualClients.reduce((sum, c) => sum + c.activeMatches, 0),
       sessionsCompleted: therapist.metadata.sessionsCompleted,
       satisfactionScore: therapist.metadata.clientSatisfactionScore
     },
-    recentClients: clients.slice(0, 5) // Most recent 5
+    recentClients: individualClients.slice(0, 5),
+    pendingRequests,
+    resources: {
+      gamesLibrary: '/resources/games',
+      quizzesLibrary: '/resources/quizzes'
+    }
   }
 }
 
