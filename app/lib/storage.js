@@ -17,12 +17,130 @@
 import fs from 'fs/promises'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { encryptData, decryptData, getEncryptionKey } from './encryption.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 // Base data directory (relative to project root)
 const DATA_DIR = path.join(process.cwd(), 'data')
+
+// ════════════════════════════════════════════════════════════════════════════
+// CAMPOS SENSIBLES QUE DEBEN ENCRIPTARSE (HIPAA/PHI Compliance)
+// ════════════════════════════════════════════════════════════════════════════
+// Solo se encriptan datos médicos de individuals
+// Companies y Therapists NO tienen datos médicos que encriptar
+const SENSITIVE_FIELDS = {
+  individual: {
+    'profile.diagnoses': 'array',
+    'profile.therapistId': 'string',
+    'profile.medicalHistory': 'string',
+    'profile.accommodationsNeeded': 'array'
+  }
+}
+
+/**
+ * Obtiene valor anidado de un objeto usando notación de puntos
+ * @param {object} obj - Objeto fuente
+ * @param {string} path - Ruta en notación de puntos (ej: 'profile.diagnoses')
+ * @returns {any} - Valor encontrado o undefined
+ */
+function getNestedValue(obj, path) {
+  return path.split('.').reduce((curr, key) => curr?.[key], obj)
+}
+
+/**
+ * Establece valor anidado en un objeto usando notación de puntos
+ * @param {object} obj - Objeto destino
+ * @param {string} path - Ruta en notación de puntos
+ * @param {any} value - Valor a establecer
+ */
+function setNestedValue(obj, path, value) {
+  const keys = path.split('.')
+  const lastKey = keys.pop()
+  const target = keys.reduce((curr, key) => {
+    if (!(key in curr)) {
+      curr[key] = {}
+    }
+    return curr[key]
+  }, obj)
+  target[lastKey] = value
+}
+
+/**
+ * Encripta campos sensibles antes de guardar
+ * Solo aplica a userType: 'individual'
+ * @param {object} data - Datos a encriptar
+ * @returns {object} - Datos con campos sensibles encriptados
+ */
+function encryptSensitiveFields(data) {
+  // Solo encriptar datos de individuals
+  if (data.userType !== 'individual') {
+    return data
+  }
+
+  const cloned = JSON.parse(JSON.stringify(data))
+  const key = getEncryptionKey()
+  const fields = SENSITIVE_FIELDS.individual
+
+  Object.entries(fields).forEach(([path, type]) => {
+    const value = getNestedValue(cloned, path)
+
+    // Si el campo no existe o es null/undefined, saltar
+    if (!value) return
+
+    if (type === 'array' && Array.isArray(value)) {
+      // Encriptar cada elemento del array
+      const encrypted = value.map(item => encryptData(String(item), key))
+      setNestedValue(cloned, path, encrypted)
+    } else if (type === 'string') {
+      // Encriptar string
+      const encrypted = encryptData(value, key)
+      setNestedValue(cloned, path, encrypted)
+    }
+  })
+
+  return cloned
+}
+
+/**
+ * Desencripta campos sensibles después de leer
+ * Solo aplica a userType: 'individual'
+ * @param {object} data - Datos a desencriptar
+ * @returns {object} - Datos con campos sensibles desencriptados
+ */
+function decryptSensitiveFields(data) {
+  // Solo desencriptar datos de individuals
+  if (data.userType !== 'individual') {
+    return data
+  }
+
+  const cloned = JSON.parse(JSON.stringify(data))
+  const key = getEncryptionKey()
+  const fields = SENSITIVE_FIELDS.individual
+
+  Object.entries(fields).forEach(([path, type]) => {
+    const value = getNestedValue(cloned, path)
+
+    // Si el campo no existe o es null/undefined, saltar
+    if (!value) return
+
+    if (type === 'array' && Array.isArray(value)) {
+      // Desencriptar cada elemento del array
+      const decrypted = value.map(item => {
+        // Solo desencriptar si está en formato encriptado
+        return item.startsWith('encrypted:') ? decryptData(item, key) : item
+      })
+      setNestedValue(cloned, path, decrypted)
+    } else if (type === 'string' && value.startsWith('encrypted:')) {
+      // Desencriptar string
+      const decrypted = decryptData(value, key)
+      setNestedValue(cloned, path, decrypted)
+    }
+  })
+
+  return cloned
+}
 
 /**
  * Ensure directory exists, create if not
@@ -38,6 +156,7 @@ async function ensureDirectory(dirPath) {
 
 /**
  * Save data to JSON file with atomic write (temp file + rename)
+ * Encripta campos sensibles automáticamente antes de guardar
  * @param {string} filePath - Relative path from DATA_DIR
  * @param {object} data - Data to save
  */
@@ -48,11 +167,14 @@ export async function saveToFile(filePath, data) {
   // Ensure directory exists
   await ensureDirectory(dir)
 
+  // Encriptar campos sensibles ANTES de guardar
+  const encryptedData = encryptSensitiveFields(data)
+
   // Atomic write: write to temp file, then rename
   const tempPath = `${fullPath}.tmp`
 
   try {
-    await fs.writeFile(tempPath, JSON.stringify(data, null, 2), 'utf-8')
+    await fs.writeFile(tempPath, JSON.stringify(encryptedData, null, 2), 'utf-8')
     await fs.rename(tempPath, fullPath)
   } catch (error) {
     // Clean up temp file if rename fails
@@ -65,6 +187,7 @@ export async function saveToFile(filePath, data) {
 
 /**
  * Read data from JSON file
+ * Desencripta campos sensibles automáticamente después de leer
  * @param {string} filePath - Relative path from DATA_DIR
  * @returns {object|null} - Parsed JSON data or null if not found
  */
@@ -73,7 +196,10 @@ export async function readFromFile(filePath) {
 
   try {
     const content = await fs.readFile(fullPath, 'utf-8')
-    return JSON.parse(content)
+    const data = JSON.parse(content)
+
+    // Desencriptar campos sensibles DESPUÉS de leer
+    return decryptSensitiveFields(data)
   } catch (error) {
     if (error.code === 'ENOENT') {
       return null // File not found

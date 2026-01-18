@@ -121,6 +121,9 @@ export async function createIndividualProfile(data, options = {}) {
     updatedAt: new Date(),
     lastActive: new Date(),
 
+    // Password hash (for authentication)
+    ...(data.passwordHash && { passwordHash: data.passwordHash }),
+
     profile: {
       name,
       location: data.profile.location || null,
@@ -131,7 +134,8 @@ export async function createIndividualProfile(data, options = {}) {
       education: data.profile.education || [],
       accommodationsNeeded: data.profile.accommodationsNeeded || [],
       preferences: data.profile.preferences || {},
-      therapistId: data.profile.therapistId || null
+      therapistId: data.profile.therapistId || null,
+      medicalHistory: data.profile.medicalHistory || null
     },
 
     privacy,

@@ -23,8 +23,14 @@ describe('UC-005: Match Consent Management', () => {
   let candidate, company, job, match
 
   beforeEach(async () => {
+    // Configurar ENCRYPTION_KEY para tests
+    if (!process.env.ENCRYPTION_KEY) {
+      process.env.ENCRYPTION_KEY = '0'.repeat(64)
+    }
+
     candidate = await createIndividualProfile({
       email: 'candidate@example.com',
+      password: 'TestPassword123',
       profile: {
         name: 'Test Candidate',
         diagnoses: ['ADHD'],
