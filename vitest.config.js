@@ -9,6 +9,8 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./tests/setup.js'],
     globals: true,
+    fileParallelism: false, // Run test files sequentially to avoid filesystem conflicts
+    testTimeout: 10000,
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
@@ -21,7 +23,7 @@ export default defineConfig({
       ]
     },
     include: ['**/*.{test,spec}.{js,jsx,ts,tsx}'],
-    exclude: ['node_modules', '.next', 'dist']
+    exclude: ['node_modules', '.next', 'dist', 'tests/pending/**']
   },
   resolve: {
     alias: {

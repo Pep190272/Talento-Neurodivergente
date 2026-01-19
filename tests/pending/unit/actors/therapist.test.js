@@ -8,35 +8,15 @@
  */
 
 import { describe, it, expect, beforeEach } from 'vitest'
-import {
-  createTherapist,
-  verifyTherapist,
-  getTherapistClients,
-  getTherapistDashboard,
-  addTherapistNotes,
-  addCompanyClient,
-  getCompanyMetricsForTherapist,
-  getTherapistAggregateMetrics,
-  requestTherapistForOnboarding,
-  checkClientAlerts,
-  addClientToTherapist
-} from '@/lib/therapists'
-import {
-  requestTherapistAccess,
-  revokeTherapistAccess,
-  requestRecommendationConsent,
-  recommendCandidateToCompany,
-  changeTherapist
-} from '@/lib/consent'
-import { createIndividualProfile } from '@/lib/individuals'
-import { createCompany } from '@/lib/companies'
+import { createTherapist, verifyTherapist, getTherapistClients } from '@/lib/therapists'
+import { addClientToTherapist, requestTherapistAccess } from '@/lib/consent'
 
 describe('UC-008: Therapist Registration', () => {
   let mockTherapistData
 
   beforeEach(() => {
     mockTherapistData = {
-      email: `dr.smith.${Date.now()}@therapy.com`,
+      email: 'dr.smith@therapy.com',
       profile: {
         name: 'Dr. Jane Smith',
         certifications: [
@@ -95,7 +75,6 @@ describe('UC-008: Therapist Registration', () => {
     it('should allow therapist without direct neurodiversity experience', async () => {
       const newToNDData = {
         ...mockTherapistData,
-        email: `newnd.${Date.now()}@therapy.com`,
         profile: {
           ...mockTherapistData.profile,
           neurodiversityExperience: 0
@@ -115,7 +94,7 @@ describe('UC-008: Therapist Registration', () => {
   })
 
   describe('Certification Validation', () => {
-    it('should validate certification with recognized body', async () => {
+    it('should validate certification with OpenAI', async () => {
       const result = await createTherapist(mockTherapistData)
 
       expect(result.certificationValidation).toBeDefined()
@@ -125,7 +104,6 @@ describe('UC-008: Therapist Registration', () => {
     it('should flag expired certifications', async () => {
       const dataWithExpiredCert = {
         ...mockTherapistData,
-        email: `expired.${Date.now()}@therapy.com`,
         profile: {
           ...mockTherapistData.profile,
           certifications: [
@@ -145,7 +123,6 @@ describe('UC-008: Therapist Registration', () => {
     it('should request additional documentation for unrecognized certification', async () => {
       const dataWithUnrecognizedCert = {
         ...mockTherapistData,
-        email: `unrec.${Date.now()}@therapy.com`,
         profile: {
           ...mockTherapistData.profile,
           certifications: [
@@ -176,7 +153,6 @@ describe('UC-008: Therapist Registration', () => {
     it('should allow optional rates', async () => {
       const dataWithoutRates = {
         ...mockTherapistData,
-        email: `norates.${Date.now()}@therapy.com`,
         profile: {
           ...mockTherapistData.profile,
           rates: undefined
@@ -191,10 +167,7 @@ describe('UC-008: Therapist Registration', () => {
 
   describe('Admin Verification', () => {
     it('should allow admin to verify therapist', async () => {
-      const therapist = await createTherapist({
-        ...mockTherapistData,
-        email: `verify.${Date.now()}@therapy.com`
-      })
+      const therapist = await createTherapist(mockTherapistData)
 
       const verified = await verifyTherapist(therapist.therapistId, {
         verifiedBy: 'admin_123',
@@ -207,10 +180,7 @@ describe('UC-008: Therapist Registration', () => {
     })
 
     it('should send welcome email after verification', async () => {
-      const therapist = await createTherapist({
-        ...mockTherapistData,
-        email: `welcome.${Date.now()}@therapy.com`
-      })
+      const therapist = await createTherapist(mockTherapistData)
       const verified = await verifyTherapist(therapist.therapistId, {})
 
       expect(verified.welcomeEmailSent).toBe(true)
@@ -218,10 +188,7 @@ describe('UC-008: Therapist Registration', () => {
     })
 
     it('should allow admin to reject therapist application', async () => {
-      const therapist = await createTherapist({
-        ...mockTherapistData,
-        email: `reject.${Date.now()}@therapy.com`
-      })
+      const therapist = await createTherapist(mockTherapistData)
 
       const rejected = await verifyTherapist(therapist.therapistId, {
         status: 'rejected',
@@ -232,101 +199,24 @@ describe('UC-008: Therapist Registration', () => {
       expect(rejected.rejectionReason).toBe('Invalid credentials')
     })
   })
-
-  describe('Dashboard and Client Structure', () => {
-    it('should handle therapist with no clients', async () => {
-      const therapist = await createTherapist({
-        ...mockTherapistData,
-        email: `noclients.${Date.now()}@therapy.com`
-      })
-      await verifyTherapist(therapist.therapistId, {})
-
-      const clients = await getTherapistClients(therapist.therapistId)
-
-      expect(clients.individualClients).toHaveLength(0)
-      expect(clients.companyClients).toHaveLength(0)
-      expect(clients.suggestions).toContainEqual(
-        expect.objectContaining({
-          type: 'get_started',
-          message: 'How to get your first clients'
-        })
-      )
-    })
-
-    it('should show resources library links in dashboard', async () => {
-      const therapist = await createTherapist({
-        ...mockTherapistData,
-        email: `resources.${Date.now()}@therapy.com`
-      })
-      await verifyTherapist(therapist.therapistId, {})
-
-      const dashboard = await getTherapistDashboard(therapist.therapistId)
-
-      expect(dashboard.resources).toBeDefined()
-      expect(dashboard.resources.gamesLibrary).toBeDefined()
-      expect(dashboard.resources.quizzesLibrary).toBeDefined()
-    })
-  })
 })
 
-// ============================================================
-// UC-009: Therapist Dashboard with Clients
-// ============================================================
-
 describe('UC-009: Therapist Dashboard with Clients', () => {
-  let therapist
-  let individual
-  let company
-  let mockTherapistData
+  let therapist, individual, company
 
   beforeEach(async () => {
-    // Configurar ENCRYPTION_KEY para tests
-    if (!process.env.ENCRYPTION_KEY) {
-      process.env.ENCRYPTION_KEY = '0'.repeat(64)
-    }
-
-    const timestamp = Date.now()
-
-    mockTherapistData = {
-      email: `dr.dashboard.${timestamp}@therapy.com`,
-      profile: {
-        name: 'Dr. Dashboard Test',
-        certifications: [
-          {
-            title: 'Licensed Clinical Psychologist',
-            licenseNumber: 'PSY12345',
-            issuingBody: 'State Board of Psychology',
-            expiryDate: '2026-12-31'
-          }
-        ],
-        specializations: ['autism', 'ADHD'],
-        neurodiversityExperience: 5,
-        services: ['individual_support', 'company_consulting']
-      }
-    }
-
     therapist = await createTherapist(mockTherapistData)
     await verifyTherapist(therapist.therapistId, {})
 
     individual = await createIndividualProfile({
-      email: `client.${timestamp}@example.com`,
-      profile: {
-        name: 'Client User',
-        diagnoses: ['ADHD'],
-        skills: ['JavaScript'],
-        accommodationsNeeded: ['Flexible Schedule']
-      },
-      privacy: {
-        allowTherapistAccess: true,
-        showRealName: true,
-        shareDiagnosis: true
-      }
+      email: 'client@example.com',
+      profile: { name: 'Client User' },
+      privacy: { allowTherapistAccess: true }
     })
 
     company = await createCompany({
-      email: `company.${timestamp}@example.com`,
-      name: 'TestCorp',
-      contactName: 'HR Manager'
+      email: 'company@example.com',
+      name: 'TestCorp'
     })
   })
 
@@ -342,10 +232,9 @@ describe('UC-009: Therapist Dashboard with Clients', () => {
     })
 
     it('should NOT show clients without consent', async () => {
-      // Create individual without therapist access
       const individualNoConsent = await createIndividualProfile({
-        email: `noconsent.${Date.now()}@example.com`,
-        profile: { name: 'No Consent User', diagnoses: ['autism'], skills: ['Python'] },
+        email: 'noconsent@example.com',
+        profile: { name: 'No Consent User' },
         privacy: { allowTherapistAccess: false }
       })
 
@@ -369,6 +258,25 @@ describe('UC-009: Therapist Dashboard with Clients', () => {
   })
 
   describe('Client Data Access', () => {
+    it('should view client progress with consent', async () => {
+      await addClientToTherapist(therapist.therapistId, individual.userId)
+
+      const clientData = await getClientDataForTherapist(
+        therapist.therapistId,
+        individual.userId
+      )
+
+      expect(clientData.profile).toBeDefined()
+      expect(clientData.assessment).toBeDefined()
+      expect(clientData.matches).toBeDefined()
+    })
+
+    it('should return 403 when accessing data without consent', async () => {
+      await expect(
+        getClientDataForTherapist(therapist.therapistId, individual.userId)
+      ).rejects.toThrow('Access denied: No consent from client')
+    })
+
     it('should allow therapist to add private notes', async () => {
       await addClientToTherapist(therapist.therapistId, individual.userId)
 
@@ -380,16 +288,10 @@ describe('UC-009: Therapist Dashboard with Clients', () => {
       expect(notes.therapistId).toBe(therapist.therapistId)
       expect(notes.clientId).toBe(individual.userId)
       expect(notes.private).toBe(true)
-    })
 
-    it('should return error when accessing data without consent', async () => {
-      // Don't add client to therapist
-      await expect(
-        addTherapistNotes(therapist.therapistId, individual.userId, {
-          content: 'Test',
-          private: true
-        })
-      ).rejects.toThrow('Access denied: No consent from client')
+      // Notes should NOT be visible to client
+      const clientView = await getIndividualById(individual.userId)
+      expect(clientView.therapistNotes).toBeUndefined()
     })
   })
 
@@ -448,15 +350,21 @@ describe('UC-009: Therapist Dashboard with Clients', () => {
   })
 
   describe('Recommendations', () => {
-    it('should request recommendation consent from client', async () => {
+    it('should recommend candidate to company with consent', async () => {
       await addClientToTherapist(therapist.therapistId, individual.userId)
 
-      // Request consent from client (not auto-approve)
+      const job = await createJobPosting(company.companyId, {
+        title: 'Developer',
+        skills: ['JavaScript'],
+        accommodations: ['Remote work']
+      })
+
+      // Request consent from client
       const consent = await requestRecommendationConsent(
         therapist.therapistId,
         individual.userId,
         company.companyId,
-        'job_123'
+        job.jobId
       )
 
       expect(consent.consentRequested).toBe(true)
@@ -495,13 +403,26 @@ describe('UC-009: Therapist Dashboard with Clients', () => {
   })
 
   describe('Edge Cases', () => {
-    it('should detect potential alerts for clients', async () => {
+    it('should handle therapist with no clients', async () => {
+      const clients = await getTherapistClients(therapist.therapistId)
+
+      expect(clients.individualClients).toHaveLength(0)
+      expect(clients.companyClients).toHaveLength(0)
+      expect(clients.suggestions).toContainEqual(
+        expect.objectContaining({
+          type: 'get_started',
+          message: 'How to get your first clients'
+        })
+      )
+    })
+
+    it('should detect crisis situations and alert therapist', async () => {
       await addClientToTherapist(therapist.therapistId, individual.userId)
 
+      // Simulate client in crisis (detected by assessment red flags)
       const alerts = await checkClientAlerts(therapist.therapistId)
 
       expect(alerts.urgentAlerts).toBeDefined()
-      expect(alerts.regularAlerts).toBeDefined()
     })
 
     it('should handle client requesting to change therapist', async () => {
@@ -509,9 +430,8 @@ describe('UC-009: Therapist Dashboard with Clients', () => {
 
       const newTherapist = await createTherapist({
         ...mockTherapistData,
-        email: `newtherapist.${Date.now()}@example.com`
+        email: 'newtherapist@example.com'
       })
-      await verifyTherapist(newTherapist.therapistId, {})
 
       await changeTherapist(individual.userId, newTherapist.therapistId)
 
