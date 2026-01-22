@@ -7,7 +7,7 @@
 
 ## 🚨 Resumen Ejecutivo
 
-**Estado general**: 🔴 **CRÍTICO** - El proyecto tiene vulnerabilidades de seguridad severas que lo hacen **NO APTO PARA PRODUCCIÓN**.
+**Estado general**: 🟡 **EN PROGRESO / ESTABILIZANDO** - Se han cerrado vulnerabilidades críticas de seguridad. Autenticación y Tests Base implementados. Pendiente: E2E Tests y Refinamiento Arquitectónico.
 
 **Prioridad según Agent.md**:
 ```
@@ -529,22 +529,22 @@ const completion = await openai.chat.completions.create({
 ## 📊 Resumen de Prioridades
 
 ### 🔴 BLOQUEANTES (Resolver antes de cualquier despliegue)
-1. [1.1] Implementar autenticación y autorización
-2. [1.5] Encriptar datos sensibles (GDPR/HIPAA)
-3. [2.1] Escribir tests básicos (mínimo 50% cobertura)
+1. [x] [1.1] Implementar autenticación y autorización (NextAuth v5 Complete)
+2. [x] [1.5] Encriptar datos sensibles (AES-256 Validado)
+3. [x] [2.1] Escribir tests básicos (Auth, Security, Storage, Integration OK)
 
 ### 🔴 CRÍTICAS (Resolver en sprint actual)
-4. [1.2] Implementar rate limiting
-5. [1.4] Sanitizar todos los inputs
-6. [3.1] Resolver race conditions en storage
+4. [x] [1.2] Implementar rate limiting (Middleware Active)
+5. [x] [1.4] Sanitizar todos los inputs (DOMPurify System-wide)
+6. [ ] [3.1] Resolver race conditions en storage (Parcial via Atomic Writes, pendiente revisión profunda)
 
 ### 🟡 IMPORTANTES (Resolver en próximos 2 sprints)
-7. [1.3] Ocultar errores internos en producción
-8. [1.6] Crear .env.example y documentar
-9. [1.7] Validar tipos con Zod
-10. [2.2] Crear tests/setup.js
-11. [3.2] Implementar transacciones o WAL
-12. [3.4] Tests para draft-manager
+7. [ ] [1.3] Ocultar errores internos en producción
+8. [ ] [1.6] Crear .env.example y documentar
+9. [ ] [1.7] Validar tipos con Zod
+10. [x] [2.2] Crear tests/setup.js (Configurado Vitest)
+11. [ ] [3.2] Implementar transacciones o WAL
+12. [ ] [3.4] Tests para draft-manager
 
 ### 🟢 MEJORAS (Backlog)
 13. [3.3] Implementar índices para búsquedas

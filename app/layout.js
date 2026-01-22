@@ -1,5 +1,6 @@
 import "./globals.css";
 import Navbar from "./components/Navbar/Navbar";
+import AuthProvider from "./components/AuthProvider";
 
 export const metadata = {
   title: "Diversia Eternals - Neurodivergent Talent Platform",
@@ -86,10 +87,12 @@ export default function RootLayout({ children }) {
         <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body suppressHydrationWarning>
-        <Navbar />
-        <main style={{ paddingTop: '80px', minHeight: '100vh' }}>
-          {children}
-        </main>
+        <AuthProvider>
+          <Navbar />
+          <main style={{ paddingTop: '80px', minHeight: '100vh' }}>
+            {children}
+          </main>
+        </AuthProvider>
       </body>
     </html>
   );
