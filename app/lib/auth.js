@@ -5,7 +5,7 @@ import { findUserByEmail } from './storage.js'
 import bcrypt from 'bcryptjs'
 
 /**
- * Configuración de NextAuth.js v5
+ * Configuración de NextAuth.js v5 (Auth.js)
  *
  * Características:
  * - Autenticación con credenciales (email + password)
@@ -13,7 +13,7 @@ import bcrypt from 'bcryptjs'
  * - 3 tipos de usuario: individual, therapist, company
  * - Session incluye userId y userType
  */
-export const authOptions = {
+export const authConfig = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -116,8 +116,7 @@ export const authOptions = {
   debug: process.env.NODE_ENV === 'development'
 }
 
-// Crear handler de NextAuth
-const handler = NextAuth(authOptions)
+// NextAuth v5 (Auth.js) - exporta handlers y funciones de auth
+const { handlers, auth, signIn, signOut } = NextAuth(authConfig)
 
-// Exportar handlers para GET y POST
-export { handler as GET, handler as POST }
+export { handlers, auth, signIn, signOut }

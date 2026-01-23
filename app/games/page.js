@@ -26,7 +26,7 @@ export default function GamesPage() {
     <div className="games-hero-bg">
       <div className="games-container">
         <h1 className="games-title">Suite de Juegos Cerebrales</h1>
-        <p className="games-subtitle">Agudiza tu mente con 10 juegos interactivos y adaptables. ¡El progreso y las estadísticas se guardan automáticamente!</p>
+        <p className="games-subtitle">Agudiza tu mente con 10 juegos interactivos. ¡El progreso y las estadísticas se guardan automáticamente!</p>
         <div className="games-grid" role="list">
           {gamesList.map((game) => (
             <button

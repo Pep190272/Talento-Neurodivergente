@@ -1,6 +1,6 @@
 // app/api/auth/[...nextauth]/route.js
 /**
- * NextAuth.js API Route Handler
+ * NextAuth.js v5 (Auth.js) API Route Handler
  *
  * Este archivo maneja todas las rutas de autenticación:
  * - POST /api/auth/signin - Login
@@ -11,6 +11,6 @@
  * - POST /api/auth/callback/credentials - Callback de credentials provider
  */
 
-import { GET, POST } from '@/lib/auth'
+import { handlers } from '@/lib/auth'
 
-export { GET, POST }
+export const { GET, POST } = handlers

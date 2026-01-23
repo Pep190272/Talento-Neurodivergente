@@ -1,8 +1,9 @@
 'use client'
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useLanguage } from '../../hooks/useLanguage'
+import { useSession, signOut } from 'next-auth/react'
 import './Navbar.css'
 
 const navItems = [
@@ -20,9 +21,9 @@ export default function Navbar() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   const [isVisible, setIsVisible] = useState(true)
   const [lastScrollY, setLastScrollY] = useState(0)
-  const [userData, setUserData] = useState(null)
   const pathname = usePathname()
   const { t } = useLanguage()
+  const { data: session, status } = useSession()
 
   useEffect(() => {
     const onScroll = () => {
@@ -43,27 +44,9 @@ export default function Navbar() {
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
 
-
-  // Load user data from localStorage
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedUserData = localStorage.getItem('userData')
-      if (savedUserData) {
-        try {
-          setUserData(JSON.parse(savedUserData))
-        } catch (error) {
-          console.error('Error loading user data:', error)
-        }
-      }
-    }
-  }, [])
-
-  const logout = () => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('userData')
-      localStorage.removeItem('chatHistory')
-      window.location.href = '/'
-    }
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: '/' })
+    localStorage.removeItem('chatHistory') // Clean up local artifacts
   }
 
   return (
@@ -71,7 +54,7 @@ export default function Navbar() {
       <div className="navbar-glow" style={{
         background: `radial-gradient(600px circle at ${mousePos.x}px ${mousePos.y}px, rgba(147, 51, 234, 0.1), transparent 40%)`
       }}></div>
-      
+
       <div className="inner">
         {/* Logo - Far Left */}
         <div className="logo-section">
@@ -111,7 +94,7 @@ export default function Navbar() {
                 </Link>
               </li>
             ))}
-            {userData && (
+            {status === 'authenticated' && (
               <li className="menu-item" style={{ '--delay': '0.9s' }}>
                 <Link
                   href="/dashboard"
@@ -129,33 +112,46 @@ export default function Navbar() {
         {/* Actions Section - Far Right */}
         <div className="actions-section">
           {/* User Profile or Get Started Button */}
-          {userData ? (
+          {status === 'authenticated' && session?.user ? (
             <div className="user-profile">
               <div className="user-info">
                 <span className="user-name">
-                  {t('navbar.hi')}, {userData.name || t('navbar.user')}
+                  {t('navbar.hi')}, {session.user.name || t('navbar.user')}
                 </span>
                 <span className="user-type">
-                  {userData.type === 'individual' ? t('navbar.individual') :
-                   userData.type === 'company' ? t('navbar.company') : t('navbar.therapist')}
+                  {session.user.type === 'individual' ? t('navbar.individual') :
+                    session.user.type === 'company' ? t('navbar.company') : t('navbar.therapist')}
                 </span>
               </div>
-              <button onClick={logout} className="logout-btn">
+              <button onClick={handleLogout} className="logout-btn">
                 <span className="logout-text">{t('navbar.logout')}</span>
               </button>
             </div>
           ) : (
-            <Link href="/get-started" className="get-started">
-              <span className="btn-text">
-                {t('navbar.getStarted')}
-              </span>
-              <span className="btn-glow"></span>
-              <span className="btn-particles">
-                <span className="btn-particle"></span>
-                <span className="btn-particle"></span>
-                <span className="btn-particle"></span>
-              </span>
-            </Link>
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+              <Link href="/login" className="login-link" style={{
+                color: 'white',
+                fontFamily: 'Rajdhani, sans-serif',
+                textDecoration: 'none',
+                fontSize: '0.9rem',
+                fontWeight: 500,
+                opacity: 0.8,
+                transition: 'opacity 0.2s'
+              }}>
+                Login
+              </Link>
+              <Link href="/get-started" className="get-started">
+                <span className="btn-text">
+                  {t('navbar.getStarted')}
+                </span>
+                <span className="btn-glow"></span>
+                <span className="btn-particles">
+                  <span className="btn-particle"></span>
+                  <span className="btn-particle"></span>
+                  <span className="btn-particle"></span>
+                </span>
+              </Link>
+            </div>
           )}
         </div>
       </div>

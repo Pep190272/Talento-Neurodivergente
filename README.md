@@ -97,10 +97,11 @@ diversia-eternals/
 - **Multi-language**: Support for English and Spanish
 
 ### 3. Interactive Games (`/games`)
-- **12 Game Types**: From precision tapping to social cue simulation
-- **Adaptive Difficulty**: Real-time AI-powered adjustment
+- **10 Game Types**: Memory Grid, Pattern Matrix, Operación 2.0, Reaction Time, Simon Says, Number Sequence, Word Builder, Shape Sorter, Color Match, Path Finder
+- **Client-Side Only**: All game logic runs in browser (no backend/API for games)
+- **Progress Tracking**: Save and resume functionality with localStorage
 - **Accessibility**: Designed for neurodivergent engagement
-- **Progress Tracking**: Save and resume functionality
+- **Stats Display**: Score, accuracy, and reaction time metrics
 
 ### 4. Quiz & Assessment (`/quiz`)
 - **10 Question Types**: Multiple choice, sliders, drag-drop, etc.
@@ -122,6 +123,8 @@ diversia-eternals/
 
 ### `/api/chat`
 - **POST**: Send message to NeuroAgent with context
+
+**Note**: Games (`/games`) and Quiz (`/quiz`) do not have backend APIs. All functionality is client-side with localStorage persistence.
 
 ## 🎨 UI/UX Features
 
@@ -171,9 +174,10 @@ For support and questions:
 
 ## 🔮 Roadmap
 
-- [ ] Implement actual game engines
-- [ ] Add quiz question generation
-- [ ] Enhanced AI insights
+- [ ] Backend API for game scores (currently localStorage only)
+- [ ] Leaderboards and social features for games
+- [ ] Add quiz question generation with AI
+- [ ] Enhanced AI insights and personalized tips
 - [ ] PWA offline support
 - [ ] Multi-language expansion
 - [ ] Advanced analytics dashboard

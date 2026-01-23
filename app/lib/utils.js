@@ -4,6 +4,7 @@
  */
 
 import crypto from 'crypto'
+import DOMPurify from 'isomorphic-dompurify'
 
 /**
  * Generate a unique ID for a given entity type
@@ -83,19 +84,21 @@ export function isValidEmail(email) {
 }
 
 /**
- * Sanitize user input to prevent XSS
+import DOMPurify from 'isomorphic-dompurify'
+
+/**
+ * Sanitize user input to prevent XSS using DOMPurify
  * @param {string} input - User input to sanitize
  * @returns {string} - Sanitized string
  */
 export function sanitizeInput(input) {
   if (typeof input !== 'string') return input
 
-  return input
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#x27;')
-    .replace(/\//g, '&#x2F;')
+  // Configure DOMPurify to keep text content but remove dangerous tags/attrs
+  return DOMPurify.sanitize(input, {
+    ALLOWED_TAGS: [], // Strip all HTML tags, keep text only
+    ALLOWED_ATTR: []  // Strip all attributes
+  })
 }
 
 /**

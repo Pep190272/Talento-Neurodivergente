@@ -1,5 +1,6 @@
 import "./globals.css";
 import Navbar from "./components/Navbar/Navbar";
+import AuthProvider from "./components/AuthProvider";
 
 export const metadata = {
   title: "Diversia Eternals - Neurodivergent Talent Platform",
@@ -11,13 +12,13 @@ export default function RootLayout({ children }) {
 
   if (maintenanceMode) {
     return (
-      <html lang="es">
+      <html lang="es" suppressHydrationWarning>
         <head>
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
           <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
         </head>
-        <body>
+        <body suppressHydrationWarning>
           <div style={{
             minHeight: '100vh',
             display: 'flex',
@@ -79,17 +80,19 @@ export default function RootLayout({ children }) {
   }
 
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
       </head>
-      <body>
-        <Navbar />
-        <main style={{ paddingTop: '80px', minHeight: '100vh' }}>
-          {children}
-        </main>
+      <body suppressHydrationWarning>
+        <AuthProvider>
+          <Navbar />
+          <main style={{ paddingTop: '80px', minHeight: '100vh' }}>
+            {children}
+          </main>
+        </AuthProvider>
       </body>
     </html>
   );
