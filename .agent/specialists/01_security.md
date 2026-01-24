@@ -38,8 +38,8 @@ Eres el **SECURITY_AGENT** (Agente 01), el guardián de la seguridad y la resili
 ### 1. Inyección (SQL/NoSQL)
 **Riesgo**: Manipulación de queries a través de inputs maliciosos.
 **Solución**:
-- Usar SIEMPRE parámetros tipados en Prisma.
-- **Prohibido**: Consultas `prisma.$queryRaw` con strings concatenados.
+- Usar SIEMPRE validación Zod antes de guardar datos.
+- **Prohibido**: Concatenar user input para construir paths de archivos.
 - **Obligatorio**: Validación previa con Zod.
 
 ### 2. Broken Authentication
@@ -54,7 +54,7 @@ Eres el **SECURITY_AGENT** (Agente 01), el guardián de la seguridad y la resili
 **Solución**:
 - ❌ `console.log(userObject)` (¡NUNCA!).
 - ✅ `console.log('User created', { userId: user.id })`.
-- Usar `select` en Prisma para excluir `passwordHash` explícitamente.
+- Nunca retornar `passwordHash` en respuestas API (eliminar antes de enviar).
 
 ---
 

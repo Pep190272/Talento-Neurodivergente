@@ -46,3 +46,7 @@ next-env.d.ts
 # temporary files
 tmpclaude-*
 *.tmp
+nul
+
+# IDE and editor settings
+.claude/

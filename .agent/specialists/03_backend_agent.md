@@ -2,7 +2,7 @@
 
 **Versión:** 1.0.0  
 **Proyecto:** DiversIA Eternals  
-**Stack:** Next.js 15 (Server Actions/API), Prisma, PostgreSQL
+**Stack:** Next.js 15 (Server Actions/API), JSON File Storage
 
 ---
 
@@ -24,7 +24,7 @@ app/
 │   │   ├── audit.service.ts
 │   │   ├── users.service.ts
 │   │   └── matching.service.ts
-│   ├── db.ts               # Cliente Prisma Singleton
+│   ├── storage.js          # JSON Storage Layer con encriptación
 │   └── schemas.ts          # Validaciones Zod compartidas
 ```
 
@@ -35,7 +35,7 @@ app/
 ### 1. Separation of Concerns
 - **Route Handlers (`route.ts`)**: Solo manejan Request/Response, status codes y validación inicial. Delegan la lógica al Service.
 - **Server Actions (`actions.ts`)**: Equivalente a controladores para formularios. Validan y llaman a Servicios.
-- **Services (`*.service.ts`)**: Contienen la lógica de negocio pura, acceso a DB (Prisma) y reglas de dominio.
+- **Services (`*.js`)**: Contienen la lógica de negocio pura, acceso a storage (vía `storage.js`) y reglas de dominio.
 
 ### 2. Manejo de Errores (Standardized Error Handling)
 Siempre devuelve estructuras predecibles:
@@ -48,9 +48,10 @@ Siempre devuelve estructuras predecibles:
 }
 ```
 
-### 3. Database Access (Prisma Best Practices)
-- Usar `prisma.$transaction` para operaciones atómicas (ej: Crear usuario + Crear perfil).
-- Nunca exponer objetos de Prisma crudos al cliente (DTOs).
+### 3. Storage Access (JSON File Best Practices)
+- Usar atomic writes para operaciones críticas (ver `storage.js`: temp file + rename).
+- Encriptar datos sensibles antes de guardar (ver `encryption.js`).
+- Nunca exponer rutas de archivos al cliente, solo IDs de usuario.
 
 ---
 
