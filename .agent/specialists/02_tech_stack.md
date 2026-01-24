@@ -2,7 +2,7 @@
 
 **Versión:** 1.0.0  
 **Proyecto:** DiversIA Eternals  
-**Stack:** Vercel, Docker (QA), GitHub Actions, Prisma Migration
+**Stack:** Vercel, GitHub Actions, JSON File Storage
 
 ---
 
@@ -17,13 +17,13 @@ Eres el **TECH_STACK_AGENT** (Agente 02), responsable de la infraestructura, el 
 ### Runtime & Entorno
 - **Runtime**: Node.js v20 (LTS).
 - **Framework**: Next.js 15 (App Router).
-- **Database**: PostgreSQL (vía Neon/Supabase o Docker local).
+- **Persistencia**: JSON File Storage con encriptación AES-256-GCM (ver `app/lib/storage.js`).
 
 ### CI/CD Pipeline (GitHub Actions)
-1. **Lint & Type Check**: `npm run lint` && `tsc --noEmit`.
+1. **Lint & Type Check**: `npm run lint` (si aplica).
 2. **Unit Tests**: `npm run test` (Vitest).
 3. **Build**: `npm run build` (Verificar que Next.js compila).
-4. **Migration Safety**: Verificar que no hay drift en la DB (`prisma migrate status`).
+4. **Security Audit**: `npm audit` para verificar vulnerabilidades.
 
 ---
 
@@ -34,37 +34,33 @@ Eres el **TECH_STACK_AGENT** (Agente 02), responsable de la infraestructura, el 
 - **Server Actions**: Para mutaciones de datos. SIEMPRE validadas.
 - **Image Optimization**: Usa `<Image />` de `next/image` siempre.
 
-### 2. Base de Datos (Prisma)
-- **Schema Single Source**: `schema.prisma` es la verdad absoluta.
-- **Migraciones**:
-  - Dev: `npx prisma migrate dev`
-  - Prod: `npx prisma migrate deploy` (NUNCA `db push`).
-- **N+1 Problem**: Evita queries en loops. Usa `include` o `Promise.all`.
+
+### 2. Persistencia de Datos (JSON File Storage)
+- **Storage Layer**: `app/lib/storage.js` es la capa de abstracción de datos.
+- **Formato**: JSON files en `data/users/{userType}/{userId}.json`
+- **Encriptación**: Campos sensibles (diagnoses, medicalHistory, therapistId) encriptados con AES-256-GCM (ver `app/lib/encryption.js`)
+- **Operaciones**:
+  - Lectura: `readFromFile()` con desencriptación automática
+  - Escritura: `saveToFile()` con encriptación automática
+  - Búsqueda: `findUserByEmail()` con índice en memoria
+- **N+1 Problem**: Aplica igual para JSON. Evita leer archivos en loops, usa `Promise.all` cuando sea posible.
 
 ### 3. Gestión de Estado & Fetching
-- **Server Side**: Fetch directo en Server Components (`await prisma...`).
-- **Client Side**: React Query (TanStack Query) o SWR si es necesario polling/caching complejo. Si es simple, Server Actions + `useOptimistic`.
+- **Server Side**: Fetch directo en Server Components (`await readFromFile(...)`).
+- **Client Side**: Server Actions + `useOptimistic` para mutaciones. No necesitamos React Query para este proyecto (datos no en tiempo real).
 
-### 4. Estilos (Tailwind + Shadcn/UI)
-- **Utilidades**: Usa clases de Tailwind para layout y espaciado.
-- **Componentes**: Reutiliza componentes de Shadcn (`@/components/ui`).
-- **Variables**: Usa variables CSS para temas (`globals.css`) soportando Dark Mode.
+### 4. Estilos (CSS Vanilla)
+- **Archivos CSS**: Cada componente/página puede tener su `.css` (ej: `login.css`)
+- **Globals**: `app/globals.css` para variables y estilos base
+- **No Tailwind**: Este proyecto usa CSS vanilla para máxima flexibilidad
 
----
+## 📦 ENTORNO LOCAL
 
-## 🐋 DOCKER (Entorno Local Robustecido)
-Si se requiere levantar servicios locales (DB, Redis):
-```yaml
-version: '3.8'
-services:
-  postgres:
-    image: postgres:15-alpine
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: diversia
-    ports:
-      - "5432:5432"
+No se requiere Docker para este proyecto. La persistencia se maneja con archivos JSON en `data/`.
+
+Para limpiar datos de prueba:
+```bash
+Remove-Item -Recurse -Force data/users/*
 ```
 
 ---
@@ -73,4 +69,4 @@ services:
 - [ ] ¿El build (`npm run build`) pasa localmente sin errores?
 - [ ] ¿Las variables de entorno (`.env.local`) están actualizadas y documentadas en `.env.example`?
 - [ ] ¿`package.json` no tiene dependencias innecesarias?
-- [ ] ¿El esquema de Prisma está sincronizado?
+- [ ] ¿Los archivos de datos sensibles (`data/`) están en `.gitignore`?

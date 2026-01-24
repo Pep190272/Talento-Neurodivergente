@@ -112,4 +112,47 @@ describe('🔄 Integration: Individual Registration Flow', () => {
         const json = await res.json()
         expect(json.error).toMatch(/required/i)
     })
+
+    it('should encrypt therapistId and medicalHistory fields', async () => {
+        // Test with therapistId and medicalHistory
+        const userWithTherapist = {
+            email: 'therapist_test@example.com',
+            profile: {
+                name: 'Patient User',
+                diagnoses: ['Autism Level 1'],
+                therapistId: 'ther_123456',
+                medicalHistory: 'Diagnosed in 2020, currently in cognitive behavioral therapy',
+                skills: ['Python', 'Data Analysis']
+            },
+            passwordHash: '$2b$10$NotARealHashButFormatIsCorrect'
+        }
+
+        const req = new Request('http://localhost:3000/api/individuals', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(userWithTherapist)
+        })
+
+        const res = await POST(req)
+        expect(res.status).toBe(201)
+
+        const json = await res.json()
+        const userId = json.data.userId
+
+        // Disk Verification: therapistId and medicalHistory should be encrypted
+        const filePath = path.join(DATA_DIR, 'users/individuals', `${userId}.json`)
+        const fileContent = await fs.readFile(filePath, 'utf-8')
+        const savedJson = JSON.parse(fileContent)
+
+        expect(savedJson.profile.therapistId).toMatch(/^encrypted:/) // Encrypted
+        expect(savedJson.profile.medicalHistory).toMatch(/^encrypted:/) // Encrypted
+        expect(savedJson.profile.name).toBe('Patient User') // Plain text
+        expect(savedJson.profile.skills).toEqual(['Python', 'Data Analysis']) // Plain text
+
+        // Logic Verification: Should be decrypted when retrieved
+        const retrievedUser = await findUserByEmail(userWithTherapist.email)
+        expect(retrievedUser.profile.therapistId).toBe('ther_123456') // Decrypted
+        expect(retrievedUser.profile.medicalHistory).toBe('Diagnosed in 2020, currently in cognitive behavioral therapy') // Decrypted
+        expect(retrievedUser.profile.diagnoses[0]).toBe('Autism Level 1') // Decrypted
+    })
 })

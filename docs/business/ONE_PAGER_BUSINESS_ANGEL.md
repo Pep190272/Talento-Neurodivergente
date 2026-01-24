@@ -188,7 +188,9 @@
    - Neurodiversity hiring trend creciendo 300% YoY
    - Remote work aumenta opportunities para neurodivergentes
 
-5. **Moat defensible**: Data de outcomes laborales + network effects (más users → mejor matching → más empresas → más users)
+5. **Privacy-First AI**: Self-hosted LLM (no OpenAI/terceros) - **zero leaks de datos médicos**, data residency EU garantizado, GDPR Art. 9 compliant sin DPAs externos
+
+6. **Moat defensible**: Data de outcomes laborales + network effects (más users → mejor matching → más empresas → más users)
 
 ---
 

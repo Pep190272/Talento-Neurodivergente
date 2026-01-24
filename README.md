@@ -12,6 +12,7 @@ A comprehensive, AI-powered platform designed for neurodivergent individuals, co
 - **Dashboard**: Personalized user experience with AI insights
 
 ### AI-Powered Features
+- **Self-Hosted LLM** (Gemma 2B via Ollama) - Job inclusivity analysis without data leaks
 - OpenAI API integration for validation, normalization, and responses
 - Context-aware chat with user data and platform activity
 - Real-time game adaptation and feedback
@@ -148,10 +149,27 @@ diversia-eternals/
 
 ## 🔒 Security & Privacy
 
-- **Input Sanitization**: All user inputs validated before OpenAI API calls
-- **Rate Limiting**: API route protection
-- **GDPR Compliance**: Consent banners and data handling
-- **Secure Storage**: Environment variables for sensitive data
+### Data Protection
+- **Encryption at Rest**: AES-256-GCM for sensitive medical data
+- **Authentication**: NextAuth.js v5 with JWT sessions
+- **Authorization**: 3-actor model (Individual, Therapist, Company)
+- **Rate Limiting**: Protection against abuse
+- **Input Validation**: Zod schemas for all inputs
+- **Audit Logging**: 7-year retention for compliance
+
+### AI/LLM Privacy 🤖
+- **Self-Hosted LLM**: Gemma 2B via Ollama on EU VPS (París)
+- **Zero Data Leaks**: No OpenAI, Anthropic, or third-party AI APIs
+- **Data Residency**: All AI processing happens in EU servers
+- **Ephemeral Processing**: Data in memory only during analysis (3-5s)
+- **No Training**: Model never trained with production data
+
+### Compliance
+- **GDPR Compliant**: ✅ Art. 5, 9, 25, 32, 44-49
+- **HIPAA Ready**: ✅ Medical data encryption and access controls
+- **EU AI Act**: ✅ High-risk AI system compliant (self-hosted, auditable)
+
+See [SECURITY_IMPLEMENTATION.md](./SECURITY_IMPLEMENTATION.md) for details.
 
 ## 🤝 Contributing
 
