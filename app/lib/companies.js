@@ -26,6 +26,10 @@ import {
   initializeDataStructure
 } from './storage.js'
 
+// Import LLM for job analysis
+import { analyzeJobInclusivity as llmAnalyze } from './llm.js'
+import { validateJobAnalysis } from './schemas/job-analysis.js'
+
 /**
  * Create new company profile
  * @param {object} data - Company data
@@ -345,83 +349,114 @@ export async function getAllOpenJobs() {
 
 /**
  * Analyze job posting for inclusivity and discriminatory language
+ * Uses LLM (Ollama/Gemma 2B) for advanced analysis with fallback
+ * 
  * @param {object} jobData - Job posting data
- * @returns {object} - Analysis result
+ * @returns {object} - Analysis result with score, issues, suggestions
  */
 export async function analyzeJobInclusivity(jobData) {
-  const text = `${jobData.title} ${jobData.description || ''}`.toLowerCase()
+  try {
+    // Call LLM for analysis
+    const rawAnalysis = await llmAnalyze(jobData)
 
-  const discriminatoryTerms = [
-    { term: 'young', type: 'age_discrimination' },
-    { term: 'energetic', type: 'age_discrimination' },
-    { term: 'rockstar', type: 'exclusionary_language' },
-    { term: 'ninja', type: 'exclusionary_language' },
-    { term: 'guru', type: 'exclusionary_language' },
-    { term: 'native speaker', type: 'language_discrimination' },
-    { term: 'recent graduate', type: 'age_discrimination' },
-    { term: 'digital native', type: 'age_discrimination' }
-  ]
+    // Validate response with Zod
+    const validatedAnalysis = validateJobAnalysis(rawAnalysis)
 
-  const issues = []
+    // Transform to expected format for backward compatibility
+    return {
+      score: validatedAnalysis.score,
+      hasDiscriminatoryLanguage: validatedAnalysis.discriminatoryLanguage,
+      issues: validatedAnalysis.issues.map(issue => ({
+        type: issue.type,
+        text: issue.term,
+        severity: issue.severity,
+        suggestion: `Address ${issue.type} bias: "${issue.term}"`
+      })),
+      suggestions: [validatedAnalysis.suggestions],
+      accommodationsCount: validatedAnalysis.accommodations.count,
+      accommodationsQuality: validatedAnalysis.accommodations.quality,
+      llmPowered: !validatedAnalysis.fallback // Flag indicating LLM was used
+    }
 
-  discriminatoryTerms.forEach(({ term, type }) => {
-    if (text.includes(term)) {
+  } catch (error) {
+    console.warn('LLM analysis failed, using fallback:', error.message)
+
+    // Fallback to basic hardcoded analysis
+    const text = `${jobData.title} ${jobData.description || ''}`.toLowerCase()
+
+    const discriminatoryTerms = [
+      { term: 'young', type: 'age' },
+      { term: 'energetic', type: 'age' },
+      { term: 'rockstar', type: 'gender' },
+      { term: 'ninja', type: 'gender' },
+      { term: 'guru', type: 'cultural' },
+      { term: 'native speaker', type: 'cultural' },
+      { term: 'recent graduate', type: 'age' },
+      { term: 'digital native', type: 'age' }
+    ]
+
+    const issues = []
+
+    discriminatoryTerms.forEach(({ term, type }) => {
+      if (text.includes(term)) {
+        issues.push({
+          type,
+          text: term,
+          severity: 'high',
+          suggestion: `Replace "${term}" with more inclusive language`
+        })
+      }
+    })
+
+    // Check for required accommodations
+    if (!jobData.accommodations || jobData.accommodations.length === 0) {
       issues.push({
-        type,
-        text: term,
+        type: 'missing_accommodations',
         severity: 'high',
-        suggestion: `Replace "${term}" with more inclusive language`
+        suggestion: 'Add workplace accommodations to make job more inclusive'
       })
     }
-  })
 
-  // Check for required accommodations
-  if (!jobData.accommodations || jobData.accommodations.length === 0) {
-    issues.push({
-      type: 'missing_accommodations',
-      severity: 'high',
-      suggestion: 'Add workplace accommodations to make job more inclusive'
-    })
-  }
+    // Calculate inclusivity score
+    let score = 100
 
-  // Calculate inclusivity score
-  let score = 100
+    // Deduct for issues
+    score -= issues.filter(i => i.severity === 'high').length * 20
+    score -= issues.filter(i => i.severity === 'medium').length * 10
 
-  // Deduct for issues
-  score -= issues.filter(i => i.severity === 'high').length * 20
-  score -= issues.filter(i => i.severity === 'medium').length * 10
+    // Bonus for accommodations
+    if (jobData.accommodations && jobData.accommodations.length >= 3) {
+      score += 10
+    }
 
-  // Bonus for accommodations
-  if (jobData.accommodations && jobData.accommodations.length >= 3) {
-    score += 10
-  }
+    // Bonus for remote work (accessibility)
+    if (jobData.workMode === 'remote') {
+      score += 10
+    }
 
-  // Bonus for remote work (accessibility)
-  if (jobData.workMode === 'remote') {
-    score += 10
-  }
+    score = Math.max(0, Math.min(100, score))
 
-  score = Math.max(0, Math.min(100, score))
+    const suggestions = []
 
-  const suggestions = []
+    if (score < 80) {
+      suggestions.push('Add more accommodations to improve inclusivity')
+    }
 
-  if (score < 80) {
-    suggestions.push('Add more accommodations to improve inclusivity')
-  }
+    if (!jobData.workMode || jobData.workMode === 'on-site') {
+      suggestions.push('Consider offering remote or hybrid work for better accessibility')
+    }
 
-  if (!jobData.workMode || jobData.workMode === 'on-site') {
-    suggestions.push('Consider offering remote or hybrid work for better accessibility')
-  }
+    if (!jobData.description || jobData.description.length < 100) {
+      suggestions.push('Add detailed job description to help candidates understand requirements')
+    }
 
-  if (!jobData.description || jobData.description.length < 100) {
-    suggestions.push('Add detailed job description to help candidates understand requirements')
-  }
-
-  return {
-    hasDiscriminatoryLanguage: issues.some(i => i.severity === 'high'),
-    issues,
-    score,
-    suggestions
+    return {
+      hasDiscriminatoryLanguage: issues.some(i => i.severity === 'high'),
+      issues,
+      score,
+      suggestions,
+      llmPowered: false // Fallback analysis
+    }
   }
 }
 
