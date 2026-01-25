@@ -50,3 +50,5 @@ nul
 
 # IDE and editor settings
 .claude/
+
+/app/generated/prisma
