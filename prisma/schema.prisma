@@ -1,0 +1,226 @@
+// Esquema de Base de Datos para DIVERSIA
+// Unificado por GACE (Meta-Arquitecto) para Máxima Gobernanza y Cumplimiento
+// Incluye: Multi-tenancy, Enums, AI Transparency (EU AI Act) y SaaS Billing Ready
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum UserType {
+  individual  // Candidato neurodivergente
+  company     // Empresa que publica ofertas
+  therapist   // Terapeuta/Coach
+  admin       // Administrador del sistema
+}
+
+enum JobStatus {
+  DRAFT       // Borrador (no visible)
+  PUBLISHED   // Publicada (visible para matching)
+  CLOSED      // Cerrada (no acepta más candidatos)
+  ARCHIVED    // Archivada (histórico)
+}
+
+enum MatchingStatus {
+  PENDING     // Pendiente de revisión
+  APPROVED    // Aprobado por revisor humano/sistema
+  REJECTED    // Rechazado
+  WITHDRAWN   // Candidato retiró su aplicación
+}
+
+enum AuditEventType {
+  USER_LOGIN
+  USER_LOGOUT
+  PASSWORD_CHANGED
+  MATCHING_EXECUTED   // Crítico para EU AI Act
+  MATCHING_REVIEWED
+  PROFILE_VIEWED      // Privacidad
+  DATA_EXPORTED       // Privacidad
+  JOB_CREATED
+}
+
+// ============================================
+// ACTORES Y AUTENTICACIÓN
+// ============================================
+
+model User {
+  id                String   @id @default(cuid())
+  email             String   @unique
+  passwordHash      String
+  userType          UserType
+  status            String   @default("active")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // Perfiles específicos
+  individual        Individual?
+  company           Company?
+  therapist         Therapist?
+  
+  // Seguridad y Auditoría
+  auditLogs         AuditLog[]
+  
+  @@index([email])
+}
+
+model Individual {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  firstName         String
+  lastName          String
+  
+  // Neurodivergencia (Encriptados en App)
+  diagnoses         String[] // Formato encrypted:...
+  accommodationsNeeded String? // Formato encrypted:...
+  medicalHistory    String?  // Formato encrypted:...
+  
+  // Profesional
+  skills            String[]
+  experienceYears   Int?
+  cvUrl             String?
+  
+  // Relaciones
+  connections       Connection[]
+  matchings         Matching[]
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Company {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name              String
+  industry          String?
+  size              String?
+  location          String?
+  website           String?
+  description       String?
+  
+  // SaaS Billing Ready
+  subscriptionPlan  String   @default("free") // free, basic, pro
+  stripeCustomerId  String?  @unique
+  
+  // Relaciones
+  jobs              Job[]
+  connections       Connection[]
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Therapist {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name              String
+  specialty         String?
+  licenseNumber     String?
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+// ============================================
+// NEGOCIO Y IA (COMPLIANCE)
+// ============================================
+
+model Job {
+  id                String    @id @default(cuid())
+  companyId         String
+  company           Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  title             String
+  description       String
+  status            JobStatus @default(DRAFT)
+  
+  // Requisitos
+  skills            String[]
+  accommodations    String[]
+  salaryRange       String?
+  workMode          String    @default("remote")
+  visibility        String    @default("public")
+  
+  // Análisis IA (Self-Hosted LLM)
+  inclusivityScore  Int?
+  inclusivityAnalysis Json?
+  
+  // Relaciones
+  matchings         Matching[]
+  
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  closedAt          DateTime?
+  
+  @@index([companyId])
+  @@index([status])
+}
+
+model Matching {
+  id                String         @id @default(cuid())
+  jobId             String
+  job               Job            @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  individualId      String
+  individual        Individual     @relation(fields: [individualId], references: [id], onDelete: Cascade)
+  
+  // IA Transparency (EU AI Act Art. 13)
+  aiScore           Float
+  aiFactors         Json           // Desglose de factores
+  aiExplanation     String?
+  
+  status            MatchingStatus @default(PENDING)
+  reviewedBy        String?
+  reviewedAt        DateTime?
+  
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+  
+  @@unique([individualId, jobId])
+}
+
+model Connection {
+  id                String         @id @default(cuid())
+  individualId      String
+  individual        Individual     @relation(fields: [individualId], references: [id], onDelete: Cascade)
+  companyId         String
+  company           Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  status            String         @default("active")
+  sharedData        String[]       // Campos compartidos (Consentimiento)
+  
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+}
+
+// ============================================
+// GOBERNANZA (EU AI ACT ART. 12)
+// ============================================
+
+model AuditLog {
+  id                String         @id @default(cuid())
+  userId            String?
+  user              User?          @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  eventType         AuditEventType
+  details           Json
+  ipAddress         String?
+  timestamp         DateTime       @default(now())
+  retentionUntil    DateTime       // 7 años (GDPR)
+  
+  @@index([userId])
+  @@index([eventType])
+  @@index([timestamp])
+}
