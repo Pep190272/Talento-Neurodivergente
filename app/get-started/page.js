@@ -1,8 +1,5 @@
-import GetStarted from '../components/GetStarted/GetStarted'
+import RoleSelector from '../components/GetStarted/RoleSelector'
 
 export default function GetStartedPage() {
-  return <GetStarted />
+  return <RoleSelector />
 }
-
-// After successful form submission:
-// window.location.href = '/company/dashboard'; 

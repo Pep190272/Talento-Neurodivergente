@@ -16,10 +16,38 @@
  */
 
 import { NextResponse } from 'next/server'
+import { auth } from './app/lib/auth'
 import { rateLimit, RATE_LIMITS } from './app/lib/rate-limiter.js'
 
-export default function middleware(req) {
+export default async function middleware(req) {
   const path = req.nextUrl.pathname
+  const session = await auth()
+
+  // ═══════════════════════════════════════════════════════════════════════
+  // AUTHENTICATION & REDIRECTS (Security Architect)
+  // ═══════════════════════════════════════════════════════════════════════
+
+  // 1. Proteger rutas de Dashboard
+  if (path.startsWith('/dashboard')) {
+    if (!session) {
+      // Usuario no autenticado intentando entrar -> Login
+      const loginUrl = new URL('/auth/role-selection', req.url)
+      return NextResponse.redirect(loginUrl)
+    }
+  }
+
+  // 2. Redirigir si usuario ya logueado intenta ir a Login
+  if ((path === '/login' || path === '/register') && session) {
+    // Redirigir a su dashboard correspondiente según rol
+    const role = session.user?.type
+    let target = '/dashboard'
+
+    if (role === 'company') target = '/dashboard/company'
+    else if (role === 'individual') target = '/dashboard/candidate'
+    else if (role === 'therapist') target = '/dashboard/therapist'
+
+    return NextResponse.redirect(new URL(target, req.url))
+  }
 
   // ═══════════════════════════════════════════════════════════════════════
   // RATE LIMITING
@@ -27,9 +55,14 @@ export default function middleware(req) {
 
   // Obtener identificador para rate limiting (IP)
   const identifier = req.headers.get('x-forwarded-for') ||
-                    req.headers.get('x-real-ip') ||
-                    req.ip ||
-                    'unknown'
+    req.headers.get('x-real-ip') ||
+    req.ip ||
+    'unknown'
+
+  // Bypassing rate limiting in development environment because it is annoying
+  if (process.env.NODE_ENV === 'development') {
+    return handleSecurityHeaders(NextResponse.next())
+  }
 
   // Determinar límites según el endpoint
   let limits = RATE_LIMITS.API // Default
@@ -114,4 +147,26 @@ export const config = {
      */
     '/((?!_next/static|_next/image|favicon.ico|public).*)'
   ]
+}
+
+function handleSecurityHeaders(response) {
+  // X-Frame-Options: Prevenir clickjacking
+  response.headers.set('X-Frame-Options', 'DENY')
+
+  // X-Content-Type-Options: Prevenir MIME sniffing
+  response.headers.set('X-Content-Type-Options', 'nosniff')
+
+  // X-XSS-Protection: Protección XSS (legacy, pero no hace daño)
+  response.headers.set('X-XSS-Protection', '1; mode=block')
+
+  // Referrer-Policy: Controlar información del referrer
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+
+  // Permissions-Policy: Desactivar APIs peligrosas
+  response.headers.set(
+    'Permissions-Policy',
+    'camera=(), microphone=(), geolocation=(), interest-cohort=()'
+  )
+
+  return response
 }

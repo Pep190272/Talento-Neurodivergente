@@ -129,16 +129,8 @@ export default function Navbar() {
             </div>
           ) : (
             <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-              <Link href="/login" className="login-link" style={{
-                color: 'white',
-                fontFamily: 'Rajdhani, sans-serif',
-                textDecoration: 'none',
-                fontSize: '0.9rem',
-                fontWeight: 500,
-                opacity: 0.8,
-                transition: 'opacity 0.2s'
-              }}>
-                Login
+              <Link href="/login" className="login-btn">
+                Iniciar Sesión
               </Link>
               <Link href="/get-started" className="get-started">
                 <span className="btn-text">

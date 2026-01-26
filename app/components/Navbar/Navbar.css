@@ -586,23 +586,53 @@
 
 /* Animations */
 @keyframes logoGlow {
-  0% { filter: brightness(1); }
-  100% { filter: brightness(1.2); }
+  0% {
+    filter: brightness(1);
+  }
+
+  100% {
+    filter: brightness(1.2);
+  }
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-10px) rotate(180deg); }
+
+  0%,
+  100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-10px) rotate(180deg);
+  }
 }
 
 @keyframes btnFloat {
-  0%, 100% { transform: translateY(0px) scale(1); opacity: 0.7; }
-  50% { transform: translateY(-5px) scale(1.2); opacity: 1; }
+
+  0%,
+  100% {
+    transform: translateY(0px) scale(1);
+    opacity: 0.7;
+  }
+
+  50% {
+    transform: translateY(-5px) scale(1.2);
+    opacity: 1;
+  }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 0.5; transform: translateX(-50%) scaleX(0.8); }
-  50% { opacity: 1; transform: translateX(-50%) scaleX(1.2); }
+
+  0%,
+  100% {
+    opacity: 0.5;
+    transform: translateX(-50%) scaleX(0.8);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) scaleX(1.2);
+  }
 }
 
 @keyframes slideInDown {
@@ -610,6 +640,7 @@
     opacity: 0;
     transform: translateY(-20px);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0);
@@ -724,6 +755,7 @@
     opacity: 0;
     transform: translateX(50px);
   }
+
   100% {
     opacity: 1;
     transform: translateX(0);
@@ -767,6 +799,43 @@
   }
 
   .get-started {
+    font-size: 0.8rem;
+  }
+}
+
+/* Login Button (Outline Style) */
+.login-btn {
+  padding: 0.6rem 1.5rem;
+  border: 1px solid rgba(4, 107, 210, 0.5);
+  border-radius: 50px;
+  color: var(--primary-gold);
+  background: rgba(255, 255, 255, 0.05);
+  font-family: 'Rajdhani', sans-serif;
+  font-weight: 600;
+  font-size: 0.95rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(5px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+
+.login-btn:hover {
+  background: rgba(4, 107, 210, 0.1);
+  border-color: var(--primary-gold);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(4, 107, 210, 0.2);
+  color: var(--primary-gold);
+}
+
+.login-btn:active {
+  transform: translateY(0);
+}
+
+@media (max-width: 480px) {
+  .login-btn {
     padding: 0.5rem 1rem;
     font-size: 0.8rem;
   }
