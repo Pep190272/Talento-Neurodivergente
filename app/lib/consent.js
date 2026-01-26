@@ -692,3 +692,7 @@ export async function changeTherapist(individualId, newTherapistId) {
     changedAt: new Date()
   }
 }
+
+// Aliases for API compatibility
+export { acceptMatch as grantConsent }
+export { rejectMatch as rejectConsent }

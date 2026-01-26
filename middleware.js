@@ -16,8 +16,11 @@
  */
 
 import { NextResponse } from 'next/server'
-import { auth } from './app/lib/auth'
+import NextAuth from 'next-auth'
+import { authConfig } from './app/lib/auth.config'
 import { rateLimit, RATE_LIMITS } from './app/lib/rate-limiter.js'
+
+const { auth } = NextAuth(authConfig)
 
 export default async function middleware(req) {
   const path = req.nextUrl.pathname
