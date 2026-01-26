@@ -130,6 +130,8 @@ model Therapist {
   specialty         String?
   licenseNumber     String?
   
+  connections       Connection[]
+
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 }
@@ -191,18 +193,33 @@ model Matching {
   @@unique([individualId, jobId])
 }
 
+enum ConnectionType {
+  JOB_MATCH
+  THERAPY
+  CONSULTING
+}
+
 model Connection {
   id                String         @id @default(cuid())
-  individualId      String
-  individual        Individual     @relation(fields: [individualId], references: [id], onDelete: Cascade)
-  companyId         String
-  company           Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  type              ConnectionType @default(JOB_MATCH)
+  
+  individualId      String?
+  individual        Individual?    @relation(fields: [individualId], references: [id], onDelete: Cascade)
+  
+  companyId         String?
+  company           Company?       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  
+  therapistId       String?
+  therapist         Therapist?     @relation(fields: [therapistId], references: [id], onDelete: Cascade)
   
   status            String         @default("active")
   sharedData        String[]       // Campos compartidos (Consentimiento)
   
   createdAt         DateTime       @default(now())
   updatedAt         DateTime       @updatedAt
+
+  // Validaciones lógicas se harán en aplicación, pero idealmente al menos 2 actores deben existir
 }
 
 // ============================================

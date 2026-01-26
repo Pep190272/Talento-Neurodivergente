@@ -1,7 +1,6 @@
-// app/lib/auth.js
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { findUserByEmail } from './storage.js'
+import { UserService } from './services/users'
 import bcrypt from 'bcryptjs'
 
 /**
@@ -34,8 +33,8 @@ export const authConfig = {
           throw new Error('Missing credentials')
         }
 
-        // Buscar usuario por email (busca en individuals, companies, therapists)
-        const user = await findUserByEmail(credentials.email)
+        // Buscar usuario por email usando Servicio Prisma
+        const user = await UserService.findUserByEmail(credentials.email)
 
         if (!user) {
           throw new Error('Invalid credentials')
@@ -53,12 +52,22 @@ export const authConfig = {
           throw new Error('Invalid credentials')
         }
 
+        // Determinar nombre a mostrar según tipo
+        let name = 'User'
+        if (user.userType === 'company' && user.company) {
+          name = user.company.name
+        } else if (user.userType === 'individual' && user.individual) {
+          name = `${user.individual.firstName} ${user.individual.lastName}`.trim()
+        } else if (user.userType === 'therapist' && user.therapist) {
+          name = user.therapist.name
+        }
+
         // Retornar objeto de usuario para la session
         return {
-          id: user.userId || user.companyId || user.therapistId,
+          id: user.id,
           email: user.email,
           type: user.userType,
-          name: user.profile?.name || user.profile?.companyName || 'User'
+          name: name
         }
       }
     })

@@ -1,9 +1,10 @@
 'use client'
 
 import { useState } from 'react'
-import { signIn } from 'next-auth/react'
+import { signIn, getSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { getRedirectUrlByRole } from '../lib/auth-redirect'
 import './login.css'
 
 export default function LoginPage() {
@@ -28,8 +29,12 @@ export default function LoginPage() {
             if (result?.error) {
                 setError('Email o contraseña incorrectos')
             } else {
-                router.push('/dashboard')
-                router.refresh()
+                // Fetch the fresh session to get the user role
+                const session = await getSession()
+                const targetUrl = getRedirectUrlByRole(session?.user?.type)
+
+                router.refresh() // Ensure server components update
+                router.push(targetUrl)
             }
         } catch (err) {
             setError('Error al iniciar sesión. Inténtalo de nuevo.')

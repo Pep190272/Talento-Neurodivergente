@@ -1,17 +1,20 @@
 'use client'
 import { useState } from 'react';
 import './GetStarted.css';
+import { useRouter } from 'next/navigation';
+import { getRedirectUrlByRole } from '../../lib/auth-redirect';
 
-const GetStarted = () => {
-  const [currentStep, setCurrentStep] = useState('selection'); // 'selection', 'candidate', 'company', 'therapist'
-  const [userType, setUserType] = useState('');
+const GetStarted = ({ mode }) => {
+  const router = useRouter();
+  const [currentStep, setCurrentStep] = useState(mode || 'selection'); // 'selection', 'candidate', 'company', 'therapist'
+  const [userType, setUserType] = useState(mode || '');
   const [formData, setFormData] = useState({
     // Common fields
     firstName: '',
     lastName: '',
     email: '',
     phone: '',
-    
+
     // Candidate specific
     age: '',
     education: '',
@@ -20,7 +23,7 @@ const GetStarted = () => {
     neurodivergentType: '',
     accommodations: '',
     workPreference: '',
-    
+
     // Company specific
     companyName: '',
     industry: '',
@@ -29,7 +32,7 @@ const GetStarted = () => {
     hiringGoals: '',
     diversityExperience: '',
     jobTypes: [],
-    
+
     // Therapist specific
     licenseNumber: '',
     specialization: '',
@@ -44,6 +47,10 @@ const GetStarted = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Initialize from prop if provided
+  // (We use initial state above, but this handles prop updates if any)
+  // ...
+
   // Handle user type selection
   const handleUserTypeSelection = (type) => {
     setUserType(type);
@@ -53,11 +60,11 @@ const GetStarted = () => {
   // Handle form input changes
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
-    
+
     if (type === 'checkbox') {
       setFormData(prev => ({
         ...prev,
-        [name]: checked 
+        [name]: checked
           ? [...prev[name], value]
           : prev[name].filter(item => item !== value)
       }));
@@ -67,7 +74,7 @@ const GetStarted = () => {
         [name]: value
       }));
     }
-    
+
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({
@@ -80,34 +87,34 @@ const GetStarted = () => {
   // Form validation
   const validateForm = () => {
     const newErrors = {};
-    
+
     // Common validation
     if (!formData.firstName.trim()) newErrors.firstName = 'El nombre es requerido';
     if (!formData.lastName.trim()) newErrors.lastName = 'El apellido es requerido';
     if (!formData.email.trim()) newErrors.email = 'El correo electrónico es requerido';
     else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Formato de correo electrónico inválido';
-    
+
     if (userType === 'candidate') {
       if (!formData.age) newErrors.age = 'La edad es requerida';
       if (!formData.education) newErrors.education = 'El nivel de educación es requerido';
       if (!formData.experience) newErrors.experience = 'El nivel de experiencia es requerido';
       if (formData.skills.length === 0) newErrors.skills = 'Selecciona al menos una habilidad';
     }
-    
+
     if (userType === 'company') {
       if (!formData.companyName.trim()) newErrors.companyName = 'El nombre de la empresa es requerido';
       if (!formData.industry) newErrors.industry = 'La industria es requerida';
       if (!formData.companySize) newErrors.companySize = 'El tamaño de la empresa es requerido';
       if (!formData.position.trim()) newErrors.position = 'Tu posición es requerida';
     }
-    
+
     if (userType === 'therapist') {
       if (!formData.licenseNumber.trim()) newErrors.licenseNumber = 'El número de licencia es requerido';
       if (!formData.specialization) newErrors.specialization = 'La especialización es requerida';
       if (!formData.yearsOfExperience) newErrors.yearsOfExperience = 'Los años de experiencia son requeridos';
       if (formData.certifications.length === 0) newErrors.certifications = 'Selecciona al menos una certificación';
     }
-    
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -115,15 +122,15 @@ const GetStarted = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!validateForm()) return;
-    
+
     setIsSubmitting(true);
-    
+
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 2000));
-      
+
       // Create user data object
       const userData = {
         userType,
@@ -131,7 +138,7 @@ const GetStarted = () => {
         registrationDate: new Date().toISOString(),
         isRegistered: true
       };
-      
+
       // Save to localStorage
       if (typeof window !== 'undefined') {
         localStorage.setItem('diversia_user_data', JSON.stringify(userData));
@@ -142,16 +149,9 @@ const GetStarted = () => {
         // Show success message
         alert(`¡Bienvenido a Diversia Eternals, ${formData.firstName}! Tu perfil ha sido creado exitosamente.`);
 
-        // Redirect to appropriate dashboard
-        if (userType === 'company') {
-          window.location.href = '/company';
-        } else if (userType === 'candidate') {
-          window.location.href = '/dashboard';
-        } else if (userType === 'therapist') {
-          window.location.href = '/therapist';
-        } else {
-          window.location.href = '/';
-        }
+        // Redirect to appropriate dashboard using standard logic
+        const targetUrl = getRedirectUrlByRole(userType);
+        router.push(targetUrl);
       }
 
     } catch (error) {
@@ -162,8 +162,14 @@ const GetStarted = () => {
     }
   };
 
+
+
   // Go back to selection
   const handleGoBack = () => {
+    if (mode) {
+      router.push('/get-started');
+      return;
+    }
     setCurrentStep('selection');
     setUserType('');
   };
@@ -179,9 +185,9 @@ const GetStarted = () => {
           Elige tu camino para desbloquear superpoderes neurodivergentes
         </p>
       </div>
-      
+
       <div className="optionsGrid">
-        <div 
+        <div
           className="optionCard"
           onClick={() => handleUserTypeSelection('candidate')}
         >
@@ -197,8 +203,8 @@ const GetStarted = () => {
           </div>
           <button className="optionButton">Comienza tu Viaje</button>
         </div>
-        
-        <div 
+
+        <div
           className="optionCard"
           onClick={() => handleUserTypeSelection('company')}
         >
@@ -214,8 +220,8 @@ const GetStarted = () => {
           </div>
           <button className="optionButton">Buscar Talento</button>
         </div>
-        
-        <div 
+
+        <div
           className="optionCard"
           onClick={() => handleUserTypeSelection('therapist')}
         >
@@ -243,7 +249,7 @@ const GetStarted = () => {
         <h2 className="formTitle">Registro de Candidato</h2>
         <p className="formSubtitle">Descubramos tus superpoderes</p>
       </div>
-      
+
       <form onSubmit={handleSubmit} className="form">
         <div className="formSection">
           <h3 className="sectionTitle">Información Personal</h3>
@@ -340,7 +346,7 @@ const GetStarted = () => {
               {errors.education && <span className="errorText">{errors.education}</span>}
             </div>
           </div>
-          
+
           <div className="formGroup">
             <label className="label">Nivel de Experiencia *</label>
             <select
@@ -380,7 +386,7 @@ const GetStarted = () => {
             </div>
             {errors.skills && <span className="errorText">{errors.skills}</span>}
           </div>
-          
+
           <div className="formGroup">
             <label className="label">Tipo de Neurodivergencia (Opcional)</label>
             <select
@@ -397,7 +403,7 @@ const GetStarted = () => {
               <option value="other">Otro</option>
             </select>
           </div>
-          
+
           <div className="formGroup">
             <label className="label">Preferencia de Trabajo</label>
             <select
@@ -413,7 +419,7 @@ const GetStarted = () => {
               <option value="flexible">Flexible</option>
             </select>
           </div>
-          
+
           <div className="formGroup">
             <label className="label">Adaptaciones Necesarias (Opcional)</label>
             <textarea
@@ -427,8 +433,8 @@ const GetStarted = () => {
           </div>
         </div>
 
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className="submitButton"
           disabled={isSubmitting}
         >
@@ -446,7 +452,7 @@ const GetStarted = () => {
         <h2 className="formTitle">Registro de Empresa</h2>
         <p className="formSubtitle">Conéctate con talento neurodivergente excepcional</p>
       </div>
-      
+
       <form onSubmit={handleSubmit} className="form">
         <div className="formSection">
           <h3 className="sectionTitle">Información de Contacto</h3>
@@ -476,7 +482,7 @@ const GetStarted = () => {
               {errors.lastName && <span className="errorText">{errors.lastName}</span>}
             </div>
           </div>
-          
+
           <div className="formRow">
             <div className="formGroup">
               <label className="label">Correo Electrónico *</label>
@@ -532,7 +538,7 @@ const GetStarted = () => {
               {errors.position && <span className="errorText">{errors.position}</span>}
             </div>
           </div>
-          
+
           <div className="formRow">
             <div className="formGroup">
               <label className="label">Industria *</label>
@@ -594,7 +600,7 @@ const GetStarted = () => {
               ))}
             </div>
           </div>
-          
+
           <div className="formGroup">
             <label className="label">Objetivos de Contratación</label>
             <textarea
@@ -606,7 +612,7 @@ const GetStarted = () => {
               rows="4"
             />
           </div>
-          
+
           <div className="formGroup">
             <label className="label">Experiencia en Diversidad e Inclusión</label>
             <select
@@ -624,8 +630,8 @@ const GetStarted = () => {
           </div>
         </div>
 
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className="submitButton"
           disabled={isSubmitting}
         >
@@ -643,7 +649,7 @@ const GetStarted = () => {
         <h2 className="formTitle">Registro de Terapeuta</h2>
         <p className="formSubtitle">Únete a nuestra red de profesionales de apoyo neurodivergente</p>
       </div>
-      
+
       <form onSubmit={handleSubmit} className="form">
         <div className="formSection">
           <h3 className="sectionTitle">Información Personal</h3>
@@ -673,7 +679,7 @@ const GetStarted = () => {
               {errors.lastName && <span className="errorText">{errors.lastName}</span>}
             </div>
           </div>
-          
+
           <div className="formRow">
             <div className="formGroup">
               <label className="label">Correo Electrónico *</label>
@@ -734,7 +740,7 @@ const GetStarted = () => {
               {errors.yearsOfExperience && <span className="errorText">{errors.yearsOfExperience}</span>}
             </div>
           </div>
-          
+
           <div className="formGroup">
             <label className="label">Especialización Principal *</label>
             <select
@@ -778,7 +784,7 @@ const GetStarted = () => {
             </div>
             {errors.certifications && <span className="errorText">{errors.certifications}</span>}
           </div>
-          
+
           <div className="formGroup">
             <label className="label">Tipos de Terapia Ofrecidos (Selecciona todos los que apliquen)</label>
             <div className="checkboxGrid">
@@ -831,7 +837,7 @@ const GetStarted = () => {
               />
             </div>
           </div>
-          
+
           <div className="formGroup">
             <label className="label">Biografía Profesional</label>
             <textarea
@@ -845,8 +851,8 @@ const GetStarted = () => {
           </div>
         </div>
 
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className="submitButton"
           disabled={isSubmitting}
         >
@@ -863,7 +869,7 @@ const GetStarted = () => {
         <div className="backgroundShape2"></div>
         <div className="backgroundShape3"></div>
       </div>
-      
+
       <div className="content">
         {currentStep === 'selection' && renderSelection()}
         {currentStep === 'candidate' && renderCandidateForm()}
