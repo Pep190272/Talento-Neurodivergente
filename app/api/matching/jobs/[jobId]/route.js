@@ -21,7 +21,7 @@ import { findMatchesForJob } from '@/lib/matching'
  */
 export async function GET(request, { params }) {
   try {
-    const { jobId } = params
+    const { jobId } = await params
     const { searchParams } = new URL(request.url)
     const minScore = parseFloat(searchParams.get('minScore') || '0')
     const limit = parseInt(searchParams.get('limit') || '0')

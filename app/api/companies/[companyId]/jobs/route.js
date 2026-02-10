@@ -31,7 +31,7 @@ import {
  */
 export async function POST(request, { params }) {
   try {
-    const { companyId } = params
+    const { companyId } = await params
     const jobData = await request.json()
 
     // Check if company exists
@@ -100,7 +100,7 @@ export async function POST(request, { params }) {
  */
 export async function GET(request, { params }) {
   try {
-    const { companyId } = params
+    const { companyId } = await params
     const { searchParams } = new URL(request.url)
     const status = searchParams.get('status') || 'active'
 

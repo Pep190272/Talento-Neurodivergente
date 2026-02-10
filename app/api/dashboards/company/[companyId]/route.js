@@ -17,7 +17,7 @@ import { getCompanyDashboard } from '@/lib/dashboards'
  */
 export async function GET(request, { params }) {
   try {
-    const { companyId } = params
+    const { companyId } = await params
 
     // Get dashboard data
     const dashboard = await getCompanyDashboard(companyId)

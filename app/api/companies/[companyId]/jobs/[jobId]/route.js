@@ -24,7 +24,7 @@ import {
  */
 export async function GET(request, { params }) {
   try {
-    const { companyId, jobId } = params
+    const { companyId, jobId } = await params
 
     const job = await getJobPosting(jobId)
 
@@ -78,7 +78,7 @@ export async function GET(request, { params }) {
  */
 export async function PATCH(request, { params }) {
   try {
-    const { companyId, jobId } = params
+    const { companyId, jobId } = await params
     const updates = await request.json()
 
     // Check if job exists
@@ -129,7 +129,7 @@ export async function PATCH(request, { params }) {
  */
 export async function DELETE(request, { params }) {
   try {
-    const { companyId, jobId } = params
+    const { companyId, jobId } = await params
 
     // Check if job exists
     const existing = await getJobPosting(jobId)

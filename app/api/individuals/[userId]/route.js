@@ -115,7 +115,7 @@ export async function GET(request, { params }) {
       )
     }
 
-    const { userId } = params
+    const { userId } = await params
     const requestorId = session.user.id
     const requestorType = session.user.type
 
@@ -279,7 +279,7 @@ export async function PATCH(request, { params }) {
       )
     }
 
-    const { userId } = params
+    const { userId } = await params
     const requestorId = session.user.id
     const requestorType = session.user.type
 
@@ -348,7 +348,7 @@ export async function DELETE(request, { params }) {
       )
     }
 
-    const { userId } = params
+    const { userId } = await params
     const requestorId = session.user.id
     const requestorType = session.user.type
 
