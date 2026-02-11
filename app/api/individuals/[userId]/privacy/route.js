@@ -27,7 +27,7 @@ import {
  */
 export async function PATCH(request, { params }) {
   try {
-    const { userId } = params
+    const { userId } = await params
     const privacyUpdates = await request.json()
 
     const { updatePrivacySettings, getIndividualProfile } = await import('@/lib/individuals')

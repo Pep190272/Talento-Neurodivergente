@@ -21,7 +21,7 @@ import {
  */
 export async function GET(request, { params }) {
   try {
-    const { companyId } = params
+    const { companyId } = await params
 
     const company = await getCompany(companyId)
 
@@ -62,7 +62,7 @@ export async function GET(request, { params }) {
  */
 export async function PATCH(request, { params }) {
   try {
-    const { companyId } = params
+    const { companyId } = await params
     const updates = await request.json()
 
     // Check if company exists

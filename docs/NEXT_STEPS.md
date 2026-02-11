@@ -1,559 +1,559 @@
-# Próximos Pasos - Integración UI con Backend
+# Próximos Pasos - DiversIA Eternals
 
-**Estado actual:** Backend core implementado (v0.4.0) - Arquitectura JSON file-based
-**Objetivo:** Integrar módulos backend con la UI existente
-**Tiempo estimado:** 1-2 semanas
-**Prioridad:** ALTA - Para tener MVP funcional completo
-
----
-
-## 📋 Roadmap de Integración
-
-### Sprint 1: API Routes & Auth (3-5 días)
-
-#### 1.1 Implementar Next.js API Routes
-**Ubicación:** `app/api/`
-**Módulos a exponer:**
-
-```
-app/api/
-├── individuals/
-│   ├── route.js              # POST /api/individuals (create)
-│   └── [userId]/
-│       ├── route.js          # GET, PATCH /api/individuals/:userId
-│       └── privacy/route.js  # PATCH /api/individuals/:userId/privacy
-├── companies/
-│   ├── route.js              # POST /api/companies
-│   └── [companyId]/
-│       ├── route.js          # GET, PATCH /api/companies/:companyId
-│       └── jobs/
-│           ├── route.js      # POST /api/companies/:companyId/jobs
-│           └── [jobId]/route.js  # GET, PATCH, DELETE
-├── matching/
-│   ├── jobs/[jobId]/route.js    # GET /api/matching/jobs/:jobId
-│   └── candidates/[userId]/route.js  # GET /api/matching/candidates/:userId
-├── consent/
-│   ├── accept/route.js       # POST /api/consent/accept
-│   ├── reject/route.js       # POST /api/consent/reject
-│   └── revoke/route.js       # POST /api/consent/revoke
-├── dashboards/
-│   ├── individual/[userId]/route.js
-│   ├── company/[companyId]/route.js
-│   └── therapist/[therapistId]/route.js
-└── auth/
-    └── [...nextauth]/route.js  # NextAuth.js configuration
-```
-
-**Ejemplo de implementación:**
-
-```javascript
-// app/api/individuals/route.js
-import { createIndividualProfile } from '@/lib/individuals'
-import { NextResponse } from 'next/server'
-
-export async function POST(request) {
-  try {
-    const data = await request.json()
-    const profile = await createIndividualProfile(data)
-    return NextResponse.json(profile, { status: 201 })
-  } catch (error) {
-    return NextResponse.json(
-      { error: error.message },
-      { status: 400 }
-    )
-  }
-}
-```
-
-**Tareas:**
-- [ ] Crear estructura de carpetas `app/api/`
-- [ ] Implementar endpoints para individuals (CRUD)
-- [ ] Implementar endpoints para companies (CRUD)
-- [ ] Implementar endpoints para jobs (CRUD)
-- [ ] Implementar endpoints para matching (read-only)
-- [ ] Implementar endpoints para consent (accept/reject/revoke)
-- [ ] Implementar endpoints para dashboards (read-only)
-- [ ] Agregar validación de inputs con Zod
-- [ ] Agregar manejo de errores consistente
-- [ ] Documentar API con comentarios JSDoc
-
-**Testing:**
-- [ ] Crear tests de integración para cada endpoint
-- [ ] Probar con curl o Postman
-- [ ] Verificar manejo de errores
+**Última actualización:** 10 de febrero de 2026
+**Estado actual:** Post-consultoría estratégica - Redefiniendo arquitectura
+**Versión:** v1.1.0
+**Branch activa:** `feat/auth-admin-ecosystem`
 
 ---
 
-#### 1.2 Implementar Autenticación con NextAuth.js
-**Librería:** NextAuth.js v5 (Auth.js)
-**Providers:** Email Magic Link + Google OAuth (opcional)
+## 📍 Estado Actual (10 Feb 2026)
 
-**Instalación:**
-```bash
-npm install next-auth@beta @auth/core
-```
+### ✅ Completado Hoy
+- ✅ **Auditoría completa del proyecto** → [docs/AUDITORIA_PROYECTO_2026-02-10.md](AUDITORIA_PROYECTO_2026-02-10.md)
+- ✅ **Limpieza técnica:** Eliminados 76 archivos `tmpclaude-*`
+- ✅ **Build arreglado:** Exports faltantes + params await + TypeScript errors
+- ✅ **Roadmap estratégico creado:** [ROADMAP.md](../ROADMAP.md)
+- ✅ **Consultoría iniciada:** 5 fases de preguntas estratégicas
 
-**Configuración:**
+### 🚨 Bloqueadores Críticos Identificados
 
-```javascript
-// app/api/auth/[...nextauth]/route.js
-import NextAuth from "next-auth"
-import EmailProvider from "next-auth/providers/email"
-import { findUserByEmail } from '@/lib/storage'
-
-export const { handlers, auth, signIn, signOut } = NextAuth({
-  providers: [
-    EmailProvider({
-      server: process.env.EMAIL_SERVER,
-      from: process.env.EMAIL_FROM
-    })
-  ],
-  callbacks: {
-    async signIn({ user, account, profile }) {
-      // Verificar si usuario existe en nuestro sistema
-      const existingUser = await findUserByEmail(user.email)
-      return !!existingUser
-    },
-    async session({ session, token }) {
-      // Agregar información del usuario a la sesión
-      const user = await findUserByEmail(session.user.email)
-      session.user.userId = user.userId
-      session.user.userType = user.userType
-      return session
-    }
-  },
-  pages: {
-    signIn: '/auth/login',
-    error: '/auth/error',
-    verifyRequest: '/auth/verify',
-  }
-})
-
-export { handlers as GET, handlers as POST }
-```
-
-**Variables de entorno (.env.local):**
-```bash
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=generated-secret-here
-EMAIL_SERVER=smtp://user:pass@smtp.sendgrid.net:587
-EMAIL_FROM=noreply@diversia.click
-```
-
-**Tareas:**
-- [ ] Instalar NextAuth.js
-- [ ] Configurar Email provider (Resend o SendGrid)
-- [ ] Crear páginas de auth (/auth/login, /auth/verify, /auth/error)
-- [ ] Configurar callbacks para integrar con nuestro storage
-- [ ] Implementar middleware para proteger rutas
-- [ ] Crear hooks personalizados (useSession, useUser)
-- [ ] Probar flujo completo de login/logout
-
-**Testing:**
-- [ ] Probar registro con email magic link
-- [ ] Probar login de usuario existente
-- [ ] Verificar protección de rutas privadas
-- [ ] Probar logout y limpieza de sesión
+| Bloqueador | Impacto | Prioridad |
+|-----------|---------|-----------|
+| **JSON File Storage** | No escalable, race conditions, sin transacciones | 🔴 **#1 CRÍTICO** |
+| **Arquitectura monolítica** | Dificulta múltiples frontends futuros | 🟡 #2 Alta |
+| **TypeScript parcial** | Sin type safety en lógica crítica | 🟡 #3 Alta |
+| **LLM self-hosted (Gemma 2B)** | Overhead operacional, calidad insuficiente | 🟢 #4 Media |
+| **NextAuth vs. Auth0** | Compliance integrado en Auth0 | 🟢 #5 Media |
 
 ---
 
-### Sprint 2: Páginas de Dashboard (4-6 días)
+## 🎯 PREGUNTAS ESTRATÉGICAS PENDIENTES
 
-#### 2.1 Dashboard Individual (Candidato)
-**Ubicación:** `app/dashboard/individual/page.jsx`
+> **Acción requerida:** Responder estas preguntas para definir arquitectura objetivo
 
-**Componentes a crear:**
-```
-app/dashboard/individual/
-├── page.jsx                    # Layout principal
-├── components/
-│   ├── ProfileCompletion.jsx   # Card con % de completitud
-│   ├── MatchesList.jsx         # Lista de matches pendientes
-│   ├── ActiveConnections.jsx   # Conexiones activas con empresas
-│   ├── PrivacySettings.jsx     # Panel de configuración privacidad
-│   └── AuditLog.jsx           # Historial de accesos (GDPR)
-└── layout.jsx                  # Layout compartido con sidebar
-```
+### 📊 Modelo de Negocio (Prioridad #1)
+- [ ] ¿Modelo de revenue? (SaaS / Marketplace / Mixto / Freemium)
+- [ ] ¿Quién paga? (Empresas / Individuos / Terapeutas)
+- [ ] ¿Cliente principal? (Grandes empresas / Pymes / Startups)
+- [ ] ¿Comisión por contratación o solo subscripción?
 
-**Funcionalidades clave:**
-- ✅ Mostrar profile completion con breakdown
-- ✅ Lista de matches pendientes ordenados por score
-- ✅ Aceptar/rechazar matches con modal de preview de privacidad
-- ✅ Ver conexiones activas y pipeline stage
-- ✅ Revocar consentimiento con confirmación
-- ✅ Configurar privacidad por defecto
-- ✅ Ver audit log (quién accedió a mis datos)
+### 🌍 Compliance y Jurisdicciones
+- [ ] ¿Países LATAM prioritarios? (México, Argentina, Colombia, Chile...)
+- [ ] ¿Almacenar diagnósticos médicos explícitos? (TDAH, Autismo) o solo perfiles de fortalezas
+- [ ] ¿Terapeutas empleados o independientes?
+- [ ] ¿Certificaciones necesarias? (ISO 27001, SOC 2, ENS, HIPAA)
 
-**Ejemplo de componente:**
+### 🏗️ Arquitectura y Escalabilidad
+- [ ] ¿Múltiples frontends previstos? (App móvil, widget embebible)
+- [ ] ¿Capacidad DevOps? (Solo tú / Equipo pequeño / Equipo grande)
+- [ ] ¿Proyección usuarios 12 meses? (Individuos / Empresas / Terapeutas)
+- [ ] ¿Estado inversión $400K?
 
-```jsx
-// app/dashboard/individual/components/MatchesList.jsx
-'use client'
-
-import { useEffect, useState } from 'react'
-import { useSession } from 'next-auth/react'
-
-export default function MatchesList() {
-  const { data: session } = useSession()
-  const [matches, setMatches] = useState([])
-
-  useEffect(() => {
-    fetch(`/api/matching/candidates/${session.user.userId}`)
-      .then(res => res.json())
-      .then(data => setMatches(data.pending))
-  }, [session])
-
-  const handleAccept = async (matchId) => {
-    const response = await fetch('/api/consent/accept', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ matchId, userId: session.user.userId })
-    })
-
-    if (response.ok) {
-      // Actualizar lista
-      setMatches(prev => prev.filter(m => m.matchId !== matchId))
-    }
-  }
-
-  return (
-    <div className="matches-list">
-      <h2>Nuevos Matches ({matches.length})</h2>
-      {matches.map(match => (
-        <MatchCard
-          key={match.matchId}
-          match={match}
-          onAccept={handleAccept}
-        />
-      ))}
-    </div>
-  )
-}
-```
-
-**Tareas:**
-- [ ] Crear layout del dashboard con sidebar
-- [ ] Implementar ProfileCompletion component
-- [ ] Implementar MatchesList component
-- [ ] Implementar modal de privacy preview
-- [ ] Implementar ActiveConnections component
-- [ ] Implementar PrivacySettings component
-- [ ] Implementar AuditLog component
-- [ ] Agregar loading states y error handling
-- [ ] Aplicar estilos light theme consistentes
+**Ver detalles completos:** [ROADMAP.md - Fase de Consultoría](../ROADMAP.md#fase-de-consultoría-actual)
 
 ---
 
-#### 2.2 Dashboard Company (Empresa)
-**Ubicación:** `app/dashboard/company/page.jsx`
+## 🚀 PLAN DE ACCIÓN INMEDIATO
 
-**Componentes a crear:**
-```
-app/dashboard/company/
-├── page.jsx
-├── components/
-│   ├── JobsList.jsx            # Lista de vacantes
-│   ├── PipelineBoard.jsx       # Kanban board por job
-│   ├── CandidateCard.jsx       # Card de candidato con datos
-│   ├── JobForm.jsx            # Crear/editar vacante
-│   └── InclusivityScore.jsx   # Score de inclusividad
-└── jobs/[jobId]/
-    └── page.jsx                # Detalle de job con pipeline
-```
+### Sprint 1: Fundaciones Críticas (1 semana) — **BLOQUEANTE**
 
-**Funcionalidades clave:**
-- ✅ Lista de jobs abiertos/cerrados
-- ✅ Crear nueva vacante con análisis de inclusividad
-- ✅ Ver pipeline de candidatos por job
-- ✅ Mover candidatos entre stages (drag & drop o dropdown)
-- ✅ Ver datos de candidatos respetando permisos
-- ✅ Solicitar datos adicionales (con consent request)
-- ✅ Cerrar vacante
+#### 1.1 Migración JSON → PostgreSQL 🔴 **PRIORIDAD #1**
+
+**Estado:** ❌ No iniciado
+**Bloqueador:** Todo desarrollo posterior depende de esto
+**Estimación:** 2-3 días
 
 **Tareas:**
-- [ ] Crear layout dashboard empresa
-- [ ] Implementar JobsList component
-- [ ] Implementar JobForm con validación
-- [ ] Implementar análisis de inclusividad en tiempo real
-- [ ] Implementar PipelineBoard (Kanban o lista)
-- [ ] Implementar CandidateCard con datos permitidos
-- [ ] Agregar funcionalidad de mover candidatos
-- [ ] Implementar modal de solicitud de datos adicionales
-- [ ] Aplicar estilos consistentes
+- [ ] **Setup PostgreSQL** (Docker en VPS vía Dockploy-Compose - ya disponible)
+- [ ] **Ejecutar primera migración Prisma:**
+  ```bash
+  npx prisma migrate dev --name init
+  ```
+- [ ] **Migrar módulos uno por uno:**
+  - [ ] `app/lib/individuals.js` (25KB) → usar Prisma Client
+  - [ ] `app/lib/companies.js` (18KB) → usar Prisma Client
+  - [ ] `app/lib/therapists.js` (25KB) → usar Prisma Client
+  - [ ] `app/lib/matching.js` (15KB) → usar Prisma Client
+  - [ ] `app/lib/consent.js` (21KB) → usar Prisma Client
+- [ ] **Mantener tests pasando en cada paso**
+- [ ] **Eliminar `app/lib/storage.js` (13KB)** al finalizar
+- [ ] **Backup final de JSON files antes de eliminar `data/`**
+
+**Criterios de éxito:**
+- ✅ Todos los módulos usan Prisma
+- ✅ Tests pasando al 100%
+- ✅ Build exitoso
+- ✅ No más race conditions
 
 ---
 
-#### 2.3 Dashboard Therapist (Terapeuta)
-**Ubicación:** `app/dashboard/therapist/page.jsx`
+#### 1.2 Migración JavaScript → TypeScript (Progresiva)
 
-**Componentes a crear:**
-```
-app/dashboard/therapist/
-├── page.jsx
-├── components/
-│   ├── ClientsList.jsx         # Lista de clientes
-│   ├── ClientProgress.jsx      # Progreso de cliente
-│   ├── MetricsOverview.jsx     # Métricas agregadas
-│   └── SessionLog.jsx         # Log de sesiones
-└── clients/[clientId]/
-    └── page.jsx                # Detalle de cliente
-```
+**Estado:** ❌ No iniciado
+**Estrategia:** Archivo por archivo conforme se edita
+**Estimación:** 2-3 semanas (paralelo a desarrollo)
 
-**Funcionalidades clave:**
-- ✅ Lista de clientes con consentimiento
-- ✅ Ver progreso de matching de clientes
-- ✅ Métricas agregadas (completion rate, matches, etc.)
-- ✅ Log de sesiones
-- ✅ Acceso a datos con audit logging
+**Regla de oro:** "Si editas un `.js`, conviértelo a `.ts` en el mismo commit"
 
-**Tareas:**
-- [ ] Crear layout dashboard terapeuta
-- [ ] Implementar ClientsList component
-- [ ] Implementar ClientProgress component
-- [ ] Implementar MetricsOverview component
-- [ ] Implementar SessionLog component
-- [ ] Agregar funcionalidad de agregar notas privadas
-- [ ] Aplicar estilos consistentes
+**Prioridad de migración:**
+1. **Crítico primero:** `app/lib/*.js` (lógica de negocio sensible)
+2. **APIs después:** `app/api/**/route.js` → `.ts`
+3. **Componentes finalmente:** `app/components/**/*.jsx` → `.tsx`
+
+**Tareas iniciales:**
+- [ ] Migrar `app/lib/matching.js` → `.ts` (core business)
+- [ ] Migrar `app/lib/consent.js` → `.ts` (GDPR crítico)
+- [ ] Migrar `app/lib/individuals.js` → `.ts` (datos sensibles)
+- [ ] Migrar API routes más usadas (matching, individuals)
+- [ ] Quitar `typescript.ignoreBuildErrors` cuando esté >80% migrado
+
+**Beneficios:**
+- ✅ Type safety en datos médicos sensibles
+- ✅ Prisma genera tipos automáticamente
+- ✅ Autocomplete y refactors seguros
 
 ---
 
-### Sprint 3: Páginas de Registro & Onboarding (3-4 días)
+#### 1.3 Setup CI/CD Básico
 
-#### 3.1 Registro de Individual
-**Ubicación:** `app/register/individual/page.jsx`
+**Estado:** ❌ No configurado
+**Estimación:** 1 día
 
-**Flujo multi-step:**
-```
-Step 1: Email + Nombre
-Step 2: Diagnósticos + Acomodaciones (opcional)
-Step 3: Skills + Experiencia
-Step 4: Configuración de Privacidad
-Step 5: Assessment (redirect)
-```
+**GitHub Actions workflow:**
+```yaml
+# .github/workflows/ci.yml
+name: CI
+on: [push, pull_request]
 
-**Tareas:**
-- [ ] Crear wizard multi-step con react-hook-form
-- [ ] Implementar validación con Zod
-- [ ] Integrar con API POST /api/individuals
-- [ ] Agregar OpenAI suggestions en real-time (opcional)
-- [ ] Implementar auto-save (draft)
-- [ ] Aplicar light theme styles
-- [ ] Agregar progress indicator
-
----
-
-#### 3.2 Registro de Company
-**Ubicación:** `app/register/company/page.jsx`
-
-**Flujo:**
-```
-Step 1: Información de empresa
-Step 2: Primera vacante (con análisis de inclusividad)
-Step 3: Confirmación
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
 ```
 
 **Tareas:**
-- [ ] Crear wizard de registro
-- [ ] Implementar análisis de inclusividad en tiempo real
-- [ ] Integrar con API POST /api/companies
-- [ ] Mostrar sugerencias de mejora
-- [ ] Aplicar light theme styles
+- [ ] Crear workflow de CI (tests + build)
+- [ ] Configurar protección de branch `main`
+- [ ] Agregar badge de CI a README
+- [ ] Setup Dependabot (ya detectó 4 vulnerabilidades)
 
 ---
 
-### Sprint 4: Features Avanzadas (3-4 días)
+### Sprint 2: Arquitectura y Separación de Capas (2 semanas)
 
-#### 4.1 Matching Algorithm Integration
-**Tareas:**
-- [ ] Crear cron job o API endpoint para trigger matching
-- [ ] Implementar notificaciones de nuevos matches
-- [ ] Agregar recalculation cuando perfil se actualiza
-- [ ] Implementar expiración automática de matches
+#### 2.1 Definir Arquitectura Objetivo (Pendiente de preguntas)
 
-#### 4.2 Audit Log UI
-**Tareas:**
-- [ ] Crear página de audit log para usuario
-- [ ] Implementar filtros (por fecha, por tipo de dato)
-- [ ] Agregar export CSV/JSON (GDPR data portability)
-- [ ] Mostrar nombres amigables de empresas/terapeutas
+**Opciones en evaluación:**
 
-#### 4.3 GDPR Compliance Features
-**Tareas:**
-- [ ] Implementar "Download my data" button
-- [ ] Implementar "Delete my account" flow
-- [ ] Agregar consent checkboxes en todos los formularios
-- [ ] Crear página de Privacy Policy
-- [ ] Crear página de Terms of Service
+**Opción A: Monolito Next.js (actual)**
+```
+Next.js App Router
+├── Frontend (React components)
+├── API Routes (gateway)
+└── Business Logic (app/lib/)
+    └── Prisma (data access)
+```
+
+**✅ Pros:** Simple, todo en un repo, deploy único
+**❌ Contras:** Dificulta app móvil futura, escalabilidad limitada
 
 ---
 
-### Sprint 5: Testing & Refinamiento (2-3 días)
+**Opción B: Backend Separado (recomendado si múltiples frontends)**
+```
+Frontend (Next.js)          Backend API (NestJS/Fastify)
+     │                              │
+     └──── REST/GraphQL ────────────┤
+                                    ├── Service Layer
+                                    └── Prisma (PostgreSQL)
+```
 
-#### 5.1 Testing E2E
-**Tareas:**
-- [ ] Instalar Playwright o Cypress
-- [ ] Crear tests E2E para flujos principales:
-  - [ ] Registro de candidato
-  - [ ] Registro de empresa + crear job
-  - [ ] Matching y aceptación de match
-  - [ ] Revocación de consentimiento
-- [ ] Probar en diferentes navegadores
+**✅ Pros:** Múltiples frontends (web, móvil, widget), escalable
+**❌ Contras:** Más complejo, dos deploys, CORS
 
-#### 5.2 Performance & UX
-**Tareas:**
-- [ ] Agregar loading skeletons
-- [ ] Optimizar consultas repetidas con cache
-- [ ] Implementar optimistic updates
-- [ ] Agregar toast notifications
-- [ ] Mejorar responsive design
-- [ ] Accessibility audit (a11y)
-
-#### 5.3 Documentation
-**Tareas:**
-- [ ] Documentar API endpoints (Swagger/OpenAPI)
-- [ ] Crear guía de desarrollo para nuevos devs
-- [ ] Documentar data models
-- [ ] Crear changelog
+**Decisión pendiente:** Responder pregunta #7 del ROADMAP (múltiples frontends)
 
 ---
 
-## 🛠️ Stack Tecnológico Confirmado
+#### 2.2 Extraer Business Logic a Service Layer
 
-### Frontend
-- ✅ **Framework:** Next.js 15.3.8 (App Router + Turbopack)
-- ✅ **React:** 19.0.0
-- 🔜 **Auth:** NextAuth.js v5 (Auth.js)
-- 🔜 **Forms:** React Hook Form + Zod
-- 🔜 **State:** React Context + SWR (para cache)
-- ✅ **Styling:** CSS Modules (light theme ya implementado)
+**Independiente de la decisión A vs B, necesitamos esto:**
 
-### Backend
-- ✅ **Runtime:** Node.js (Next.js API Routes)
-- ✅ **Storage:** JSON files + fs/promises
-- ✅ **Validation:** Custom (ya implementado en módulos)
-- 🔜 **Email:** Resend o SendGrid (para magic links)
+```
+app/lib/
+├── services/              # NEW - Business logic puro
+│   ├── matching.service.ts
+│   ├── consent.service.ts
+│   ├── profiles.service.ts
+│   └── notifications.service.ts
+├── repositories/          # NEW - Data access layer
+│   ├── individual.repository.ts
+│   ├── company.repository.ts
+│   └── therapist.repository.ts
+├── schemas/              # Validación Zod
+│   └── schemas.ts
+└── utils/               # Utilidades compartidas
+    └── utils.ts
+```
 
-### Testing
-- ✅ **Unit:** Vitest + Testing Library
-- 🔜 **E2E:** Playwright o Cypress
-- 🔜 **API:** Supertest o fetch tests
+**Tareas:**
+- [ ] Crear `services/` directory
+- [ ] Crear `repositories/` directory
+- [ ] Extraer lógica de `matching.js` → `matching.service.ts`
+- [ ] Extraer queries de Prisma → `repositories/`
+- [ ] Refactorizar API routes para usar services
 
-### DevOps
-- ✅ **Hosting:** Vercel (frontend + API routes)
-- 🔜 **Backups:** S3 o Backblaze (rsync diario)
-- 🔜 **Monitoring:** Vercel Analytics + Sentry (opcional)
-- 🔜 **CI/CD:** GitHub Actions (tests + deploy)
+**Beneficio:** Lógica testeable sin depender de HTTP/framework
 
 ---
 
-## 📊 Métricas de Éxito
+### Sprint 3: LLM Integration & Compliance (1-2 semanas)
+
+#### 3.1 Migración Gemma 2B → Gemini API
+
+**Estado actual:**
+- ✅ Cliente Ollama creado (`app/lib/llm.js`)
+- ❌ Gemma 2B self-hosted en Docker
+- ❌ Chat API usa pattern matching (no LLM real)
+
+**Propuesta: Migrar a Gemini 1.5 Pro API**
+
+**Razones:**
+1. **Mejor modelo:** Gemini 1.5 Pro > Gemma 2B para evaluaciones complejas
+2. **Sin infraestructura:** No VPS, no Docker, no mantenimiento
+3. **Contexto largo:** 1M tokens (perfecto para análisis de perfiles)
+4. **Multimodal:** Puede analizar CVs en PDF/imagen
+5. **Español nativo:** Mejor que Gemma 2B
+6. **Gemini/GEMINI.md abierto** (veo que tienes `.gemini/GEMINI.md`)
+
+**Migración:**
+```diff
+- const response = await fetch('http://localhost:11434/api/generate', {
+-   model: 'gemma:2b',
+-   prompt: userInput
+- });
+
++ import { GoogleGenerativeAI } from '@google/generative-ai';
++ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
++ const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
++ const result = await model.generateContent(userInput);
+```
+
+**Tareas:**
+- [ ] Instalar `@google/generative-ai`
+- [ ] Configurar `GEMINI_API_KEY` en `.env`
+- [ ] Migrar `app/lib/llm.js` → `llm.service.ts`
+- [ ] Implementar prompts para:
+  - [ ] Evaluación de candidatos
+  - [ ] Matching explanations (AI justification)
+  - [ ] Análisis de inclusividad de job postings
+  - [ ] Suggestions en tiempo real
+- [ ] Agregar rate limiting para API calls
+- [ ] Implementar cache para queries repetidas
+
+**Estimación:** 2-3 horas
+
+---
+
+#### 3.2 GDPR Compliance Completo
+
+**Estado actual:** Parcial (~70%)
+
+**Pendiente:**
+- [ ] **Data Retention Policy:** Definir cuánto tiempo guardar datos
+- [ ] **Right to be Forgotten:** Implementar eliminación completa
+- [ ] **Data Portability:** Export en formato estándar (JSON/CSV)
+- [ ] **Consent Management:** UI clara para ver/revocar todos los consentimientos
+- [ ] **Privacy Policy:** Documento legal completo
+- [ ] **Cookie Banner:** Si usamos cookies (analytics)
+- [ ] **DPO Contact:** Designar Data Protection Officer (puede ser externo)
+
+**Tareas:**
+- [ ] Implementar "Download my data" (ZIP con todos los datos del usuario)
+- [ ] Implementar "Delete account" con confirmación y eliminación en cascada
+- [ ] Crear dashboard de consentimientos activos
+- [ ] Documentar data retention en Privacy Policy
+- [ ] Agregar logs de todas las operaciones GDPR
+
+---
+
+#### 3.3 Leyes LATAM (Pendiente de países prioritarios)
+
+**México (LFPDPPP):**
+- Similar a GDPR
+- Requiere aviso de privacidad en español
+- Consentimiento explícito para datos sensibles
+
+**Argentina (PDPA):**
+- Una de las más estrictas de LATAM
+- Requiere inscripción en registro de bases de datos
+- Transfer internacional de datos necesita autorización
+
+**Colombia (Ley 1581):**
+- Autorización previa para recolección
+- Derecho de habeas data
+- Registro de bases de datos
+
+**Chile (Ley 19.628):**
+- Regulación de datos sensibles
+- Consentimiento expreso
+
+**Tareas (después de definir países):**
+- [ ] Crear términos de servicio por país
+- [ ] Implementar data localization si es requerida
+- [ ] Consultar con abogado local en cada país prioritario
+
+---
+
+### Sprint 4: Testing, Seguridad y Deploy (1-2 semanas)
+
+#### 4.1 Auditoría de Seguridad (OWASP Top 10)
+
+**Tareas:**
+- [ ] **Injection:** Verificar que Prisma previene SQL injection
+- [ ] **Broken Auth:** Audit de NextAuth/Auth0 config
+- [ ] **Sensitive Data Exposure:** Verificar encriptación AES-256-GCM
+- [ ] **XML External Entities:** N/A (no usamos XML)
+- [ ] **Broken Access Control:** Audit de permisos en cada endpoint
+- [ ] **Security Misconfiguration:** Review de headers, CORS, etc.
+- [ ] **XSS:** Verificar sanitización (DOMPurify ya implementado)
+- [ ] **Insecure Deserialization:** Validar inputs con Zod
+- [ ] **Using Components with Known Vulnerabilities:** Dependabot activo
+- [ ] **Insufficient Logging:** Agregar logs de seguridad
+
+**Herramientas:**
+- [ ] Snyk scan
+- [ ] npm audit fix
+- [ ] OWASP ZAP scan
+- [ ] Penetration testing (contratar si hay presupuesto)
+
+---
+
+#### 4.2 Tests E2E (Playwright)
+
+**Flujos críticos a testear:**
+1. Registro de candidato completo
+2. Registro de empresa + crear job
+3. Matching automático
+4. Aceptación de match (consent flow)
+5. Revocación de consentimiento
+6. Dashboard de candidato
+7. Pipeline de empresa
+8. Download my data (GDPR)
+9. Delete account
+
+**Tareas:**
+- [ ] Instalar Playwright
+- [ ] Crear `tests/e2e/` directory
+- [ ] Implementar tests por flujo
+- [ ] Agregar screenshots en failures
+- [ ] Integrar en CI/CD
+
+---
+
+#### 4.3 Deployment
+
+**Opciones:**
+
+**Frontend + API Routes (Next.js):**
+- ✅ **Vercel** (recomendado): Deploy automático, Edge Functions, Analytics
+- ❌ Render, Railway, Fly.io
+
+**PostgreSQL:**
+- ✅ **VPS actual** (Dockploy-Compose) - ya disponible
+- Alternativa: Neon, Supabase, Railway (managed)
+
+**Backups:**
+- ✅ **Automated daily** a S3/Backblaze
+- ✅ **Point-in-time recovery** (PITR) con PostgreSQL WAL
+
+**Tareas:**
+- [ ] Setup Vercel project
+- [ ] Configurar variables de entorno en Vercel
+- [ ] Conectar PostgreSQL desde Vercel (IP whitelist)
+- [ ] Setup backup automático (cron en VPS → S3)
+- [ ] Configurar dominio custom
+- [ ] Setup monitoring (Vercel Analytics + Sentry)
+
+---
+
+## 🔄 Decisiones Técnicas Pendientes
+
+### ¿Mantener o Cambiar?
+
+| Tecnología | Estado Actual | Propuesta | Decisión |
+|-----------|---------------|-----------|----------|
+| **Next.js 15** | ✅ Funcionando | 🟡 Evaluar separación | ⏳ Pendiente respuesta |
+| **PostgreSQL** | 🔴 No migrado | ✅ Migrar YA | ✅ **APROBADO** |
+| **Prisma** | ✅ Schema diseñado | ✅ Usar | ✅ **APROBADO** |
+| **NextAuth v5** | ✅ Implementado | 🟡 Evaluar Auth0/Clerk | ⏳ Pendiente |
+| **JSON Storage** | 🔴 Actual | ❌ ELIMINAR | ✅ **ELIMINAR** |
+| **Gemma 2B** | 🟡 Cliente creado | ✅ Gemini API | 🟢 **RECOMENDADO** |
+| **Vitest** | ✅ Configurado | ✅ Mantener | ✅ **APROBADO** |
+| **jsdom** | ✅ Actual | 🟢 Cambiar a happy-dom | 🟢 Opcional |
+
+---
+
+## 📊 Métricas de Éxito (Actualizadas)
 
 ### Técnicas
-- [ ] 100% de endpoints API implementados y documentados
-- [ ] >80% de cobertura de tests en módulos críticos
-- [ ] <2s tiempo de carga de dashboards
-- [ ] Lighthouse score >90 (Performance, Accessibility)
+- [ ] **100% PostgreSQL:** Migración completa, 0 archivos JSON
+- [ ] **>80% TypeScript:** Mayoría del código en `.ts/.tsx`
+- [ ] **Build time <90s:** Optimización de compilación
+- [ ] **>85% test coverage:** En módulos críticos (matching, consent, profiles)
+- [ ] **Lighthouse score >90:** Performance, Accessibility, Best Practices, SEO
+- [ ] **0 vulnerabilities high/critical:** Dependabot resuelto
 
-### Producto
-- [ ] Usuario puede registrarse y completar perfil en <5 minutos
-- [ ] Matching funciona automáticamente al completar assessment
-- [ ] Empresa puede crear job y recibir matches en <3 clicks
-- [ ] Usuario puede revocar consentimiento en <2 clicks
-- [ ] Audit log visible y descargable (GDPR)
+### Compliance
+- [ ] **GDPR completo:** Todos los derechos implementados
+- [ ] **Audit logs 100%:** Todas las operaciones sensibles loggeadas
+- [ ] **Data encryption at rest:** AES-256-GCM verificado
+- [ ] **Backup automatizado:** Daily backups + restore tested
+- [ ] **Privacy Policy publicada:** Revisada por abogado
+
+### Negocio
+- [ ] **Modelo de revenue definido:** Pricing claro
+- [ ] **Go-to-market ready:** Landing + onboarding completo
+- [ ] **Beta testers ready:** 5-10 empresas + 20-50 candidatos
+- [ ] **Investment pitch ready:** Deck + demo + métricas
 
 ---
 
-## 🚨 Riesgos & Mitigaciones
+## 🚨 Riesgos Actualizados
 
-### Riesgo 1: Escalabilidad del File Storage
-**Impacto:** Performance degrada con >500 usuarios
+### Riesgo 1: Delay en Migración PostgreSQL 🔴
+**Impacto:** Bloquea todo desarrollo posterior
+**Probabilidad:** Media (complejidad técnica)
 **Mitigación:**
-- Implementar índices en memoria (Map de userId → file path)
-- Agregar cache con SWR o React Query
-- Monitorear tamaño de data/ directory
-- Plan de migración a SQLite cuando se alcance límite
+- Priorizar sobre todo lo demás
+- Migrar módulo por módulo (no todo de golpe)
+- Mantener tests pasando en cada paso
+- Backup de JSONs antes de eliminar
 
-### Riesgo 2: Concurrencia en Escrituras
-**Impacto:** Race conditions con múltiples writes simultáneos
+### Riesgo 2: Indefinición de Arquitectura 🟡
+**Impacto:** Retrabajos si se decide separar backend después
+**Probabilidad:** Alta (decisión estratégica pendiente)
 **Mitigación:**
-- Ya implementado: atomic writes (temp + rename)
-- Considerar locks a nivel de archivo si es necesario
-- Limitar concurrencia con rate limiting
+- Responder preguntas del ROADMAP esta semana
+- Consultoría con experto si es necesario
+- Separar service layer ahora (funciona en ambos escenarios)
 
-### Riesgo 3: Backup & Disaster Recovery
-**Impacto:** Pérdida de datos sin backups
+### Riesgo 3: Compliance LATAM sin Legal 🟡
+**Impacto:** Riesgo legal al lanzar en países sin asesoría
+**Probabilidad:** Alta (leyes complejas y diferentes por país)
 **Mitigación:**
-- Implementar backup diario a S3/Backblaze
-- Versionar archivos JSON con timestamps
-- Probar restore process
+- Contratar abogado especializado en data privacy LATAM
+- Empezar solo en España (GDPR conocido)
+- Expandir a LATAM después de validar modelo de negocio
+
+### Riesgo 4: Burnout del Desarrollador 🟢
+**Impacto:** Retrasos, calidad de código
+**Probabilidad:** Media (mucho trabajo por hacer)
+**Mitigación:**
+- Priorizar ruthlessly (no todo es urgente)
+- Usar managed services (menos DevOps overhead)
+- Contratar ayuda si hay presupuesto
 
 ---
 
-## 🎯 Priorización Recomendada
+## 🎯 Priorización Final (Orden de Ejecución)
 
-### Semana 1: Foundation (CRÍTICO)
-1. ✅ API Routes básicas (individuals, companies)
-2. ✅ NextAuth.js setup
-3. ✅ Dashboard Individual básico
-4. ✅ Registro Individual
+### 🔥 ESTA SEMANA (11-17 Feb 2026)
+1. **Responder preguntas del ROADMAP** (negocio, compliance, arquitectura)
+2. **Setup PostgreSQL local** (Docker en VPS)
+3. **Migrar `individuals.js` → Prisma** (proof of concept)
+4. **Verificar tests** (debe seguir pasando)
 
-### Semana 2: Core Features (ALTA)
-5. ✅ Dashboard Company
-6. ✅ Matching integration
-7. ✅ Consent flows (accept/reject/revoke)
-8. ✅ Registro Company
+### 📅 PRÓXIMAS 2 SEMANAS (18 Feb - 3 Mar)
+1. **Completar migración PostgreSQL** (todos los módulos)
+2. **Eliminar JSON storage** (backup final)
+3. **Setup CI/CD básico** (GitHub Actions)
+4. **Migrar 3-5 archivos a TypeScript** (empezar lento)
 
-### Semana 3: Polish & Launch (MEDIA)
-9. ✅ Audit Log UI
-10. ✅ GDPR features
-11. ✅ Testing E2E
-12. ✅ Performance optimization
+### 📅 MES 1 (4 Mar - 31 Mar)
+1. **Separar service layer** (arquitectura limpia)
+2. **Migrar Gemma → Gemini API** (LLM production-ready)
+3. **GDPR compliance completo** (download data, delete account)
+4. **Tests E2E críticos** (registro, matching, consent)
 
----
+### 📅 MES 2-3 (Abr-May)
+1. **Definir y ejecutar arquitectura objetivo** (monolito vs. separado)
+2. **Completar migración TypeScript** (>80%)
+3. **Auditoría de seguridad** (OWASP Top 10)
+4. **Deploy a producción** (Vercel + PostgreSQL)
 
-## 📝 Notas Técnicas
-
-### Next.js API Routes Best Practices
-- Usar `NextResponse` para respuestas consistentes
-- Implementar error handling con try/catch
-- Validar inputs con Zod antes de llamar módulos
-- Agregar rate limiting con `@upstash/ratelimit` (opcional)
-- Logging con `pino` o similar
-
-### Security Considerations
-- ✅ Validar permisos en cada endpoint
-- ✅ Sanitizar inputs (ya implementado en utils)
-- ✅ Proteger rutas con NextAuth middleware
-- 🔜 Implementar CORS headers correctos
-- 🔜 Agregar CSRF protection
-- 🔜 Rate limiting para prevenir abuse
-
-### Performance Optimizations
-- Usar `revalidate` en fetch calls para cache
-- Implementar pagination en listas largas
-- Lazy load de componentes pesados
-- Optimizar bundle size con dynamic imports
-- Comprimir responses con gzip/brotli
+### 📅 MES 4-6 (Jun-Ago)
+1. **Beta con usuarios reales** (5-10 empresas)
+2. **Iteración según feedback**
+3. **Compliance LATAM** (países prioritarios)
+4. **Fundraising** (si es necesario)
 
 ---
 
-## 🎉 Conclusión
+## 📝 Notas de Sesión
 
-**Tiempo total estimado:** 2-3 semanas
-**Esfuerzo:** 1 desarrollador full-time
+### 10 Feb 2026 - Sesión de Consultoría Estratégica
 
-**Al completar estos pasos tendremos:**
-- ✅ MVP funcional completo del marketplace
-- ✅ UI integrada con backend
-- ✅ Auth funcional
-- ✅ GDPR compliance
-- ✅ Tests E2E
-- ✅ Listo para usuarios reales
+**Participantes:** Josep (Founder/Dev) + Claude Sonnet 4.5 (Consultor Técnico)
 
-**Siguiente acción inmediata:** Empezar con Sprint 1.1 - Crear estructura de API routes
+**Trabajos realizados:**
+- ✅ Auditoría exhaustiva del proyecto
+- ✅ Limpieza de 76 archivos temporales
+- ✅ Corrección de errores de build
+- ✅ Build exitoso verificado
+- ✅ Creación de ROADMAP.md con framework de consultoría
+- ✅ Identificación de 5 bloqueadores críticos
+
+**Decisiones tomadas:**
+- ✅ Migración JSON → PostgreSQL es prioridad #1 absoluta
+- ✅ Mantener PostgreSQL + Prisma (confirmado)
+- ✅ TypeScript migration progresiva (archivo por archivo)
+- 🟢 Recomendar Gemini API sobre Gemma 2B
+
+**Preguntas abiertas para próxima sesión:**
+- Modelo de monetización específico
+- Países LATAM prioritarios
+- Nivel de almacenamiento de datos médicos (diagnósticos explícitos o solo perfiles)
+- Capacidad DevOps del equipo
+- Proyección de usuarios 12 meses
+- Estado de inversión ($400K)
+- Necesidad de múltiples frontends (móvil, widget)
 
 ---
 
-**Creado:** 2026-01-13
-**Versión:** v0.4.0
-**Próxima revisión:** Después de Sprint 1
+## 🔗 Referencias
+
+- **[ROADMAP.md](../ROADMAP.md)** - Framework de consultoría estratégica (5 fases)
+- **[docs/AUDITORIA_PROYECTO_2026-02-10.md](AUDITORIA_PROYECTO_2026-02-10.md)** - Estado completo del proyecto
+- **[DOCUMENTACION_PROYECTO.md](../DOCUMENTACION_PROYECTO.md)** - Documentación técnica detallada
+- **[SECURITY_IMPLEMENTATION.md](../SECURITY_IMPLEMENTATION.md)** - Sistema de seguridad
+- **[prisma/schema.prisma](../prisma/schema.prisma)** - Schema de base de datos (listo para migrar)
+- **[TODO.md](../TODO.md)** - Features pendientes (OpenAI integration)
+- **[CRITICAL_ISSUES.md](../CRITICAL_ISSUES.md)** - Issues de seguridad (mayoría resueltos)
+
+---
+
+## 🎉 Próxima Acción Inmediata
+
+**MAÑANA (11 Feb):**
+1. ☕ Responder las 14 preguntas del ROADMAP (30-45 min)
+2. 🐘 Setup PostgreSQL en VPS (Dockploy-Compose)
+3. 🔧 Ejecutar `npx prisma migrate dev --name init`
+4. 📝 Migrar primer módulo (`individuals.js` → usar Prisma)
+
+**Meta de la semana:** Tener PostgreSQL funcionando con al menos 1 módulo migrado
+
+---
+
+**Creado:** 13 de enero de 2026
+**Última revisión:** 10 de febrero de 2026
+**Próxima revisión:** Después de responder preguntas del ROADMAP
+**Versión:** v1.1.0 (post-consultoría)

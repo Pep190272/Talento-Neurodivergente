@@ -566,3 +566,7 @@ export async function invalidateMatchesForCandidate(candidateId) {
     }
   }
 }
+
+// Alias exports for API route compatibility
+export { getMatchesByCandidateId as findMatchesForCandidate }
+export { getMatchesByJobId as findMatchesForJob }
