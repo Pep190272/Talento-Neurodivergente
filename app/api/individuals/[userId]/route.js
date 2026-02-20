@@ -18,19 +18,14 @@ import {
   deleteUserAccount
 } from '@/lib/individuals'
 import { logDataAccess } from '@/lib/audit'
-import { getConnectionsForUser } from '@/lib/storage'
+import { getActiveConnection as findActiveConnectionFromConsent } from '@/lib/consent'
 
 /**
  * Helper: Buscar connection activa entre company y candidate
+ * Migrado: storage.js → consent.ts (Prisma query indexada)
  */
 async function findActiveConnection(companyId, candidateId) {
-  const connections = await getConnectionsForUser(candidateId)
-
-  return connections.find(conn =>
-    conn.companyId === companyId &&
-    conn.candidateId === candidateId &&
-    conn.status === 'active'
-  ) || null
+  return await findActiveConnectionFromConsent(candidateId, companyId)
 }
 
 /**
