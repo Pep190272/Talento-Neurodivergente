@@ -30,7 +30,7 @@ import {
 } from './storage.js'
 
 import { getVisibleIndividuals } from './individuals'
-import { getJobPosting, getAllOpenJobs } from './companies.js'
+import { getJobPosting, getAllOpenJobs } from './companies'
 
 // Matching configuration
 const MATCH_THRESHOLD = 60 // Minimum score to create match

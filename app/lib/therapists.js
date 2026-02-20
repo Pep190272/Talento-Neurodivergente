@@ -433,7 +433,7 @@ export async function getTherapistClients(therapistId) {
   )
 
   // Get company clients
-  const { getCompany } = await import('./companies.js')
+  const { getCompany } = await import('./companies')
   const companyClients = await Promise.all(
     therapist.companyPartners.map(async (companyId) => {
       const company = await getCompany(companyId)
@@ -663,7 +663,7 @@ export async function getCompanyMetricsForTherapist(therapistId, companyId) {
     throw new Error('Access denied: No consulting relationship with company')
   }
 
-  const { getCompany } = await import('./companies.js')
+  const { getCompany } = await import('./companies')
   const company = await getCompany(companyId)
 
   if (!company) {
@@ -734,7 +734,7 @@ export async function requestTherapistForOnboarding(companyId, therapistId) {
     throw new Error('Therapist not found')
   }
 
-  const { getCompany } = await import('./companies.js')
+  const { getCompany } = await import('./companies')
   const company = await getCompany(companyId)
 
   if (!company) {

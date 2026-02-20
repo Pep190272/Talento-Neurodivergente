@@ -17,7 +17,7 @@ import {
   getCompany,
   getCompanyJobs,
   getCandidateDataForCompany
-} from './companies.js'
+} from './companies'
 
 import {
   getTherapist,
@@ -293,7 +293,7 @@ export async function getTherapistDashboard(therapistId) {
  * @returns {object} - Matches with privacy-filtered candidate data
  */
 export async function getMatchesForCompany(companyId, jobId) {
-  const job = await import('./companies.js').then(m => m.getJobPosting(jobId))
+  const job = await import('./companies').then(m => m.getJobPosting(jobId))
 
   if (!job || job.companyId !== companyId) {
     throw new Error('Job not found or unauthorized')
@@ -381,7 +381,7 @@ export async function getConnectionForCompany(companyId, connectionId) {
  * @returns {object} - Pipeline with candidates at each stage
  */
 export async function getCompanyPipeline(companyId, jobId) {
-  const job = await import('./companies.js').then(m => m.getJobPosting(jobId))
+  const job = await import('./companies').then(m => m.getJobPosting(jobId))
 
   if (!job || job.companyId !== companyId) {
     throw new Error('Job not found or unauthorized')

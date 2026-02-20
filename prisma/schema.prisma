@@ -157,15 +157,25 @@ model Company {
   website          String?
   description      String?
 
+  // Contacto y compromiso D&I
+  contact                Json?    // {email, phone, address}
+  diversityCommitment    String?  // Declaración compromiso diversidad
+  neurodiversityPrograms Json     @default("[]") // [{name, description, type}]
+
   // SaaS Billing (Stripe)
   subscriptionPlan String   @default("free") // free | basic | pro
   stripeCustomerId String?  @unique
+
+  // Metadata de engagement
+  metadata         Json     @default("{\"lastLogin\":null,\"jobsPosted\":0,\"candidatesHired\":0,\"averageTimeToHire\":null}")
 
   jobs             Job[]
   connections      Connection[]
 
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+
+  @@index([name])
 }
 
 model Therapist {
@@ -201,6 +211,12 @@ model Job {
   salaryRange         String?
   workMode            String    @default("remote")
   visibility          String    @default("public")
+
+  // Detalles adicionales de la oferta
+  location            String?
+  benefits            Json      @default("[]") // [{name, value}]
+  teamSize            String?
+  reportingStructure  String?
 
   // Análisis LLM de inclusividad (Gemma 2B / Ollama)
   inclusivityScore    Int?

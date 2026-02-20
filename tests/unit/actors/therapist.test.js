@@ -138,6 +138,57 @@ vi.mock('@/lib/individuals', () => {
   }
 })
 
+// companies.ts now uses Prisma — mock it so therapist tests don't need a real DB
+vi.mock('@/lib/companies', () => {
+  const makeCompany = (data) => {
+    const companyId = `comp_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
+    return {
+      companyId,
+      userId: companyId,
+      email: data.email || 'company@example.com',
+      name: data.name || 'Test Company',
+      userType: 'company',
+      status: 'active',
+      industry: data.industry || null,
+      size: data.size || null,
+      location: data.location || null,
+      website: data.website || null,
+      description: data.description || '',
+      contact: data.contact || null,
+      jobs: [],
+      metadata: { lastLogin: null, jobsPosted: 0, candidatesHired: 0, averageTimeToHire: null },
+      redirectTo: '/dashboard/company',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+  }
+
+  return {
+    createCompany: vi.fn().mockImplementation(async (data) => makeCompany(data)),
+    getCompany: vi.fn().mockImplementation(async (companyId) => ({
+      ...makeCompany({}),
+      companyId,
+      userId: companyId,
+    })),
+    getCompanyById: vi.fn().mockImplementation(async (companyId) => ({
+      ...makeCompany({}),
+      companyId,
+      userId: companyId,
+    })),
+    updateCompany: vi.fn().mockResolvedValue({}),
+    createJobPosting: vi.fn().mockResolvedValue({ jobId: `job_${Date.now()}`, status: 'active' }),
+    getJobPosting: vi.fn().mockResolvedValue(null),
+    getJobById: vi.fn().mockResolvedValue(null),
+    getCompanyJobs: vi.fn().mockResolvedValue([]),
+    getAllOpenJobs: vi.fn().mockResolvedValue([]),
+    analyzeJobInclusivity: vi.fn().mockResolvedValue({ score: 80, hasDiscriminatoryLanguage: false, issues: [], suggestions: [], llmPowered: false }),
+    getMatchesForCompany: vi.fn().mockResolvedValue([]),
+    getCandidateDataForCompany: vi.fn().mockResolvedValue({}),
+    getCompanyPipeline: vi.fn().mockResolvedValue({}),
+    updatePipelineStage: vi.fn().mockResolvedValue({}),
+  }
+})
+
 describe('UC-008: Therapist Registration', () => {
   let mockTherapistData
 
