@@ -29,8 +29,8 @@ import {
   findAll
 } from './storage.js'
 
-import { getVisibleIndividuals } from './individuals.js'
-import { getJobPosting, getAllOpenJobs } from './companies.js'
+import { getVisibleIndividuals } from './individuals'
+import { getJobPosting, getAllOpenJobs } from './companies'
 
 // Matching configuration
 const MATCH_THRESHOLD = 60 // Minimum score to create match
@@ -50,7 +50,7 @@ const WEIGHTS = {
  * @returns {object} - Match object with score and breakdown
  */
 export async function calculateMatch(candidateId, jobId) {
-  const { getIndividualProfile } = await import('./individuals.js')
+  const { getIndividualProfile } = await import('./individuals')
   const candidate = await getIndividualProfile(candidateId)
   const job = await getJobPosting(jobId)
 
@@ -397,7 +397,7 @@ export async function runMatchingForJob(jobId) {
  * @returns {Array<object>} - Array of created matches (score >= threshold)
  */
 export async function runMatchingForCandidate(candidateId) {
-  const { getIndividualProfile } = await import('./individuals.js')
+  const { getIndividualProfile } = await import('./individuals')
   const candidate = await getIndividualProfile(candidateId)
 
   if (!candidate || !candidate.assessment.completed) {

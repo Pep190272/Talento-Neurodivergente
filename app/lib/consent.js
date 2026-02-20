@@ -21,8 +21,8 @@ import {
 } from './storage.js'
 
 import { getMatchById } from './matching.js'
-import { getIndividualProfile } from './individuals.js'
-import { getCompany, getJobPosting } from './companies.js'
+import { getIndividualProfile } from './individuals'
+import { getCompany, getJobPosting } from './companies'
 
 /**
  * Accept a match and create connection with consent

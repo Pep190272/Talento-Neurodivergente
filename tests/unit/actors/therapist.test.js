@@ -7,7 +7,7 @@
  * PRIORIDAD: MUST
  */
 
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect, beforeEach, vi } from 'vitest'
 import {
   createTherapist,
   verifyTherapist,
@@ -30,6 +30,164 @@ import {
 } from '@/lib/consent'
 import { createIndividualProfile } from '@/lib/individuals'
 import { createCompany } from '@/lib/companies'
+
+// individuals.ts now uses Prisma — mock it so therapist tests don't need a real DB
+// These tests are about THERAPIST functionality; individuals are test fixtures only
+vi.mock('@/lib/individuals', () => {
+  // Stateful map so addTherapistToIndividual/removeTherapistFromIndividual
+  // are reflected in subsequent getIndividualProfile calls (needed for changeTherapist test)
+  const therapistMap = new Map() // userId → therapistId
+
+  const makeIndividual = (data) => {
+    const userId = `ind_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
+    const privacy = {
+      visibleInSearch: true,
+      showRealName: true,
+      shareDiagnosis: false,
+      shareTherapistContact: false,
+      shareAssessmentDetails: true,
+      allowTherapistAccess: true, // consent.js checks this field
+      ...(data.privacy || {}),
+    }
+    return {
+      userId,
+      individualId: `indid_${userId}`,
+      email: data.email || 'test@example.com',
+      userType: 'individual',
+      status: 'active',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      lastActive: new Date(),
+      profile: {
+        name: data.profile?.name || 'Test User',
+        location: null,
+        bio: '',
+        diagnoses: data.profile?.diagnoses || [],
+        skills: data.profile?.skills || [],
+        experience: [],
+        education: [],
+        accommodationsNeeded: data.profile?.accommodationsNeeded || [],
+        preferences: data.profile?.preferences || {},
+        therapistId: null,
+        medicalHistory: null,
+      },
+      privacy,
+      assessment: { completed: false, completedAt: null, strengths: [], challenges: [], score: null, technicalSkills: [], softSkills: [], workStyle: {} },
+      metadata: { lastLogin: null, profileViews: 0, matchesReceived: 0, applicationsSubmitted: 0 },
+      matches: { pending: [], accepted: [], rejected: [] },
+      connections: [],
+      validationStatus: 'pending',
+    }
+  }
+
+  const getProfile = async (userId) => ({
+    userId,
+    email: 'test@example.com',
+    status: 'active',
+    profile: {
+      name: 'Test User',
+      skills: [],
+      experience: [],
+      diagnoses: [],
+      accommodationsNeeded: [],
+      preferences: {},
+      location: null,
+      bio: '',
+      therapistId: therapistMap.get(userId) || null, // reflects addTherapistToIndividual calls
+      medicalHistory: null,
+      education: [],
+    },
+    privacy: {
+      visibleInSearch: true,
+      showRealName: true,
+      shareDiagnosis: false,
+      shareTherapistContact: false,
+      shareAssessmentDetails: true,
+      allowTherapistAccess: true, // consent.js checks this
+    },
+    assessment: { completed: false, score: null, strengths: [], challenges: [], technicalSkills: [], softSkills: [], workStyle: {} },
+    metadata: { lastLogin: null, profileViews: 0, matchesReceived: 0, applicationsSubmitted: 0 },
+    matches: { pending: [], accepted: [], rejected: [] },
+    connections: [],
+  })
+
+  return {
+    createIndividualProfile: vi.fn().mockImplementation(async (data) => makeIndividual(data)),
+    getIndividualProfile: vi.fn().mockImplementation(getProfile),
+    getIndividualById: vi.fn().mockImplementation(getProfile),
+    updateIndividualProfile: vi.fn().mockImplementation(async (userId) => getProfile(userId)),
+    updatePrivacySettings: vi.fn().mockResolvedValue({}),
+    completeAssessment: vi.fn().mockResolvedValue({}),
+    deactivateIndividual: vi.fn().mockResolvedValue({}),
+    deleteUserAccount: vi.fn().mockResolvedValue(undefined),
+    getPublicProfile: vi.fn().mockResolvedValue({}),
+    getPublicProfileView: vi.fn().mockReturnValue({}),
+    getProfileForCompany: vi.fn().mockResolvedValue({}),
+    getVisibleIndividuals: vi.fn().mockResolvedValue([]),
+    calculateProfileCompletion: vi.fn().mockResolvedValue({ percentage: 0 }),
+    // Stateful: update therapistMap so getProfile reflects the assignment
+    addTherapistToIndividual: vi.fn().mockImplementation(async (userId, therapistId) => {
+      therapistMap.set(userId, therapistId)
+      return {}
+    }),
+    removeTherapistFromIndividual: vi.fn().mockImplementation(async (userId) => {
+      therapistMap.delete(userId)
+      return {}
+    }),
+    validateIndividualData: vi.fn().mockResolvedValue({ validated: true, suggestions: [], normalized: {} }),
+  }
+})
+
+// companies.ts now uses Prisma — mock it so therapist tests don't need a real DB
+vi.mock('@/lib/companies', () => {
+  const makeCompany = (data) => {
+    const companyId = `comp_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`
+    return {
+      companyId,
+      userId: companyId,
+      email: data.email || 'company@example.com',
+      name: data.name || 'Test Company',
+      userType: 'company',
+      status: 'active',
+      industry: data.industry || null,
+      size: data.size || null,
+      location: data.location || null,
+      website: data.website || null,
+      description: data.description || '',
+      contact: data.contact || null,
+      jobs: [],
+      metadata: { lastLogin: null, jobsPosted: 0, candidatesHired: 0, averageTimeToHire: null },
+      redirectTo: '/dashboard/company',
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    }
+  }
+
+  return {
+    createCompany: vi.fn().mockImplementation(async (data) => makeCompany(data)),
+    getCompany: vi.fn().mockImplementation(async (companyId) => ({
+      ...makeCompany({}),
+      companyId,
+      userId: companyId,
+    })),
+    getCompanyById: vi.fn().mockImplementation(async (companyId) => ({
+      ...makeCompany({}),
+      companyId,
+      userId: companyId,
+    })),
+    updateCompany: vi.fn().mockResolvedValue({}),
+    createJobPosting: vi.fn().mockResolvedValue({ jobId: `job_${Date.now()}`, status: 'active' }),
+    getJobPosting: vi.fn().mockResolvedValue(null),
+    getJobById: vi.fn().mockResolvedValue(null),
+    getCompanyJobs: vi.fn().mockResolvedValue([]),
+    getAllOpenJobs: vi.fn().mockResolvedValue([]),
+    analyzeJobInclusivity: vi.fn().mockResolvedValue({ score: 80, hasDiscriminatoryLanguage: false, issues: [], suggestions: [], llmPowered: false }),
+    getMatchesForCompany: vi.fn().mockResolvedValue([]),
+    getCandidateDataForCompany: vi.fn().mockResolvedValue({}),
+    getCompanyPipeline: vi.fn().mockResolvedValue({}),
+    updatePipelineStage: vi.fn().mockResolvedValue({}),
+  }
+})
 
 describe('UC-008: Therapist Registration', () => {
   let mockTherapistData

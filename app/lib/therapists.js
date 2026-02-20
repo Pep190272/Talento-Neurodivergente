@@ -291,7 +291,7 @@ export async function addClientToTherapist(therapistId, clientId) {
   })
 
   // Also update individual's profile with therapist ID
-  const { addTherapistToIndividual } = await import('./individuals.js')
+  const { addTherapistToIndividual } = await import('./individuals')
   await addTherapistToIndividual(clientId, therapistId)
 
   return updatedTherapist
@@ -314,7 +314,7 @@ export async function removeClientFromTherapist(therapistId, clientId) {
   })
 
   // Also remove therapist from individual's profile
-  const { removeTherapistFromIndividual } = await import('./individuals.js')
+  const { removeTherapistFromIndividual } = await import('./individuals')
   await removeTherapistFromIndividual(clientId)
 
   return updatedTherapist
@@ -376,7 +376,7 @@ export async function getClientDataForTherapist(therapistId, clientId) {
   }
 
   // Get full client profile (therapists have elevated access)
-  const { getIndividualProfile } = await import('./individuals.js')
+  const { getIndividualProfile } = await import('./individuals')
   const client = await getIndividualProfile(clientId)
 
   if (!client) {
@@ -409,7 +409,7 @@ export async function getTherapistClients(therapistId) {
     throw new Error('Therapist not found')
   }
 
-  const { getIndividualProfile } = await import('./individuals.js')
+  const { getIndividualProfile } = await import('./individuals')
 
   // Get individual clients
   const individualClients = await Promise.all(
@@ -433,7 +433,7 @@ export async function getTherapistClients(therapistId) {
   )
 
   // Get company clients
-  const { getCompany } = await import('./companies.js')
+  const { getCompany } = await import('./companies')
   const companyClients = await Promise.all(
     therapist.companyPartners.map(async (companyId) => {
       const company = await getCompany(companyId)
@@ -663,7 +663,7 @@ export async function getCompanyMetricsForTherapist(therapistId, companyId) {
     throw new Error('Access denied: No consulting relationship with company')
   }
 
-  const { getCompany } = await import('./companies.js')
+  const { getCompany } = await import('./companies')
   const company = await getCompany(companyId)
 
   if (!company) {
@@ -734,7 +734,7 @@ export async function requestTherapistForOnboarding(companyId, therapistId) {
     throw new Error('Therapist not found')
   }
 
-  const { getCompany } = await import('./companies.js')
+  const { getCompany } = await import('./companies')
   const company = await getCompany(companyId)
 
   if (!company) {
@@ -787,7 +787,7 @@ export async function checkClientAlerts(therapistId) {
     throw new Error('Therapist not found')
   }
 
-  const { getIndividualProfile } = await import('./individuals.js')
+  const { getIndividualProfile } = await import('./individuals')
 
   const urgentAlerts = []
   const regularAlerts = []
