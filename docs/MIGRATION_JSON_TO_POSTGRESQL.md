@@ -174,7 +174,20 @@ Las 5 migraciones se aplicaron exitosamente:
 ## Pasos Pendientes
 
 1. ~~**Ejecutar migración en PostgreSQL**~~: Completado (2026-02-20)
-2. **Actualizar seed.ts**: Incluir datos de prueba para Therapist expandido, Matching y Connection
+2. ~~**Actualizar seed.ts**~~: Completado (2026-02-20) — 4 users, 2 jobs, 3 matchings, 4 connections, 7 audit logs
 3. **Actualizar tests**: Algunos tests en `tests/unit/actors/therapist.test.js` aún importan funciones del `.js`
 4. **Eliminar archivos `.js` legacy**: Cuando los tests estén actualizados
 5. **Migrar `app/api/forms/route.js`**: Aún usa `fs` directamente para `data/submissions.json`
+
+### Cambios en seed.ts (Paso 2)
+
+- **Fix Prisma 7**: `new PrismaClient()` → `new PrismaClient({ adapter: new PrismaPg({ connectionString }) })`
+- **Fix upsert**: Añadido `include: { company: true }` etc. para obtener IDs de relaciones
+- **Fix config**: Movido `seed` de `package.json` a `prisma.config.ts` (`migrations.seed`)
+- **Datos expandidos**:
+  - Therapist con 4 specializations, 2 certifications, verified status, 2 clients, 1 company partner
+  - 2 candidatos con assessments completos, preferencias, experiencia laboral
+  - 2 job postings con inclusivity analysis
+  - 3 matchings (APPROVED con connection, PENDING, REJECTED con razón privada)
+  - 4 connections (consulting, 2× therapy, job_match en pipeline underReview)
+  - 7 audit logs (login, matching, review, consent, profile_viewed, therapist_access)
