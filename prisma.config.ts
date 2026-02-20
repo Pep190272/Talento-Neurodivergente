@@ -23,4 +23,9 @@ export default defineConfig({
   datasource: {
     url: env('DATABASE_URL'),
   },
+
+  // Seed command — Prisma 7 requires this here (not in package.json)
+  migrations: {
+    seed: 'npx tsx prisma/seed.ts',
+  },
 })
