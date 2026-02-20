@@ -187,10 +187,51 @@ model Therapist {
   specialty     String?
   licenseNumber String?
 
+  // Perfil profesional extendido
+  specializations           String[]               // ["ADHD", "Autism", ...]
+  certifications            Json     @default("[]") // [{title, licenseNumber, issuingBody, expiryDate}]
+  certificationValidation   Json?                   // {validated, checkedAt}
+  additionalDocRequired     Boolean  @default(false)
+  neurodiversityExperience  Int      @default(0)
+  experienceYears           Int      @default(0)
+  approach                  String?                 // "CBT", "Coaching", etc.
+  services                  String[]               // ["individual_therapy", "company_consulting"]
+  languages                 String[] @default(["English"])
+  location                  String?
+  bio                       String?
+  acceptingNewClients       Boolean  @default(true)
+
+  // Clientes y relaciones empresa
+  clients                   String[]               // IDs de individuos asignados
+  companyPartners           String[]               // IDs de empresas partner
+  companyContracts          Json     @default("{}") // {companyId: {serviceType, contractStartDate, addedAt}}
+  pendingRequests           Json     @default("[]") // [{requestId, type, companyId, companyName, ...}]
+
+  // Disponibilidad y capacidad
+  maxClients                Int      @default(20)
+  currentClients            Int      @default(0)
+
+  // Verificación (flujo admin)
+  verificationStatus        String   @default("pending") // pending | verified | rejected
+  verifiedAt                DateTime?
+  verifiedBy                String?
+  verificationNotes         String?
+  rejectionReason           String?
+  rejectedAt                DateTime?
+
+  // Gamificación / onboarding
+  badges                    String[]               // ["new_to_neurodiversity", ...]
+  warnings                  Json     @default("[]") // [{type, message}]
+
+  // Metadata de engagement
+  metadata                  Json     @default("{\"lastLogin\":null,\"sessionsCompleted\":0,\"clientSatisfactionScore\":null,\"averageResponseTime\":null,\"lastSessionDate\":null}")
+
   connections   Connection[]
 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+
+  @@index([verificationStatus])
 }
 
 // ============================================
@@ -239,6 +280,9 @@ model Matching {
   individualId String
   individual   Individual     @relation(fields: [individualId], references: [id], onDelete: Cascade)
 
+  // Referencia a la empresa (desnormalizado para queries rápidas)
+  companyId    String?
+
   // IA Transparency — EU AI Act Art. 13: Información sobre el sistema de IA
   aiScore           Float
   aiFactors         Json    // Desglose: { skills, accommodations, preferences, location }
@@ -261,6 +305,26 @@ model Matching {
   contestResolvedAt DateTime?
   contestResolution String?
 
+  // Expiración del match (7 días por defecto)
+  expiresAt      DateTime?
+  expiredAt      DateTime?
+  acceptedAt     DateTime?
+  rejectedAt     DateTime?
+
+  // Privacidad: razón de rechazo nunca se muestra a la empresa
+  rejectionReason  String?
+  reasonPrivate    Boolean  @default(true)
+
+  // Datos del candidato anonimizados (snapshot pre-consentimiento)
+  candidateData    Json?    // {userId, name (anonymized), skills, accommodationsNeeded, assessmentScore, experience}
+
+  // Referencia a la conexión creada si se acepta
+  connectionId     String?
+
+  // Flags
+  candidateNotified Boolean @default(false)
+  companyCanView    Boolean @default(false)
+
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
 
@@ -268,6 +332,7 @@ model Matching {
   @@index([status])
   @@index([individualId])
   @@index([jobId])
+  @@index([companyId])
 }
 
 enum ConnectionType {
@@ -289,11 +354,31 @@ model Connection {
   therapistId  String?
   therapist    Therapist?    @relation(fields: [therapistId], references: [id], onDelete: Cascade)
 
-  status       String        @default("active")
+  // Referencia al match y job que originó esta conexión
+  matchId      String?
+  jobId        String?
+
+  status       String        @default("active") // active | revoked
   sharedData   String[]      // Campos explícitamente consentidos por el usuario
+
+  // GDPR Art. 7 — Consentimiento granular por conexión
+  customPrivacy Json?        // {showRealName, shareDiagnosis, shareTherapistContact, shareAssessmentDetails}
+  consentGivenAt DateTime?
+  revokedAt      DateTime?
+  revokedReason  String?
+
+  // Pipeline de contratación
+  pipelineStage  String     @default("newMatches") // newMatches|underReview|interviewing|offered|hired|rejected
+
+  // Metadata de interacción
+  metadata       Json       @default("{\"lastInteraction\":null,\"messagesSent\":0,\"lastPrivacyUpdate\":null,\"lastStageUpdate\":null,\"lastDataRevocation\":null}")
 
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
+
+  @@index([individualId])
+  @@index([companyId])
+  @@index([status])
 }
 
 // ============================================

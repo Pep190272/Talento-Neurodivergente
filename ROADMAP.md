@@ -1,306 +1,345 @@
-# 🗺️ ROADMAP — DiversIA Eternals
+# ROADMAP — DiversIA Eternals
 
 **Fecha de inicio:** 10 de febrero de 2026
-**Última actualización:** 10 de febrero de 2026
-**Estado:** Fase de Consultoría Estratégica
+**Ultima actualizacion:** 20 de febrero de 2026
+**Estado:** Sprint 1 en progreso — Fundaciones criticas
 
 ---
 
-## 📋 Índice
+## Indice
 
-1. [Fase de Consultoría Actual](#fase-de-consultoría-actual)
-2. [Preguntas Pendientes](#preguntas-pendientes)
-3. [Decisiones Técnicas Tomadas](#decisiones-técnicas-tomadas)
-4. [Plan de Migración](#plan-de-migración)
-5. [Timeline Estimado](#timeline-estimado)
-
----
-
-## 🎯 FASE DE CONSULTORÍA ACTUAL
-
-### Sesión de Estrategia — 10 Feb 2026
-
-**Objetivo:** Definir arquitectura objetivo, validar stack tecnológico y establecer framework de compliance antes de escalar.
+1. [Progreso Actual](#progreso-actual)
+2. [Sprint 1: Fundaciones Criticas](#sprint-1-fundaciones-criticas)
+3. [Sprint 2: Tests y Limpieza](#sprint-2-tests-y-limpieza)
+4. [Sprint 3: Arquitectura y Capas](#sprint-3-arquitectura-y-capas)
+5. [Sprint 4: LLM y Compliance](#sprint-4-llm-y-compliance)
+6. [Sprint 5: Seguridad y Deploy](#sprint-5-seguridad-y-deploy)
+7. [Decisiones Tecnicas](#decisiones-tecnicas)
+8. [Preguntas Estrategicas Pendientes](#preguntas-estrategicas-pendientes)
+9. [Notas de Sesion](#notas-de-sesion)
 
 ---
 
-## 🎯 FASE 1: MODELO DE NEGOCIO Y GO-TO-MARKET
+## Progreso Actual
 
-### A. Monetización y Actores
+### Completado
 
-**1. ¿Quién paga y cuánto?**
-- [ ] ¿Las empresas pagan subscripción por publicar jobs + acceso a candidatos?
-- [ ] ¿Los individuos acceden gratis o también pagan (freemium)?
-- [ ] ¿Los terapeutas cobran por evaluación/sesión o tienen fee mensual?
-- [ ] ¿Hay comisión por contratación exitosa (placement fee)?
+| Tarea | Fecha | Detalle |
+|-------|-------|---------|
+| Auditoria completa del proyecto | 10 Feb | 76 archivos temp eliminados, build arreglado |
+| Dependabot: Next.js 15.5.9 a 15.5.12 | 20 Feb | CVE-2026-23864 (DoS, CVSS 7.5) parcheado |
+| Migracion JSON a PostgreSQL (codigo) | 20 Feb | 4 modulos: therapists, matching, consent, dashboards |
+| Expansion schema Prisma | 20 Feb | Therapist (3 a 33 cols), Connection (4 a 17), Matching (+consent/expiracion) |
+| prisma migrate deploy | 20 Feb | 5 migraciones aplicadas exitosamente en PostgreSQL 16 |
+| seed.ts actualizado | 20 Feb | 4 users, 2 jobs, 3 matchings, 4 connections, 7 audit logs |
+| Bug fix: dashboards.ts | 20 Feb | `company.profile.name` a `company.name` (campo inexistente) |
+| Bug fix: dashboards.ts audit | 20 Feb | `storage.getAuditLogsForUser()` a `audit.ts` (Prisma) |
+| API route actualizada | 20 Feb | `individuals/[userId]` usa consent.ts en vez de storage.js |
+| prisma.config.ts seed command | 20 Feb | Migrado de package.json (requisito Prisma 7) |
+| PrismaClient adapter fix | 20 Feb | seed.ts usa `@prisma/adapter-pg` (requisito Prisma 7) |
 
-**2. ¿Cuál es tu modelo de revenue principal?**
-- [ ] SaaS (subscripción empresas)
-- [ ] Marketplace (comisión por match/contratación)
-- [ ] Mixto (subscripción + comisión)
-- [ ] Freemium (básico gratis, premium de pago)
+### En Progreso
 
-**3. ¿Quién es tu cliente principal (anchor customer)?**
-- [ ] Empresas grandes (>500 empleados)
-- [ ] Pymes (10-500 empleados)
-- [ ] Startups/tech companies
+| Tarea | Estado | Bloqueante |
+|-------|--------|------------|
+| Actualizar tests para `.ts` | Pendiente | No |
+| Eliminar archivos `.js` legacy | Esperando tests | No |
 
-**Estado:** ⏳ Pendiente de respuesta
+### Estado de Modulos
 
----
-
-## 🌍 FASE 2: COMPLIANCE Y GOBERNANZA DE DATOS
-
-### B. Jurisdicciones y Regulaciones
-
-**4. Lanzamiento España → Expansión LATAM: ¿Qué países priorizas?**
-- [ ] México
-- [ ] Argentina
-- [ ] Colombia
-- [ ] Chile
-- [ ] Otros: ___________
-
-**Impacto:** Define qué leyes específicas debemos cumplir (cada país tiene sus propias leyes de protección de datos)
-
-**5. Datos sensibles que manejas:**
-
-Según el código actual:
-- ✅ Diagnósticos médicos (neurodivergencia)
-- ✅ Datos biométricos (assessment cognitivo)
-- ✅ Datos laborales
-- ✅ Datos de salud mental
-
-**Pregunta crítica:** ¿Necesitas almacenar diagnósticos médicos específicos (ej: "TDAH", "Autismo") o es suficiente con perfiles de fortalezas/accommodations sin diagnosis explícitos?
-
-> 💡 **Recomendación consultora:** Si puedes evitar almacenar diagnósticos explícitos y trabajar solo con "perfiles de fortalezas + accommodations necesarios", reduces dramáticamente el riesgo legal y compliance burden.
-
-**6. ¿Los terapeutas son empleados tuyos o terceros independientes?**
-- [ ] Empleados → más responsabilidad legal sobre sus evaluaciones
-- [ ] Independientes → necesitas términos de servicio + insurance claros
-
-**Estado:** ⏳ Pendiente de respuesta
+| Modulo | Storage | Archivo | Estado |
+|--------|---------|---------|--------|
+| `individuals.ts` | Prisma | Pre-existente | Operativo |
+| `companies.ts` | Prisma | Pre-existente | Operativo |
+| `audit.ts` | Prisma | Pre-existente | Operativo |
+| `therapists.ts` | Prisma | Nuevo (reemplaza `.js`) | Operativo |
+| `matching.ts` | Prisma | Nuevo (reemplaza `.js`) | Operativo |
+| `consent.ts` | Prisma | Nuevo (reemplaza `.js`) | Operativo |
+| `dashboards.ts` | Prisma | Nuevo (reemplaza `.js`) | Operativo |
+| `storage.js` | JSON files | Legacy | Sin consumidores en `app/` |
 
 ---
 
-## 🏗️ FASE 3: ARQUITECTURA Y STACK
+## Sprint 1: Fundaciones Criticas
 
-### C. Separación Core vs. Lógica de Negocio
+**Periodo:** 10-20 Feb 2026
+**Estado:** Casi completo
 
-**Arquitectura Propuesta:**
+### 1.1 Migracion JSON a PostgreSQL — COMPLETADO
+
+- [x] Expansion schema Prisma (Therapist, Connection, Matching)
+- [x] `therapists.js` a `therapists.ts` (Prisma)
+- [x] `matching.js` a `matching.ts` (Prisma)
+- [x] `consent.js` a `consent.ts` (Prisma)
+- [x] `dashboards.js` a `dashboards.ts` (Prisma)
+- [x] API route `individuals/[userId]` actualizada
+- [x] `prisma migrate deploy` ejecutado (5 migraciones)
+- [x] seed.ts expandido y verificado
+
+**Resultado:** 0 consumidores de `storage.js` en `app/`. Todos los modulos de negocio usan PostgreSQL via Prisma.
+
+### 1.2 Seguridad: Dependabot — COMPLETADO
+
+- [x] Next.js 15.5.9 a 15.5.12 (CVE-2026-23864, CVSS 7.5)
+
+### 1.3 Tests: Actualizar para modulos `.ts` — PENDIENTE
+
+- [ ] Actualizar tests en `tests/unit/actors/therapist.test.js` para importar desde `.ts`
+- [ ] Verificar que tests existentes pasan con nuevos modulos
+- [ ] Agregar tests para funcionalidad nueva (consent atomico, matching expandido)
+
+### 1.4 Limpieza: Eliminar archivos legacy — PENDIENTE
+
+- [ ] Eliminar `app/lib/therapists.js`
+- [ ] Eliminar `app/lib/matching.js`
+- [ ] Eliminar `app/lib/consent.js`
+- [ ] Eliminar `app/lib/dashboards.js`
+- [ ] Evaluar eliminacion de `app/lib/storage.js`
+
+### 1.5 Migrar `app/api/forms/route.js` — PENDIENTE
+
+- [ ] Actualmente usa `fs` directo para `data/submissions.json`
+- [ ] Migrar a Prisma o a un modelo dedicado
+
+---
+
+## Sprint 2: Tests y Limpieza
+
+**Periodo:** Semana 3-4 Feb 2026
+**Estado:** No iniciado
+
+### 2.1 Corregir Tests Existentes
+
+**Estado previo:** 155 tests, 4 pasando (3%)
+**Objetivo:** Tests refactorizados para modulos Prisma
+
+- [ ] Configurar mocking de Prisma para tests unitarios
+- [ ] Migrar `tests/unit/actors/therapist.test.js`
+- [ ] Migrar `tests/unit/actors/matching.test.js`
+- [ ] Migrar `tests/unit/actors/consent.test.js`
+- [ ] Migrar `tests/unit/actors/dashboards.test.js`
+- [ ] Verificar que tests de `individuals` y `companies` siguen pasando
+
+### 2.2 Setup CI/CD Basico
+
+- [ ] GitHub Actions workflow: tests + build
+- [ ] Proteccion de branch `main`
+- [ ] Dependabot configurado (ya detecta vulnerabilidades)
+
+### 2.3 Migracion TypeScript Progresiva
+
+**Regla:** "Si editas un `.js`, conviertelo a `.ts` en el mismo commit"
+
+- [ ] API routes mas usadas (matching, individuals, consent)
+- [ ] Componentes React criticos (`.jsx` a `.tsx`)
+- [ ] Objetivo: >80% TypeScript antes de quitar `ignoreBuildErrors`
+
+---
+
+## Sprint 3: Arquitectura y Capas
+
+**Periodo:** Marzo 2026
+**Estado:** No iniciado
+
+### 3.1 Extraer Service Layer
+
+Independiente de la decision monolito vs. microservicios:
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                   FRONTEND (Next.js)                 │
-│  - UI/UX components                                  │
-│  - Client-side logic                                 │
-└─────────────────────┬───────────────────────────────┘
-                      │ REST/GraphQL API
-┌─────────────────────▼───────────────────────────────┐
-│               API GATEWAY (Next.js API)              │
-│  - Authentication                                    │
-│  - Rate limiting                                     │
-│  - Input validation                                  │
-└─────────────────────┬───────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────┐
-│            BUSINESS LOGIC LAYER (Services)           │
-│  - Domain logic (matching, consent, profiles)       │
-│  - Business rules                                    │
-│  - SEPARADO en paquetes/módulos independientes      │
-└─────────────────────┬───────────────────────────────┘
-                      │
-┌─────────────────────▼───────────────────────────────┐
-│              DATA ACCESS LAYER (Prisma)              │
-│  - PostgreSQL                                        │
-│  - Encryption at rest                                │
-└──────────────────────────────────────────────────────┘
+app/lib/
+  services/          # Logica de negocio pura
+    matching.service.ts
+    consent.service.ts
+    profiles.service.ts
+  repositories/      # Data access layer (Prisma)
+    individual.repository.ts
+    company.repository.ts
+    therapist.repository.ts
 ```
 
-**7. ¿Prevés necesitar múltiples frontends a futuro?**
-- [ ] App móvil nativa (iOS/Android)
-- [ ] Dashboard separado para admins/terapeutas
-- [ ] Widget embebible para empresas
+- [ ] Crear `services/` con logica extraida de modulos actuales
+- [ ] Crear `repositories/` con queries Prisma encapsuladas
+- [ ] Refactorizar API routes para usar services
+- [ ] Logica testeable sin depender de HTTP/framework
 
-> **Si SÍ → Deberíamos separar el backend en un monorepo o microservicios desde YA**
+### 3.2 Definir Arquitectura Objetivo
 
-**8. Stack actual — Evaluación:**
+**Pendiente de preguntas estrategicas (ver seccion final)**
 
-| Decisión Actual | Recomendación | Alternativa | Estado |
-|----------------|---------------|-------------|--------|
-| **Next.js 15** | 🟡 Revisar | Separar frontend (Next.js) + backend (NestJS/Fastify) | Pendiente |
-| **PostgreSQL** | ✅ Correcto | (mantener) | ✅ Aprobado |
-| **Prisma ORM** | ✅ Correcto | (mantener) | ✅ Aprobado |
-| **NextAuth v5** | 🟡 Revisar | Auth0 / Clerk (compliance integrado) | Pendiente |
-| **JSON File Storage** | ❌ ELIMINAR | PostgreSQL | 🔴 **Prioridad #1** |
-| **Gemma 2B (self-hosted)** | ❌ Cambiar | Gemini API / Claude API | 🟡 Propuesto |
+**Opcion A: Monolito Next.js (actual)**
+- Simple, todo en un repo, deploy unico
+- Limita app movil futura
 
-**9. ¿Cuál es tu capacidad de DevOps actual?**
-- [ ] Solo tú (dev solo)
-- [ ] Pequeño equipo (2-5 personas)
-- [ ] Equipo grande (>5)
-
-> **Si eres solo tú o equipo pequeño → Managed services > Self-hosting**
-> Ejemplo: Auth0 > self-hosted auth, Gemini API > Ollama self-hosted
-
-**Estado:** ⏳ Pendiente de respuesta
+**Opcion B: Backend separado (NestJS/Fastify)**
+- Multiples frontends (web, movil, widget)
+- Mas complejo, dos deploys
 
 ---
 
-## 🔒 FASE 4: SEGURIDAD Y GOBERNANZA
+## Sprint 4: LLM y Compliance
 
-### D. Threat Model y Attack Surface
+**Periodo:** Marzo-Abril 2026
+**Estado:** No iniciado
 
-**10. ¿Qué es lo MÁS crítico de proteger en tu negocio?**
-(Ordena del 1 al 5, siendo 1 el más crítico)
+### 4.1 Migracion Gemma 2B a API Externa
 
-- [ ] Datos médicos de individuos (diagnósticos, evaluaciones)
-- [ ] Datos empresariales (estrategias de hiring, salarios)
-- [ ] Propiedad intelectual (algoritmo de matching)
-- [ ] Integridad de evaluaciones (evitar fraude en assessments)
-- [ ] Privacidad de terapeutas (credenciales, licencias)
+**Estado actual:** Cliente Ollama creado pero Gemma 2B self-hosted no es viable para produccion.
 
-**11. ¿Necesitas certificaciones formales?**
-- [ ] ISO 27001 (seguridad de información)
-- [ ] SOC 2 Type II (confianza empresas grandes)
-- [ ] HIPAA compliance (si operas en USA)
-- [ ] Certificación ENS (España gobierno)
+- [ ] Evaluar: Gemini API, Claude API, OpenAI API
+- [ ] Migrar `app/lib/llm.js` a `llm.service.ts`
+- [ ] Implementar prompts para: evaluacion de candidatos, matching explanations, analisis de inclusividad
+- [ ] Rate limiting y cache para API calls
 
-> 💡 Si quieres vender a grandes empresas en España → **ENS Alto** puede ser requerido
+### 4.2 GDPR Compliance Completo
 
-**12. Backup y Disaster Recovery:**
-- [ ] RPO (Recovery Point Objective): ¿Tolerancia a pérdida de datos? (ej: "tolero perder máximo 1 hora")
-- [ ] RTO (Recovery Time Objective): ¿Tiempo de recuperación? (ej: "sistema debe volver en <4 horas")
+**Estado actual:** ~70% implementado
 
-**Estado:** ⏳ Pendiente de respuesta
+- [ ] Data Retention Policy (definir periodos)
+- [ ] Right to be Forgotten completo (eliminacion en cascada)
+- [ ] Data Portability (export JSON/CSV)
+- [ ] Consent Management UI (ver/revocar consentimientos)
+- [ ] Privacy Policy (documento legal)
+- [ ] DPO Contact designado
 
 ---
 
-## 📊 FASE 5: ESCALABILIDAD Y ROADMAP
+## Sprint 5: Seguridad y Deploy
 
-### E. Proyección de Crecimiento
+**Periodo:** Abril-Mayo 2026
+**Estado:** No iniciado
 
-**13. ¿Cuántos usuarios esperas en 12 meses?**
-- Individuos: ___
-- Empresas: ___
-- Terapeutas: ___
+### 5.1 Auditoria de Seguridad (OWASP Top 10)
 
-**14. ¿Tienes inversión confirmada o estás buscando?**
-Según la auditoría, existe un "Plan maestro pre-inversión ($400K BA)".
+- [ ] SQL Injection (Prisma previene, verificar raw queries)
+- [ ] Broken Auth (audit NextAuth config)
+- [ ] Sensitive Data Exposure (verificar AES-256-GCM)
+- [ ] Broken Access Control (audit permisos por endpoint)
+- [ ] XSS (DOMPurify ya implementado, verificar cobertura)
+- [ ] Input Validation (Zod en todas las rutas)
 
-- [ ] Ya tienes los $400K
-- [ ] Estás buscando inversión
-- [ ] ¿Qué milestones debes alcanzar para cerrar esa ronda?
+### 5.2 Tests E2E (Playwright)
 
-**Estado:** ⏳ Pendiente de respuesta
+- [ ] Registro de candidato completo
+- [ ] Registro de empresa + crear job
+- [ ] Matching automatico
+- [ ] Aceptacion de match (consent flow)
+- [ ] Revocacion de consentimiento
+- [ ] Dashboard de candidato
+- [ ] Pipeline de empresa
+- [ ] Download my data (GDPR)
 
----
+### 5.3 Deployment
 
-## 🎯 PRÓXIMOS PASOS
-
-Una vez respondidas las preguntas, diseñaremos:
-
-### 1. **Arquitectura Objetivo** (separación clara core/negocio)
-- Definir boundaries entre capas
-- Decidir monolito vs. microservicios
-- Plan de separación frontend/backend
-
-### 2. **Stack Definitivo** (qué mantener, qué cambiar)
-- Validar Next.js vs. backend separado
-- Decidir estrategia de autenticación (NextAuth vs. Auth0/Clerk)
-- Migrar LLM (Gemma 2B → Gemini API)
-
-### 3. **Plan de Migración** (priorizado por riesgo/impacto)
-
-#### Sprint 1: Fundaciones Críticas (1 semana)
-- [ ] Migración JSON → PostgreSQL (Prisma)
-- [ ] Migración .js → .ts (progresiva, empezar por app/lib/)
-- [ ] Setup CI/CD básico (GitHub Actions)
-
-#### Sprint 2: Separación de Capas (2 semanas)
-- [ ] Extraer business logic a service layer independiente
-- [ ] Crear data access layer (repositorios Prisma)
-- [ ] Refactor API routes para usar services
-
-#### Sprint 3: LLM Integration (1 semana)
-- [ ] Migrar de Gemma 2B → Gemini API
-- [ ] Implementar prompts para evaluación de candidatos
-- [ ] Agregar AI explanations al matching
-
-#### Sprint 4: Seguridad y Compliance (2 semanas)
-- [ ] Audit completo de seguridad (OWASP Top 10)
-- [ ] Implementar data retention policies (GDPR)
-- [ ] Agregar audit logs completos
-- [ ] Documentar flujos de consentimiento
-
-### 4. **Compliance Framework** (GDPR + leyes LATAM específicas)
-- Mapear requisitos por jurisdicción
-- Implementar data localization si es necesario
-- Crear términos de servicio y privacy policy
-
-### 5. **Roadmap de Seguridad** (certificaciones, auditorías)
-- Penetration testing
-- Vulnerability scanning automatizado
-- Plan de certificación (ISO 27001 / SOC 2)
+- [ ] Setup Vercel (o alternativa)
+- [ ] Variables de entorno en produccion
+- [ ] PostgreSQL en produccion (VPS actual o managed)
+- [ ] Backup automatizado
+- [ ] Monitoring (Sentry, Vercel Analytics)
 
 ---
 
-## 📅 Timeline Estimado
+## Decisiones Tecnicas
 
-**Fase 1: Fundaciones (Mes 1-2)**
-- Migración PostgreSQL
-- TypeScript migration
-- Separación de capas
+### Tomadas
 
-**Fase 2: Compliance (Mes 2-3)**
-- GDPR compliance completo
-- Leyes LATAM específicas
-- Audit logs y data governance
+| Decision | Resultado | Fecha |
+|----------|-----------|-------|
+| PostgreSQL + Prisma | Aprobado y ejecutado | 10 Feb |
+| JSON a PostgreSQL (migracion) | Completado para todos los modulos | 20 Feb |
+| Next.js 15 (mantener) | Actualizado a 15.5.12 | 20 Feb |
+| Vitest (mantener) | Aprobado | 10 Feb |
+| TypeScript progresivo | En progreso (modulos `.ts` creados) | 20 Feb |
+| JSON columns para datos semi-estructurados | Certifications, metadata, companyContracts como `Json` | 20 Feb |
+| `clients[]` como String array | MVP adecuado, tabla intermedia futura si >100 clientes | 20 Feb |
+| MatchingStatus como enum Prisma | PENDING, APPROVED, REJECTED, WITHDRAWN, CONTESTED | 20 Feb |
+| Connection.status como String | "active", "revoked" — por simplicidad | 20 Feb |
+| Prisma 7 adapter pattern | `@prisma/adapter-pg` en runtime, `env('DATABASE_URL')` en CLI | 20 Feb |
 
-**Fase 3: Escalabilidad (Mes 3-4)**
-- Optimización de queries
-- Caching strategy
-- Load testing
+### Pendientes
 
-**Fase 4: Go-to-Market (Mes 4-6)**
-- Beta con empresas piloto
-- Onboarding de terapeutas
-- Marketing y fundraising
+| Decision | Opciones | Depende de |
+|----------|----------|------------|
+| Monolito vs. backend separado | Next.js monolito / NestJS separado | Multiples frontends? |
+| NextAuth vs. Auth0/Clerk | Mantener NextAuth / Migrar a managed | Compliance, budget |
+| LLM provider | Gemini API / Claude API / OpenAI | Evaluacion, costes |
+| Hosting | Vercel + VPS / Railway / Render | Budget, DevOps capacity |
 
 ---
 
-## 📝 Notas de Sesión
+## Preguntas Estrategicas Pendientes
 
-### Sesión 1 — 10 Feb 2026
+> Estas preguntas fueron planteadas en la sesion del 10 Feb y siguen abiertas.
+> Las respuestas definen la arquitectura objetivo y el go-to-market.
+
+### Modelo de Negocio
+- [ ] Modelo de revenue? (SaaS / Marketplace / Mixto / Freemium)
+- [ ] Quien paga? (Empresas / Individuos / Terapeutas)
+- [ ] Cliente principal? (Grandes empresas / Pymes / Startups)
+
+### Compliance y Jurisdicciones
+- [ ] Paises LATAM prioritarios? (Mexico, Argentina, Colombia, Chile)
+- [ ] Almacenar diagnosticos medicos explicitos o solo perfiles de fortalezas?
+- [ ] Terapeutas empleados o independientes?
+- [ ] Certificaciones necesarias? (ISO 27001, SOC 2, ENS, HIPAA)
+
+### Arquitectura y Escalabilidad
+- [ ] Multiples frontends previstos? (App movil, widget embebible)
+- [ ] Capacidad DevOps? (Solo / Equipo pequeno / Equipo grande)
+- [ ] Proyeccion usuarios 12 meses?
+- [ ] Estado inversion $400K?
+
+---
+
+## Notas de Sesion
+
+### Sesion 1 — 10 Feb 2026
 
 **Trabajos realizados:**
-- ✅ Auditoría completa del proyecto
-- ✅ Limpieza de 76 archivos temporales
-- ✅ Corrección de errores de build (exports faltantes, params await)
-- ✅ Build exitoso verificado
+- Auditoria completa del proyecto
+- Limpieza de 76 archivos temporales
+- Correccion de errores de build (exports faltantes, params await)
+- Build exitoso verificado
+- ROADMAP y framework de consultoria creados
 
-**Decisiones técnicas:**
-- Mantener PostgreSQL + Prisma
-- Migración JSON → PostgreSQL es prioridad #1
-- TypeScript migration progresiva (archivo por archivo)
-- Evaluar migración Gemma 2B → Gemini API
+**Decisiones:**
+- PostgreSQL + Prisma confirmado
+- Migracion JSON a PostgreSQL es prioridad #1
+- TypeScript progresivo (archivo por archivo)
 
-**Preguntas abiertas para próxima sesión:**
-- Modelo de monetización específico
-- Países LATAM a priorizar
-- Nivel de almacenamiento de datos médicos
-- Capacidad DevOps del equipo
-- Proyección de usuarios 12 meses
-- Estado de inversión ($400K)
+### Sesion 2 — 20 Feb 2026
+
+**Trabajos realizados:**
+- Dependabot merge: Next.js 15.5.12 (CVE-2026-23864)
+- Migracion completa JSON a PostgreSQL (4 modulos)
+- Schema Prisma expandido (Therapist, Connection, Matching)
+- 5 migraciones aplicadas en PostgreSQL 16
+- seed.ts reescrito con datos de prueba completos
+- 2 bugs corregidos en dashboards (company.profile.name, audit logs)
+- API route actualizada (storage.js a consent.ts)
+- Documentacion de migracion creada
+
+**Decisiones tecnicas:**
+- JSON columns para datos semi-estructurados (certifications, metadata)
+- `clients[]` como String array en Therapist (adecuado para MVP)
+- MatchingStatus como enum, Connection.status como string
+- `@prisma/adapter-pg` obligatorio en Prisma 7 para runtime
+- Seed command en `prisma.config.ts` (no en package.json)
+
+**Bugs encontrados y corregidos:**
+- `dashboards.js` accedia a `company.profile.name` que no existia (Prisma normaliza como `company.name`)
+- `dashboards.js` llamaba a `storage.getAuditLogsForUser()` pero audit logs se escribian a PostgreSQL via `audit.ts`
+- `seed.ts` usaba `new PrismaClient()` sin adapter (Prisma 7 requiere `@prisma/adapter-pg`)
+- `seed.ts` upsert sin `include` impedia acceder a IDs de relaciones
 
 ---
 
-## 🔗 Referencias
+## Referencias
 
-- [AUDITORIA_PROYECTO_2026-02-10.md](docs/AUDITORIA_PROYECTO_2026-02-10.md) - Auditoría completa del estado actual
-- [DOCUMENTACION_PROYECTO.md](DOCUMENTACION_PROYECTO.md) - Documentación técnica
-- [SECURITY_IMPLEMENTATION.md](SECURITY_IMPLEMENTATION.md) - Sistema de seguridad
-- [prisma/schema.prisma](prisma/schema.prisma) - Schema de base de datos
+- [docs/MIGRATION_JSON_TO_POSTGRESQL.md](docs/MIGRATION_JSON_TO_POSTGRESQL.md) — Detalle tecnico de la migracion
+- [docs/AUDITORIA_PROYECTO_2026-02-10.md](docs/AUDITORIA_PROYECTO_2026-02-10.md) — Auditoria inicial
+- [prisma/schema.prisma](prisma/schema.prisma) — Schema de base de datos
+- [SECURITY_IMPLEMENTATION.md](SECURITY_IMPLEMENTATION.md) — Sistema de seguridad
 
 ---
 
-**Próxima sesión:** Responder preguntas de las 5 fases y definir arquitectura objetivo
+**Proxima sesion:** Actualizar tests para modulos `.ts`, eliminar archivos legacy, setup CI/CD
