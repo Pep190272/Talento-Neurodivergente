@@ -134,9 +134,46 @@ Aunque lo ideal sería una tabla intermedia, mantuvimos `clients: String[]` en T
 ### 4. No se eliminó `storage.js`
 Se mantiene para referencia y porque algunos tests lo importan. Se puede eliminar en un sprint de limpieza dedicado.
 
+## Migración Ejecutada (2026-02-20)
+
+### PostgreSQL Local Setup
+
+```bash
+# PostgreSQL 16 nativo (no Docker)
+pg_ctlcluster 16 main start
+
+# Crear usuario y base de datos
+sudo -u postgres psql -c "CREATE USER diversia_admin WITH PASSWORD 'diversia_pass' CREATEDB;"
+sudo -u postgres psql -c "CREATE DATABASE diversia_db OWNER diversia_admin;"
+sudo -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE diversia_db TO diversia_admin;"
+
+# Aplicar migraciones
+DATABASE_URL="postgresql://diversia_admin:diversia_pass@localhost:5432/diversia_db" npx prisma migrate deploy
+```
+
+### Resultado
+
+Las 5 migraciones se aplicaron exitosamente:
+
+| Migración | Estado |
+|-----------|--------|
+| `20260126163651_ecosystem_360_polymorphic_connections` | Aplicada |
+| `20260220000000_eu_ai_act_compliance` | Aplicada |
+| `20260220000001_expand_individual_profile` | Aplicada |
+| `20260220000002_expand_company_job` | Aplicada |
+| `20260220100000_expand_therapist_connection_matching` | Aplicada |
+
+**Tablas creadas**: User, Individual, Company, Job, Therapist, Connection, Matching, AuditLog
+
+### Verificación de Modelos Expandidos
+
+- **Therapist**: 33 columnas + 2 índices (pkey, verificationStatus) + FK a User
+- **Connection**: 17 columnas + 4 índices (pkey, individualId, companyId, status) + FKs
+- **Matching**: 29 columnas + 6 índices (pkey, companyId, individualId, jobId, status, unique individualId+jobId) + FKs
+
 ## Pasos Pendientes
 
-1. **Ejecutar migración en PostgreSQL**: `npx prisma migrate deploy` con `DATABASE_URL` configurada
+1. ~~**Ejecutar migración en PostgreSQL**~~: Completado (2026-02-20)
 2. **Actualizar seed.ts**: Incluir datos de prueba para Therapist expandido, Matching y Connection
 3. **Actualizar tests**: Algunos tests en `tests/unit/actors/therapist.test.js` aún importan funciones del `.js`
 4. **Eliminar archivos `.js` legacy**: Cuando los tests estén actualizados
