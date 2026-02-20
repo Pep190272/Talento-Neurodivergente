@@ -21,7 +21,7 @@ import {
 } from './storage.js'
 
 import { getMatchById } from './matching.js'
-import { getIndividualProfile } from './individuals.js'
+import { getIndividualProfile } from './individuals'
 import { getCompany, getJobPosting } from './companies.js'
 
 /**

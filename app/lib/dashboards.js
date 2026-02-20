@@ -11,7 +11,7 @@ import {
   getIndividualProfile,
   calculateProfileCompletion,
   getPublicProfile
-} from './individuals.js'
+} from './individuals'
 
 import {
   getCompany,

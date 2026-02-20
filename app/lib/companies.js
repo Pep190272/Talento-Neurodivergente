@@ -532,7 +532,7 @@ export async function getCandidateDataForCompany(companyId, candidateId) {
   }
 
   // Get profile data respecting permissions
-  const { getProfileForCompany } = await import('./individuals.js')
+  const { getProfileForCompany } = await import('./individuals')
   return await getProfileForCompany(candidateId, activeConnection.connectionId)
 }
 

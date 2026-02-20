@@ -100,20 +100,49 @@ model Individual {
   lastName             String
 
   // Neurodivergencia — Encriptados AES-256-GCM en aplicación (GDPR Art. 9 — Datos sensibles)
+  // Decisión: diagnósticos explícitos en BD con máximas protecciones de seguridad
   diagnoses            String[] // Formato: "encrypted:<ciphertext>"
   accommodationsNeeded String?  // Formato: "encrypted:<ciphertext>"
   medicalHistory       String?  // Formato: "encrypted:<ciphertext>"
 
-  // Profesional
+  // Profesional — Perfil extendido
+  bio                  String?
+  location             String?
   skills               String[]
   experienceYears      Int?
   cvUrl                String?
+
+  // Historial estructurado (JSON flexible para múltiples frontends)
+  experience           Json     @default("[]")   // [{title, company, startYear, endYear, current, description}]
+  education            Json     @default("[]")   // [{degree, institution, year, field}]
+  preferences          Json     @default("{}")   // {workMode, salaryMin, salaryMax, locations, roles, industries}
+
+  // Referencia a terapeuta asignado (soft reference — no FK para flexibilidad)
+  therapistAssignedId  String?
+
+  // GDPR Art. 6 — Consentimiento granular por campo
+  privacy              Json     @default("{\"visibleInSearch\":true,\"showRealName\":true,\"shareDiagnosis\":false,\"shareTherapistContact\":false,\"shareAssessmentDetails\":false}")
+
+  // Assessment neurodivergencia — Resultado del test de fortalezas cognitivas
+  assessment           Json     @default("{\"completed\":false,\"completedAt\":null,\"strengths\":[],\"challenges\":[],\"score\":null,\"technicalSkills\":[],\"softSkills\":[],\"workStyle\":{}}")
+
+  // Metadata de engagement (contadores no sensibles)
+  metadata             Json     @default("{\"lastLogin\":null,\"profileViews\":0,\"matchesReceived\":0,\"applicationsSubmitted\":0}")
+
+  // Lifecycle
+  lastActive           DateTime?
+  deactivatedAt        DateTime?
+  deletedAt            DateTime?
+  validationStatus     String?  @default("pending") // pending | validated | rejected
 
   connections          Connection[]
   matchings            Matching[]
 
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt
+
+  @@index([validationStatus])
+  @@index([deletedAt])
 }
 
 model Company {
