@@ -5,12 +5,14 @@
  * DELETE /api/companies/:companyId/jobs/:jobId - Close job posting
  */
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import {
   getJobPosting,
   updateJobPosting,
   closeJob
 } from '@/lib/companies'
+
+type RouteParams = { params: Promise<{ companyId: string; jobId: string }> }
 
 /**
  * GET /api/companies/:companyId/jobs/:jobId
@@ -22,7 +24,7 @@ import {
  * @returns {object} 404 - Job not found
  * @returns {object} 500 - Server error
  */
-export async function GET(request, { params }) {
+export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { companyId, jobId } = await params
 
@@ -52,7 +54,7 @@ export async function GET(request, { params }) {
     console.error('Error fetching job posting:', error)
 
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error as Error).message },
       { status: 500 }
     )
   }
@@ -76,7 +78,7 @@ export async function GET(request, { params }) {
  * @returns {object} 403 - Forbidden (job belongs to another company)
  * @returns {object} 500 - Server error
  */
-export async function PATCH(request, { params }) {
+export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
     const { companyId, jobId } = await params
     const updates = await request.json()
@@ -110,7 +112,7 @@ export async function PATCH(request, { params }) {
     console.error('Error updating job posting:', error)
 
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error as Error).message },
       { status: 500 }
     )
   }
@@ -127,7 +129,7 @@ export async function PATCH(request, { params }) {
  * @returns {object} 403 - Forbidden (job belongs to another company)
  * @returns {object} 500 - Server error
  */
-export async function DELETE(request, { params }) {
+export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     const { companyId, jobId } = await params
 
@@ -160,7 +162,7 @@ export async function DELETE(request, { params }) {
     console.error('Error closing job posting:', error)
 
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error as Error).message },
       { status: 500 }
     )
   }

@@ -3,7 +3,7 @@
  * GET /api/dashboards/company/:companyId - Get company dashboard data
  */
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getCompanyDashboard } from '@/lib/dashboards'
 
 /**
@@ -15,7 +15,7 @@ import { getCompanyDashboard } from '@/lib/dashboards'
  * @returns {object} 404 - Company not found
  * @returns {object} 500 - Server error
  */
-export async function GET(request, { params }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ companyId: string }> }) {
   try {
     const { companyId } = await params
 
@@ -38,7 +38,7 @@ export async function GET(request, { params }) {
     console.error('Error fetching company dashboard:', error)
 
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error as Error).message },
       { status: 500 }
     )
   }

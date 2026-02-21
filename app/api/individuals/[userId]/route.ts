@@ -10,7 +10,7 @@
  * 3. Company: Limited access con connection/consent activa solamente
  */
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import {
   getIndividualProfile,
@@ -20,18 +20,29 @@ import {
 import { logDataAccess } from '@/lib/audit'
 import { getActiveConnection as findActiveConnectionFromConsent } from '@/lib/consent'
 
+type RouteParams = { params: Promise<{ userId: string }> }
+
+interface ConnectionData {
+  status: string
+  revokedAt?: Date
+  sharedData: string[]
+  customPrivacy?: { shareDiagnosis?: boolean }
+  connectionId: string
+  matchId?: string
+}
+
 /**
  * Helper: Buscar connection activa entre company y candidate
  * Migrado: storage.js → consent.ts (Prisma query indexada)
  */
-async function findActiveConnection(companyId, candidateId) {
+async function findActiveConnection(companyId: string, candidateId: string): Promise<ConnectionData | null> {
   return await findActiveConnectionFromConsent(candidateId, companyId)
 }
 
 /**
  * Helper: Filtrar perfil según sharedData de connection
  */
-function filterBySharedData(profile, sharedData, shareDiagnosis) {
+function filterBySharedData(profile: Record<string, unknown>, sharedData: string[], shareDiagnosis: boolean) {
   const filtered = {
     userId: profile.userId,
     userType: profile.userType,
@@ -96,7 +107,7 @@ function filterBySharedData(profile, sharedData, shareDiagnosis) {
  * @returns {object} 404 - Profile not found
  * @returns {object} 500 - Server error
  */
-export async function GET(request, { params }) {
+export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     // ════════════════════════════════════════════════════════════════════════
     // 1. VERIFICAR AUTENTICACIÓN
@@ -252,7 +263,7 @@ export async function GET(request, { params }) {
     console.error('Error fetching individual profile:', error)
 
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error as Error).message },
       { status: 500 }
     )
   }
@@ -262,7 +273,7 @@ export async function GET(request, { params }) {
  * PATCH /api/individuals/:userId
  * Update individual profile (requiere ser el owner)
  */
-export async function PATCH(request, { params }) {
+export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
     // Verificar autenticación
     const session = await auth()
@@ -321,7 +332,7 @@ export async function PATCH(request, { params }) {
     console.error('Error updating individual profile:', error)
 
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error as Error).message },
       { status: 500 }
     )
   }
@@ -331,7 +342,7 @@ export async function PATCH(request, { params }) {
  * DELETE /api/individuals/:userId
  * Delete individual account (requiere ser el owner)
  */
-export async function DELETE(request, { params }) {
+export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     // Verificar autenticación
     const session = await auth()
@@ -388,7 +399,7 @@ export async function DELETE(request, { params }) {
     console.error('Error deleting individual account:', error)
 
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error as Error).message },
       { status: 500 }
     )
   }

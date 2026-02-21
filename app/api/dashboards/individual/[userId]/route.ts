@@ -3,7 +3,7 @@
  * GET /api/dashboards/individual/:userId - Get individual dashboard data
  */
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getIndividualDashboard } from '@/lib/dashboards'
 
 /**
@@ -15,7 +15,7 @@ import { getIndividualDashboard } from '@/lib/dashboards'
  * @returns {object} 404 - User not found
  * @returns {object} 500 - Server error
  */
-export async function GET(request, { params }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ userId: string }> }) {
   try {
     const { userId } = await params
 
@@ -38,7 +38,7 @@ export async function GET(request, { params }) {
     console.error('Error fetching individual dashboard:', error)
 
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error as Error).message },
       { status: 500 }
     )
   }
