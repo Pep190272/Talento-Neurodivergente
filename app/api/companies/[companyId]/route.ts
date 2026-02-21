@@ -4,11 +4,13 @@
  * PATCH /api/companies/:companyId - Update company profile
  */
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import {
   getCompany,
   updateCompany
 } from '@/lib/companies'
+
+type RouteParams = { params: Promise<{ companyId: string }> }
 
 /**
  * GET /api/companies/:companyId
@@ -19,7 +21,7 @@ import {
  * @returns {object} 404 - Profile not found
  * @returns {object} 500 - Server error
  */
-export async function GET(request, { params }) {
+export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { companyId } = await params
 
@@ -41,7 +43,7 @@ export async function GET(request, { params }) {
     console.error('Error fetching company profile:', error)
 
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error as Error).message },
       { status: 500 }
     )
   }
@@ -60,7 +62,7 @@ export async function GET(request, { params }) {
  * @returns {object} 404 - Profile not found
  * @returns {object} 500 - Server error
  */
-export async function PATCH(request, { params }) {
+export async function PATCH(request: NextRequest, { params }: RouteParams) {
   try {
     const { companyId } = await params
     const updates = await request.json()
@@ -86,7 +88,7 @@ export async function PATCH(request, { params }) {
     console.error('Error updating company profile:', error)
 
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error as Error).message },
       { status: 500 }
     )
   }

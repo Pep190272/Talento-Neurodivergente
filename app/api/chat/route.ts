@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 const fallbackResponses = [
   "¡Hola! Soy NeuroDialect. Actualmente estoy en modo de demostración. ¿Te gustaría saber más sobre nuestras características de evaluación cognitiva?",
@@ -7,7 +7,7 @@ const fallbackResponses = [
   "Soy NeuroDialect, tu asistente para descubrir y potenciar el talento neurodivergente. ¿Quieres saber sobre evaluaciones cognitivas, matching laboral o estrategias de inclusión?"
 ];
 
-export async function POST(request) {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { prompt, userData = null } = body;

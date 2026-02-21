@@ -8,6 +8,19 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest'
+
+// Mock Prisma BEFORE importing modules that use it
+// vi.mock is hoisted — async factory gets the singleton from prisma-mock
+vi.mock('@/lib/prisma', async () => {
+  const { getMockPrisma } = await import('../../helpers/prisma-mock.js')
+  const mock = getMockPrisma()
+  return { default: mock, prisma: mock }
+})
+
+// Import singleton for _reset() in beforeEach
+import { getMockPrisma } from '../../helpers/prisma-mock.js'
+const mockPrisma = getMockPrisma()
+
 import {
   createTherapist,
   verifyTherapist,
@@ -193,6 +206,7 @@ describe('UC-008: Therapist Registration', () => {
   let mockTherapistData
 
   beforeEach(() => {
+    mockPrisma._reset()
     mockTherapistData = {
       email: `dr.smith.${Date.now()}@therapy.com`,
       profile: {
@@ -438,6 +452,8 @@ describe('UC-009: Therapist Dashboard with Clients', () => {
   let mockTherapistData
 
   beforeEach(async () => {
+    mockPrisma._reset()
+
     // Configurar ENCRYPTION_KEY para tests
     if (!process.env.ENCRYPTION_KEY) {
       process.env.ENCRYPTION_KEY = '0'.repeat(64)

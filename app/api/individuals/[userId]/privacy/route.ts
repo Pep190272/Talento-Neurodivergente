@@ -3,7 +3,7 @@
  * PATCH /api/individuals/:userId/privacy - Update privacy settings
  */
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import {
   getIndividualProfile,
   updatePrivacySettings
@@ -25,7 +25,7 @@ import {
  * @returns {object} 404 - Profile not found
  * @returns {object} 500 - Server error
  */
-export async function PATCH(request, { params }) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ userId: string }> }) {
   try {
     const { userId } = await params
     const privacyUpdates = await request.json()
@@ -54,7 +54,7 @@ export async function PATCH(request, { params }) {
     console.error('Error updating privacy settings:', error)
 
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error as Error).message },
       { status: 500 }
     )
   }

@@ -3,7 +3,7 @@
  * GET /api/matching/jobs/:jobId - Get candidate matches for a job
  */
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getJobPosting } from '@/lib/companies'
 import { findMatchesForJob } from '@/lib/matching'
 
@@ -19,7 +19,7 @@ import { findMatchesForJob } from '@/lib/matching'
  * @returns {object} 404 - Job not found
  * @returns {object} 500 - Server error
  */
-export async function GET(request, { params }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ jobId: string }> }) {
   try {
     const { jobId } = await params
     const { searchParams } = new URL(request.url)
@@ -57,7 +57,7 @@ export async function GET(request, { params }) {
     console.error('Error finding matches for job:', error)
 
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error as Error).message },
       { status: 500 }
     )
   }

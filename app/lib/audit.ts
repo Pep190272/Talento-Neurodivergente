@@ -187,6 +187,93 @@ export async function logProfileView(companyId: string, candidateId: string, ipA
   })
 }
 
+/**
+ * Consulta de auditoría filtrada por usuario y tipo de acción.
+ * Usado por tests de privacidad para verificar que accesos se registran.
+ */
+export async function getAuditLog(userId: string, actionFilter?: string) {
+  try {
+    const where: Prisma.AuditLogWhereInput = {
+      details: {
+        path: ['targetUser'],
+        equals: userId,
+      },
+    }
+
+    // Si hay filtro de acción, añadir condición sobre originalAction en details
+    if (actionFilter) {
+      where.AND = [
+        {
+          details: {
+            path: ['originalAction'],
+            equals: actionFilter,
+          },
+        },
+      ]
+    }
+
+    const logs = await prisma.auditLog.findMany({
+      where,
+      orderBy: { timestamp: 'desc' },
+    })
+
+    return logs.map(log => {
+      const details = log.details as Record<string, unknown>
+      return {
+        id: log.id,
+        action: details.originalAction ?? log.eventType,
+        accessedBy: log.userId,
+        targetUser: details.targetUser,
+        dataAccessed: details.dataAccessed ?? [],
+        dataType: details.dataType,
+        sensitivityLevel: details.sensitivityLevel,
+        reason: details.reason,
+        timestamp: log.timestamp,
+        connectionId: details.connectionId ?? null,
+        ipAddress: log.ipAddress,
+      }
+    })
+  } catch (error) {
+    console.error('[AuditLog] Error fetching audit logs:', error)
+    return []
+  }
+}
+
+/**
+ * Exportar log de auditoría completo para un usuario.
+ * GDPR Art. 15 — Derecho de acceso: el sujeto puede pedir todos los registros
+ * sobre su persona en formato estructurado y legible.
+ */
+export async function exportAuditLog(userId: string) {
+  try {
+    const logs = await getAuditLog(userId)
+    const userLogs = await getUserAuditLog(userId)
+
+    return {
+      exportedAt: new Date(),
+      userId,
+      format: 'json',
+      totalEntries: userLogs.totalEntries,
+      entries: logs,
+      metadata: {
+        gdprArticle: 'Art. 15 - Right of Access',
+        retentionPolicy: '7 years',
+        exportRequestedAt: new Date(),
+      },
+    }
+  } catch (error) {
+    console.error('[AuditLog] Error exporting audit log:', error)
+    return {
+      exportedAt: new Date(),
+      userId,
+      format: 'json',
+      totalEntries: 0,
+      entries: [],
+      metadata: { error: 'Export failed' },
+    }
+  }
+}
+
 /** EU AI Act Art. 22 — Notificación formal de decisión automatizada al candidato */
 export async function logAIDecision(params: {
   matchingId: string

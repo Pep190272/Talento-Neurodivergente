@@ -1,45 +1,8 @@
-import { NextResponse } from 'next/server';
-import fs from 'fs';
-import path from 'path';
-
-const DATA_FILE = path.join(process.cwd(), 'data', 'submissions.json');
-
-// Ensure data directory exists
-function ensureDataFile() {
-  const dir = path.dirname(DATA_FILE);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-  if (!fs.existsSync(DATA_FILE)) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify([], null, 2));
-  }
-}
-
-// Read submissions from JSON file
-function readSubmissions() {
-  ensureDataFile();
-  try {
-    const data = fs.readFileSync(DATA_FILE, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error('Error reading submissions:', error);
-    return [];
-  }
-}
-
-// Write submissions to JSON file
-function writeSubmissions(submissions) {
-  ensureDataFile();
-  try {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(submissions, null, 2));
-  } catch (error) {
-    console.error('Error writing submissions:', error);
-    throw error;
-  }
-}
+import { NextRequest, NextResponse } from 'next/server';
+import prisma from '@/lib/prisma';
 
 // Simple validation and normalization
-async function validateAndNormalize(formData, formType) {
+async function validateAndNormalize(formData: Record<string, string>, formType: string) {
   try {
     const errors = [];
     const normalized = { ...formData };
@@ -95,7 +58,7 @@ async function validateAndNormalize(formData, formType) {
   }
 }
 
-export async function POST(request) {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { formData, formType } = body;
@@ -107,12 +70,12 @@ export async function POST(request) {
       );
     }
 
-    // Validate and normalize with OpenAI
+    // Validate and normalize
     const validation = await validateAndNormalize(formData, formType);
 
     if (!validation.validated) {
       return NextResponse.json(
-        { 
+        {
           error: 'Validation failed',
           details: validation.errors,
           summary: validation.summary
@@ -121,28 +84,26 @@ export async function POST(request) {
       );
     }
 
-    // Create submission object
-    const submission = {
-      id: Date.now().toString(),
-      type: formType,
-      data: validation.normalized,
-      summary: validation.summary,
-      timestamp: new Date().toISOString(),
-      validated: true
-    };
-
-    // Read existing submissions
-    const submissions = readSubmissions();
-    
-    // Add new submission
-    submissions.push(submission);
-    
-    // Write back to file
-    writeSubmissions(submissions);
+    // Create submission in PostgreSQL
+    const submission = await prisma.formSubmission.create({
+      data: {
+        formType,
+        data: validation.normalized,
+        summary: validation.summary,
+        validated: true,
+      },
+    });
 
     return NextResponse.json({
       success: true,
-      submission,
+      submission: {
+        id: submission.id,
+        type: submission.formType,
+        data: submission.data,
+        summary: submission.summary,
+        timestamp: submission.createdAt.toISOString(),
+        validated: submission.validated,
+      },
       message: 'Form submitted successfully'
     });
 
@@ -157,10 +118,22 @@ export async function POST(request) {
 
 export async function GET() {
   try {
-    const submissions = readSubmissions();
+    const submissions = await prisma.formSubmission.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+
+    const formatted = submissions.map(s => ({
+      id: s.id,
+      type: s.formType,
+      data: s.data,
+      summary: s.summary,
+      timestamp: s.createdAt.toISOString(),
+      validated: s.validated,
+    }));
+
     return NextResponse.json({
-      submissions,
-      count: submissions.length
+      submissions: formatted,
+      count: formatted.length
     });
   } catch (error) {
     console.error('Error fetching submissions:', error);
@@ -169,4 +142,4 @@ export async function GET() {
       { status: 500 }
     );
   }
-} 
+}

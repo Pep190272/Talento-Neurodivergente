@@ -4,12 +4,14 @@
  * GET /api/companies/:companyId/jobs - List all jobs for company
  */
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import {
   getCompany,
   createJobPosting,
   getCompanyJobs
 } from '@/lib/companies'
+
+type RouteParams = { params: Promise<{ companyId: string }> }
 
 /**
  * POST /api/companies/:companyId/jobs
@@ -29,7 +31,7 @@ import {
  * @returns {object} 404 - Company not found
  * @returns {object} 500 - Server error
  */
-export async function POST(request, { params }) {
+export async function POST(request: NextRequest, { params }: RouteParams) {
   try {
     const { companyId } = await params
     const jobData = await request.json()
@@ -73,15 +75,15 @@ export async function POST(request, { params }) {
     console.error('Error creating job posting:', error)
 
     // Handle specific errors
-    if (error.message.includes('required')) {
+    if ((error as Error).message.includes('required')) {
       return NextResponse.json(
-        { error: error.message },
+        { error: (error as Error).message },
         { status: 400 }
       )
     }
 
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error as Error).message },
       { status: 500 }
     )
   }
@@ -98,7 +100,7 @@ export async function POST(request, { params }) {
  * @returns {object} 404 - Company not found
  * @returns {object} 500 - Server error
  */
-export async function GET(request, { params }) {
+export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     const { companyId } = await params
     const { searchParams } = new URL(request.url)
@@ -126,7 +128,7 @@ export async function GET(request, { params }) {
     console.error('Error fetching company jobs:', error)
 
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error as Error).message },
       { status: 500 }
     )
   }

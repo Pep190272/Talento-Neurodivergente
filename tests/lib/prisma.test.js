@@ -1,7 +1,14 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
-import prisma from '../../app/lib/prisma'
 
-describe('Prisma Connectivity Test', () => {
+// This test requires a real PostgreSQL connection — skip in environments without DATABASE_URL
+const hasDatabase = !!process.env.DATABASE_URL
+
+describe.skipIf(!hasDatabase)('Prisma Connectivity Test', () => {
+  // Lazy import — only resolve prisma module when DATABASE_URL is present
+  let prisma
+  beforeAll(async () => {
+    prisma = (await import('../../app/lib/prisma')).default
+  })
     it('should be able to query the database version (checks connection)', async () => {
         try {
             // Intentamos una consulta simple que no dependa de tablas

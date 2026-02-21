@@ -3,7 +3,7 @@
  * POST /api/companies - Create new company profile
  */
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { createCompany } from '@/lib/companies'
 
 /**
@@ -22,7 +22,7 @@ import { createCompany } from '@/lib/companies'
  * @returns {object} 400 - Validation error
  * @returns {object} 500 - Server error
  */
-export async function POST(request) {
+export async function POST(request: NextRequest) {
   try {
     const data = await request.json()
 
@@ -56,23 +56,23 @@ export async function POST(request) {
     console.error('Error creating company profile:', error)
 
     // Handle specific errors
-    if (error.message.includes('already exists')) {
+    if ((error as Error).message.includes('already exists')) {
       return NextResponse.json(
-        { error: error.message },
+        { error: (error as Error).message },
         { status: 409 } // Conflict
       )
     }
 
-    if (error.message.includes('required')) {
+    if ((error as Error).message.includes('required')) {
       return NextResponse.json(
-        { error: error.message },
+        { error: (error as Error).message },
         { status: 400 }
       )
     }
 
     // Generic server error
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error as Error).message },
       { status: 500 }
     )
   }

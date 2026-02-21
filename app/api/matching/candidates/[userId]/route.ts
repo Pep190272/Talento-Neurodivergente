@@ -3,7 +3,7 @@
  * GET /api/matching/candidates/:userId - Get job matches for a candidate
  */
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { getIndividualProfile } from '@/lib/individuals'
 import { findMatchesForCandidate } from '@/lib/matching'
 
@@ -19,7 +19,7 @@ import { findMatchesForCandidate } from '@/lib/matching'
  * @returns {object} 404 - Candidate not found
  * @returns {object} 500 - Server error
  */
-export async function GET(request, { params }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ userId: string }> }) {
   try {
     const { userId } = await params
     const { searchParams } = new URL(request.url)
@@ -57,7 +57,7 @@ export async function GET(request, { params }) {
     console.error('Error finding matches for candidate:', error)
 
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error as Error).message },
       { status: 500 }
     )
   }

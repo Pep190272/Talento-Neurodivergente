@@ -382,6 +382,22 @@ model Connection {
 }
 
 // ============================================
+// FORMULARIOS — Pre-registro / Landing
+// ============================================
+
+model FormSubmission {
+  id        String   @id @default(cuid())
+  formType  String   // individual | company | therapist
+  data      Json     // Validated and normalized form data
+  summary   String?
+  validated Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@index([formType])
+  @@index([createdAt])
+}
+
+// ============================================
 // GOBERNANZA — EU AI Act Art. 12 + GDPR Art. 5
 // ============================================
 

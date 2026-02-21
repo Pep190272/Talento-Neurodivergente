@@ -3,7 +3,7 @@
  * POST /api/consent/revoke - Revoke existing consent
  */
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { revokeConsent } from '@/lib/consent'
 
 /**
@@ -19,7 +19,7 @@ import { revokeConsent } from '@/lib/consent'
  * @returns {object} 404 - Consent not found
  * @returns {object} 500 - Server error
  */
-export async function POST(request) {
+export async function POST(request: NextRequest) {
   try {
     const { userId, companyId, jobId } = await request.json()
 
@@ -58,7 +58,7 @@ export async function POST(request) {
     console.error('Error revoking consent:', error)
 
     // Handle specific errors
-    if (error.message.includes('not found')) {
+    if ((error as Error).message.includes('not found')) {
       return NextResponse.json(
         { error: 'Consent not found' },
         { status: 404 }
@@ -66,7 +66,7 @@ export async function POST(request) {
     }
 
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error as Error).message },
       { status: 500 }
     )
   }
