@@ -78,6 +78,9 @@ export interface TherapistProfile {
   verifiedAt: Date | null
   verifiedBy: string | null
   verificationNotes: string | null
+  rejectionReason: string | null
+  welcomeEmailSent: boolean
+  redirectTo: string | null
   metadata: TherapistMetadata
 }
 
@@ -138,6 +141,9 @@ function normalizeTherapist(therapist: TherapistWithUser): TherapistProfile {
     verifiedAt: therapist.verifiedAt,
     verifiedBy: therapist.verifiedBy,
     verificationNotes: therapist.verificationNotes,
+    rejectionReason: (therapist as unknown as Record<string, unknown>).rejectionReason as string | null ?? null,
+    welcomeEmailSent: therapist.verificationStatus === 'verified',
+    redirectTo: therapist.verificationStatus === 'verified' ? '/dashboard/therapist' : null,
     metadata,
   }
 }
