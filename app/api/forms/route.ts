@@ -1,8 +1,8 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
 // Simple validation and normalization
-async function validateAndNormalize(formData, formType) {
+async function validateAndNormalize(formData: Record<string, string>, formType: string) {
   try {
     const errors = [];
     const normalized = { ...formData };
@@ -58,7 +58,7 @@ async function validateAndNormalize(formData, formType) {
   }
 }
 
-export async function POST(request) {
+export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { formData, formType } = body;

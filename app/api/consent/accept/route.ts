@@ -3,7 +3,7 @@
  * POST /api/consent/accept - Accept consent for data sharing
  */
 
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { grantConsent } from '@/lib/consent'
 
 /**
@@ -19,7 +19,7 @@ import { grantConsent } from '@/lib/consent'
  * @returns {object} 400 - Validation error
  * @returns {object} 500 - Server error
  */
-export async function POST(request) {
+export async function POST(request: NextRequest) {
   try {
     const { userId, companyId, jobId, consentType } = await request.json()
 
@@ -65,7 +65,7 @@ export async function POST(request) {
     console.error('Error granting consent:', error)
 
     return NextResponse.json(
-      { error: 'Internal server error', details: error.message },
+      { error: 'Internal server error', details: (error as Error).message },
       { status: 500 }
     )
   }

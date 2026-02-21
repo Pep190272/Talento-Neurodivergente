@@ -25,7 +25,7 @@ export function getMockPrisma() {
 }
 
 export function resetMockPrisma() {
-  if (_singleton) _singleton._reset()
+  _singleton = null
 }
 
 function genId(prefix) {
@@ -62,15 +62,50 @@ export function createMockPrisma() {
     job: new Map(),
   }
 
+  // Relation mapping: which field links to which store
+  const relationMap = {
+    user: { store: 'user', fk: 'userId', type: 'one' },
+    therapist: { store: 'therapist', fk: 'therapistId', type: 'one' },
+    individual: { store: 'individual', fk: 'individualId', type: 'one' },
+    company: { store: 'company', fk: 'companyId', type: 'one' },
+    job: { store: 'job', fk: 'jobId', type: 'one' },
+    // One-to-many relations: find by parent FK
+    jobs: { store: 'job', parentFk: 'companyId', type: 'many' },
+    matchings: { store: 'matching', parentFk: 'individualId', type: 'many' },
+    connections: { store: 'connection', parentFk: 'individualId', type: 'many' },
+    auditLogs: { store: 'auditLog', parentFk: 'userId', type: 'many' },
+  }
+
   function resolveIncludes(record, include, modelName) {
     if (!include) return record
     const result = { ...record }
 
-    if (include.user && record.userId) {
-      result.user = stores.user.get(record.userId) || null
-    }
-    if (include.therapist && record.therapistId) {
-      result.therapist = stores.therapist.get(record.therapistId) || null
+    for (const [key, val] of Object.entries(include)) {
+      if (!val) continue
+
+      const rel = relationMap[key]
+      if (!rel) continue
+
+      if (rel.type === 'one') {
+        const fkValue = record[rel.fk]
+        result[key] = fkValue ? (stores[rel.store].get(fkValue) || null) : null
+      } else if (rel.type === 'many') {
+        // Find all records in the related store that reference this record's id
+        let related = [...stores[rel.store].values()].filter(
+          r => r[rel.parentFk] === record.id
+        )
+        // Support { select: { id: true } } pattern
+        if (typeof val === 'object' && val.select) {
+          related = related.map(r => {
+            const selected = {}
+            for (const field of Object.keys(val.select)) {
+              selected[field] = r[field]
+            }
+            return selected
+          })
+        }
+        result[key] = related
+      }
     }
 
     return result
