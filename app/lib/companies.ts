@@ -629,6 +629,9 @@ export async function getCompanyPipeline(
 /**
  * Update pipeline stage for a candidate
  */
+/** Alias used by dashboard tests */
+export const moveCandidateToStage = updatePipelineStage
+
 export async function updatePipelineStage(
   connectionId: string,
   newStage: string
