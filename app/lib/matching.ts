@@ -5,6 +5,10 @@
  * Migrated from matching.js → matching.ts (Prisma 7 / PostgreSQL)
  * Maintains same public API for backward compatibility.
  *
+ * Sprint 3: Refactored to import scoring logic from matching.service.ts.
+ * This file now owns only Prisma persistence and orchestration;
+ * all pure scoring functions live in ./services/matching.service.ts.
+ *
  * Decisión de migración (2026-02-20):
  * - storage.js O(n) file scans → Prisma indexed queries
  * - Match status strings → MatchingStatus enum (PENDING, APPROVED, REJECTED, WITHDRAWN)
@@ -26,34 +30,21 @@ import {
 import { getVisibleIndividuals } from './individuals'
 import { getJobPosting, getAllOpenJobs } from './companies'
 
-// ─── Configuration ────────────────────────────────────────────────────────────
-
-const MATCH_THRESHOLD = 60
-const MATCH_EXPIRATION_DAYS = 7
-
-const WEIGHTS = {
-  skills: 40,
-  accommodations: 30,
-  preferences: 20,
-  location: 10,
-}
-
-// ─── Status Mapping ───────────────────────────────────────────────────────────
-// Legacy status strings → Prisma enum
-const STATUS_TO_ENUM: Record<string, 'PENDING' | 'APPROVED' | 'REJECTED' | 'WITHDRAWN'> = {
-  pending: 'PENDING',
-  accepted: 'APPROVED',
-  rejected: 'REJECTED',
-  expired: 'WITHDRAWN',
-}
-
-const ENUM_TO_STATUS: Record<string, string> = {
-  PENDING: 'pending',
-  APPROVED: 'accepted',
-  REJECTED: 'rejected',
-  WITHDRAWN: 'expired',
-  CONTESTED: 'contested',
-}
+import {
+  MATCH_THRESHOLD,
+  MATCH_EXPIRATION_DAYS,
+  WEIGHTS,
+  STATUS_TO_ENUM,
+  ENUM_TO_STATUS,
+  calculateSkillsMatch,
+  calculateAccommodationsMatch,
+  calculatePreferencesMatch,
+  calculateLocationMatch,
+  calculateTotalScore,
+  generateMatchJustification,
+  meetsThreshold,
+  calculateExpirationDate,
+} from './services/matching.service'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -143,144 +134,6 @@ function addDays(days: number): Date {
   return new Date(Date.now() + days * 86400000)
 }
 
-// ─── Scoring Functions ────────────────────────────────────────────────────────
-
-function calculateSkillsMatch(candidateSkills: string[], jobSkills: string[]): number {
-  if (!candidateSkills || !jobSkills || jobSkills.length === 0) return 0
-
-  const exactMatches = jobSkills.filter(jobSkill =>
-    candidateSkills.some(candidateSkill =>
-      candidateSkill.toLowerCase().includes(jobSkill.toLowerCase()) ||
-      jobSkill.toLowerCase().includes(candidateSkill.toLowerCase())
-    )
-  )
-
-  const matchPercentage = (exactMatches.length / jobSkills.length) * 100
-
-  if (candidateSkills.length > jobSkills.length) {
-    return Math.min(100, matchPercentage + 10)
-  }
-
-  return Math.round(matchPercentage)
-}
-
-function calculateAccommodationsMatch(needs: string[], offers: string[]): number {
-  if (!needs || needs.length === 0) return 100
-  if (!offers || offers.length === 0) return 0
-
-  const metNeeds = needs.filter(need =>
-    offers.some(offer =>
-      offer.toLowerCase().includes(need.toLowerCase()) ||
-      need.toLowerCase().includes(offer.toLowerCase())
-    )
-  )
-
-  return Math.round((metNeeds.length / needs.length) * 100)
-}
-
-function calculatePreferencesMatch(
-  preferences: Record<string, unknown> | undefined,
-  jobDetails: Record<string, unknown>
-): number {
-  if (!preferences || Object.keys(preferences).length === 0) return 50
-
-  let matchPoints = 0
-  let totalPoints = 0
-
-  if (preferences.workMode) {
-    totalPoints += 40
-    if (preferences.workMode === jobDetails.workMode) {
-      matchPoints += 40
-    } else if (preferences.workMode === 'hybrid' && jobDetails.workMode !== 'on-site') {
-      matchPoints += 20
-    }
-  }
-
-  if (preferences.flexibleHours !== undefined) {
-    totalPoints += 30
-    const accommodations = jobDetails.accommodations as string[] | undefined
-    if (preferences.flexibleHours === true && accommodations?.includes('Flexible hours')) {
-      matchPoints += 30
-    }
-  }
-
-  if (preferences.teamSize) {
-    totalPoints += 30
-    if (preferences.teamSize === jobDetails.teamSize) {
-      matchPoints += 30
-    } else if (
-      (preferences.teamSize === 'small' && jobDetails.teamSize !== 'large') ||
-      (preferences.teamSize === 'large' && jobDetails.teamSize !== 'small')
-    ) {
-      matchPoints += 15
-    }
-  }
-
-  return totalPoints > 0 ? Math.round((matchPoints / totalPoints) * 100) : 50
-}
-
-function calculateLocationMatch(
-  candidateLocation: string | undefined | null,
-  candidateWorkMode: string | undefined,
-  jobLocation: string | undefined | null,
-  jobWorkMode: string | undefined
-): number {
-  if (jobWorkMode === 'remote') return 100
-  if (candidateWorkMode === 'remote' && jobWorkMode === 'on-site') return 0
-
-  if (candidateLocation && jobLocation) {
-    const candidateLower = candidateLocation.toLowerCase()
-    const jobLower = jobLocation.toLowerCase()
-
-    if (candidateLower === jobLower) return 100
-
-    const candidateCity = candidateLower.split(',')[0].trim()
-    const jobCity = jobLower.split(',')[0].trim()
-
-    if (candidateCity === jobCity) return 100
-    if (jobWorkMode === 'hybrid') return 50
-    return 20
-  }
-
-  return 50
-}
-
-function generateMatchJustification(
-  _candidate: unknown,
-  job: { details?: { title?: string }; title?: string },
-  scoreBreakdown: { skills: number; accommodations: number; preferences: number; location: number },
-  totalScore: number
-): string {
-  const reasons: string[] = []
-  const jobTitle = job.details?.title ?? job.title ?? 'this position'
-
-  if (scoreBreakdown.skills >= 80) {
-    reasons.push(`Strong skills match (${scoreBreakdown.skills}%) with ${jobTitle} requirements`)
-  } else if (scoreBreakdown.skills >= 60) {
-    reasons.push('Good skills alignment with core requirements')
-  }
-
-  if (scoreBreakdown.accommodations >= 80) {
-    reasons.push('All accommodation needs met by this position')
-  } else if (scoreBreakdown.accommodations >= 60) {
-    reasons.push('Most accommodation needs are supported')
-  }
-
-  if (scoreBreakdown.preferences >= 80) {
-    reasons.push('Work preferences align well with job structure')
-  }
-
-  if (scoreBreakdown.location >= 80) {
-    reasons.push('Location and work mode are compatible')
-  }
-
-  if (reasons.length === 0) {
-    return `This is a ${totalScore >= 70 ? 'good' : 'moderate'} match based on overall compatibility.`
-  }
-
-  return reasons.join('. ') + '.'
-}
-
 // ─── Core Operations ──────────────────────────────────────────────────────────
 
 /**
@@ -333,12 +186,7 @@ export async function calculateMatch(candidateId: string, jobId: string): Promis
     ),
   }
 
-  const totalScore = Math.round(
-    (scoreBreakdown.skills * WEIGHTS.skills +
-      scoreBreakdown.accommodations * WEIGHTS.accommodations +
-      scoreBreakdown.preferences * WEIGHTS.preferences +
-      scoreBreakdown.location * WEIGHTS.location) / 100
-  )
+  const totalScore = calculateTotalScore(scoreBreakdown)
 
   const aiJustification = generateMatchJustification(candidate, job as Record<string, unknown>, scoreBreakdown, totalScore)
 
@@ -367,7 +215,7 @@ export async function calculateMatch(candidateId: string, jobId: string): Promis
     aiJustification,
     status: 'pending',
     createdAt: new Date(),
-    expiresAt: addDays(MATCH_EXPIRATION_DAYS),
+    expiresAt: calculateExpirationDate(),
     acceptedAt: null,
     rejectedAt: null,
     expiredAt: null,
@@ -397,7 +245,7 @@ export async function runMatchingForJob(jobId: string): Promise<MatchResult[]> {
     try {
       const match = await calculateMatch(candidate.userId, jobId)
 
-      if (match && match.score >= MATCH_THRESHOLD) {
+      if (match && meetsThreshold(match.score)) {
         // Save to Prisma
         const created = await prisma.matching.create({
           data: {
@@ -445,7 +293,7 @@ export async function runMatchingForCandidate(candidateId: string): Promise<Matc
       const jobId = (job as Record<string, unknown>).jobId as string
       const match = await calculateMatch(candidateId, jobId)
 
-      if (match && match.score >= MATCH_THRESHOLD) {
+      if (match && meetsThreshold(match.score)) {
         const created = await prisma.matching.create({
           data: {
             jobId,
@@ -519,7 +367,7 @@ export async function recalculateMatches(candidateId: string): Promise<MatchResu
   for (const existing of existingMatches) {
     const newMatch = await calculateMatch(candidateId, existing.jobId)
 
-    if (newMatch && newMatch.score >= MATCH_THRESHOLD) {
+    if (newMatch && meetsThreshold(newMatch.score)) {
       await prisma.matching.update({
         where: { id: existing.id },
         data: {

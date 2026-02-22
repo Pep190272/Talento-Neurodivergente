@@ -3,15 +3,22 @@
  * UC-003: Company Registration & Job Posting
  *
  * Migrated from companies.js → companies.ts (Prisma 7 / PostgreSQL)
+ *
+ * Sprint 3: Refactored to use Repository layer.
+ * - Data access: app/lib/repositories/company.repository.ts
+ *
  * Methodology: TDD, Clean Architecture, GDPR + EU AI Act compliance
  */
 
-import prisma from '@/lib/prisma'
 import type { Company, Job, User } from '@prisma/client'
 
 // Import LLM for job analysis
 import { analyzeJobInclusivity as llmAnalyze } from './llm'
 import { validateJobAnalysis } from './schemas/job-analysis'
+
+// ─── Repository (Data Access) ─────────────────────────────────────────────────
+
+import * as CompanyRepo from './repositories/company.repository'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -173,7 +180,7 @@ function normalizeJob(job: Job, extra: Record<string, unknown> = {}): JobProfile
 
 /**
  * Create new company profile
- * Atomically creates User + Company in a single transaction
+ * Atomically creates User + Company via repository
  */
 export async function createCompany(data: {
   email?: string
@@ -202,49 +209,39 @@ export async function createCompany(data: {
     throw new Error('Invalid email format')
   }
 
-  // Check for duplicate email
-  const existingUser = await prisma.user.findUnique({ where: { email } })
+  // Check for duplicate email via repository
+  const existingUser = await CompanyRepo.findUserByEmail(email)
   if (existingUser) {
     throw new Error('Company email already exists')
   }
 
   const passwordHash = data.passwordHash ?? '$2b$10$placeholder'
 
-  const company = await prisma.$transaction(async (tx) => {
-    const user = await tx.user.create({
-      data: {
-        email,
-        passwordHash,
-        userType: 'company',
-        status: 'active',
-      },
-    })
-
-    return tx.company.create({
-      data: {
-        userId: user.id,
-        name: data.name!,
-        industry: data.industry ?? null,
-        size: data.size ?? null,
-        location: data.location ?? null,
-        website: data.website ?? null,
-        description: data.description ?? '',
-        contact: (data.contact ?? null) as never,
-        diversityCommitment: data.diversityCommitment ?? null,
-        neurodiversityPrograms: (data.neurodiversityPrograms ?? []) as never,
-        metadata: {
-          lastLogin: new Date().toISOString(),
-          jobsPosted: 0,
-          candidatesHired: 0,
-          averageTimeToHire: null,
-        } as never,
-      },
-      include: {
-        user: true,
-        jobs: { select: { id: true } },
-      },
-    })
-  })
+  const company = await CompanyRepo.createUserAndCompany(
+    {
+      email,
+      passwordHash,
+      userType: 'company',
+      status: 'active',
+    },
+    {
+      name: data.name,
+      industry: data.industry ?? null,
+      size: data.size ?? null,
+      location: data.location ?? null,
+      website: data.website ?? null,
+      description: data.description ?? '',
+      contact: (data.contact ?? null) as never,
+      diversityCommitment: data.diversityCommitment ?? null,
+      neurodiversityPrograms: (data.neurodiversityPrograms ?? []) as never,
+      metadata: {
+        lastLogin: new Date().toISOString(),
+        jobsPosted: 0,
+        candidatesHired: 0,
+        averageTimeToHire: null,
+      } as never,
+    }
+  )
 
   return normalizeCompany(company as CompanyWithUser, {
     redirectTo: '/dashboard/company',
@@ -252,36 +249,20 @@ export async function createCompany(data: {
 }
 
 /**
- * Get company profile by Company.id
+ * Get company profile by Company.id via repository
  */
 export async function getCompany(companyId: string): Promise<CompanyProfile | null> {
-  const company = await prisma.company.findUnique({
-    where: { id: companyId },
-    include: {
-      user: true,
-      jobs: { select: { id: true } },
-    },
-  })
-
+  const company = await CompanyRepo.findCompanyById(companyId)
   if (!company) return null
-
   return normalizeCompany(company as CompanyWithUser)
 }
 
 /**
- * Get company by User.id (userId)
+ * Get company by User.id (userId) via repository
  */
 export async function getCompanyByUserId(userId: string): Promise<CompanyProfile | null> {
-  const company = await prisma.company.findUnique({
-    where: { userId },
-    include: {
-      user: true,
-      jobs: { select: { id: true } },
-    },
-  })
-
+  const company = await CompanyRepo.findCompanyByUserId(userId)
   if (!company) return null
-
   return normalizeCompany(company as CompanyWithUser)
 }
 
@@ -289,7 +270,7 @@ export async function getCompanyByUserId(userId: string): Promise<CompanyProfile
 export const getCompanyById = getCompany
 
 /**
- * Update company profile
+ * Update company profile via repository
  */
 export async function updateCompany(
   companyId: string,
@@ -305,27 +286,20 @@ export async function updateCompany(
     neurodiversityPrograms?: unknown[]
   }
 ): Promise<CompanyProfile> {
-  const company = await prisma.company.update({
-    where: { id: companyId },
-    data: {
-      ...(updates.name !== undefined && { name: updates.name }),
-      ...(updates.industry !== undefined && { industry: updates.industry }),
-      ...(updates.size !== undefined && { size: updates.size }),
-      ...(updates.location !== undefined && { location: updates.location }),
-      ...(updates.website !== undefined && { website: updates.website }),
-      ...(updates.description !== undefined && { description: updates.description }),
-      ...(updates.contact !== undefined && { contact: updates.contact as never }),
-      ...(updates.diversityCommitment !== undefined && {
-        diversityCommitment: updates.diversityCommitment,
-      }),
-      ...(updates.neurodiversityPrograms !== undefined && {
-        neurodiversityPrograms: updates.neurodiversityPrograms as never,
-      }),
-    },
-    include: {
-      user: true,
-      jobs: { select: { id: true } },
-    },
+  const company = await CompanyRepo.updateCompanyInDb(companyId, {
+    ...(updates.name !== undefined && { name: updates.name }),
+    ...(updates.industry !== undefined && { industry: updates.industry }),
+    ...(updates.size !== undefined && { size: updates.size }),
+    ...(updates.location !== undefined && { location: updates.location }),
+    ...(updates.website !== undefined && { website: updates.website }),
+    ...(updates.description !== undefined && { description: updates.description }),
+    ...(updates.contact !== undefined && { contact: updates.contact as never }),
+    ...(updates.diversityCommitment !== undefined && {
+      diversityCommitment: updates.diversityCommitment,
+    }),
+    ...(updates.neurodiversityPrograms !== undefined && {
+      neurodiversityPrograms: updates.neurodiversityPrograms as never,
+    }),
   })
 
   return normalizeCompany(company as CompanyWithUser)
@@ -376,43 +350,41 @@ export async function createJobPosting(
     )
   }
 
-  const job = await prisma.job.create({
-    data: {
-      companyId,
-      title: jobData.title,
-      description: jobData.description ?? '',
-      status: 'PUBLISHED',
-      skills: jobData.skills ?? [],
-      accommodations: jobData.accommodations,
-      salaryRange: jobData.salaryRange ?? null,
-      workMode: jobData.workMode ?? 'remote',
-      visibility: jobData.visibility ?? 'public',
-      location: jobData.location ?? null,
-      benefits: (jobData.benefits ?? []) as never,
-      teamSize: jobData.teamSize ?? null,
-      reportingStructure: jobData.reportingStructure ?? null,
-      inclusivityScore: inclusivityAnalysis.score,
-      inclusivityAnalysis: inclusivityAnalysis as never,
-    },
+  const job = await CompanyRepo.createJobInDb({
+    companyId,
+    title: jobData.title,
+    description: jobData.description ?? '',
+    status: 'PUBLISHED',
+    skills: jobData.skills ?? [],
+    accommodations: jobData.accommodations,
+    salaryRange: jobData.salaryRange ?? null,
+    workMode: jobData.workMode ?? 'remote',
+    visibility: jobData.visibility ?? 'public',
+    location: jobData.location ?? null,
+    benefits: (jobData.benefits ?? []) as never,
+    teamSize: jobData.teamSize ?? null,
+    reportingStructure: jobData.reportingStructure ?? null,
+    inclusivityScore: inclusivityAnalysis.score,
+    inclusivityAnalysis: inclusivityAnalysis as never,
   })
 
-  return normalizeJob(job, { matchingTriggered: true })
+  return normalizeJob(job as Job, { matchingTriggered: true })
 }
 
 /**
- * Get job posting by Job.id
+ * Get job posting by Job.id via repository
  */
 export async function getJobPosting(jobId: string): Promise<JobProfile | null> {
-  const job = await prisma.job.findUnique({ where: { id: jobId } })
+  const job = await CompanyRepo.findJobById(jobId)
   if (!job) return null
-  return normalizeJob(job)
+  return normalizeJob(job as Job)
 }
 
 // Alias for backward compatibility
 export const getJobById = getJobPosting
 
 /**
- * Update job posting
+ * Update job posting via repository
  */
 export async function updateJobPosting(
   jobId: string,
@@ -427,60 +399,46 @@ export async function updateJobPosting(
     visibility?: string
   }
 ): Promise<JobProfile> {
-  const job = await prisma.job.update({
-    where: { id: jobId },
-    data: {
-      ...(updates.title !== undefined && { title: updates.title }),
-      ...(updates.description !== undefined && { description: updates.description }),
-      ...(updates.skills !== undefined && { skills: updates.skills }),
-      ...(updates.accommodations !== undefined && { accommodations: updates.accommodations }),
-      ...(updates.salaryRange !== undefined && { salaryRange: updates.salaryRange }),
-      ...(updates.location !== undefined && { location: updates.location }),
-      ...(updates.workMode !== undefined && { workMode: updates.workMode }),
-      ...(updates.visibility !== undefined && { visibility: updates.visibility }),
-    },
+  const job = await CompanyRepo.updateJobInDb(jobId, {
+    ...(updates.title !== undefined && { title: updates.title }),
+    ...(updates.description !== undefined && { description: updates.description }),
+    ...(updates.skills !== undefined && { skills: updates.skills }),
+    ...(updates.accommodations !== undefined && { accommodations: updates.accommodations }),
+    ...(updates.salaryRange !== undefined && { salaryRange: updates.salaryRange }),
+    ...(updates.location !== undefined && { location: updates.location }),
+    ...(updates.workMode !== undefined && { workMode: updates.workMode }),
+    ...(updates.visibility !== undefined && { visibility: updates.visibility }),
   })
 
-  return normalizeJob(job)
+  return normalizeJob(job as Job)
 }
 
 /**
- * Close a job posting
+ * Close a job posting via repository
  */
 export async function closeJob(jobId: string): Promise<JobProfile> {
-  const job = await prisma.job.update({
-    where: { id: jobId },
-    data: {
-      status: 'CLOSED',
-      closedAt: new Date(),
-    },
+  const job = await CompanyRepo.updateJobInDb(jobId, {
+    status: 'CLOSED',
+    closedAt: new Date(),
   })
 
-  return normalizeJob(job)
+  return normalizeJob(job as Job)
 }
 
 /**
- * Get all jobs for a company
+ * Get all jobs for a company via repository
  */
 export async function getCompanyJobs(companyId: string): Promise<JobProfile[]> {
-  const jobs = await prisma.job.findMany({
-    where: { companyId },
-    orderBy: { createdAt: 'desc' },
-  })
-
-  return jobs.map((j) => normalizeJob(j))
+  const jobs = await CompanyRepo.findJobsByCompanyId(companyId)
+  return jobs.map((j) => normalizeJob(j as Job))
 }
 
 /**
- * Get all published/open job postings
+ * Get all published/open job postings via repository
  */
 export async function getAllOpenJobs(): Promise<JobProfile[]> {
-  const jobs = await prisma.job.findMany({
-    where: { status: 'PUBLISHED', visibility: 'public' },
-    orderBy: { createdAt: 'desc' },
-  })
-
-  return jobs.map((j) => normalizeJob(j))
+  const jobs = await CompanyRepo.findPublishedJobs()
+  return jobs.map((j) => normalizeJob(j as Job))
 }
 
 // ─── Inclusivity Analysis ─────────────────────────────────────────────────────
@@ -584,19 +542,13 @@ export async function analyzeJobInclusivity(jobData: {
 
 /**
  * Get matches for a specific job (filtered by privacy — excludes rejected)
+ * Uses repository for data access
  */
 export async function getMatchesForCompany(
   _companyId: string,
   jobId: string
 ): Promise<unknown[]> {
-  const matchings = await prisma.matching.findMany({
-    where: {
-      jobId,
-      status: { not: 'REJECTED' },
-    },
-  })
-
-  return matchings
+  return CompanyRepo.findMatchingsByJobIdExcludingRejected(jobId)
 }
 
 /**
@@ -606,10 +558,7 @@ export async function getCompanyPipeline(
   companyId: string,
   jobId: string
 ): Promise<Record<string, unknown[]>> {
-  const job = await prisma.job.findUnique({
-    where: { id: jobId },
-    select: { companyId: true },
-  })
+  const job = await CompanyRepo.findJobCompanyId(jobId)
 
   if (!job || job.companyId !== companyId) {
     throw new Error('Job not found or unauthorized')
@@ -651,19 +600,14 @@ export async function updatePipelineStage(
 
 /**
  * Get candidate data for company view (respects privacy + consent)
+ * Uses repository for connection lookup
  */
 export async function getCandidateDataForCompany(
   companyId: string,
   candidateId: string
 ): Promise<unknown> {
-  // Verify active connection exists in DB
-  const connection = await prisma.connection.findFirst({
-    where: {
-      companyId,
-      individualId: candidateId,
-      status: 'active',
-    },
-  })
+  // Verify active connection exists via repository
+  const connection = await CompanyRepo.findActiveConnection(companyId, candidateId)
 
   if (!connection) {
     throw new Error('No active connection exists')

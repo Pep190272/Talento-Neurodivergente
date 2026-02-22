@@ -11,6 +11,10 @@
  * - Ya no se escribe en el JSON del Individual (las relaciones son queries)
  * - pipelineStage ahora es campo en Connection (antes embebido en JSON)
  *
+ * Sprint 3: Refactored validation & privacy logic into consent.service.ts
+ * — consent.ts retains Prisma calls and public API surface
+ * — consent.service.ts owns pure business rules (testable in isolation)
+ *
  * CRITICAL: Privacy-First, GDPR Compliance
  */
 
@@ -18,6 +22,17 @@ import prisma from './prisma'
 import { getMatchById } from './matching'
 import { getIndividualProfile } from './individuals'
 import { getCompany, getJobPosting } from './companies'
+import {
+  validateAcceptMatch,
+  validateRejectMatch,
+  validateRevocation,
+  isValidPipelineStage,
+  buildEffectivePrivacy,
+  determineSharedData,
+  getCandidateDisplayName,
+  updateSharedDataFromPrivacy,
+  buildPrivacyPreview,
+} from './services/consent.service'
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -39,10 +54,6 @@ interface ConnectionResult {
   createdAt: Date
 }
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-const VALID_STAGES = ['newMatches', 'underReview', 'interviewing', 'offered', 'hired', 'rejected']
-
 // ─── Core Operations ──────────────────────────────────────────────────────────
 
 /**
@@ -58,9 +69,9 @@ export async function acceptMatch(
 ) {
   const match = await getMatchById(matchId)
   if (!match) throw new Error('Match not found')
-  if (match.candidateId !== userId) throw new Error('Unauthorized: Only candidate can accept match')
-  if (match.status !== 'pending') throw new Error(`Cannot accept match with status: ${match.status}`)
-  if (new Date() > new Date(match.expiresAt)) throw new Error('Match has expired')
+
+  const error = validateAcceptMatch(match, userId)
+  if (error) throw new Error(error)
 
   const candidate = await getIndividualProfile(userId)
   const job = await getJobPosting(match.jobId)
@@ -69,19 +80,8 @@ export async function acceptMatch(
   if (!candidate || !job || !company) throw new Error('Related entities not found')
 
   // Determine shared data based on privacy settings
-  const customPrivacy = options.customPrivacy || {}
-  const effectivePrivacy = {
-    showRealName: customPrivacy.showRealName ?? candidate.privacy.showRealName,
-    shareDiagnosis: customPrivacy.shareDiagnosis ?? candidate.privacy.shareDiagnosis,
-    shareTherapistContact: customPrivacy.shareTherapistContact ?? candidate.privacy.shareTherapistContact,
-    shareAssessmentDetails: customPrivacy.shareAssessmentDetails ?? candidate.privacy.shareAssessmentDetails,
-  }
-
-  // Build sharedData array
-  const sharedData = ['name', 'email', 'skills', 'assessment']
-  if (effectivePrivacy.shareDiagnosis) sharedData.push('diagnosis')
-  if (effectivePrivacy.shareTherapistContact && candidate.profile.therapistId) sharedData.push('therapist')
-  sharedData.push('accommodations', 'experience', 'education')
+  const effectivePrivacy = buildEffectivePrivacy(options.customPrivacy || {}, candidate.privacy)
+  const sharedData = determineSharedData(effectivePrivacy, !!candidate.profile.therapistId)
 
   // Create connection + update match in transaction
   const connection = await prisma.$transaction(async (tx) => {
@@ -125,15 +125,15 @@ export async function acceptMatch(
   const jobTitle = (job as Record<string, unknown>).title ??
     ((job as Record<string, unknown>).details as Record<string, unknown>)?.title ?? 'this position'
 
+  const candidateName = getCandidateDisplayName(effectivePrivacy.showRealName, candidate.profile.name)
+
   const notifications = [
     {
       recipientId: match.companyId,
       type: 'new_candidate_match',
       matchId: match.matchId,
       connectionId: connection.id,
-      candidateName: effectivePrivacy.showRealName
-        ? candidate.profile.name
-        : 'Anonymous Candidate',
+      candidateName,
       message: `New candidate accepted match for ${jobTitle}`,
       createdAt: new Date(),
     },
@@ -182,8 +182,9 @@ export async function rejectMatch(
 ) {
   const match = await getMatchById(matchId)
   if (!match) throw new Error('Match not found')
-  if (match.candidateId !== userId) throw new Error('Unauthorized: Only candidate can reject match')
-  if (match.status !== 'pending') throw new Error(`Cannot reject match with status: ${match.status}`)
+
+  const error = validateRejectMatch(match, userId)
+  if (error) throw new Error(error)
 
   await prisma.matching.update({
     where: { id: matchId },
@@ -218,19 +219,7 @@ export async function customizeMatchPrivacy(
   const currentPrivacy = (connection.customPrivacy as unknown as Record<string, boolean>) ?? {}
   const newPrivacy = { ...currentPrivacy, ...privacyUpdates }
 
-  let sharedData = [...connection.sharedData]
-
-  if (privacyUpdates.shareDiagnosis === false) {
-    sharedData = sharedData.filter(f => f !== 'diagnosis')
-  } else if (privacyUpdates.shareDiagnosis === true && !sharedData.includes('diagnosis')) {
-    sharedData.push('diagnosis')
-  }
-
-  if (privacyUpdates.shareTherapistContact === false) {
-    sharedData = sharedData.filter(f => f !== 'therapist')
-  } else if (privacyUpdates.shareTherapistContact === true && !sharedData.includes('therapist')) {
-    sharedData.push('therapist')
-  }
+  const sharedData = updateSharedDataFromPrivacy(connection.sharedData, privacyUpdates)
 
   const currentMetadata = (connection.metadata as unknown as Record<string, unknown>) ?? {}
 
@@ -267,9 +256,9 @@ export async function revokeConsent(
 ) {
   const connection = await prisma.connection.findUnique({ where: { id: connectionId } })
   if (!connection) throw new Error('Connection not found')
-  if (connection.individualId !== userId) throw new Error('Unauthorized: Only candidate can revoke consent')
-  if (connection.status === 'revoked') throw new Error('Connection already revoked')
-  if (connection.pipelineStage === 'hired') throw new Error('Cannot revoke after hiring is complete')
+
+  const error = validateRevocation(connection, userId)
+  if (error) throw new Error(error)
 
   const updated = await prisma.connection.update({
     where: { id: connectionId },
@@ -366,32 +355,7 @@ export async function getMatchPrivacyPreview(matchId: string, userId: string) {
   const candidate = await getIndividualProfile(userId)
   if (!candidate) throw new Error('User not found')
 
-  const companyWillSee = ['name', 'email', 'skills', 'assessment', 'accommodations', 'experience']
-  const companyWillNotSee = ['Real name', 'Diagnosis', 'Therapist contact']
-
-  if (candidate.privacy.showRealName) {
-    const idx = companyWillNotSee.indexOf('Real name')
-    if (idx !== -1) companyWillNotSee.splice(idx, 1)
-  }
-
-  if (candidate.privacy.shareDiagnosis) {
-    companyWillSee.push('diagnosis')
-    const idx = companyWillNotSee.indexOf('Diagnosis')
-    if (idx !== -1) companyWillNotSee.splice(idx, 1)
-  }
-
-  if (candidate.privacy.shareTherapistContact && candidate.profile.therapistId) {
-    companyWillSee.push('therapist')
-    const idx = companyWillNotSee.indexOf('Therapist contact')
-    if (idx !== -1) companyWillNotSee.splice(idx, 1)
-  }
-
-  return {
-    companyWillSee,
-    companyWillNotSee,
-    canCustomize: true,
-    message: 'You can customize these settings for this specific connection when accepting the match',
-  }
+  return buildPrivacyPreview(candidate.privacy, !!candidate.profile.therapistId)
 }
 
 /**
@@ -480,7 +444,7 @@ export async function getActiveConnection(candidateId: string, companyId: string
  * Update connection pipeline stage
  */
 export async function updateConnectionStage(connectionId: string, newStage: string) {
-  if (!VALID_STAGES.includes(newStage)) {
+  if (!isValidPipelineStage(newStage)) {
     throw new Error(`Invalid pipeline stage: ${newStage}`)
   }
 
