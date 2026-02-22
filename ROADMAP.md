@@ -43,7 +43,7 @@
 | Bug fix: therapists.ts | 21 Feb | Campos `welcomeEmailSent`, `redirectTo`, `rejectionReason` en normalizer |
 | forms/route.js migrado a Prisma | 21 Feb | Modelo `FormSubmission` + ruta sin `fs` |
 | CI/CD GitHub Actions | 21 Feb | Workflow: test + build + lint |
-| Tests obsoletos a pending/ | 21 Feb | registration-flow, middleware_auth (requieren refactoring) |
+| Tests obsoletos a pending/ | 21 Feb | Movidos temporalmente; reemplazados y eliminados en Sprint 2 |
 
 ### Sprint 2 — Completado (22 Feb 2026)
 
@@ -102,7 +102,7 @@
 - [x] Crear `tests/helpers/prisma-mock.js` — in-memory mock con CRUD, $transaction, push, increment
 - [x] Verificar que tests existentes pasan con nuevos modulos (191 tests pasan)
 - [x] Skip condicional para `prisma.test.js` (requiere DATABASE_URL)
-- [x] Mover tests obsoletos a `tests/pending/integration/`
+- [x] ~~Mover tests obsoletos a `tests/pending/`~~ Eliminados (reemplazados en Sprint 2)
 
 ### 1.4 Limpieza: Eliminar archivos legacy — COMPLETADO
 
