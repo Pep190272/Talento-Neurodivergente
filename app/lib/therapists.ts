@@ -11,9 +11,12 @@
  * - Modelo Therapist expandido con todos los campos del JSON schema
  * - Cross-calls a individuals.ts (Prisma) se mantienen igual
  * - Verificación de certificaciones sigue siendo simulada (MVP)
+ *
+ * Sprint 3: Refactored to use TherapistRepo repository layer
+ * — all direct Prisma calls replaced with repository functions.
  */
 
-import prisma from './prisma'
+import * as TherapistRepo from './repositories/therapist.repository'
 import type { Therapist, User } from '@prisma/client'
 import {
   isValidEmail,
@@ -188,7 +191,7 @@ export async function createTherapist(data: {
   }
 
   // Check for duplicate email
-  const existingUser = await prisma.user.findUnique({ where: { email } })
+  const existingUser = await TherapistRepo.findUserByEmail(email)
   if (existingUser) {
     throw new Error('Email already exists')
   }
@@ -234,86 +237,71 @@ export async function createTherapist(data: {
     })
   }
 
-  // Create User + Therapist in transaction
-  const result = await prisma.$transaction(async (tx) => {
-    const user = await tx.user.create({
-      data: {
-        email,
-        passwordHash: data.password || 'pending_hash',
-        userType: 'therapist',
-        status: 'pending_verification',
+  // Create User + Therapist in transaction via repository
+  const result = await TherapistRepo.createUserAndTherapist(
+    {
+      email,
+      passwordHash: data.password || 'pending_hash',
+      userType: 'therapist',
+      status: 'pending_verification',
+    },
+    {
+      name: sanitizeInput(data.profile.name || ''),
+      specialty: data.profile.specializations?.[0] ?? null,
+      licenseNumber: certifications[0]?.licenseNumber ?? null,
+      specializations: data.profile.specializations || [],
+      certifications: certifications as unknown as [],
+      certificationValidation: {
+        validated: hasRecognizedCert,
+        checkedAt: new Date(),
       },
-    })
-
-    const therapist = await tx.therapist.create({
-      data: {
-        userId: user.id,
-        name: sanitizeInput(data.profile.name || ''),
-        specialty: data.profile.specializations?.[0] ?? null,
-        licenseNumber: certifications[0]?.licenseNumber ?? null,
-        specializations: data.profile.specializations || [],
-        certifications: certifications as unknown as [],
-        certificationValidation: {
-          validated: hasRecognizedCert,
-          checkedAt: new Date(),
-        },
-        additionalDocRequired: !hasRecognizedCert,
-        neurodiversityExperience,
-        experienceYears: data.profile.experienceYears || 0,
-        approach: data.profile.approach || null,
-        services: data.profile.services || [],
-        languages: data.profile.languages || ['English'],
-        location: data.profile.location || null,
-        bio: sanitizeInput(data.profile.bio || ''),
-        acceptingNewClients: true,
-        clients: [],
-        companyPartners: [],
-        maxClients: data.availability?.maxClients || 20,
-        currentClients: 0,
-        verificationStatus: 'pending',
-        badges: badges.length > 0 ? badges : [],
-        warnings: warnings.length > 0 ? warnings as unknown as [] : [],
-        metadata: {
-          lastLogin: new Date().toISOString(),
-          sessionsCompleted: 0,
-          clientSatisfactionScore: null,
-          averageResponseTime: null,
-          lastSessionDate: null,
-        },
+      additionalDocRequired: !hasRecognizedCert,
+      neurodiversityExperience,
+      experienceYears: data.profile.experienceYears || 0,
+      approach: data.profile.approach || null,
+      services: data.profile.services || [],
+      languages: data.profile.languages || ['English'],
+      location: data.profile.location || null,
+      bio: sanitizeInput(data.profile.bio || ''),
+      acceptingNewClients: true,
+      clients: [],
+      companyPartners: [],
+      maxClients: data.availability?.maxClients || 20,
+      currentClients: 0,
+      verificationStatus: 'pending',
+      badges: badges.length > 0 ? badges : [],
+      warnings: warnings.length > 0 ? warnings as unknown as [] : [],
+      metadata: {
+        lastLogin: new Date().toISOString(),
+        sessionsCompleted: 0,
+        clientSatisfactionScore: null,
+        averageResponseTime: null,
+        lastSessionDate: null,
       },
-      include: { user: true },
-    })
+    }
+  )
 
-    return therapist
-  })
-
-  return normalizeTherapist(result)
+  return normalizeTherapist(result as TherapistWithUser)
 }
 
 /**
  * Get therapist profile by therapist ID
  */
 export async function getTherapist(therapistId: string): Promise<TherapistProfile | null> {
-  const therapist = await prisma.therapist.findUnique({
-    where: { id: therapistId },
-    include: { user: true },
-  })
+  const therapist = await TherapistRepo.findTherapistById(therapistId)
 
   if (!therapist) return null
-  return normalizeTherapist(therapist)
+  return normalizeTherapist(therapist as TherapistWithUser)
 }
 
 /**
  * Get therapist by userId
  */
 export async function getTherapistByUserId(userId: string): Promise<TherapistProfile | null> {
-  const therapist = await prisma.therapist.findUnique({
-    where: { userId },
-    include: { user: true },
-  })
+  const therapist = await TherapistRepo.findTherapistByUserId(userId)
 
   if (!therapist) return null
-  return normalizeTherapist(therapist)
+  return normalizeTherapist(therapist as TherapistWithUser)
 }
 
 /**
@@ -347,13 +335,9 @@ export async function updateTherapist(
     if (updates.availability.currentClients !== undefined) data.currentClients = updates.availability.currentClients
   }
 
-  const therapist = await prisma.therapist.update({
-    where: { id: therapistId },
-    data,
-    include: { user: true },
-  })
+  const therapist = await TherapistRepo.updateTherapistInDb(therapistId, data)
 
-  return normalizeTherapist(therapist)
+  return normalizeTherapist(therapist as TherapistWithUser)
 }
 
 /**
@@ -384,20 +368,10 @@ export async function verifyTherapist(
   if (options.verifiedBy) data.verifiedBy = options.verifiedBy
   if (options.notes) data.verificationNotes = options.notes
 
-  const therapist = await prisma.therapist.update({
-    where: { id: therapistId },
-    data: {
-      ...data,
-      user: {
-        update: {
-          status: isRejected ? 'rejected' : 'active',
-        },
-      },
-    },
-    include: { user: true },
-  })
+  const userStatus = isRejected ? 'rejected' : 'active'
+  const therapist = await TherapistRepo.updateTherapistWithUserStatus(therapistId, data, userStatus)
 
-  return normalizeTherapist(therapist)
+  return normalizeTherapist(therapist as TherapistWithUser)
 }
 
 /**
@@ -406,30 +380,23 @@ export async function verifyTherapist(
  */
 export async function addClientToTherapist(therapistId: string, clientId: string): Promise<TherapistProfile> {
   // First read current state
-  const therapist = await prisma.therapist.findUnique({
-    where: { id: therapistId },
-    include: { user: true },
-  })
+  const therapist = await TherapistRepo.findTherapistById(therapistId)
 
   if (!therapist) throw new Error('Therapist not found')
   if (therapist.clients.includes(clientId)) throw new Error('Client already added')
   if (!therapist.acceptingNewClients) throw new Error('Therapist not accepting new clients')
   if (therapist.currentClients >= therapist.maxClients) throw new Error('Therapist at maximum capacity')
 
-  const updated = await prisma.therapist.update({
-    where: { id: therapistId },
-    data: {
-      clients: { push: clientId },
-      currentClients: { increment: 1 },
-    },
-    include: { user: true },
+  const updated = await TherapistRepo.updateTherapistInDb(therapistId, {
+    clients: { push: clientId },
+    currentClients: { increment: 1 },
   })
 
   // Cross-update individual's therapist reference
   const { addTherapistToIndividual } = await import('./individuals')
   await addTherapistToIndividual(clientId, therapistId)
 
-  return normalizeTherapist(updated)
+  return normalizeTherapist(updated as TherapistWithUser)
 }
 
 /**
@@ -437,79 +404,58 @@ export async function addClientToTherapist(therapistId: string, clientId: string
  * Also removes therapist from individual's profile via cross-call
  */
 export async function removeClientFromTherapist(therapistId: string, clientId: string): Promise<TherapistProfile> {
-  const therapist = await prisma.therapist.findUnique({
-    where: { id: therapistId },
-    include: { user: true },
-  })
+  const therapist = await TherapistRepo.findTherapistById(therapistId)
 
   if (!therapist) throw new Error('Therapist not found')
 
-  const updated = await prisma.therapist.update({
-    where: { id: therapistId },
-    data: {
-      clients: therapist.clients.filter(id => id !== clientId),
-      currentClients: Math.max(0, therapist.currentClients - 1),
-    },
-    include: { user: true },
+  const updated = await TherapistRepo.updateTherapistInDb(therapistId, {
+    clients: therapist.clients.filter(id => id !== clientId),
+    currentClients: Math.max(0, therapist.currentClients - 1),
   })
 
   // Cross-update individual's therapist reference
   const { removeTherapistFromIndividual } = await import('./individuals')
   await removeTherapistFromIndividual(clientId)
 
-  return normalizeTherapist(updated)
+  return normalizeTherapist(updated as TherapistWithUser)
 }
 
 /**
  * Add company partner to therapist
  */
 export async function addCompanyPartner(therapistId: string, companyId: string): Promise<TherapistProfile> {
-  const therapist = await prisma.therapist.findUnique({
-    where: { id: therapistId },
-    include: { user: true },
-  })
+  const therapist = await TherapistRepo.findTherapistById(therapistId)
 
   if (!therapist) throw new Error('Therapist not found')
   if (therapist.companyPartners.includes(companyId)) throw new Error('Company already a partner')
 
-  const updated = await prisma.therapist.update({
-    where: { id: therapistId },
-    data: {
-      companyPartners: { push: companyId },
-    },
-    include: { user: true },
+  const updated = await TherapistRepo.updateTherapistInDb(therapistId, {
+    companyPartners: { push: companyId },
   })
 
-  return normalizeTherapist(updated)
+  return normalizeTherapist(updated as TherapistWithUser)
 }
 
 /**
  * Remove company partner from therapist
  */
 export async function removeCompanyPartner(therapistId: string, companyId: string): Promise<TherapistProfile> {
-  const therapist = await prisma.therapist.findUnique({
-    where: { id: therapistId },
-    include: { user: true },
-  })
+  const therapist = await TherapistRepo.findTherapistById(therapistId)
 
   if (!therapist) throw new Error('Therapist not found')
 
-  const updated = await prisma.therapist.update({
-    where: { id: therapistId },
-    data: {
-      companyPartners: therapist.companyPartners.filter(id => id !== companyId),
-    },
-    include: { user: true },
+  const updated = await TherapistRepo.updateTherapistInDb(therapistId, {
+    companyPartners: therapist.companyPartners.filter(id => id !== companyId),
   })
 
-  return normalizeTherapist(updated)
+  return normalizeTherapist(updated as TherapistWithUser)
 }
 
 /**
  * Get client data for therapist (with elevated access — therapists see diagnoses)
  */
 export async function getClientDataForTherapist(therapistId: string, clientId: string) {
-  const therapist = await prisma.therapist.findUnique({ where: { id: therapistId } })
+  const therapist = await TherapistRepo.findTherapistByIdWithoutUser(therapistId)
 
   if (!therapist) throw new Error('Therapist not found')
   if (!therapist.clients.includes(clientId)) throw new Error('Not authorized to access this client')
@@ -536,10 +482,7 @@ export async function getClientDataForTherapist(therapistId: string, clientId: s
  * Get all clients for a therapist
  */
 export async function getTherapistClients(therapistId: string) {
-  const therapist = await prisma.therapist.findUnique({
-    where: { id: therapistId },
-    include: { user: true },
-  })
+  const therapist = await TherapistRepo.findTherapistById(therapistId)
 
   if (!therapist) throw new Error('Therapist not found')
 
@@ -642,60 +585,38 @@ export async function logTherapySession(
   clientId: string,
   _sessionData?: unknown
 ): Promise<TherapistProfile> {
-  const therapist = await prisma.therapist.findUnique({
-    where: { id: therapistId },
-    include: { user: true },
-  })
+  const therapist = await TherapistRepo.findTherapistById(therapistId)
 
   if (!therapist) throw new Error('Therapist not found')
   if (!therapist.clients.includes(clientId)) throw new Error('Not authorized to log session for this client')
 
   const currentMetadata = (therapist.metadata as unknown as TherapistMetadata) ?? {} as TherapistMetadata
 
-  const updated = await prisma.therapist.update({
-    where: { id: therapistId },
-    data: {
-      metadata: {
-        ...currentMetadata,
-        sessionsCompleted: (currentMetadata.sessionsCompleted || 0) + 1,
-        lastSessionDate: new Date().toISOString(),
-      },
+  const updated = await TherapistRepo.updateTherapistInDb(therapistId, {
+    metadata: {
+      ...currentMetadata,
+      sessionsCompleted: (currentMetadata.sessionsCompleted || 0) + 1,
+      lastSessionDate: new Date().toISOString(),
     },
-    include: { user: true },
   })
 
-  return normalizeTherapist(updated)
+  return normalizeTherapist(updated as TherapistWithUser)
 }
 
 /**
  * Get all verified therapists (for matching)
  */
 export async function getVerifiedTherapists(): Promise<TherapistProfile[]> {
-  const therapists = await prisma.therapist.findMany({
-    where: {
-      verificationStatus: 'verified',
-      acceptingNewClients: true,
-      user: { status: 'active' },
-    },
-    include: { user: true },
-  })
+  const therapists = await TherapistRepo.findVerifiedTherapists()
 
-  return therapists.map(normalizeTherapist)
+  return (therapists as TherapistWithUser[]).map(normalizeTherapist)
 }
 
 /**
  * Search therapists by specialization
  */
 export async function searchTherapistsBySpecialization(specialization: string): Promise<TherapistProfile[]> {
-  const therapists = await prisma.therapist.findMany({
-    where: {
-      verificationStatus: 'verified',
-      acceptingNewClients: true,
-      user: { status: 'active' },
-      specializations: { has: specialization },
-    },
-    include: { user: true },
-  })
+  const therapists = await TherapistRepo.findTherapistsBySpecialization(specialization)
 
   // Also do partial match for broader results
   if (therapists.length === 0) {
@@ -707,7 +628,7 @@ export async function searchTherapistsBySpecialization(specialization: string): 
     )
   }
 
-  return therapists.map(normalizeTherapist)
+  return (therapists as TherapistWithUser[]).map(normalizeTherapist)
 }
 
 /**
@@ -719,7 +640,7 @@ export async function addTherapistNotes(
   clientId: string,
   noteData: { content: string; private?: boolean }
 ) {
-  const therapist = await prisma.therapist.findUnique({ where: { id: therapistId } })
+  const therapist = await TherapistRepo.findTherapistByIdWithoutUser(therapistId)
 
   if (!therapist) throw new Error('Therapist not found')
   if (!therapist.clients.includes(clientId)) throw new Error('Access denied: No consent from client')
@@ -743,10 +664,7 @@ export async function addCompanyClient(
   companyId: string,
   contractData: { serviceType?: string; contractStartDate?: Date } = {}
 ): Promise<TherapistProfile> {
-  const therapist = await prisma.therapist.findUnique({
-    where: { id: therapistId },
-    include: { user: true },
-  })
+  const therapist = await TherapistRepo.findTherapistById(therapistId)
 
   if (!therapist) throw new Error('Therapist not found')
   if (therapist.companyPartners.includes(companyId)) throw new Error('Company already a consulting client')
@@ -758,23 +676,19 @@ export async function addCompanyClient(
     addedAt: new Date(),
   }
 
-  const updated = await prisma.therapist.update({
-    where: { id: therapistId },
-    data: {
-      companyPartners: { push: companyId },
-      companyContracts: contracts as unknown as [],
-    },
-    include: { user: true },
+  const updated = await TherapistRepo.updateTherapistInDb(therapistId, {
+    companyPartners: { push: companyId },
+    companyContracts: contracts as unknown as [],
   })
 
-  return normalizeTherapist(updated)
+  return normalizeTherapist(updated as TherapistWithUser)
 }
 
 /**
  * Get company metrics for therapist (aggregated only)
  */
 export async function getCompanyMetricsForTherapist(therapistId: string, companyId: string) {
-  const therapist = await prisma.therapist.findUnique({ where: { id: therapistId } })
+  const therapist = await TherapistRepo.findTherapistByIdWithoutUser(therapistId)
 
   if (!therapist) throw new Error('Therapist not found')
   if (!therapist.companyPartners.includes(companyId)) {
@@ -832,10 +746,7 @@ export async function getTherapistAggregateMetrics(therapistId: string) {
  * Request therapist for onboarding support (company initiates)
  */
 export async function requestTherapistForOnboarding(companyId: string, therapistId: string) {
-  const therapist = await prisma.therapist.findUnique({
-    where: { id: therapistId },
-    include: { user: true },
-  })
+  const therapist = await TherapistRepo.findTherapistById(therapistId)
 
   if (!therapist) throw new Error('Therapist not found')
 
@@ -860,9 +771,8 @@ export async function requestTherapistForOnboarding(companyId: string, therapist
     status: 'pending',
   })
 
-  await prisma.therapist.update({
-    where: { id: therapistId },
-    data: { pendingRequests: pendingRequests as unknown as [] },
+  await TherapistRepo.updateTherapistInDb(therapistId, {
+    pendingRequests: pendingRequests as unknown as [],
   })
 
   return {
@@ -877,7 +787,7 @@ export async function requestTherapistForOnboarding(companyId: string, therapist
  * Check client alerts for therapist
  */
 export async function checkClientAlerts(therapistId: string) {
-  const therapist = await prisma.therapist.findUnique({ where: { id: therapistId } })
+  const therapist = await TherapistRepo.findTherapistByIdWithoutUser(therapistId)
 
   if (!therapist) throw new Error('Therapist not found')
 

@@ -2,7 +2,7 @@
 
 **Fecha de inicio:** 10 de febrero de 2026
 **Ultima actualizacion:** 22 de febrero de 2026
-**Estado:** Sprint 1 completado — Sprint 2 completado
+**Estado:** Sprint 1 completado — Sprint 2 completado — Sprint 3 en progreso
 
 ---
 
@@ -168,41 +168,72 @@
 
 ## Sprint 3: Arquitectura y Capas
 
-**Periodo:** Marzo 2026
-**Estado:** No iniciado
+**Periodo:** Febrero-Marzo 2026
+**Estado:** EN PROGRESO
 
-### 3.1 Extraer Service Layer
-
-Independiente de la decision monolito vs. microservicios:
+### 3.1 Extraer Service Layer — COMPLETADO
 
 ```
 app/lib/
-  services/          # Logica de negocio pura
-    matching.service.ts
-    consent.service.ts
-    profiles.service.ts
-  repositories/      # Data access layer (Prisma)
-    individual.repository.ts
-    company.repository.ts
-    therapist.repository.ts
+  services/          # Logica de negocio pura (sin Prisma)
+    users.ts              # (pre-existente, 1 metodo)
+    matching.service.ts   # Scoring algorithm, weights, thresholds
+    consent.service.ts    # Consent validation, privacy logic
+    profiles.service.ts   # Profile normalization, validation, completion
+  repositories/      # Data access layer (solo Prisma)
+    individual.repository.ts  # User + Individual CRUD
+    company.repository.ts     # User + Company + Job CRUD
+    therapist.repository.ts   # User + Therapist CRUD
 ```
 
-- [ ] Crear `services/` con logica extraida de modulos actuales
-- [ ] Crear `repositories/` con queries Prisma encapsuladas
-- [ ] Refactorizar API routes para usar services
-- [ ] Logica testeable sin depender de HTTP/framework
+- [x] Crear `repositories/` con queries Prisma encapsuladas
+- [x] Crear `services/` con logica extraida de modulos actuales
+- [x] Refactorizar lib files para usar repos/services (individuals, companies, therapists, matching, consent)
+- [x] Logica testeable sin depender de Prisma/HTTP/framework
 
-### 3.2 Definir Arquitectura Objetivo
+### 3.2 Refactorizar API Routes — COMPLETADO
 
-**Pendiente de preguntas estrategicas (ver seccion final)**
+API routes ya eran thin wrappers (no tocaban Prisma directamente). Con el refactoring:
 
-**Opcion A: Monolito Next.js (actual)**
-- Simple, todo en un repo, deploy unico
-- Limita app movil futura
+```
+API Route → lib file (orquestacion) → service (logica) + repository (datos)
+```
 
-**Opcion B: Backend separado (NestJS/Fastify)**
-- Multiples frontends (web, movil, widget)
-- Mas complejo, dos deploys
+- [x] Verificar que API routes no requieren cambios (ya delegaban a lib files)
+- [x] Tests pasando sin regresiones (272+ tests)
+
+### 3.3 Decision Arquitectonica: Monolito Next.js
+
+**Decision: Mantener monolito Next.js** (22 Feb 2026)
+
+**Contexto:**
+- Equipo pequeno (1-2 personas), MVP pre-revenue
+- Sin multiples frontends confirmados aun
+- Deploy unico simplifica operaciones
+- PostgreSQL via Prisma ya esta desacoplado
+
+**Justificacion:**
+
+| Criterio | Monolito Next.js | Backend separado (NestJS) |
+|----------|-----------------|--------------------------|
+| Velocidad de desarrollo | Alta — 1 repo, 1 deploy | Baja — 2 repos, 2 deploys, CORS |
+| Complejidad operativa | Baja — Vercel/VPS unico | Alta — 2 servicios, API gateway |
+| Coste | Bajo — 1 instancia | Alto — 2+ instancias |
+| App movil futura | React Native + API routes | Nativo con backend dedicado |
+| Testabilidad | Con service layer: Alta | Alta por defecto |
+| Migracion futura | Service layer ya preparada | N/A |
+
+**Ruta de escape:** El service layer extraido en 3.1 permite migrar a backend separado
+en el futuro sin reescribir logica de negocio. Los services son funciones puras,
+los repositories encapsulan Prisma. Solo habria que:
+1. Copiar `services/` y `repositories/` a un proyecto NestJS/Fastify
+2. Exponer como controllers REST/GraphQL
+3. Apuntar el frontend Next.js a la nueva API
+
+**Trigger para reconsiderar:**
+- App movil nativa confirmada como requisito
+- >3 desarrolladores backend simultaneos
+- Necesidad de escalar API independientemente del frontend
 
 ---
 
@@ -284,12 +315,13 @@ app/lib/
 | MatchingStatus como enum Prisma | PENDING, APPROVED, REJECTED, WITHDRAWN, CONTESTED | 20 Feb |
 | Connection.status como String | "active", "revoked" — por simplicidad | 20 Feb |
 | Prisma 7 adapter pattern | `@prisma/adapter-pg` en runtime, `env('DATABASE_URL')` en CLI | 20 Feb |
+| Monolito Next.js (mantener) | Service + Repository layer para desacoplar | 22 Feb |
+| Service + Repository Layer | Logica pura en services, Prisma solo en repositories | 22 Feb |
 
 ### Pendientes
 
 | Decision | Opciones | Depende de |
 |----------|----------|------------|
-| Monolito vs. backend separado | Next.js monolito / NestJS separado | Multiples frontends? |
 | NextAuth vs. Auth0/Clerk | Mantener NextAuth / Migrar a managed | Compliance, budget |
 | LLM provider | Gemini API / Claude API / OpenAI | Evaluacion, costes |
 | Hosting | Vercel + VPS / Railway / Render | Budget, DevOps capacity |
