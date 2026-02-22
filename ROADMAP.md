@@ -1,8 +1,8 @@
 # ROADMAP — DiversIA Eternals
 
 **Fecha de inicio:** 10 de febrero de 2026
-**Ultima actualizacion:** 21 de febrero de 2026
-**Estado:** Sprint 1 completado — Sprint 2 iniciado
+**Ultima actualizacion:** 22 de febrero de 2026
+**Estado:** Sprint 1 completado — Sprint 2 completado
 
 ---
 
@@ -45,13 +45,19 @@
 | CI/CD GitHub Actions | 21 Feb | Workflow: test + build + lint |
 | Tests obsoletos a pending/ | 21 Feb | registration-flow, middleware_auth (requieren refactoring) |
 
-### En Progreso
+### Sprint 2 — Completado (22 Feb 2026)
 
-| Tarea | Estado | Bloqueante |
-|-------|--------|------------|
-| Reactivar 5 tests en `pending/unit/` | Sprint 2 | No |
-| Migrar integration tests a Prisma | Sprint 2 | No |
-| Migracion progresiva TypeScript | Sprint 2 | No |
+| Tarea | Fecha | Detalle |
+|-------|-------|---------|
+| Proteccion de branch `main` | 22 Feb | Ruleset: require PR, no direct push to main |
+| Dependabot PR reviewed + merged | 22 Feb | Next.js 15.5.9 a 15.5.12 (merge via GitHub UI) |
+| GitHub Issues #25, #26, #27 creados | 22 Feb | Sprints 3, 4, 5 planificados con labels |
+| Tests reactivados (matching) | 22 Feb | 12 tests: calculateMatch, runMatching, expiration, invalidation |
+| Tests reactivados (consent) | 22 Feb | 20 tests: acceptMatch, rejectMatch, revokeConsent, therapistAccess |
+| Tests reactivados (audit) | 22 Feb | 15 tests: logDataAccess, GDPR export, AI decisions, EU AI Act |
+| Tests reactivados (dashboards) | 22 Feb | 14 tests: individual, company, therapist dashboards + views |
+| Integration tests migrados a Prisma | 22 Feb | middleware_auth (8 tests), registration-flow (12 tests) |
+| Suite completa verde | 22 Feb | 272 passed, 5 skipped, 0 failed (de 191 a 272 tests) |
 
 ### Estado de Modulos
 
@@ -120,32 +126,42 @@
 ## Sprint 2: Tests y Limpieza
 
 **Periodo:** Semana 3-4 Feb 2026
-**Estado:** Parcialmente iniciado (CI/CD hecho, mocking listo)
+**Estado:** COMPLETADO
 
-### 2.1 Corregir Tests Existentes
+### 2.1 Corregir Tests Existentes — COMPLETADO
 
-**Estado previo:** 155 tests, 4 pasando (3%)
-**Objetivo:** Tests refactorizados para modulos Prisma
+**Estado previo:** 191 tests (Sprint 1)
+**Estado final:** 272 tests, 0 failed, 5 skipped
 
-- [ ] Configurar mocking de Prisma para tests unitarios
-- [ ] Migrar `tests/unit/actors/therapist.test.js`
-- [ ] Migrar `tests/unit/actors/matching.test.js`
-- [ ] Migrar `tests/unit/actors/consent.test.js`
-- [ ] Migrar `tests/unit/actors/dashboards.test.js`
-- [ ] Verificar que tests de `individuals` y `companies` siguen pasando
+- [x] Prisma mock configurado (`tests/helpers/prisma-mock.js`)
+- [x] `tests/unit/actors/therapist.test.js` — 29 tests (Sprint 1)
+- [x] `tests/unit/matching/matching.test.js` — 12 tests (scoring, expiration, invalidation)
+- [x] `tests/unit/matching/consent.test.js` — 20 tests (accept/reject/revoke, privacy, therapist)
+- [x] `tests/unit/dashboards/dashboards.test.js` — 14 tests (individual, company, therapist)
+- [x] `tests/unit/privacy/audit.test.js` — 15 tests (GDPR logging, AI audit, data export)
+- [x] `tests/integration/middleware_auth.test.js` — 8 tests (auth redirect, security headers, rate limiting)
+- [x] `tests/integration/registration-flow.test.js` — 12 tests (individual, company, therapist flows)
+- [x] Tests de `individuals` y `companies` verificados (23 + 23 tests)
 
-### 2.2 Setup CI/CD Basico
+### 2.2 Setup CI/CD Basico — COMPLETADO
 
 - [x] GitHub Actions workflow: tests + build + lint
-- [ ] Proteccion de branch `main`
-- [ ] Dependabot configurado (ya detecta vulnerabilidades)
+- [x] Proteccion de branch `main` (Ruleset: require PR, no direct push)
+- [x] Dependabot configurado y PR mergeado (Next.js 15.5.12)
 
-### 2.3 Migracion TypeScript Progresiva
+### 2.3 Planificacion Sprints 3-5 — COMPLETADO
+
+- [x] GitHub Issue #25: Sprint 3 — Arquitectura y Capas
+- [x] GitHub Issue #26: Sprint 4 — LLM y Compliance
+- [x] GitHub Issue #27: Sprint 5 — Seguridad y Deploy
+- [x] Labels creadas: architecture, compliance, AI/ML, testing, deployment, security
+
+### 2.4 Migracion TypeScript Progresiva — EN CURSO
 
 **Regla:** "Si editas un `.js`, conviertelo a `.ts` en el mismo commit"
 
-- [ ] API routes mas usadas (matching, individuals, consent)
-- [ ] Componentes React criticos (`.jsx` a `.tsx`)
+- [x] API routes migradas (matching, individuals, consent, dashboards, therapists, audit)
+- [ ] Componentes React criticos (`.jsx` a `.tsx`) — Sprint 3+
 - [ ] Objetivo: >80% TypeScript antes de quitar `ignoreBuildErrors`
 
 ---
@@ -380,3 +396,29 @@ app/lib/
 - Despues: 15 passed, 1 skipped, 0 failed
 
 **Proxima sesion:** Reactivar tests pending, migracion TypeScript progresiva, proteccion de branch main
+
+### Sesion 4 — 22 Feb 2026
+
+**Trabajos realizados:**
+- Proteccion de branch `main` configurada (Ruleset en GitHub)
+- Dependabot PR revisado, explicado al usuario, y mergeado (Next.js 15.5.12)
+- GitHub Issues #25, #26, #27 creados para Sprints 3, 4, 5
+- Labels de GitHub creadas (architecture, compliance, AI/ML, testing, deployment, security)
+- 4 nuevos archivos de test unitarios creados:
+  - `tests/unit/matching/matching.test.js` (12 tests)
+  - `tests/unit/matching/consent.test.js` (20 tests)
+  - `tests/unit/dashboards/dashboards.test.js` (14 tests)
+  - `tests/unit/privacy/audit.test.js` (15 tests)
+- 2 tests de integracion reescritos para Prisma:
+  - `tests/integration/middleware_auth.test.js` (8 tests)
+  - `tests/integration/registration-flow.test.js` (12 tests)
+- Suite de tests 100% verde: 272 passed, 5 skipped, 0 failed
+
+**Metricas de tests:**
+- Antes (Sprint 1): 191 tests
+- Despues (Sprint 2): 272 tests (+81 tests, +42%)
+- Cobertura de modulos: matching, consent, audit, dashboards, middleware, registration
+
+**Sprint 2 completado al 100%**
+
+**Proxima sesion:** Sprint 3 — Arquitectura y Capas (Service + Repository Layer)
