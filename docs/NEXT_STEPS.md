@@ -23,7 +23,7 @@
 | **JSON File Storage** | No escalable, race conditions, sin transacciones | 🔴 **#1 CRÍTICO** |
 | **Arquitectura monolítica** | Dificulta múltiples frontends futuros | 🟡 #2 Alta |
 | **TypeScript parcial** | Sin type safety en lógica crítica | 🟡 #3 Alta |
-| **LLM self-hosted (Gemma 2B)** | Overhead operacional, calidad insuficiente | 🟢 #4 Media |
+| **LLM self-hosted (Ollama)** | Resuelto: upgrade Gemma 2B → Llama 3.2 3B | ✅ Resuelto |
 | **NextAuth vs. Auth0** | Compliance integrado en Auth0 | 🟢 #5 Media |
 
 ---
@@ -215,51 +215,35 @@ app/lib/
 
 ---
 
-### Sprint 3: LLM Integration & Compliance (1-2 semanas)
+### Sprint 3: LLM Upgrade & Compliance (1-2 semanas)
 
-#### 3.1 Migración Gemma 2B → Gemini API
+#### 3.1 LLM Self-Hosted: Upgrade Gemma 2B → Llama 3.2 3B
+
+**Decision (25 Feb 2026): Mantener self-hosted Ollama en VPS**
 
 **Estado actual:**
 - ✅ Cliente Ollama creado (`app/lib/llm.js`)
-- ❌ Gemma 2B self-hosted en Docker
-- ❌ Chat API usa pattern matching (no LLM real)
+- ✅ Ollama corriendo en VPS Hostinger (Paris, Francia)
+- ✅ Analisis de inclusividad funcional con fallback rule-based
+- ✅ 15 tests (12 activos, 3 skipped)
 
-**Propuesta: Migrar a Gemini 1.5 Pro API**
+**Decision: Self-hosted ES la opcion correcta para DiversIA**
 
-**Razones:**
-1. **Mejor modelo:** Gemini 1.5 Pro > Gemma 2B para evaluaciones complejas
-2. **Sin infraestructura:** No VPS, no Docker, no mantenimiento
-3. **Contexto largo:** 1M tokens (perfecto para análisis de perfiles)
-4. **Multimodal:** Puede analizar CVs en PDF/imagen
-5. **Español nativo:** Mejor que Gemma 2B
-6. **Gemini/GEMINI.md abierto** (veo que tienes `.gemini/GEMINI.md`)
+**Justificacion:**
+1. **Presupuesto $0** — Gemini API free tier insuficiente para produccion (5 RPM, 100 req/dia)
+2. **GDPR Art. 9** — Datos neurodivergentes (categoria especial) nunca salen de la infra
+3. **VPS ya pagado** — Coste marginal de Ollama = $0
+4. **Caso de uso acotado** — Solo `analyzeJobInclusivity()` con prompt estructurado
+5. **Llama 3.2 3B > Gemma 2B** — IFEval 77.4 vs 61.9 (+25% en seguir instrucciones)
 
-**Migración:**
-```diff
-- const response = await fetch('http://localhost:11434/api/generate', {
--   model: 'gemma:2b',
--   prompt: userInput
-- });
+**Upgrade de modelo (Gemma 2B → Llama 3.2 3B):**
+- [x] Actualizar default en `app/lib/llm.js` y `.env.example`
+- [ ] En VPS: `ollama pull llama3.2:3b` (2GB, requiere acceso al contenedor)
 
-+ import { GoogleGenerativeAI } from '@google/generative-ai';
-+ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-+ const model = genAI.getGenerativeModel({ model: 'gemini-1.5-pro' });
-+ const result = await model.generateContent(userInput);
-```
-
-**Tareas:**
-- [ ] Instalar `@google/generative-ai`
-- [ ] Configurar `GEMINI_API_KEY` en `.env`
-- [ ] Migrar `app/lib/llm.js` → `llm.service.ts`
-- [ ] Implementar prompts para:
-  - [ ] Evaluación de candidatos
-  - [ ] Matching explanations (AI justification)
-  - [ ] Análisis de inclusividad de job postings
-  - [ ] Suggestions en tiempo real
-- [ ] Agregar rate limiting para API calls
-- [ ] Implementar cache para queries repetidas
-
-**Estimación:** 2-3 horas
+**Tareas pendientes:**
+- [ ] Migrar `app/lib/llm.js` → `llm.service.ts` (TypeScript + service layer)
+- [ ] Implementar prompts para: evaluacion de candidatos, matching explanations
+- [ ] Rate limiting y cache para llamadas al LLM
 
 ---
 
@@ -396,7 +380,7 @@ app/lib/
 | **Prisma** | ✅ Schema diseñado | ✅ Usar | ✅ **APROBADO** |
 | **NextAuth v5** | ✅ Implementado | 🟡 Evaluar Auth0/Clerk | ⏳ Pendiente |
 | **JSON Storage** | 🔴 Actual | ❌ ELIMINAR | ✅ **ELIMINAR** |
-| **Gemma 2B** | 🟡 Cliente creado | ✅ Gemini API | 🟢 **RECOMENDADO** |
+| **LLM (Ollama)** | ✅ Self-hosted | ✅ Upgrade Llama 3.2 3B | ✅ **APROBADO** |
 | **Vitest** | ✅ Configurado | ✅ Mantener | ✅ **APROBADO** |
 | **jsdom** | ✅ Actual | 🟢 Cambiar a happy-dom | 🟢 Opcional |
 
@@ -480,7 +464,7 @@ app/lib/
 
 ### 📅 MES 1 (4 Mar - 31 Mar)
 1. **Separar service layer** (arquitectura limpia)
-2. **Migrar Gemma → Gemini API** (LLM production-ready)
+2. **Upgrade LLM: Llama 3.2 3B en VPS** (self-hosted, mejor calidad)
 3. **GDPR compliance completo** (download data, delete account)
 4. **Tests E2E críticos** (registro, matching, consent)
 
@@ -516,7 +500,7 @@ app/lib/
 - ✅ Migración JSON → PostgreSQL es prioridad #1 absoluta
 - ✅ Mantener PostgreSQL + Prisma (confirmado)
 - ✅ TypeScript migration progresiva (archivo por archivo)
-- 🟢 Recomendar Gemini API sobre Gemma 2B
+- ✅ Mantener LLM self-hosted (Ollama), upgrade Gemma 2B → Llama 3.2 3B (25 Feb)
 
 **Preguntas abiertas para próxima sesión:**
 - Modelo de monetización específico

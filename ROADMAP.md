@@ -240,14 +240,28 @@ los repositories encapsulan Prisma. Solo habria que:
 ## Sprint 4: LLM y Compliance
 
 **Periodo:** Marzo-Abril 2026
-**Estado:** No iniciado
+**Estado:** En progreso (decision LLM tomada)
 
-### 4.1 Migracion Gemma 2B a API Externa
+### 4.1 LLM Self-Hosted: Mantener Ollama + Upgrade Modelo
 
-**Estado actual:** Cliente Ollama creado pero Gemma 2B self-hosted no es viable para produccion.
+**Decision (25 Feb 2026): Mantener self-hosted Ollama, upgrade de Gemma 2B a Llama 3.2 3B**
 
-- [ ] Evaluar: Gemini API, Claude API, OpenAI API
-- [ ] Migrar `app/lib/llm.js` a `llm.service.ts`
+**Justificacion:**
+1. **Presupuesto $0** — Gemini API free tier insuficiente (5 RPM, 100 req/dia post-Dec 2025)
+2. **GDPR Art. 9** — Datos neurodivergentes (categoria especial) nunca salen de la infra
+3. **VPS ya pagado** — Coste marginal de Ollama = $0
+4. **Caso de uso acotado** — Solo `analyzeJobInclusivity()` con prompt estructurado
+5. **Llama 3.2 3B > Gemma 2B** — IFEval 77.4 vs 61.9 (+25% en seguir instrucciones)
+
+**Upgrade de modelo:**
+- [x] Decision: Gemma 2B → Llama 3.2 3B (self-hosted)
+- [x] Actualizar default en `app/lib/llm.js`
+- [x] Actualizar `.env.example`
+- [x] Actualizar documentacion (ROADMAP, NEXT_STEPS, DESPLIEGUE_VPS)
+- [ ] En VPS: `ollama pull llama3.2:3b` (2GB, requiere acceso al contenedor)
+
+**Tareas pendientes:**
+- [ ] Migrar `app/lib/llm.js` a `llm.service.ts` (TypeScript + service layer)
 - [ ] Implementar prompts para: evaluacion de candidatos, matching explanations, analisis de inclusividad
 - [ ] Rate limiting y cache para API calls
 
@@ -317,13 +331,13 @@ los repositories encapsulan Prisma. Solo habria que:
 | Prisma 7 adapter pattern | `@prisma/adapter-pg` en runtime, `env('DATABASE_URL')` en CLI | 20 Feb |
 | Monolito Next.js (mantener) | Service + Repository layer para desacoplar | 22 Feb |
 | Service + Repository Layer | Logica pura en services, Prisma solo en repositories | 22 Feb |
+| LLM Self-Hosted (Ollama) | Mantener self-hosted, upgrade Gemma 2B → Llama 3.2 3B | 25 Feb |
 
 ### Pendientes
 
 | Decision | Opciones | Depende de |
 |----------|----------|------------|
 | NextAuth vs. Auth0/Clerk | Mantener NextAuth / Migrar a managed | Compliance, budget |
-| LLM provider | Gemini API / Claude API / OpenAI | Evaluacion, costes |
 | Hosting | Vercel + VPS / Railway / Render | Budget, DevOps capacity |
 
 ---
