@@ -1,9 +1,10 @@
-# 🚀 Despliegue VPS - Ollama + Gemma 2B para Diversia
+# 🚀 Despliegue VPS - Ollama + Llama 3.2 3B para Diversia
 
-**Fecha**: 24 de enero de 2026  
-**Servidor**: VPS Hostinger (París, Francia)  
-**IP**: 77.83.232.203  
-**Tecnologías**: Dokploy, Docker, Ollama, Gemma 2B
+**Fecha**: 24 de enero de 2026 (actualizado 25 Feb 2026)
+**Servidor**: VPS Hostinger (París, Francia)
+**IP**: 77.83.232.203
+**Tecnologías**: Dokploy, Docker, Ollama, Llama 3.2 3B
+**Decision**: Self-hosted definitivo por GDPR Art. 9 (datos neurodivergentes)
 
 ---
 
@@ -127,18 +128,21 @@ volumes:
 
 ---
 
-### **PASO 5: Descargar Modelo Gemma 2B**
+### **PASO 5: Descargar Modelo Llama 3.2 3B**
+
+> **Nota**: Originalmente se usaba Gemma 2B. Se actualizó a Llama 3.2 3B (25 Feb 2026)
+> por mejor calidad en seguir instrucciones (IFEval 77.4 vs 61.9).
 
 1. **En la terminal del contenedor**, ejecutar:
 
 ```bash
-ollama pull gemma:2b
+ollama pull llama3.2:3b
 ```
 
-2. **Esperar la descarga** (~1.5 GB, tarda 2-5 minutos):
+2. **Esperar la descarga** (~2 GB, tarda 3-5 minutos):
    ```
    pulling manifest
-   pulling 4b2ac8... 100% ▕████████▏ 1.5 GB
+   pulling 4b2ac8... 100% ▕████████▏ 2.0 GB
    success
    ```
 
@@ -150,8 +154,8 @@ ollama list
 
 **Salida esperada**:
 ```
-NAME           ID          SIZE      MODIFIED
-gemma:2b       a1b2c3d4    1.5 GB    2 minutes ago
+NAME            ID          SIZE      MODIFIED
+llama3.2:3b     a1b2c3d4    2.0 GB    2 minutes ago
 ```
 
 ---
@@ -161,7 +165,7 @@ gemma:2b       a1b2c3d4    1.5 GB    2 minutes ago
 1. **En la misma terminal**, ejecutar test:
 
 ```bash
-ollama run gemma:2b "Analiza esta oferta de trabajo: Software Engineer for young and dynamic team"
+ollama run llama3.2:3b "Analiza esta oferta de trabajo: Software Engineer for young and dynamic team"
 ```
 
 2. **Esperar respuesta** (10-15 segundos primera vez):
@@ -192,7 +196,7 @@ exit
 # ============================================================================
 # URL del servidor Ollama en VPS Hostinger
 OLLAMA_HOST=http://77.83.232.203:11434
-OLLAMA_MODEL=gemma:2b
+OLLAMA_MODEL=llama3.2:3b
 ```
 
 3. **Guardar el archivo** (`Ctrl+S`)
@@ -219,7 +223,7 @@ async function testOllama() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'gemma:2b',
+        model: 'llama3.2:3b',
         prompt: 'Say hello in one sentence',
         stream: false
       })
@@ -262,7 +266,7 @@ Docker Container (diversia-ollama)
     ↓
 Ollama Service
     ↓
-Gemma 2B Model (1.5 GB en RAM)
+Llama 3.2 3B Model (~2 GB en RAM)
     ↓
 JSON Response ← Análisis
 ```
@@ -294,7 +298,7 @@ JSON Response ← Análisis
 docker exec -it diversia-ollama bash
 
 # Actualizar modelo
-ollama pull gemma:2b
+ollama pull llama3.2:3b
 
 # Salir
 exit
@@ -322,7 +326,7 @@ En Dokploy:
 | Servicio | RAM |
 |----------|-----|
 | Supabase (otro proyecto) | ~2.5 GB |
-| Ollama + Gemma 2B | ~2 GB |
+| Ollama + Llama 3.2 3B | ~2.5 GB |
 | Sistema Ubuntu | ~0.5 GB |
 | Docker overhead | ~0.3 GB |
 | **Total** | **~5.3 GB de 8 GB** |
@@ -334,7 +338,7 @@ En Dokploy:
 | Item | Espacio |
 |------|---------|
 | Imagen Ollama | ~800 MB |
-| Modelo Gemma 2B | ~1.5 GB |
+| Modelo Llama 3.2 3B | ~2 GB |
 | Volumen `ollama-data` | ~50 MB |
 | **Total** | **~2.4 GB de 100 GB** |
 
@@ -348,7 +352,7 @@ En Dokploy:
 
 2. **RAM (8 GB)**:
    - **Modelo Phi-3 Mini (3.8B)**: No cabe con Supabase corriendo
-   - **Gemma 2B**: Funciona OK pero ajustado
+   - **Llama 3.2 3B**: Funciona OK, ~2.5GB RAM
 
 3. **Sin GPU**:
    - Respuestas más lentas que con GPU (10x más lento)
@@ -391,10 +395,11 @@ En Dokploy:
    ```bash
    docker stop <supabase-container-name>
    ```
-2. Usar modelo más pequeño (Gemma 2B ya es el mínimo)
+2. Usar modelo más pequeño (Gemma 2B o Gemma 3 1B como alternativa mínima)
 
 ---
 
 **Documentación creada**: 24 de enero de 2026  
 **Última actualización**: 24 de enero de 2026  
 **Autor**: GACE + TECH_STACK_AGENT
+**Modelo actualizado**: Gemma 2B → Llama 3.2 3B (25 Feb 2026, decision GDPR Art. 9)

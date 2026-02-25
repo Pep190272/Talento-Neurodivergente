@@ -1,19 +1,14 @@
 /**
  * Ollama LLM Client for Diversia
  *
- * Provides integration with self-hosted Ollama instance on VPS
- * for job posting inclusivity analysis.
+ * Self-hosted Ollama on VPS Hostinger (Paris, France) with Llama 3.2 3B.
  *
- * Model: llama3.2:3b (self-hosted via diversia-ollama Docker container)
- *
- * Security:
- * - No external API keys required (self-hosted)
- * - GDPR compliant (data doesn't leave our VPS infrastructure)
- * - Timeout protection (10s max)
- * - Graceful fallback if Ollama is down
- *
- * Decision: Keep Ollama self-hosted (data control + zero API costs)
- * Both Ollama and PostgreSQL run on the same VPS (diversia-ollama + diversia-db)
+ * Decision (25 Feb 2026): Self-hosted is the definitive choice for DiversIA.
+ * Reasons:
+ * - GDPR Art. 9: Neurodivergent data (special category) never leaves our infra
+ * - Budget $0: No external API costs
+ * - Llama 3.2 3B: IFEval 77.4 (25% better than Gemma 2B at instruction following)
+ * - Timeout protection (10s max) + graceful fallback if VPS down
  */
 
 const OLLAMA_HOST = process.env.OLLAMA_HOST || 'http://localhost:11434'

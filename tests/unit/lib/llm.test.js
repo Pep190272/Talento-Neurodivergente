@@ -60,7 +60,7 @@ describe('🤖 LLM Client - Ollama Integration', () => {
             const requestBody = JSON.parse(callArgs[1].body)
 
             expect(requestBody).toMatchObject({
-                model: 'gemma:2b',
+                model: 'llama3.2:3b',
                 prompt: 'Test prompt',
                 format: 'json',
                 stream: false
