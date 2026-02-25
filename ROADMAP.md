@@ -240,16 +240,24 @@ los repositories encapsulan Prisma. Solo habria que:
 ## Sprint 4: LLM y Compliance
 
 **Periodo:** Marzo-Abril 2026
-**Estado:** No iniciado
+**Estado:** En progreso
 
-### 4.1 Migracion Gemma 2B a API Externa
+### 4.1 Cambio de modelo LLM: Gemma 2B → Llama 3.2:3b (Ollama self-hosted)
 
-**Estado actual:** Cliente Ollama creado pero Gemma 2B self-hosted no es viable para produccion.
+**Decision:** Mantener Ollama self-hosted en el VPS. No migrar a API externa.
 
-- [ ] Evaluar: Gemini API, Claude API, OpenAI API
+**Motivos:**
+- Control de datos: los datos no salen de nuestra infraestructura (GDPR by design)
+- Coste cero: sin API fees externos
+- Colocalizacion: `diversia-ollama` y `diversia-db` corren en el mismo VPS
+
+**Modelo anterior:** `gemma:2b`
+**Modelo actual:** `llama3.2:3b` (3B parametros, ~2GB RAM, dentro del limite de 4GB del contenedor)
+
+- [x] Cambiar modelo de `gemma:2b` a `llama3.2:3b` en `app/lib/llm.js`
 - [ ] Migrar `app/lib/llm.js` a `llm.service.ts`
 - [ ] Implementar prompts para: evaluacion de candidatos, matching explanations, analisis de inclusividad
-- [ ] Rate limiting y cache para API calls
+- [ ] Rate limiting y cache para llamadas a Ollama
 
 ### 4.2 GDPR Compliance Completo
 
