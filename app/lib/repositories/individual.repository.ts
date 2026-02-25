@@ -84,10 +84,25 @@ export async function deactivateIndividualInDb(userId: string) {
   return individual
 }
 
+/**
+ * Anonymize user account — GDPR Art. 17 (Right to Erasure).
+ * Soft delete: wipes all PII, retains audit trail (7-year legal obligation).
+ *
+ * Cascade:
+ *   1. Anonymize Individual PII (name, diagnoses, location, medical, skills)
+ *   2. Anonymize User record (email → deleted_<id>@anonymized.local)
+ *   3. Revoke all active Connections (consent withdrawn)
+ *   4. Withdraw all PENDING Matchings + clear candidateData PII snapshots
+ */
 export async function anonymizeUserAccount(userId: string) {
   const now = new Date()
 
   return prisma.$transaction(async (tx) => {
+    // Find individual record (need internal id for connections/matchings)
+    const individual = await tx.individual.findUnique({ where: { userId } })
+    if (!individual) return
+
+    // 1. Anonymize Individual PII
     await tx.individual.update({
       where: { userId },
       data: {
@@ -98,18 +113,50 @@ export async function anonymizeUserAccount(userId: string) {
         diagnoses: [],
         accommodationsNeeded: null,
         medicalHistory: null,
+        skills: [],
+        experience: [],
+        education: [],
+        preferences: {},
+        therapistAssignedId: null,
         deletedAt: now,
         updatedAt: now,
       },
     })
 
+    // 2. Anonymize User record
     await tx.user.update({
       where: { id: userId },
       data: {
         email: `deleted_${userId}@anonymized.local`,
+        passwordHash: 'DELETED',
         status: 'deleted',
         updatedAt: now,
       },
+    })
+
+    // 3. Revoke all active Connections — notify companies consent was withdrawn
+    await tx.connection.updateMany({
+      where: { individualId: individual.id, status: 'active' },
+      data: {
+        status: 'revoked',
+        revokedAt: now,
+        revokedReason: 'gdpr_right_to_erasure',
+        sharedData: [],
+        customPrivacy: {},
+      },
+    })
+
+    // 4. Withdraw all pending Matchings and clear candidate PII snapshots
+    await tx.matching.updateMany({
+      where: { individualId: individual.id },
+      data: {
+        candidateData: {},
+        updatedAt: now,
+      },
+    })
+    await tx.matching.updateMany({
+      where: { individualId: individual.id, status: 'PENDING' },
+      data: { status: 'WITHDRAWN', updatedAt: now },
     })
   })
 }
