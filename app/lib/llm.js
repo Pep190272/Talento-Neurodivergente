@@ -1,14 +1,19 @@
 /**
  * Ollama LLM Client for Diversia
  *
- * Self-hosted Ollama on VPS Hostinger (Paris, France) with Llama 3.2 3B.
+ * Provides integration with self-hosted Ollama instance on VPS (diversia-ollama container)
+ * for job posting inclusivity analysis.
  *
- * Decision (25 Feb 2026): Self-hosted is the definitive choice for DiversIA.
- * Reasons:
+ * Model: llama3.2:3b (IFEval 77.4 — 25% better instruction-following than Gemma 2B)
+ *
+ * Decision (25 Feb 2026): Keep Ollama self-hosted — data control + zero API costs.
  * - GDPR Art. 9: Neurodivergent data (special category) never leaves our infra
- * - Budget $0: No external API costs
- * - Llama 3.2 3B: IFEval 77.4 (25% better than Gemma 2B at instruction following)
- * - Timeout protection (10s max) + graceful fallback if VPS down
+ * - Budget $0: No external API costs (Gemini free tier: 5 RPM, too restrictive)
+ * - diversia-ollama and diversia-db colocated on the same VPS
+ * - Timeout protection (10s max) + graceful fallback if Ollama is down
+ *
+ * Note: Sprint 4 migrated business logic to app/lib/services/llm.service.ts
+ * This file is retained for backward compatibility.
  */
 
 const OLLAMA_HOST = process.env.OLLAMA_HOST || 'http://localhost:11434'

@@ -12,8 +12,8 @@
 
 import type { Company, Job, User } from '@prisma/client'
 
-// Import LLM for job analysis
-import { analyzeJobInclusivity as llmAnalyze } from './llm'
+// Import LLM Service for job analysis (Sprint 4: llm.js → services/llm.service.ts)
+import { analyzeJobInclusivity as llmAnalyze } from './services/llm.service'
 import { validateJobAnalysis } from './schemas/job-analysis'
 
 // ─── Repository (Data Access) ─────────────────────────────────────────────────

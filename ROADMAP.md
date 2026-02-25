@@ -240,41 +240,60 @@ los repositories encapsulan Prisma. Solo habria que:
 ## Sprint 4: LLM y Compliance
 
 **Periodo:** Marzo-Abril 2026
-**Estado:** En progreso (decision LLM tomada)
+**Estado:** En progreso
 
-### 4.1 LLM Self-Hosted: Mantener Ollama + Upgrade Modelo
+### 4.1 Cambio de modelo LLM: Gemma 2B → Llama 3.2:3b (Ollama self-hosted)
 
-**Decision (25 Feb 2026): Mantener self-hosted Ollama, upgrade de Gemma 2B a Llama 3.2 3B**
+**Decision (25 Feb 2026):** Mantener Ollama self-hosted en el VPS. No migrar a API externa.
 
-**Justificacion:**
-1. **Presupuesto $0** — Gemini API free tier insuficiente (5 RPM, 100 req/dia post-Dec 2025)
-2. **GDPR Art. 9** — Datos neurodivergentes (categoria especial) nunca salen de la infra
-3. **VPS ya pagado** — Coste marginal de Ollama = $0
-4. **Caso de uso acotado** — Solo `analyzeJobInclusivity()` con prompt estructurado
-5. **Llama 3.2 3B > Gemma 2B** — IFEval 77.4 vs 61.9 (+25% en seguir instrucciones)
+**Motivos:**
+- Control de datos: los datos no salen de nuestra infraestructura (GDPR Art. 9 — datos neurodivergentes)
+- Coste cero: sin API fees externos (Gemini free tier: 5 RPM, insuficiente para produccion)
+- Colocalizacion: `diversia-ollama` y `diversia-db` corren en el mismo VPS
+- Llama 3.2 3B > Gemma 2B: IFEval 77.4 vs 61.9 (+25% en seguir instrucciones)
 
-**Upgrade de modelo:**
-- [x] Decision: Gemma 2B → Llama 3.2 3B (self-hosted)
-- [x] Actualizar default en `app/lib/llm.js`
-- [x] Actualizar `.env.example`
-- [x] Actualizar documentacion (ROADMAP, NEXT_STEPS, DESPLIEGUE_VPS)
-- [ ] En VPS: `ollama pull llama3.2:3b` (2GB, requiere acceso al contenedor)
+**Modelo anterior:** `gemma:2b`
+**Modelo actual:** `llama3.2:3b` (3B parametros, ~2GB RAM, dentro del limite de 4GB del contenedor)
 
-**Tareas pendientes:**
-- [ ] Migrar `app/lib/llm.js` a `llm.service.ts` (TypeScript + service layer)
-- [ ] Implementar prompts para: evaluacion de candidatos, matching explanations, analisis de inclusividad
-- [ ] Rate limiting y cache para API calls
+- [x] Cambiar modelo de `gemma:2b` a `llama3.2:3b` en `app/lib/llm.js`
+- [x] Migrar `app/lib/llm.js` a `app/lib/services/llm.service.ts` (TypeScript, arquitectura Sprint 3)
+- [x] 3 prompts profesionales especializados:
+  - **Inclusivity Analysis** — scoring DEI, deteccion lenguaje discriminatorio, sugerencias accionables
+  - **Candidate Evaluation** — fit score, fortalezas cognitivas, retos con mitigacion, recomendacion
+  - **Matching Explanation** — explicacion al candidato (EU AI Act Art. 13: transparencia IA)
+- [x] Rate limiting: 10 llamadas/min por identificador (control de carga de inferencia)
+- [x] TTL Cache en memoria: 1h inclusividad / 30min evaluacion / 15min matching
+- [x] `app/api/chat/route.ts` conectado a Ollama real (NeuroDialect ya no es demo)
+- [x] `docs/DESPLIEGUE_VPS.md` + `docs/NEXT_STEPS.md` actualizados
 
 ### 4.2 GDPR Compliance Completo
 
-**Estado actual:** ~70% implementado
+**Estado anterior:** ~70% implementado
+**Estado actual:** ~90% implementado (codigo completo; Privacy Policy y DPO son items legales/organizativos)
 
-- [ ] Data Retention Policy (definir periodos)
-- [ ] Right to be Forgotten completo (eliminacion en cascada)
-- [ ] Data Portability (export JSON/CSV)
-- [ ] Consent Management UI (ver/revocar consentimientos)
-- [ ] Privacy Policy (documento legal)
-- [ ] DPO Contact designado
+- [x] Data Retention Policy — `app/lib/gdpr-retention.ts` con periodos definidos:
+  - Audit logs: 7 anos (GDPR Art. 5 + EU AI Act Art. 12)
+  - Usuarios eliminados: 30 dias antes de hard-delete
+  - Matchings expirados: 90 dias
+  - Connections revocadas: 90 dias
+  - Form submissions: 1 ano
+  - Funcion `purgeExpiredData()` para cron job diario
+- [x] Right to be Forgotten completo — `anonymizeUserAccount()` mejorado con cascade:
+  - Anonimiza Individual: nombre, diagnosticos, location, historial medico, skills
+  - Anonimiza User: email → `deleted_<id>@anonymized.local`
+  - Revoca todas las Connections activas (retira consentimiento)
+  - Retira todos los Matchings PENDING (WITHDRAWN) + limpia candidateData
+  - Ruta dedicada: `DELETE /api/individuals/[userId]/gdpr/delete`
+- [x] Data Portability — `GET /api/individuals/[userId]/gdpr/export?format=json|csv`
+  - Incluye: perfil, connections, matchings, audit log como sujeto
+  - Formatos: JSON estructurado + CSV multi-seccion
+  - Audit log del propio export (GDPR Art. 5 — transparencia)
+- [x] Consent Management UI backend — `GET /api/individuals/[userId]/consents`
+  - Lista todas las conexiones (activas + revocadas) con info de empresa/job
+  - Incluye `canRevoke` flag y endpoint de revocacion por conexion
+  - Info GDPR integrada (Art. 7, derecho al olvido, portabilidad)
+- [ ] Privacy Policy (documento legal — pendiente equipo legal/producto)
+- [ ] DPO Contact designado (organizativo — pendiente decision interna)
 
 ---
 

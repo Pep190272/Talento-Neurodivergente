@@ -1,59 +1,66 @@
-import { NextRequest, NextResponse } from 'next/server';
+/**
+ * NeuroDialect Chat API
+ *
+ * Connects to Ollama (llama3.2:3b) for AI-powered responses.
+ * Falls back to curated static responses if Ollama is unavailable.
+ *
+ * Sprint 4: Integrated with LlmService (replaces demo mode)
+ */
+import { NextRequest, NextResponse } from 'next/server'
+import { generateCompletion, checkOllamaHealth } from '@/lib/services/llm.service'
 
-const fallbackResponses = [
-  "¡Hola! Soy NeuroDialect. Actualmente estoy en modo de demostración. ¿Te gustaría saber más sobre nuestras características de evaluación cognitiva?",
-  "¡Gracias por tu interés! Como asistente de IA especializado en talento neurodivergente, puedo ayudarte con información sobre juegos cognitivos, evaluaciones y estrategias de inclusión laboral.",
-  "¡Encantado de ayudarte! Puedes explorar nuestros juegos de evaluación cognitiva en la sección de JUEGOS, o conocer más sobre nuestros formularios en CARACTERÍSTICAS.",
-  "Soy NeuroDialect, tu asistente para descubrir y potenciar el talento neurodivergente. ¿Quieres saber sobre evaluaciones cognitivas, matching laboral o estrategias de inclusión?"
-];
+const SYSTEM_PROMPT = `Eres NeuroDialect, el asistente de IA de DiversIA — una plataforma que conecta talento neurodivergente (TDAH, Autismo, Dislexia, Dispraxia) con empresas inclusivas.
+
+Tu misión: ayudar a candidatos, empresas y terapeutas a entender cómo DiversIA puede apoyarles.
+Principios: lenguaje positivo, enfocado en fortalezas, breve (máximo 3-4 oraciones), en el idioma del usuario.
+Si algo está fuera de tu alcance, redirige a soporte@diversia.app.`
+
+const FALLBACK_RESPONSES = [
+  'Soy NeuroDialect, el asistente de DiversIA. Conecto talento neurodivergente con empresas inclusivas. ¿En qué puedo ayudarte?',
+  'DiversIA usa IA transparente para matching laboral con supervisión humana. ¿Te interesa saber cómo funciona?',
+  'Puedes explorar nuestras evaluaciones cognitivas en JUEGOS, o registrarte como candidato, empresa o terapeuta en FORMULARIOS.',
+  '¿Eres candidato, empresa o terapeuta? Cuéntame más y te explico cómo DiversIA puede ayudarte.',
+]
+
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { prompt, userData = null } = body;
+    const body = await request.json()
+    const { prompt, userData = null } = body
 
-    if (!prompt) {
-      return NextResponse.json(
-        { error: 'Missing prompt' },
-        { status: 400 }
-      );
+    if (!prompt || typeof prompt !== 'string') {
+      return NextResponse.json({ error: 'Missing prompt' }, { status: 400 })
     }
 
-    await new Promise(resolve => setTimeout(resolve, 800));
+    const ollamaUp = await checkOllamaHealth()
 
-    let response = '';
+    if (ollamaUp) {
+      const fullPrompt = `${SYSTEM_PROMPT}\n\nUsuario: ${prompt.slice(0, 1000)}\n\nNeuroDialect:`
+      const raw = await generateCompletion(fullPrompt, { temperature: 0.7, numPredict: 256 })
 
-    const lowerPrompt = prompt.toLowerCase();
-
-    if (lowerPrompt.includes('juego') || lowerPrompt.includes('evalua') || lowerPrompt.includes('cognitiv')) {
-      response = "¡Excelente pregunta! Tenemos 11 juegos de evaluación cognitiva que miden memoria, atención, razonamiento lógico y velocidad de procesamiento. Puedes acceder a ellos en la sección JUEGOS del menú principal. Cada juego está diseñado científicamente para identificar fortalezas cognitivas únicas.";
-    } else if (lowerPrompt.includes('empresa') || lowerPrompt.includes('contratar') || lowerPrompt.includes('trabajo')) {
-      response = "Para empresas, ofrecemos: 1) Evaluaciones científicas de candidatos, 2) Matching inteligente basado en fortalezas cognitivas, 3) Formación en inclusión neurodivergente, y 4) Consultoría personalizada. Visita la sección EMPRESA para más detalles.";
-    } else if (lowerPrompt.includes('formulario') || lowerPrompt.includes('registro') || lowerPrompt.includes('inscrib')) {
-      response = "Puedes registrarte completando nuestro formulario dinámico en la sección FORMULARIOS. Allí podrás indicar tus fortalezas, experiencia y preferencias laborales. El proceso es 100% confidencial y adaptado a tus necesidades.";
-    } else if (lowerPrompt.includes('ayuda') || lowerPrompt.includes('como') || lowerPrompt.includes('funciona')) {
-      response = "DiversIA es una plataforma que conecta talento neurodivergente con empresas inclusivas. Ofrecemos: evaluaciones cognitivas (JUEGOS), formularios personalizados (FORMULARIOS), matching laboral, y recursos para empresas. ¿En qué área específica te gustaría más información?";
-    } else {
-      response = fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
+      return NextResponse.json({
+        response: raw.trim(),
+        timestamp: new Date().toISOString(),
+        context: { userData: userData ? 'available' : 'none', mode: 'llm' },
+      })
     }
 
+    // Fallback when Ollama is down
+    const fallback = FALLBACK_RESPONSES[Math.floor(Math.random() * FALLBACK_RESPONSES.length)]
     return NextResponse.json({
-      response,
+      response: fallback,
       timestamp: new Date().toISOString(),
-      context: {
-        userData: userData ? 'available' : 'none',
-        mode: 'demo'
-      }
-    });
+      context: { userData: userData ? 'available' : 'none', mode: 'fallback' },
+    })
 
   } catch (error) {
-    console.error('Chat API error:', error);
+    console.error('[Chat API] error:', error)
     return NextResponse.json(
       {
-        response: "Disculpa, estoy teniendo dificultades técnicas. Por favor intenta de nuevo en un momento.",
-        error: 'Internal server error'
+        response: 'Disculpa, estoy teniendo dificultades técnicas. Por favor intenta de nuevo en un momento.',
+        error: 'Internal server error',
       },
       { status: 200 }
-    );
+    )
   }
-} 
+}
