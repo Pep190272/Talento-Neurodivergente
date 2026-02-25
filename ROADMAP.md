@@ -240,9 +240,9 @@ los repositories encapsulan Prisma. Solo habria que:
 ## Sprint 4: LLM y Compliance
 
 **Periodo:** Marzo-Abril 2026
-**Estado:** En progreso
+**Estado:** En progreso (decision LLM tomada)
 
-### 4.1 Cambio de modelo LLM: Gemma 2B → Llama 3.2:3b (Ollama self-hosted)
+### 4.1 LLM Self-Hosted: Mantener Ollama + Upgrade Modelo
 
 **Decision (25 Feb 2026):** Mantener Ollama self-hosted en el VPS. No migrar a API externa.
 
