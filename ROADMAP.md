@@ -244,26 +244,13 @@ los repositories encapsulan Prisma. Solo habria que:
 
 ### 4.1 LLM Self-Hosted: Mantener Ollama + Upgrade Modelo
 
-**Decision (25 Feb 2026): Mantener self-hosted Ollama, upgrade de Gemma 2B a Llama 3.2 3B**
+**Decision (25 Feb 2026):** Mantener Ollama self-hosted en el VPS. No migrar a API externa.
 
-**Justificacion:**
-1. **Presupuesto $0** — Gemini API free tier insuficiente (5 RPM, 100 req/dia post-Dec 2025)
-2. **GDPR Art. 9** — Datos neurodivergentes (categoria especial) nunca salen de la infra
-3. **VPS ya pagado** — Coste marginal de Ollama = $0
-4. **Caso de uso acotado** — Solo `analyzeJobInclusivity()` con prompt estructurado
-5. **Llama 3.2 3B > Gemma 2B** — IFEval 77.4 vs 61.9 (+25% en seguir instrucciones)
-
-**Upgrade de modelo:**
-- [x] Decision: Gemma 2B → Llama 3.2 3B (self-hosted)
-- [x] Actualizar default en `app/lib/llm.js`
-- [x] Actualizar `.env.example`
-- [x] Actualizar documentacion (ROADMAP, NEXT_STEPS, DESPLIEGUE_VPS)
-- [ ] En VPS: `ollama pull llama3.2:3b` (2GB, requiere acceso al contenedor)
-
-**Tareas pendientes:**
-- [ ] Migrar `app/lib/llm.js` a `llm.service.ts` (TypeScript + service layer)
-- [ ] Implementar prompts para: evaluacion de candidatos, matching explanations, analisis de inclusividad
-- [ ] Rate limiting y cache para API calls
+**Motivos:**
+- Control de datos: los datos no salen de nuestra infraestructura (GDPR Art. 9 — datos neurodivergentes)
+- Coste cero: sin API fees externos (Gemini free tier: 5 RPM, insuficiente para produccion)
+- Colocalizacion: `diversia-ollama` y `diversia-db` corren en el mismo VPS
+- Llama 3.2 3B > Gemma 2B: IFEval 77.4 vs 61.9 (+25% en seguir instrucciones)
 
 **Modelo anterior:** `gemma:2b`
 **Modelo actual:** `llama3.2:3b` (3B parametros, ~2GB RAM, dentro del limite de 4GB del contenedor)
@@ -277,6 +264,7 @@ los repositories encapsulan Prisma. Solo habria que:
 - [x] Rate limiting: 10 llamadas/min por identificador (control de carga de inferencia)
 - [x] TTL Cache en memoria: 1h inclusividad / 30min evaluacion / 15min matching
 - [x] `app/api/chat/route.ts` conectado a Ollama real (NeuroDialect ya no es demo)
+- [x] `docs/DESPLIEGUE_VPS.md` + `docs/NEXT_STEPS.md` actualizados
 
 ### 4.2 GDPR Compliance Completo
 

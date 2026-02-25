@@ -5,11 +5,11 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { generateCompletion, analyzeJobInclusivity, checkOllamaHealth } from '@/lib/llm'
+import { generateCompletion, analyzeJobInclusivity, checkOllamaHealth } from '@/lib/services/llm.service'
 
-// Mock environment variables
+// Mock environment variables (must match current model — llama3.2:3b)
 process.env.OLLAMA_HOST = 'http://localhost:11434'
-process.env.OLLAMA_MODEL = 'gemma:2b'
+process.env.OLLAMA_MODEL = 'llama3.2:3b'
 
 describe('🤖 LLM Client - Ollama Integration', () => {
 
@@ -81,7 +81,7 @@ describe('🤖 LLM Client - Ollama Integration', () => {
 
             await expect(
                 generateCompletion('Test prompt')
-            ).rejects.toThrow('Ollama API error: 500')
+            ).rejects.toThrow('Ollama error: 500')
         })
 
         it('should handle network failures', async () => {
