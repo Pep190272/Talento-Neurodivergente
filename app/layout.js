@@ -1,6 +1,7 @@
 import "./globals.css";
 import Navbar from "./components/Navbar/Navbar";
 import AuthProvider from "./components/AuthProvider";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata = {
   title: "Diversia Eternals - Neurodivergent Talent Platform",
@@ -74,6 +75,7 @@ export default function RootLayout({ children }) {
               </div>
             </div>
           </div>
+          <SpeedInsights />
         </body>
       </html>
     );
@@ -93,6 +95,7 @@ export default function RootLayout({ children }) {
             {children}
           </main>
         </AuthProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
