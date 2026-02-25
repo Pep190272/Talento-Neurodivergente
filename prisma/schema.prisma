@@ -259,7 +259,7 @@ model Job {
   teamSize            String?
   reportingStructure  String?
 
-  // Análisis LLM de inclusividad (Gemma 2B / Ollama)
+  // Análisis LLM de inclusividad (llama3.2:3b / Ollama self-hosted — Sprint 4)
   inclusivityScore    Int?
   inclusivityAnalysis Json?
 
