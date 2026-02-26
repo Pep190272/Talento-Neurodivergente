@@ -4,6 +4,8 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@/lib/auth'
+import { findCompanyByUserId } from '@/lib/repositories/company.repository'
 import { getCompanyDashboard } from '@/lib/dashboards'
 
 /**
@@ -17,7 +19,17 @@ import { getCompanyDashboard } from '@/lib/dashboards'
  */
 export async function GET(request: NextRequest, { params }: { params: Promise<{ companyId: string }> }) {
   try {
+    const session = await auth()
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const { companyId } = await params
+
+    const company = await findCompanyByUserId(session.user.id)
+    if (!company || company.id !== companyId) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
 
     // Get dashboard data
     const dashboard = await getCompanyDashboard(companyId)

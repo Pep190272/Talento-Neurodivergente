@@ -52,3 +52,9 @@ nul
 .claude/
 
 /app/generated/prisma
+
+# Playwright E2E
+tests/e2e/.auth/
+tests/e2e/results/
+tests/e2e/report/
+playwright-report/

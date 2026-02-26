@@ -4,6 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@/lib/auth'
 import { getIndividualProfile } from '@/lib/individuals'
 import { findMatchesForCandidate } from '@/lib/matching'
 
@@ -21,7 +22,17 @@ import { findMatchesForCandidate } from '@/lib/matching'
  */
 export async function GET(request: NextRequest, { params }: { params: Promise<{ userId: string }> }) {
   try {
+    const session = await auth()
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const { userId } = await params
+
+    if (session.user.id !== userId) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+
     const { searchParams } = new URL(request.url)
     const minScore = parseFloat(searchParams.get('minScore') || '0')
     const limit = parseInt(searchParams.get('limit') || '0')
