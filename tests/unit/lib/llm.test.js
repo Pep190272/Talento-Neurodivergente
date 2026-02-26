@@ -9,7 +9,7 @@ import { generateCompletion, analyzeJobInclusivity, checkOllamaHealth } from '@/
 
 // Mock environment variables
 process.env.OLLAMA_HOST = 'http://localhost:11434'
-process.env.OLLAMA_MODEL = 'gemma:2b'
+process.env.OLLAMA_MODEL = 'llama3.2:3b'
 
 describe('🤖 LLM Client - Ollama Integration', () => {
 
@@ -60,7 +60,7 @@ describe('🤖 LLM Client - Ollama Integration', () => {
             const requestBody = JSON.parse(callArgs[1].body)
 
             expect(requestBody).toMatchObject({
-                model: 'gemma:2b',
+                model: 'llama3.2:3b',
                 prompt: 'Test prompt',
                 format: 'json',
                 stream: false
