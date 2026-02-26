@@ -4,6 +4,8 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@/lib/auth'
+import { findCompanyByUserId } from '@/lib/repositories/company.repository'
 import { getJobPosting } from '@/lib/companies'
 import { findMatchesForJob } from '@/lib/matching'
 
@@ -21,6 +23,11 @@ import { findMatchesForJob } from '@/lib/matching'
  */
 export async function GET(request: NextRequest, { params }: { params: Promise<{ jobId: string }> }) {
   try {
+    const session = await auth()
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const { jobId } = await params
     const { searchParams } = new URL(request.url)
     const minScore = parseFloat(searchParams.get('minScore') || '0')
@@ -33,6 +40,12 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         { error: 'Job posting not found' },
         { status: 404 }
       )
+    }
+
+    // Verify the authenticated user owns the company that posted this job
+    const company = await findCompanyByUserId(session.user.id)
+    if (!company || company.id !== job.companyId) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
     // Find matches

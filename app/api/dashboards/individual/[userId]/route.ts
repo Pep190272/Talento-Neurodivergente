@@ -4,6 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { auth } from '@/lib/auth'
 import { getIndividualDashboard } from '@/lib/dashboards'
 
 /**
@@ -17,7 +18,16 @@ import { getIndividualDashboard } from '@/lib/dashboards'
  */
 export async function GET(request: NextRequest, { params }: { params: Promise<{ userId: string }> }) {
   try {
+    const session = await auth()
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
     const { userId } = await params
+
+    if (session.user.id !== userId) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
 
     // Get dashboard data
     const dashboard = await getIndividualDashboard(userId)
