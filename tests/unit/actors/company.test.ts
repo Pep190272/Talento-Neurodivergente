@@ -16,7 +16,7 @@ import {
 } from '@/lib/companies'
 
 // ─── LLM Mock (so tests don't call Ollama) ───────────────────────────────────
-vi.mock('@/lib/llm', () => ({
+vi.mock('@/lib/services/llm.service', () => ({
   analyzeJobInclusivity: vi.fn().mockRejectedValue(new Error('LLM not available in tests')),
 }))
 vi.mock('@/lib/schemas/job-analysis', () => ({
