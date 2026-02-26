@@ -1,8 +1,8 @@
 # ROADMAP — DiversIA Eternals
 
 **Fecha de inicio:** 10 de febrero de 2026
-**Ultima actualizacion:** 22 de febrero de 2026
-**Estado:** Sprint 1 completado — Sprint 2 completado — Sprint 3 en progreso
+**Ultima actualizacion:** 26 de febrero de 2026
+**Estado:** Sprint 1 completado — Sprint 2 completado — Sprint 3 completado — Sprint 4 completado — Sprint 5 en progreso
 
 ---
 
@@ -299,36 +299,75 @@ los repositories encapsulan Prisma. Solo habria que:
 
 ## Sprint 5: Seguridad y Deploy
 
-**Periodo:** Abril-Mayo 2026
-**Estado:** No iniciado
+**Periodo:** Febrero 2026
+**Estado:** En progreso (Issue #27)
 
-### 5.1 Auditoria de Seguridad (OWASP Top 10)
+### 5.1 Auditoria de Seguridad (OWASP Top 10) ✅ Completado
 
-- [ ] SQL Injection (Prisma previene, verificar raw queries)
-- [ ] Broken Auth (audit NextAuth config)
-- [ ] Sensitive Data Exposure (verificar AES-256-GCM)
-- [ ] Broken Access Control (audit permisos por endpoint)
-- [ ] XSS (DOMPurify ya implementado, verificar cobertura)
-- [ ] Input Validation (Zod en todas las rutas)
+**Audit realizado 26 Feb 2026 — 7 vulnerabilidades corregidas**
 
-### 5.2 Tests E2E (Playwright)
+**OWASP A01: Broken Access Control (CRITICO)**
+- [x] 3 rutas de consent sin auth: `POST /api/consent/{accept,reject,revoke}` — cualquier usuario podia actuar en nombre de otro. Fix: `auth()` + `session.user.id !== userId → 403`
+- [x] Dashboard individual sin auth: `GET /api/dashboards/individual/:userId` — exponia datos de cualquier usuario. Fix: auth + ownership check
+- [x] Dashboard empresa sin auth: `GET /api/dashboards/company/:companyId` — exponia pipeline completo de cualquier empresa. Fix: auth + `findCompanyByUserId()` → 403
+- [x] Matching candidato sin auth: `GET /api/matching/candidates/:userId` — exponia matches de cualquier candidato. Fix: auth + ownership
+- [x] Matching job sin auth: `GET /api/matching/jobs/:jobId` — exponia candidatos de cualquier empresa. Fix: auth + ownership via `job.companyId`
 
-- [ ] Registro de candidato completo
-- [ ] Registro de empresa + crear job
-- [ ] Matching automatico
-- [ ] Aceptacion de match (consent flow)
-- [ ] Revocacion de consentimiento
-- [ ] Dashboard de candidato
-- [ ] Pipeline de empresa
-- [ ] Download my data (GDPR)
+**OWASP A05: Security Misconfiguration**
+- [x] CSP (Content-Security-Policy) no implementado — añadido en middleware.js (development + production)
+- [x] HSTS (Strict-Transport-Security) no implementado — añadido en produccion (max-age=31536000)
+
+**Verificado y correcto (no requirio cambios):**
+- [x] SQL Injection: Prisma con type-safe queries, sin `$queryRaw` ni `$executeRaw`
+- [x] Broken Auth: NextAuth configurado correctamente (JWT, bcrypt, errores genericos)
+- [x] Sensitive Data Exposure: AES-256-GCM para datos medicos, password hashes no expuestos
+- [x] XSS: Sin `dangerouslySetInnerHTML`, JSX escapa por defecto
+- [x] Rate Limiting: implementado en middleware (IP-based, diferenciado por tipo de operacion)
+- [x] Headers basicos: X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy
+
+**Deuda tecnica identificada (no bloqueante):**
+- `grantConsent`/`rejectConsent` en routes de consent tienen signature incorrecta (4 args vs 2-3 esperados). Bug pre-existente, requiere refactoring del flujo de consent.
+- Zod validation falta en 8 rutas (usan validacion manual). Recomendado para Sprint 6.
+
+### 5.2 Tests E2E (Playwright) ✅ Completado
+
+**@playwright/test v1.58.2 instalado, 5 suites, 25+ tests**
+
+- [x] `playwright.config.ts` — 3 projects: setup, public, authenticated
+- [x] `tests/e2e/setup/global.setup.ts` — crea usuarios de test via API, guarda sesiones NextAuth
+- [x] `tests/e2e/public/auth.spec.ts` — 7 tests: páginas publicas, protección de rutas, login
+- [x] `tests/e2e/authenticated/dashboard-candidate.spec.ts` — 4 tests: dashboard + API access control
+- [x] `tests/e2e/authenticated/dashboard-company.spec.ts` — 5 tests: dashboard empresa + jobs
+- [x] `tests/e2e/authenticated/consent.spec.ts` — 7 tests: flujo consent (accept/reject/revoke)
+- [x] `tests/e2e/authenticated/gdpr.spec.ts` — 7 tests: export y delete account (GDPR)
+
+Scripts npm: `test:e2e`, `test:e2e:public`, `test:e2e:auth`, `test:e2e:report`
+
+**Flujos cubiertos:**
+- Registro candidato UI (formulario visible con campos correctos)
+- Proteccion de rutas (sin sesion → redirect a login)
+- Login correcto e incorrecto
+- Dashboard candidato y empresa (autenticados)
+- Consentimiento (accept/reject/revoke) — access control real
+- GDPR export y delete account (con skip en CI para tests destructivos)
+
+**Flujos pendientes (requieren DB con datos seed reales):**
+- Matching automatico end-to-end
+- Pipeline de empresa con candidatos reales
+- Aceptacion de match con matchId real (depende de seed data)
 
 ### 5.3 Deployment
 
-- [ ] Setup Vercel (o alternativa)
-- [ ] Variables de entorno en produccion
-- [ ] PostgreSQL en produccion (VPS actual o managed)
-- [ ] Backup automatizado
-- [ ] Monitoring (Sentry, Vercel Analytics)
+**Estado actual: App en produccion en Vercel (desplegada previamente)**
+**Ver documentacion completa: `docs/ARQUITECTURA_DEPLOY.md`**
+
+- [x] Vercel: desplegado y funcionando
+- [x] PostgreSQL en VPS Hostinger (Dokploy) — mismo VPS que Ollama
+- [x] Ollama + Llama 3.2 3B en VPS (self-hosted, GDPR Art. 9)
+- [x] Variables de entorno documentadas en `.env.example`
+- [ ] Backup automatizado (cron en VPS → S3/Backblaze) — pendiente
+- [ ] Monitoring: Sentry + Vercel Analytics — pendiente
+- [ ] Branch protection en main — pendiente configurar en Gitea
 
 ---
 
