@@ -12,3 +12,4 @@ class MatchingServiceSettings(BaseSettings):
     jwt: JWTSettings = JWTSettings()
     service_name: str = "matching-service"
     service_port: int = 8003
+    ENV: str = "development"

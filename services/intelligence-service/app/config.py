@@ -14,3 +14,4 @@ class IntelligenceServiceSettings(BaseSettings):
     service_port: int = 8004
     ollama_url: str = "http://ollama:11434"
     ollama_model: str = "llama3.2"
+    ENV: str = "development"

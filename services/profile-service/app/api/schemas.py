@@ -7,8 +7,8 @@ from pydantic import BaseModel, Field
 
 class CreateProfileRequest(BaseModel):
     role: str = Field(..., pattern="^(candidate|company|therapist)$")
-    display_name: str = ""
-    bio: str = ""
+    display_name: str = Field("", max_length=255)
+    bio: str = Field("", max_length=5000)
 
 
 class ProfileResponse(BaseModel):
@@ -23,8 +23,8 @@ class ProfileResponse(BaseModel):
 
 
 class QuizAnswerRequest(BaseModel):
-    question_id: str
-    dimension: str
+    question_id: str = Field(..., min_length=1, max_length=100)
+    dimension: str = Field(..., min_length=1, max_length=50)
     value: float = Field(..., ge=0.0, le=1.0)
 
 
@@ -41,10 +41,10 @@ class AssessmentResponse(BaseModel):
 
 
 class TherapistRegisterRequest(BaseModel):
-    specialty: str
-    bio: str = ""
-    support_areas: list[str] = Field(default_factory=list)
-    license_number: str = ""
+    specialty: str = Field(..., min_length=2, max_length=255)
+    bio: str = Field("", max_length=5000)
+    support_areas: list[str] = Field(default_factory=list, max_length=20)
+    license_number: str = Field("", max_length=100)
 
 
 class TherapistResponse(BaseModel):

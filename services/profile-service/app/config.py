@@ -12,3 +12,4 @@ class ProfileServiceSettings(BaseSettings):
     jwt: JWTSettings = JWTSettings()
     service_name: str = "profile-service"
     service_port: int = 8002
+    ENV: str = "development"

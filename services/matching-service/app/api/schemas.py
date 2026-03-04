@@ -6,11 +6,11 @@ from pydantic import BaseModel, Field
 
 
 class CalculateMatchRequest(BaseModel):
-    candidate_id: str
-    job_id: str
-    therapist_id: str | None = None
+    candidate_id: str = Field(..., min_length=1, max_length=25)
+    job_id: str = Field(..., min_length=1, max_length=25)
+    therapist_id: str | None = Field(None, max_length=25)
     therapist_score: float | None = Field(None, ge=0.0, le=1.0)
-    therapist_notes: str = ""
+    therapist_notes: str = Field("", max_length=2000)
 
 
 class MatchBreakdownResponse(BaseModel):
