@@ -48,6 +48,29 @@ services:
       timeout: 5s
       retries: 3
 
+  matching-service:
+    build:
+      context: .
+      dockerfile: matching-service/Dockerfile
+    ports:
+      - "8003:8003"
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER:-diversia}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-diversia_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-diversia}
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-in-production-1234567890abcdef}
+      ENV: ${ENV:-development}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
   gateway:
     image: nginx:alpine
     ports:
@@ -56,6 +79,7 @@ services:
       - ./gateway/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
       - auth-service
+      - matching-service
 
 volumes:
   postgres_data:
