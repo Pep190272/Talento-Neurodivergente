@@ -7,6 +7,71 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [2.0.0-microservices] - 2026-03-04
+
+### Architecture — Migración a Microservicios Python/FastAPI
+
+**Decisión estratégica**: Migrar de monolito Next.js a 4 microservicios Python/FastAPI con Clean Architecture.
+
+**Razones:**
+1. Python es estándar en AI/ML — mejor ecosistema para matching 24D
+2. Microservicios permiten escalar matching-service independientemente
+3. Clean Architecture con domain layer puro (sin framework dependencies)
+4. Alineación con modelo de negocio (servicios independientes)
+5. Activo profesional y aprendizaje en arquitecturas distribuidas
+
+#### Nuevo Stack:
+- **Backend**: Python 3.12 + FastAPI + SQLAlchemy 2.0 + Pydantic v2
+- **Frontend**: Jinja2 + Alpine.js + Tailwind CSS
+- **Tests**: pytest (reemplaza Vitest)
+- **Auth**: JWT custom + bcrypt (reemplaza NextAuth)
+- **DB**: PostgreSQL 16 (se mantiene, ORM cambia a SQLAlchemy)
+- **LLM**: Ollama (se mantiene, accedido desde Python)
+- **Deploy**: Docker Compose + Dokploy
+
+#### 4 Microservicios:
+1. **auth-service** (:8001) — Identidad, JWT, registro, login
+2. **profile-service** (:8002) — Perfiles, quiz, games, onboarding, frontend
+3. **matching-service** (:8003) — Matching trilateral 24D, scoring
+4. **intelligence-service** (:8004) — LLM, análisis, transparencia IA
+
+#### Documentación Actualizada:
+- `.agent/specialists/00_gace_architect.md` → v2.0.0 (microservicios)
+- `.agent/specialists/01_security.md` → v2.0.0 (FastAPI security)
+- `.agent/specialists/02_tech_stack.md` → v2.0.0 (Python stack)
+- `.agent/specialists/03_backend_agent.md` → v2.0.0 (Clean Architecture)
+- `.agent/METHODOLOGY.md` → **NUEVO** (versionado, commits, PRs, costes)
+
+#### Coste de la Sesión:
+- Horas: ~2h (análisis de issues, diseño de arquitectura, documentación)
+- Herramientas: Claude Opus (~200k tokens)
+- Infra: €0 (documentación, sin cambios en servidor)
+
+### Changed
+- Actualización completa del sistema de agentes GACE para reflejar nueva arquitectura
+- Metodología de versionado, PRs y documentación formalizada
+
+### Migration Notes
+- Next.js sigue funcionando en paralelo durante la migración
+- Tablas Prisma en schema `public` no se tocan
+- Nuevos servicios crean tablas en schemas propios (auth, profiles, matching, ai)
+- Los 272 tests de Vitest deben seguir pasando hasta completar migración
+
+---
+
+## [1.0.0] - 2026-02-26
+
+### Production-Ready Monolith
+- 272 tests passing, 0 failing
+- PostgreSQL + Prisma migración completa
+- Security audit OWASP (7 vulnerabilidades corregidas)
+- E2E tests con Playwright (25+ tests)
+- LLM self-hosted (Ollama/Llama 3.2 3B)
+- GDPR compliance ~90%
+- Deployment ready (Vercel + VPS)
+
+---
+
 ## [0.6.0-security] - 2026-01-18
 
 ### 🔐 Added - Sistema de Seguridad Enterprise-Grade

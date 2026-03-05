@@ -1,0 +1,137 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-diversia}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-diversia_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-diversia}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-schemas.sql:/docker-entrypoint-initdb.d/01-schemas.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-diversia}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ollama:
+    image: ollama/ollama
+    ports:
+      - "127.0.0.1:11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: auth-service/Dockerfile
+    ports:
+      - "8001:8001"
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER:-diversia}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-diversia_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-diversia}
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-in-production-1234567890abcdef}
+      ENV: ${ENV:-development}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  matching-service:
+    build:
+      context: .
+      dockerfile: matching-service/Dockerfile
+    ports:
+      - "8003:8003"
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER:-diversia}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-diversia_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-diversia}
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-in-production-1234567890abcdef}
+      ENV: ${ENV:-development}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  profile-service:
+    build:
+      context: .
+      dockerfile: profile-service/Dockerfile
+    ports:
+      - "8002:8002"
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER:-diversia}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-diversia_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-diversia}
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-in-production-1234567890abcdef}
+      ENV: ${ENV:-development}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  intelligence-service:
+    build:
+      context: .
+      dockerfile: intelligence-service/Dockerfile
+    ports:
+      - "8004:8004"
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER:-diversia}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-diversia_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-diversia}
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-in-production-1234567890abcdef}
+      OLLAMA_URL: http://ollama:11434
+      ENV: ${ENV:-development}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8004/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  gateway:
+    image: nginx:alpine
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./gateway/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - auth-service
+      - profile-service
+      - matching-service
+      - intelligence-service
+
+volumes:
+  postgres_data:
+  ollama_data:

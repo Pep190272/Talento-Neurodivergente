@@ -1,0 +1,18 @@
+[project]
+name = "diversia-shared"
+version = "2.0.0"
+description = "Shared kernel for DiversIA microservices"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2.0",
+    "pydantic-settings>=2.0",
+    "pyjwt>=2.8",
+    "bcrypt>=4.0",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8.0", "pytest-asyncio>=0.23"]
+
+[build-system]
+requires = ["setuptools>=68.0"]
+build-backend = "setuptools.build_meta"
