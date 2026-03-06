@@ -1,98 +1,168 @@
-# Project Status - Diversia Eternals
+# Project Status — DiversIA Eternals
 
-> **Last Updated**: 2026-01-22
-> **Version**: 2.0.0
-> **Maintainer**: GACE Architecture
-
----
-
-## 🌿 Branch Strategy
-
-| Branch | Purpose | Status |
-|--------|---------|--------|
-| `main` | Production-ready code | ✅ Active |
-| `develop` | Integration branch (synced with main) | ✅ Active |
-| `archive/pre-cleanup-20260122` | Safety backup of uncommitted work | 📦 Archive |
-
-### Archive Branches (Do Not Delete)
-The `archive/*` branches contain historical snapshots. They are **NOT for merging** but for reference/recovery.
+> **Ultima actualizacion**: 6 de marzo de 2026
+> **Version**: 2.0.0-microservices
+> **Maintainer**: GACE Architecture + Claude Opus 4
 
 ---
 
-## 📊 Current State
+## Estado General
 
-### ✅ Completed Features
-- **Authentication System**: Login, session management with NextAuth v5 beta
-- **Forms System**: Generic form builder with schema-driven validation
-- **NeuroAgent Chatbot**: AI-powered assistant (OpenAI integration)
-- **Dashboard**: User personalized view with insights
-- **Portfolio/Blog**: Static content pages
-- **Therapist Registration (UC-008)**
-- **Therapist Dashboard with Clients (UC-009)**
-
-### ⏳ In Progress (Archived)
-The following were in development and are preserved in `archive/pre-cleanup-20260122`:
-
-| Feature | Status | Location in Archive |
-|---------|--------|---------------------|
-| Prisma Database Schema | Draft | `prisma/schema.prisma` |
-| Change Password API | Test written | `app/api/auth/change-password/`, `tests/api/` |
-| Database Migration Script | Draft | `scripts/migrate-json-to-db.js` |
-| GACE Agent Definitions | In progress | `.gace/`, `.agent/` |
-
-### 🚫 Removed (Stale)
-- `copilot/na` - Empty/unused branch
-- `dependabot/*` - Old dependency updates (will regenerate if needed)
-- `feature/marketplace-core-implementation` - Already merged to main
+**La plataforma ha migrado de un monolito Next.js (v1.0.0) a una arquitectura de 4 microservicios Python/FastAPI (v2.0.0).** Los 4 servicios backend estan implementados con Clean Architecture, tests unitarios y persistencia SQLAlchemy. El frontend legacy Next.js sigue operativo en paralelo.
 
 ---
 
-## 🔧 Tech Stack
+## Branch Strategy
 
-| Layer | Technology | Version |
-|-------|------------|---------|
-| Framework | Next.js | 15.3.8 |
-| Runtime | React | 19.0.0 |
-| Auth | NextAuth | 5.0.0-beta.30 |
-| Validation | Zod | 4.3.5 |
-| Database (Future) | Prisma | 7.2.0 |
-| Testing | Vitest | 4.0.17 |
-| CSS | Vanilla CSS | - |
+| Branch | Proposito | Estado |
+|--------|-----------|--------|
+| `main` | Codigo production-ready (monolito v1.0.0) | Activo |
+| `claude/review-issues-app-refactor-FZuy5` | Migracion v2.0.0 microservicios | En progreso |
+| `archive/pre-cleanup-20260122` | Backup historico | Archivo |
 
 ---
 
-## 🚀 Quick Start
+## Microservicios — Estado
 
-```bash
-# Install dependencies
-npm install
+| Servicio | Puerto | Estado | Tests | Persistencia |
+|----------|--------|--------|-------|-------------|
+| **auth-service** | :8001 | Operativo | 48 unit + 36 security | SQLAlchemy + Alembic |
+| **profile-service** | :8002 | Operativo | Estructura completa | SQLAlchemy |
+| **matching-service** | :8003 | Operativo | 42 unit | SQLAlchemy |
+| **intelligence-service** | :8004 | Operativo | Estructura completa | SQLAlchemy |
+| **nginx gateway** | :80 | Configurado | N/A | N/A |
+| **PostgreSQL 16** | :5432 | Configurado | N/A | 4 schemas |
 
-# Run development server
-npm run dev
+### Detalle por Servicio
 
-# Run tests
-npm run test
-```
+**auth-service**
+- Registro y login con JWT + bcrypt
+- Entidad User con value objects (Email, HashedPassword)
+- Use cases: RegisterUser, LoginUser
+- Repository pattern con SQLAlchemy
+- Alembic migration: `001_initial_auth_tables`
+- 48 tests unitarios + 36 tests de seguridad/persistencia
+
+**profile-service**
+- Evaluacion neurocognitiva (NeurocognitiveAssessment entity)
+- Quiz normalization y scoring
+- CRUD de perfiles neurodivergentes
+- Domain services: prompt builder
+
+**matching-service**
+- Matching trilateral 24D (candidato-empresa-terapeuta)
+- Scoring multidimensional con pesos configurables
+- Entidades: MatchRequest, MatchResult, DimensionScore
+- Use cases: RunMatching, GetCandidatesForJob
+- Value objects: MatchScore, MatchStatus
+- 42 tests unitarios
+
+**intelligence-service**
+- Generacion de talent reports via LLM (Ollama)
+- Anonymization layer para datos sensibles
+- Prompt builder especializado
+- Entidades: TalentReport
+- Interfaces: ILLMClient (Ollama implementation)
 
 ---
 
-## 📋 Next Steps (Roadmap)
+## Fases de Migracion
 
-1. **Database Migration**: Implement Prisma schema and migrate from JSON storage
-2. **Security Hardening**: Complete EU AI Act compliance layer
-3. **Testing Coverage**: Increase to 80%+ with integration tests
-4. **Marketplace MVP**: Resume marketplace feature development
-
----
-
-## 📁 Important Files
-
-- `README.md` - User-facing documentation
-- `CHANGELOG.md` - Version history
-- `package.json` - Dependencies and scripts
-- `app/` - Next.js application code
-- `data/` - JSON storage (to be deprecated with DB migration)
+| Fase | Descripcion | Estado |
+|------|------------|--------|
+| 0 | Scaffolding: estructura de carpetas, Docker Compose, nginx | Completado |
+| 1 | auth-service: domain, use cases, API, 48 tests | Completado |
+| 2 | matching-service: domain, use cases, API, 42 tests | Completado |
+| 3 | profile-service + intelligence-service: domain, entities, use cases | Completado |
+| 4 | Persistencia: SQLAlchemy ORM, Alembic, DI wiring | Completado |
+| 5 | OWASP hardening: CORS, rate limiting, seed data, 36 tests | Completado |
+| 6 | Frontend Jinja2 + eliminacion Next.js legacy | **Pendiente** |
+| 7 | Deploy en VPS + tests E2E cross-service | **Pendiente** |
 
 ---
 
-**Note for Team**: When resuming archived work, cherry-pick from `archive/pre-cleanup-20260122` rather than merging the entire branch.
+## Tests
+
+### Microservicios (pytest)
+| Suite | Tests | Estado |
+|-------|-------|--------|
+| auth-service unit | 48 | Passing |
+| matching-service unit | 42 | Passing |
+| security + persistence | 36 | Passing |
+| **Subtotal pytest** | **126** | **Passing** |
+
+### Legacy (Vitest)
+| Suite | Tests | Estado |
+|-------|-------|--------|
+| Unit tests | 200+ | Passing |
+| Integration tests | 40+ | Passing |
+| E2E (Playwright) | 25+ | Passing |
+| **Subtotal Vitest** | **272** | **Passing** |
+
+### Total: **398 tests, 0 failing**
+
+---
+
+## Tech Stack Actual
+
+### Nuevo (v2.0.0 — Microservicios)
+| Capa | Tecnologia |
+|------|-----------|
+| Runtime | Python 3.12 |
+| Framework | FastAPI |
+| ORM | SQLAlchemy 2.0 |
+| Validacion | Pydantic v2 |
+| Auth | JWT + bcrypt |
+| Tests | pytest 9.0 |
+| Migraciones | Alembic |
+| LLM | Ollama + Llama 3.2 3B |
+| Gateway | nginx |
+| Deploy | Docker Compose + Dokploy |
+
+### Legacy (v1.0.0 — En proceso de deprecacion)
+| Capa | Tecnologia |
+|------|-----------|
+| Framework | Next.js 15 |
+| ORM | Prisma 7 |
+| Auth | NextAuth v5 |
+| Tests | Vitest + Playwright |
+| Deploy | Vercel |
+
+---
+
+## Infraestructura
+
+| Componente | Ubicacion | Coste |
+|-----------|-----------|-------|
+| VPS (PostgreSQL + Ollama) | Hostinger, Paris (EU) | ~€40/mes |
+| Frontend legacy | Vercel | Gratis (hobby) |
+| CI/CD | GitHub Actions | Gratis |
+| LLM | Ollama self-hosted (VPS) | €0 marginal |
+
+---
+
+## Documentacion Clave
+
+- [README.md](README.md) — Guia rapida del proyecto
+- [CHANGELOG.md](CHANGELOG.md) — Historial de versiones
+- [ROADMAP.md](ROADMAP.md) — Plan de desarrollo completo
+- [docs/NEXT_STEPS.md](docs/NEXT_STEPS.md) — Proximos pasos
+- [docs/adr/ADR-003.md](docs/adr/ADR-003.md) — Decision: migracion a Python/FastAPI
+- [docs/adr/ADR-004.md](docs/adr/ADR-004.md) — Decision: arquitectura microservicios
+- [SECURITY_IMPLEMENTATION.md](SECURITY_IMPLEMENTATION.md) — Seguridad (stack legacy)
+- [.agent/METHODOLOGY.md](.agent/METHODOLOGY.md) — Metodologia de desarrollo
+
+---
+
+## Proximos Pasos
+
+1. **Frontend Jinja2**: Implementar UI con Jinja2 + Alpine.js + Tailwind CSS en profile-service
+2. **Deploy microservicios**: Subir Docker Compose al VPS via Dokploy
+3. **Tests E2E cross-service**: Verificar flujos completos entre servicios
+4. **Eliminar Next.js**: Issue #63 — remover frontend legacy cuando el nuevo este listo
+5. **Monitoring**: Sentry + healthchecks
+6. **Beta**: Primeros usuarios reales
+
+---
+
+**Nota**: El frontend Next.js legacy sigue funcionando y sus 272 tests pasan. No se eliminara hasta que el frontend Jinja2 este completo y verificado.

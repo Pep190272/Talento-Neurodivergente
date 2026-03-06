@@ -7,22 +7,40 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
-## [2.0.0-microservices] - 2026-03-04
+## [2.0.0-microservices] - 2026-03-05
 
-### Architecture — Migración a Microservicios Python/FastAPI
+### Sesion 2026-03-05 — Implementacion completa de 4 microservicios
 
-**Decisión estratégica**: Migrar de monolito Next.js a 4 microservicios Python/FastAPI con Clean Architecture.
+#### Added
+- **profile-service**: Evaluacion neurocognitiva, quiz normalization, CRUD perfiles
+- **intelligence-service**: LLM talent reports, anonymization layer, prompt builder
+- **SQLAlchemy ORM + DI wiring** para profile-service e intelligence-service
+- **Alembic migrations** para auth-service (tablas User en schema `auth`)
+- **OWASP hardening**: CORS env-aware, rate limiting por servicio, seed data
+- **36 nuevos tests** de seguridad y persistencia
+- Documentacion completa actualizada (README, PROJECT_STATUS, ROADMAP, CHANGELOG, NEXT_STEPS)
+
+#### Metricas
+- Tests nuevos (microservicios): **126** (48 auth + 42 matching + 36 security/persistence)
+- Tests legacy (Next.js/Vitest): **272** (sin regresiones)
+- Servicios operativos: **4/4** (auth, profile, matching, intelligence)
+
+---
+
+### Sesion 2026-03-04 — Arquitectura y scaffolding
+
+**Decision estrategica**: Migrar de monolito Next.js a 4 microservicios Python/FastAPI con Clean Architecture.
 
 **Razones:**
-1. Python es estándar en AI/ML — mejor ecosistema para matching 24D
+1. Python es estandar en AI/ML — mejor ecosistema para matching 24D
 2. Microservicios permiten escalar matching-service independientemente
 3. Clean Architecture con domain layer puro (sin framework dependencies)
-4. Alineación con modelo de negocio (servicios independientes)
+4. Alineacion con modelo de negocio (servicios independientes)
 5. Activo profesional y aprendizaje en arquitecturas distribuidas
 
 #### Nuevo Stack:
 - **Backend**: Python 3.12 + FastAPI + SQLAlchemy 2.0 + Pydantic v2
-- **Frontend**: Jinja2 + Alpine.js + Tailwind CSS
+- **Frontend**: Jinja2 + Alpine.js + Tailwind CSS (pendiente)
 - **Tests**: pytest (reemplaza Vitest)
 - **Auth**: JWT custom + bcrypt (reemplaza NextAuth)
 - **DB**: PostgreSQL 16 (se mantiene, ORM cambia a SQLAlchemy)
@@ -30,32 +48,22 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 - **Deploy**: Docker Compose + Dokploy
 
 #### 4 Microservicios:
-1. **auth-service** (:8001) — Identidad, JWT, registro, login
+1. **auth-service** (:8001) — Identidad, JWT, registro, login — 48 tests
 2. **profile-service** (:8002) — Perfiles, quiz, games, onboarding, frontend
-3. **matching-service** (:8003) — Matching trilateral 24D, scoring
-4. **intelligence-service** (:8004) — LLM, análisis, transparencia IA
+3. **matching-service** (:8003) — Matching trilateral 24D, scoring — 42 tests
+4. **intelligence-service** (:8004) — LLM, analisis, transparencia IA
 
-#### Documentación Actualizada:
-- `.agent/specialists/00_gace_architect.md` → v2.0.0 (microservicios)
-- `.agent/specialists/01_security.md` → v2.0.0 (FastAPI security)
-- `.agent/specialists/02_tech_stack.md` → v2.0.0 (Python stack)
-- `.agent/specialists/03_backend_agent.md` → v2.0.0 (Clean Architecture)
+#### Documentacion Actualizada:
+- `.agent/specialists/00-03` → v2.0.0 (microservicios)
 - `.agent/METHODOLOGY.md` → **NUEVO** (versionado, commits, PRs, costes)
-
-#### Coste de la Sesión:
-- Horas: ~2h (análisis de issues, diseño de arquitectura, documentación)
-- Herramientas: Claude Opus (~200k tokens)
-- Infra: €0 (documentación, sin cambios en servidor)
-
-### Changed
-- Actualización completa del sistema de agentes GACE para reflejar nueva arquitectura
-- Metodología de versionado, PRs y documentación formalizada
+- `docs/adr/ADR-003.md` → Migracion Python/FastAPI
+- `docs/adr/ADR-004.md` → Arquitectura microservicios
 
 ### Migration Notes
-- Next.js sigue funcionando en paralelo durante la migración
+- Next.js sigue funcionando en paralelo durante la migracion
 - Tablas Prisma en schema `public` no se tocan
 - Nuevos servicios crean tablas en schemas propios (auth, profiles, matching, ai)
-- Los 272 tests de Vitest deben seguir pasando hasta completar migración
+- Los 272 tests de Vitest deben seguir pasando hasta completar migracion
 
 ---
 
@@ -467,174 +475,4 @@ Ver historial de git para releases anteriores.
 
 ---
 
-**Mantenido por:** Equipo Diversia + Claude Sonnet 4.5
-# Changelog
-
-Todos los cambios notables en este proyecto serÃ¡n documentados en este archivo.
-
-El formato estÃ¡ basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.0.0/),
-y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
-
----
-
-## [0.7.0-llm] - 2026-01-24
-
-### ðŸ¤– Added - Self-Hosted LLM para AnÃ¡lisis de Inclusividad
-
-**IntegraciÃ³n completa de Ollama/Gemma 2B en VPS self-hosted para anÃ¡lisis IA sin comprometer privacidad**
-
-#### Nuevos MÃ³dulos:
-- `app/lib/llm.js` - Cliente Ollama para anÃ¡lisis de job inclusivity (180 lÃ­neas)
-- `app/lib/schemas/job-analysis.js` - ValidaciÃ³n Zod de responses LLM (50 lÃ­neas)
-- `tests/unit/lib/llm.test.js` - 11 tests unitarios (100% mocked, zero API calls)
-
-#### Funcionalidad:
-- âœ… **generateCompletion()** - Cliente genÃ©rico HTTP para Ollama
-- âœ… **analyzeJobInclusivity()** - AnÃ¡lisis especÃ­fico de job postings
-- âœ… **checkOllamaHealth()** - Health check del VPS
-- âœ… **Timeout protection** - 10s mÃ¡ximo por request
-- âœ… **Graceful fallback** - AnÃ¡lisis bÃ¡sico si VPS down
-- âœ… **Zod validation** - Respuestas LLM validadas antes de usar
-
-#### Infraestructura VPS:
-- **Proveedor**: Hostinger VPS (ParÃ­s, Francia - EU)
-- **LLM**: Gemma 2B (Google) via Ollama
-- **Specs**: 2 CPU cores, 8 GB RAM, 100 GB SSD
-- **Docker**: Ollama en contenedor aislado
-- **Puerto**: 11434 (solo accesible desde Next.js app)
-
-#### AnÃ¡lisis de Job Postings:
-**Detecta**:
-- Lenguaje discriminatorio por edad ("young", "recent graduate")
-- Ableism ("perfect communication", "no limitations")
-- Sesgo de gÃ©nero ("rockstar", "ninja", "guru")
-- Sesgo cultural ("native speaker", "cultural fit")
-
-**Retorna**:
-- Score 0-100 de inclusividad
-- Lista de issues con severidad (low/medium/high)
-- Count y quality de accommodations
-- Sugerencias de mejora generadas por IA
-
-#### Privacy & Compliance ðŸ”’:
-
-**GDPR Compliant (âœ…)**:
-- **Art. 5**: Solo se analizan job postings (no datos de candidatos)
-- **Art. 9**: DiagnÃ³sticos mÃ©dicos NUNCA se envÃ­an al LLM
-- **Art. 25**: Privacy by design (self-hosted por defecto)
-- **Art. 32**: HTTPS, Docker isolation, no persistencia
-- **Art. 44-49**: No transferencias internacionales (servidor EU)
-
-**HIPAA Compliant (âœ…)**:
-- **Privacy Rule**: PHI (diagnÃ³sticos) encriptado en disco, no enviado a LLM
-- **Security Rule**: EncriptaciÃ³n AES-256-GCM, self-hosted LLM, zero cloud APIs
-- **Breach Notification**: VPS self-hosted minimiza superficie de ataque
-
-**Ventajas vs Cloud APIs (OpenAI/Claude)**:
-| Aspecto | Cloud API | Self-Hosted |
-|---------|-----------|-------------|
-| Privacidad | âš ï¸ Datos a terceros | âœ… Tu infraestructura |
-| GDPR Art. 9 | âš ï¸ Requiere DPA | âœ… Sin DPA necesario |
-| Data residency | âš ï¸ US servers | âœ… EU (ParÃ­s) |
-| Training con datos | âš ï¸ Posible | âœ… Imposible |
-| Costo (10k requests/mes) | $100-300 | â‚¬40/mes (ilimitado) |
-
-#### Tests:
-```
-âœ… tests/unit/lib/llm.test.js (11 tests passing)
-  - Client HTTP con payload correcto
-  - Include model/format en request body
-  - Handle API errors (500, timeout, network)
-  - Analyze job y retornar estructura vÃ¡lida
-  - Detect discriminatory language
-  - Score basado en accommodations
-  - Fallback cuando LLM falla
-  - Handle invalid JSON
-
-Total: 180 tests pasando (0 failing) ðŸŽ‰
-```
-
-#### Files Modified:
-- `app/lib/companies.js` - Integration de LLM en `analyzeJobInclusivity()`
-  - Try/catch para fallback automÃ¡tico
-  - Zod validation de LLM response
-  - Transform response para backward compatibility
-  - Flag `llmPowered: true/false`
-
-#### Environment Variables Added:
-```bash
-# Self-Hosted LLM
-OLLAMA_HOST=http://77.83.232.203:11434
-OLLAMA_MODEL=gemma:2b
-```
-
-#### Documentation:
-- `docs/DESPLIEGUE_VPS.md` - GuÃ­a completa paso a paso de deploy Ollama
-- `SECURITY_IMPLEMENTATION.md` - Nueva secciÃ³n "AI/LLM Privacy & Compliance"
-  - Tabla GDPR compliance detallada
-  - Tabla HIPAA compliance
-  - Comparativa self-hosted vs cloud
-  - ADR-001: Por quÃ© NO usar OpenAI
-  - Riesgos y mitigaciones
-
-#### Architectural Decision Record:
-
-**ADR-001: Self-Hosted LLM en vez de OpenAI**
-
-**Contexto**: Job postings pueden mencionar diagnÃ³sticos ("ideal for ADHD").
-
-**DecisiÃ³n**: Gemma 2B self-hosted en VPS EU.
-
-**Razones**:
-1. GDPR Art. 9: Evitamos enviar posible PHI a terceros (sin DPA)
-2. Data minimization: Principio GDPR
-3. Control total: Auditamos quÃ© procesa el LLM
-4. Costo: 5-10x mÃ¡s econÃ³mico a escala
-
-**Consecuencias**:
-- âœ… Compliance GDPR simplificado
-- âœ… Zero vendor lock-in
-- ðŸŸ¡ Mayor latencia (3-5s vs <1s GPT-4)
-- ðŸŸ¡ Mantenimiento de VPS
-
-**Status**: âœ… Implementado 24/01/2026
-
-### ðŸ”§ Changed
-- `analyzeJobInclusivity()` ahora usa LLM con fallback a anÃ¡lisis heurÃ­stico
-- Tests de company ahora mockan LLM client
-
-### ðŸ“Š Metrics:
-```
-Files created:   3
-Lines added:     +800
-Tests added:     +11
-Coverage:        ~85% (llm.js)
-Deployment time: 2.5 hours
-VPS cost:        â‚¬40/month
-Latency:         3-5s (CPU only, acceptable for job creation)
-```
-
-### ðŸŽ¯ Impact:
-
-**Antes**:
-- Jobs analizados con regex bÃ¡sico
-- Sin scoring granular de accommodations
-- Sin detecciÃ³n de bias cultural/gender
-
-**DespuÃ©s**:
-- âœ… AI-powered analysis (Gemma 2B)
-- âœ… Scoring 0-100 con justificaciÃ³n
-- âœ… DetecciÃ³n de 4 tipos de discriminaciÃ³n
-- âœ… Sugerencias generadas por IA
-- âœ… 100% GDPR compliant (self-hosted)
-- âœ… Zero data leaks a terceros
-
-### ðŸ”— References:
-- [Implementation Plan](./brain/implementation_plan.md)
-- [Walkthrough](./brain/walkthrough.md)
-- [VPS Deployment Guide](./docs/DESPLIEGUE_VPS.md)
-- [Security Update](./SECURITY_IMPLEMENTATION.md#ðŸ¤–-aillm-privacy--compliance)
-
----
-
-## [0.6.0-security] - 2026-01-18
+**Mantenido por:** Equipo Diversia + Claude Opus 4
