@@ -1,206 +1,203 @@
-# Diversia Eternals
+# DiversIA Eternals
 
-A comprehensive, AI-powered platform designed for neurodivergent individuals, companies, and therapists. Built with Next.js, OpenAI integration, and a databaseless architecture using JSON storage.
+Plataforma de matching trilateral 24D para talento neurodivergente. Conecta candidatos neurodivergentes, empresas inclusivas y terapeutas/especialistas mediante un algoritmo de matching multidimensional potenciado por IA self-hosted.
 
-## 🚀 Features
+## Stack Tecnologico
 
-### Core Functionality
-- **Three Core Forms**: Neurodivergent Individual, Company Placement Manager, Therapist/Specialist
-- **NeuroAgent Chatbot**: AI-powered conversational assistant with context awareness
-- **Interactive Games**: 12+ adaptive games for neurodivergent engagement
-- **Quiz & Assessment Library**: 10+ question types with AI adaptation
-- **Dashboard**: Personalized user experience with AI insights
+| Capa | Tecnologia | Version |
+|------|-----------|---------|
+| Backend | Python + FastAPI | 3.12 / 0.115+ |
+| ORM | SQLAlchemy | 2.0 |
+| Validacion | Pydantic | v2 |
+| Base de datos | PostgreSQL | 16 |
+| Migraciones | Alembic | 1.13+ |
+| Tests | pytest | 9.0+ |
+| LLM | Ollama + Llama 3.2 3B | Self-hosted EU |
+| Gateway | nginx | 1.25 |
+| Contenedores | Docker Compose | v2 |
+| Frontend (legacy) | Next.js | 15.x |
+| Frontend (nuevo) | Jinja2 + Alpine.js + Tailwind | Pendiente |
 
-### AI-Powered Features
-- **Self-Hosted LLM** (Gemma 2B via Ollama) - Job inclusivity analysis without data leaks
-- OpenAI API integration for validation, normalization, and responses
-- Context-aware chat with user data and platform activity
-- Real-time game adaptation and feedback
-- Dynamic quiz question generation
-- Multi-language support with AI translation
-
-### Technical Architecture
-- **Databaseless**: JSON file storage with in-memory caching
-- **Serverless**: File I/O + ephemeral memory + OpenAI
-- **Responsive**: Mobile-first design with accessibility features
-- **PWA Ready**: Offline capabilities and app-like experience
-
-## 🛠️ Setup Instructions
-
-### Prerequisites
-- Node.js 18+ 
-- OpenAI API key
-
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd diversia-eternals
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Environment Configuration**
-   Create a `.env.local` file in the root directory:
-   ```env
-   OPENAI_API_KEY=your_openai_api_key_here
-   NODE_ENV=development
-   NEXT_PUBLIC_APP_URL=http://localhost:3000
-   ```
-
-4. **Start the development server**
-   ```bash
-   npm run dev
-   ```
-
-5. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
-
-## 📁 Project Structure
+## Arquitectura
 
 ```
-diversia-eternals/
-├── app/
-│   ├── api/                    # API routes
-│   │   ├── chat/              # NeuroAgent chatbot API
-│   │   └── forms/             # Form submission & validation
-│   ├── components/            # Reusable components
-│   │   ├── GenericForm.js     # Schema-driven form component
-│   │   ├── NeuroAgent.js      # AI chatbot component
-│   │   └── Navbar/            # Navigation component
-│   ├── dashboard/             # User dashboard
-│   ├── forms/                 # Three core forms with tabs
-│   ├── games/                 # Interactive games library
-│   ├── quiz/                  # Assessment library
-│   └── page.js                # Home page
-├── data/                      # JSON data storage
-│   └── submissions.json       # Form submissions
-├── public/                    # Static assets
-└── package.json
+                    nginx gateway (:80)
+                         |
+        +----------------+----------------+----------------+
+        |                |                |                |
+  auth-service     profile-service  matching-service  intelligence-service
+    (:8001)           (:8002)          (:8003)            (:8004)
+        |                |                |                |
+        +----------------+----------------+----------------+
+                         |
+                   PostgreSQL 16
+              (schemas: auth, profiles, matching, ai)
 ```
 
-## 🎯 Core Features
+### 4 Microservicios (Clean Architecture)
 
-### 1. Forms System (`/forms`)
-- **Tabbed Interface**: Switch between Individual, Company, and Therapist forms
-- **GenericForm Component**: Schema-driven, reusable form builder
-- **AI Validation**: OpenAI-powered data validation and normalization
-- **JSON Storage**: Server-side data persistence without database
+1. **auth-service** (:8001) — Registro, login, JWT, gestion de usuarios
+2. **profile-service** (:8002) — Perfiles neurodivergentes, quiz, evaluacion neurocognitiva
+3. **matching-service** (:8003) — Matching trilateral 24D, scoring multidimensional
+4. **intelligence-service** (:8004) — Reportes LLM, anonimizacion, prompt builder, transparencia IA
 
-### 2. NeuroAgent Chatbot (`/api/chat`)
-- **Context Awareness**: Remembers user data and chat history
-- **OpenAI Integration**: Powered by GPT for intelligent responses
-- **Session Persistence**: Chat history saved in localStorage
-- **Multi-language**: Support for English and Spanish
+Cada servicio sigue **Clean Architecture**:
+```
+service/
+  app/
+    domain/          # Entidades y value objects (sin dependencias)
+    application/     # Use cases, DTOs, interfaces
+    infrastructure/  # Persistencia, clientes externos
+    api/             # Endpoints FastAPI, schemas
+    main.py          # Entry point
+  tests/
+    unit/            # Tests unitarios
+```
 
-### 3. Interactive Games (`/games`)
-- **10 Game Types**: Memory Grid, Pattern Matrix, Operación 2.0, Reaction Time, Simon Says, Number Sequence, Word Builder, Shape Sorter, Color Match, Path Finder
-- **Client-Side Only**: All game logic runs in browser (no backend/API for games)
-- **Progress Tracking**: Save and resume functionality with localStorage
-- **Accessibility**: Designed for neurodivergent engagement
-- **Stats Display**: Score, accuracy, and reaction time metrics
+## Setup Rapido
 
-### 4. Quiz & Assessment (`/quiz`)
-- **10 Question Types**: Multiple choice, sliders, drag-drop, etc.
-- **AI Adaptation**: Dynamic question generation and scoring
-- **Progress Tracking**: Save/resume with localStorage
-- **Export Results**: PDF summaries and insights
+### Prerequisitos
+- Docker y Docker Compose v2
+- Python 3.12+ (para desarrollo local sin Docker)
 
-### 5. Dashboard (`/dashboard`)
-- **Personalized Experience**: User-specific content and insights
-- **Quick Actions**: Direct access to forms, games, and quizzes
-- **AI Insights**: Personalized recommendations and analysis
-- **Activity Tracking**: Recent actions and progress
+### Con Docker Compose (recomendado)
 
-## 🔧 API Endpoints
+```bash
+# Clonar el repositorio
+git clone https://github.com/Pep190272/Talento-Neurodivergente.git
+cd Talento-Neurodivergente/services
 
-### `/api/forms`
-- **POST**: Submit form data with OpenAI validation
-- **GET**: Retrieve all submissions
+# Copiar variables de entorno
+cp ../.env.example .env
 
-### `/api/chat`
-- **POST**: Send message to NeuroAgent with context
+# Levantar todos los servicios
+docker-compose up --build
+```
 
-**Note**: Games (`/games`) and Quiz (`/quiz`) do not have backend APIs. All functionality is client-side with localStorage persistence.
+Los servicios estaran disponibles en:
+- Gateway: http://localhost:80
+- Auth API: http://localhost:8001/docs
+- Profile API: http://localhost:8002/docs
+- Matching API: http://localhost:8003/docs
+- Intelligence API: http://localhost:8004/docs
 
-## 🎨 UI/UX Features
+### Desarrollo Local (sin Docker)
 
-- **Responsive Design**: Mobile-first approach
-- **Accessibility**: WCAG 2.1 AA compliance
-- **Dark/Light Theme**: System preference detection
-- **Keyboard Navigation**: Full keyboard support
-- **Loading States**: Smooth transitions and feedback
+```bash
+cd services/auth-service
+pip install -e ".[dev]"
+pytest
+uvicorn app.main:app --reload --port 8001
+```
 
-## 🚀 Deployment
+## Estructura del Proyecto
 
-### Vercel (Recommended)
-1. Connect your GitHub repository to Vercel
-2. Add environment variables in Vercel dashboard
-3. Deploy automatically on push to main branch
+```
+Talento-Neurodivergente/
+├── services/                    # Microservicios Python/FastAPI
+│   ├── auth-service/            # Autenticacion y usuarios
+│   ├── profile-service/         # Perfiles neurodivergentes
+│   ├── matching-service/        # Matching trilateral 24D
+│   ├── intelligence-service/    # LLM y analisis IA
+│   ├── gateway/nginx.conf       # API Gateway
+│   ├── docker-compose.yml       # Orquestacion
+│   └── init-schemas.sql         # Schemas PostgreSQL
+├── app/                         # Frontend Next.js (legacy, en migracion)
+├── prisma/                      # Schema Prisma (legacy)
+├── tests/                       # Tests Vitest (legacy, 272 tests)
+├── docs/                        # Documentacion
+│   ├── adr/                     # Architecture Decision Records
+│   ├── sessions/                # Notas de sesion
+│   └── ...
+├── .agent/                      # Sistema de agentes GACE
+├── CHANGELOG.md                 # Historial de cambios
+├── ROADMAP.md                   # Plan de desarrollo
+└── PROJECT_STATUS.md            # Estado actual del proyecto
+```
 
-### Other Platforms
-- **Netlify**: Compatible with Next.js static export
-- **Railway**: Full-stack deployment with environment variables
-- **Docker**: Containerized deployment available
+## Tests
 
-## 🔒 Security & Privacy
+```bash
+# Tests de microservicios (pytest)
+cd services/auth-service && pytest          # 48 tests
+cd services/matching-service && pytest      # 42 tests
+cd services/auth-service && pytest tests/   # 36 tests seguridad/persistencia
 
-### Data Protection
-- **Encryption at Rest**: AES-256-GCM for sensitive medical data
-- **Authentication**: NextAuth.js v5 with JWT sessions
-- **Authorization**: 3-actor model (Individual, Therapist, Company)
-- **Rate Limiting**: Protection against abuse
-- **Input Validation**: Zod schemas for all inputs
-- **Audit Logging**: 7-year retention for compliance
+# Tests legacy (Vitest) — siguen pasando
+npm test                                    # 272 tests
+```
 
-### AI/LLM Privacy 🤖
-- **Self-Hosted LLM**: Gemma 2B via Ollama on EU VPS (París)
-- **Zero Data Leaks**: No OpenAI, Anthropic, or third-party AI APIs
-- **Data Residency**: All AI processing happens in EU servers
-- **Ephemeral Processing**: Data in memory only during analysis (3-5s)
-- **No Training**: Model never trained with production data
+**Total tests: 398** (126 nuevos pytest + 272 legacy Vitest)
+
+## Seguridad y Compliance
+
+### Proteccion de Datos
+- **Encriptacion at rest**: AES-256-GCM para datos medicos sensibles
+- **Autenticacion**: JWT custom con bcrypt (microservicios) + NextAuth v5 (legacy)
+- **Autorizacion**: 3 actores (Individual, Terapeuta, Empresa)
+- **Rate Limiting**: Por servicio con slowapi
+- **CORS**: Configuracion env-aware (desarrollo vs produccion)
+- **OWASP**: Top 10 auditado y corregido
+
+### IA/LLM Privacy
+- **Self-Hosted LLM**: Llama 3.2 3B via Ollama en VPS EU (Paris)
+- **Zero Data Leaks**: Sin APIs de terceros para IA
+- **Data Residency**: Todo el procesamiento IA en servidores EU
+- **Procesamiento efimero**: Datos en memoria solo durante analisis
+- **No Training**: El modelo nunca se entrena con datos de produccion
 
 ### Compliance
-- **GDPR Compliant**: ✅ Art. 5, 9, 25, 32, 44-49
-- **HIPAA Ready**: ✅ Medical data encryption and access controls
-- **EU AI Act**: ✅ High-risk AI system compliant (self-hosted, auditable)
+- **GDPR**: Art. 5, 9, 25, 32, 44-49 (datos neurodivergentes = categoria especial)
+- **HIPAA Ready**: Encriptacion de datos medicos y controles de acceso
+- **EU AI Act**: Sistema IA de alto riesgo compliant (self-hosted, auditable, transparente)
 
-See [SECURITY_IMPLEMENTATION.md](./SECURITY_IMPLEMENTATION.md) for details.
+Ver [SECURITY_IMPLEMENTATION.md](./SECURITY_IMPLEMENTATION.md) para detalles del stack legacy.
 
-## 🤝 Contributing
+## Deployment
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+### Produccion (VPS Hostinger + Dokploy)
+- **Servicios**: Docker Compose con 4 microservicios + PostgreSQL + Ollama
+- **Localizacion**: Paris, Francia (EU — cumplimiento GDPR)
+- **Coste**: ~€40/mes (VPS con 2 CPU, 8GB RAM, 100GB SSD)
 
-## 📝 License
+### Legacy (Vercel)
+- El frontend Next.js sigue desplegado en Vercel durante la migracion
+- Se eliminara cuando el frontend Jinja2 este completo
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## Roadmap
 
-## 🆘 Support
+### Completado
+- [x] Migracion JSON a PostgreSQL (Prisma)
+- [x] 272 tests unitarios + integracion + E2E
+- [x] LLM self-hosted (Ollama + Llama 3.2 3B)
+- [x] OWASP security audit (7 vulnerabilidades corregidas)
+- [x] Arquitectura microservicios Python/FastAPI (4 servicios)
+- [x] Clean Architecture con domain layer puro
+- [x] 126 tests nuevos (pytest)
+- [x] Alembic migrations
+- [x] GDPR compliance ~90%
 
-For support and questions:
-- Create an issue in the GitHub repository
-- Check the documentation in the `/docs` folder
-- Review the API documentation
+### Pendiente
+- [ ] Frontend Jinja2 + Alpine.js + Tailwind CSS
+- [ ] Eliminar Next.js legacy (Issue #63)
+- [ ] Deploy microservicios en VPS
+- [ ] Tests E2E cross-service
+- [ ] Backup automatizado
+- [ ] Monitoring (Sentry)
+- [ ] Beta con usuarios reales
 
-## 🔮 Roadmap
+## Contributing
 
-- [ ] Backend API for game scores (currently localStorage only)
-- [ ] Leaderboards and social features for games
-- [ ] Add quiz question generation with AI
-- [ ] Enhanced AI insights and personalized tips
-- [ ] PWA offline support
-- [ ] Multi-language expansion
-- [ ] Advanced analytics dashboard
-- [ ] Integration APIs for external systems
+1. Fork el repositorio
+2. Crea una feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit tus cambios (`git commit -m 'Add amazing feature'`)
+4. Push a la branch (`git push origin feature/amazing-feature`)
+5. Abre un Pull Request
+
+## License
+
+Este proyecto esta licenciado bajo la MIT License — ver [LICENSE](LICENSE).
 
 ---
 
-**Built with ❤️ for the neurodivergent community** 
+**Construido para la comunidad neurodivergente**

@@ -1,22 +1,23 @@
 # ROADMAP — DiversIA Eternals
 
 **Fecha de inicio:** 10 de febrero de 2026
-**Ultima actualizacion:** 26 de febrero de 2026
-**Estado:** Sprint 1 completado — Sprint 2 completado — Sprint 3 completado — Sprint 4 completado — Sprint 5 en progreso
+**Ultima actualizacion:** 6 de marzo de 2026
+**Estado:** Sprints 1-5 completados — Migracion v2.0.0 en progreso (Fases 0-5 completadas)
 
 ---
 
 ## Indice
 
 1. [Progreso Actual](#progreso-actual)
-2. [Sprint 1: Fundaciones Criticas](#sprint-1-fundaciones-criticas)
-3. [Sprint 2: Tests y Limpieza](#sprint-2-tests-y-limpieza)
-4. [Sprint 3: Arquitectura y Capas](#sprint-3-arquitectura-y-capas)
-5. [Sprint 4: LLM y Compliance](#sprint-4-llm-y-compliance)
-6. [Sprint 5: Seguridad y Deploy](#sprint-5-seguridad-y-deploy)
-7. [Decisiones Tecnicas](#decisiones-tecnicas)
-8. [Preguntas Estrategicas Pendientes](#preguntas-estrategicas-pendientes)
-9. [Notas de Sesion](#notas-de-sesion)
+2. [Migracion v2.0.0 — Microservicios Python/FastAPI](#migracion-v200--microservicios-pythonfastapi)
+3. [Sprint 1: Fundaciones Criticas](#sprint-1-fundaciones-criticas)
+4. [Sprint 2: Tests y Limpieza](#sprint-2-tests-y-limpieza)
+5. [Sprint 3: Arquitectura y Capas](#sprint-3-arquitectura-y-capas)
+6. [Sprint 4: LLM y Compliance](#sprint-4-llm-y-compliance)
+7. [Sprint 5: Seguridad y Deploy](#sprint-5-seguridad-y-deploy)
+8. [Decisiones Tecnicas](#decisiones-tecnicas)
+9. [Preguntas Estrategicas Pendientes](#preguntas-estrategicas-pendientes)
+10. [Notas de Sesion](#notas-de-sesion)
 
 ---
 
@@ -71,6 +72,59 @@
 | `consent.ts` | Prisma | Nuevo (`.js` eliminado) | Operativo |
 | `dashboards.ts` | Prisma | Nuevo (`.js` eliminado) | Operativo |
 | `storage.js` | JSON files | Legacy | Solo tests lo usan — pending removal |
+
+---
+
+## Migracion v2.0.0 — Microservicios Python/FastAPI
+
+**Periodo:** 4-6 marzo 2026
+**Estado:** Fases 0-5 completadas, Fase 6-7 pendientes
+**Decision:** ADR-003 + ADR-004
+
+### Motivacion
+
+Migrar de monolito Next.js a 4 microservicios Python/FastAPI:
+1. Python es estandar en AI/ML — mejor ecosistema para matching 24D
+2. Microservicios permiten escalar matching-service independientemente
+3. Clean Architecture con domain layer puro (testeable, sin framework)
+4. Alineacion con modelo de negocio
+
+### Fases
+
+| Fase | Descripcion | Estado | Tests |
+|------|------------|--------|-------|
+| 0 | Scaffolding: carpetas, Docker Compose, nginx, pyproject.toml | Completado | - |
+| 1 | auth-service: User entity, Register/Login use cases, JWT, API | Completado | 48 |
+| 2 | matching-service: MatchRequest, RunMatching, scoring 24D | Completado | 42 |
+| 3 | profile-service: NeurocognitiveAssessment, quiz normalization | Completado | - |
+| 4 | intelligence-service: TalentReport, LLM client, anonymizer | Completado | - |
+| 5 | Persistencia: SQLAlchemy ORM, Alembic, OWASP, seed data | Completado | 36 |
+| **6** | **Frontend Jinja2 + Alpine.js + Tailwind CSS** | **Pendiente** | - |
+| **7** | **Deploy VPS + tests E2E cross-service** | **Pendiente** | - |
+
+### Stack v2.0.0
+
+- **Backend**: Python 3.12 + FastAPI + SQLAlchemy 2.0 + Pydantic v2
+- **Frontend**: Jinja2 + Alpine.js + Tailwind CSS (pendiente)
+- **Tests**: pytest 9.0 (reemplaza Vitest)
+- **Auth**: JWT custom + bcrypt (reemplaza NextAuth)
+- **DB**: PostgreSQL 16 (se mantiene, ORM: SQLAlchemy en vez de Prisma)
+- **LLM**: Ollama + Llama 3.2 3B (se mantiene, accedido desde Python)
+- **Deploy**: Docker Compose + Dokploy (reemplaza Vercel)
+
+### Coexistencia
+
+- Next.js sigue funcionando durante la migracion (272 tests Vitest pasan)
+- Tablas Prisma en schema `public` no se tocan
+- Nuevos servicios usan schemas propios: auth, profiles, matching, ai
+- Se eliminara Next.js cuando el frontend Jinja2 este completo (Issue #63)
+
+---
+
+## Sprints Historicos (v1.0.0 — Monolito Next.js)
+
+> Los sprints 1-5 documentan la evolucion del monolito Next.js desde su estado inicial
+> hasta production-ready (v1.0.0). Esta seccion es referencia historica.
 
 ---
 
@@ -391,12 +445,17 @@ Scripts npm: `test:e2e`, `test:e2e:public`, `test:e2e:auth`, `test:e2e:report`
 | Service + Repository Layer | Logica pura en services, Prisma solo en repositories | 22 Feb |
 | LLM Self-Hosted (Ollama) | Mantener self-hosted, upgrade Gemma 2B → Llama 3.2 3B | 25 Feb |
 
+| Migracion a Python/FastAPI | Aprobado y ejecutado (ADR-003) | 4 Mar |
+| Arquitectura microservicios | 4 servicios con Clean Architecture (ADR-004) | 4 Mar |
+| NextAuth → JWT custom | Reemplazado por auth-service con JWT + bcrypt | 4 Mar |
+| Vercel → Docker Compose + Dokploy | Frontend migrara a Jinja2 servido desde profile-service | 4 Mar |
+
 ### Pendientes
 
 | Decision | Opciones | Depende de |
 |----------|----------|------------|
-| NextAuth vs. Auth0/Clerk | Mantener NextAuth / Migrar a managed | Compliance, budget |
-| Hosting | Vercel + VPS / Railway / Render | Budget, DevOps capacity |
+| Eliminar Next.js | Cuando frontend Jinja2 este completo | Issue #63 |
+| Hosting definitivo | VPS actual (Dokploy) vs managed (Railway/Render) | Budget, escala |
 
 ---
 
@@ -525,4 +584,36 @@ Scripts npm: `test:e2e`, `test:e2e:public`, `test:e2e:auth`, `test:e2e:report`
 
 **Sprint 2 completado al 100%**
 
-**Proxima sesion:** Sprint 3 — Arquitectura y Capas (Service + Repository Layer)
+### Sesion 5 — 25-26 Feb 2026
+
+**Trabajos realizados:**
+- Sprint 3 completado: Service + Repository Layer extraidos
+- Sprint 4 completado: LLM upgrade a Llama 3.2 3B, GDPR compliance ~90%
+- Sprint 5 completado: OWASP audit (7 vulns corregidas), E2E Playwright (25+ tests)
+- v1.0.0 release: 272 tests, 0 failing, production-ready monolith
+
+**Metricas:** 272 tests passing, 0 failing, build exitoso
+
+### Sesion 6 — 4 Mar 2026
+
+**Trabajos realizados:**
+- Decision estrategica: migrar a microservicios Python/FastAPI (ADR-003, ADR-004)
+- Scaffolding completo: 4 servicios, Docker Compose, nginx gateway
+- auth-service implementado: User entity, Register/Login use cases, JWT, 48 tests
+- matching-service implementado: MatchRequest, RunMatching, scoring 24D, 42 tests
+- Documentacion GACE actualizada para v2.0.0
+
+### Sesion 7 — 5-6 Mar 2026
+
+**Trabajos realizados:**
+- profile-service implementado: NeurocognitiveAssessment, quiz normalization
+- intelligence-service implementado: TalentReport, LLM client, anonymizer, prompt builder
+- SQLAlchemy ORM + DI wiring para todos los servicios
+- Alembic migrations para auth-service
+- OWASP hardening: CORS env-aware, rate limiting, seed data
+- 36 nuevos tests de seguridad y persistencia
+- Documentacion completa actualizada (README, PROJECT_STATUS, ROADMAP, CHANGELOG, NEXT_STEPS)
+
+**Metricas:** 126 tests nuevos (pytest) + 272 legacy (Vitest) = 398 total, 0 failing
+
+**Proxima sesion:** Fase 6 — Frontend Jinja2 + Alpine.js + Tailwind CSS
