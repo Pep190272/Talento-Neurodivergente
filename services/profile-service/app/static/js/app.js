@@ -71,6 +71,11 @@ async function api(path, options = {}) {
     window.location.href = '/login';
     return;
   }
+  // Handle non-JSON responses (e.g. HTML 404 when service is down)
+  const contentType = res.headers.get('content-type') || '';
+  if (!contentType.includes('application/json')) {
+    throw { status: res.status, detail: `Service unavailable (${res.status})` };
+  }
   const data = await res.json();
   if (!res.ok) throw { status: res.status, ...data };
   return data;

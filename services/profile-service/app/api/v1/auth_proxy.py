@@ -17,12 +17,13 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, EmailStr
 
 from shared.auth import create_access_token
-from shared.config import JWTSettings
+
+from app.config import ProfileServiceSettings
 
 router = APIRouter(prefix="/api/v1/auth", tags=["auth-local"])
 
-_jwt = JWTSettings()
-_JWT_SECRET = _jwt.JWT_SECRET or "dev-secret-change-in-production"
+_settings = ProfileServiceSettings()
+_JWT_SECRET = _settings.jwt_secret
 
 # SQLite for local dev — file in project root, gitignored
 _DB_PATH = Path(__file__).resolve().parents[3] / "local_auth.db"

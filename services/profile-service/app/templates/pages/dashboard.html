@@ -130,14 +130,31 @@ function dashboardApp() {
     profile: null,
     loading: true,
     async init() {
+      // Wait for Alpine store to load from localStorage
+      await this.$nextTick();
+
+      // Check auth — also check localStorage directly as fallback
       if (!Alpine.store('auth').isLoggedIn) {
-        window.location.href = '/login';
-        return;
+        const saved = localStorage.getItem('diversia_auth');
+        if (saved) {
+          try {
+            const data = JSON.parse(saved);
+            Alpine.store('auth').setAuth(data.user, data.token);
+          } catch { /* ignore */ }
+        }
+        // Still not logged in after recovery attempt
+        if (!Alpine.store('auth').isLoggedIn) {
+          window.location.href = '/login';
+          return;
+        }
       }
+
+      // Try to load profile from API (may not be available without PostgreSQL)
       try {
         this.profile = await api('/profiles/me');
       } catch (e) {
-        if (e.status !== 404) console.error(e);
+        // 404 = no profile yet, other errors = API unavailable — both are OK
+        console.log('Profile API:', e.status || 'unavailable');
       } finally {
         this.loading = false;
         this.$nextTick(() => lucide.createIcons());
