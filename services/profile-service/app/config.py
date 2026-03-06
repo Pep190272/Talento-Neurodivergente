@@ -13,3 +13,4 @@ class ProfileServiceSettings(BaseSettings):
     service_name: str = "profile-service"
     service_port: int = 8002
     ENV: str = "development"
+    AUTH_SERVICE_URL: str = "http://localhost:8001"

@@ -12,6 +12,7 @@ from slowapi import Limiter
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
+from .api.v1.auth_proxy import router as auth_proxy_router
 from .api.v1.pages import router as pages_router
 from .config import ProfileServiceSettings
 
@@ -52,6 +53,9 @@ def create_app() -> FastAPI:
     static_dir = BASE_DIR / "static"
     if static_dir.exists():
         application.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
+
+    # Auth proxy (forwards to auth-service — works without DB)
+    application.include_router(auth_proxy_router)
 
     # API routes (require PostgreSQL + asyncpg — graceful skip if unavailable)
     try:
