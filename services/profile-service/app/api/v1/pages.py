@@ -16,6 +16,31 @@ async def home(request: Request) -> HTMLResponse:
     return templates.TemplateResponse("pages/home.html", {"request": request})
 
 
+@router.get("/para-candidatos", response_class=HTMLResponse)
+async def para_candidatos(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse("pages/para-candidatos.html", {"request": request})
+
+
+@router.get("/para-empresas", response_class=HTMLResponse)
+async def para_empresas(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse("pages/para-empresas.html", {"request": request})
+
+
+@router.get("/para-terapeutas", response_class=HTMLResponse)
+async def para_terapeutas(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse("pages/para-terapeutas.html", {"request": request})
+
+
+@router.get("/about", response_class=HTMLResponse)
+async def about(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse("pages/about.html", {"request": request})
+
+
+@router.get("/faq", response_class=HTMLResponse)
+async def faq(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse("pages/faq.html", {"request": request})
+
+
 @router.get("/login", response_class=HTMLResponse)
 async def login(request: Request) -> HTMLResponse:
     return templates.TemplateResponse("pages/login.html", {"request": request})
