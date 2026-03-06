@@ -13,7 +13,7 @@ RUN pip install --no-cache-dir /tmp/shared/ && rm -rf /tmp/shared/
 COPY profile-service/pyproject.toml .
 RUN pip install --no-cache-dir .
 
-# Copy application code
+# Copy application code (includes templates and static)
 COPY profile-service/app/ ./app/
 
 # Copy Alembic config and migrations

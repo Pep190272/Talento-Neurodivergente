@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% block title %}Formularios — DiversIA{% endblock %}
+
+{% block content %}
+<section class="py-8 px-4">
+  <div class="max-w-4xl mx-auto" x-data="formsApp()">
+    <div class="text-center mb-8">
+      <h1 class="font-display text-2xl font-bold text-dark">Formularios de Registro</h1>
+      <p class="text-gray-500 mt-2">Completa tu perfil segun tu rol</p>
+    </div>
+
+    <!-- Role tabs -->
+    <div class="flex justify-center gap-2 mb-8">
+      <button @click="tab='candidate'" :class="tab === 'candidate' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600'"
+              class="px-5 py-2 rounded-lg text-sm font-medium transition">Candidato</button>
+      <button @click="tab='company'" :class="tab === 'company' ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-600'"
+              class="px-5 py-2 rounded-lg text-sm font-medium transition">Empresa</button>
+      <button @click="tab='therapist'" :class="tab === 'therapist' ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-600'"
+              class="px-5 py-2 rounded-lg text-sm font-medium transition">Terapeuta</button>
+    </div>
+
+    <!-- Candidate Form -->
+    <div x-show="tab === 'candidate'" class="glass rounded-xl p-8">
+      <h2 class="font-semibold text-lg mb-6">Perfil de Candidato</h2>
+      <form @submit.prevent="submitProfile" class="space-y-4">
+        <div class="grid md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Nombre completo</label>
+            <input type="text" x-model="form.display_name" required
+                   class="form-input w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Ubicacion</label>
+            <input type="text" x-model="form.location"
+                   class="form-input w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none"
+                   placeholder="Ciudad, Pais">
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+          <textarea x-model="form.bio" rows="3" maxlength="5000"
+                    class="form-input w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none"
+                    placeholder="Cuentanos sobre ti, tus fortalezas y que buscas..."></textarea>
+        </div>
+        <div x-show="error" class="p-3 bg-red-50 text-red-700 text-sm rounded-lg" x-text="error"></div>
+        <button type="submit" :disabled="loading"
+                class="px-6 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary-deep transition disabled:opacity-50">
+          <span x-text="loading ? 'Guardando...' : 'Guardar Perfil'"></span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Company Form -->
+    <div x-show="tab === 'company'" class="glass rounded-xl p-8">
+      <h2 class="font-semibold text-lg mb-6">Perfil de Empresa</h2>
+      <form @submit.prevent="submitProfile" class="space-y-4">
+        <div class="grid md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Nombre de la empresa</label>
+            <input type="text" x-model="form.display_name" required
+                   class="form-input w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Sector</label>
+            <input type="text" x-model="form.sector"
+                   class="form-input w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none"
+                   placeholder="Tecnologia, Salud, Educacion...">
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Descripcion</label>
+          <textarea x-model="form.bio" rows="3" maxlength="5000"
+                    class="form-input w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none"
+                    placeholder="Describe tu empresa y su compromiso con la inclusion..."></textarea>
+        </div>
+        <div x-show="error" class="p-3 bg-red-50 text-red-700 text-sm rounded-lg" x-text="error"></div>
+        <button type="submit" :disabled="loading"
+                class="px-6 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition disabled:opacity-50">
+          <span x-text="loading ? 'Guardando...' : 'Guardar Perfil Empresa'"></span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Therapist Form -->
+    <div x-show="tab === 'therapist'" class="glass rounded-xl p-8">
+      <h2 class="font-semibold text-lg mb-6">Perfil de Terapeuta</h2>
+      <form @submit.prevent="submitTherapist" class="space-y-4">
+        <div class="grid md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Especialidad</label>
+            <input type="text" x-model="therapistForm.specialty" required
+                   class="form-input w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none"
+                   placeholder="Psicologia clinica, Neuropsicologia...">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Numero de licencia</label>
+            <input type="text" x-model="therapistForm.license_number"
+                   class="form-input w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none"
+                   placeholder="Numero de colegiado">
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Bio profesional</label>
+          <textarea x-model="therapistForm.bio" rows="3"
+                    class="form-input w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none"
+                    placeholder="Tu experiencia con neurodiversidad..."></textarea>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Areas de soporte (separadas por coma)</label>
+          <input type="text" x-model="therapistForm.support_areas_text"
+                 class="form-input w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none"
+                 placeholder="TDAH, Autismo, Dislexia, Ansiedad...">
+        </div>
+        <div x-show="error" class="p-3 bg-red-50 text-red-700 text-sm rounded-lg" x-text="error"></div>
+        <button type="submit" :disabled="loading"
+                class="px-6 py-2.5 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition disabled:opacity-50">
+          <span x-text="loading ? 'Guardando...' : 'Guardar Perfil Terapeuta'"></span>
+        </button>
+      </form>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function formsApp() {
+  return {
+    tab: 'candidate',
+    form: { display_name: '', bio: '', role: 'candidate', location: '', sector: '' },
+    therapistForm: { specialty: '', bio: '', license_number: '', support_areas_text: '' },
+    error: '', loading: false,
+    async submitProfile() {
+      this.error = '';
+      this.loading = true;
+      try {
+        this.form.role = this.tab;
+        await api('/profiles/', { method: 'POST', body: JSON.stringify(this.form) });
+        Alpine.store('toast').show('Perfil guardado correctamente');
+      } catch (e) {
+        this.error = e.detail || e.message || 'Error al guardar';
+      } finally { this.loading = false; }
+    },
+    async submitTherapist() {
+      this.error = '';
+      this.loading = true;
+      try {
+        const data = { ...this.therapistForm,
+          support_areas: this.therapistForm.support_areas_text.split(',').map(s => s.trim()).filter(Boolean)
+        };
+        delete data.support_areas_text;
+        await api('/profiles/therapist', { method: 'POST', body: JSON.stringify(data) });
+        Alpine.store('toast').show('Perfil de terapeuta guardado');
+      } catch (e) {
+        this.error = e.detail || e.message || 'Error al guardar';
+      } finally { this.loading = false; }
+    }
+  }
+}
+</script>
+{% endblock %}

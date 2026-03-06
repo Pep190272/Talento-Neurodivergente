@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+{% block title %}Registro — DiversIA{% endblock %}
+
+{% block content %}
+<section class="min-h-[80vh] flex items-center justify-center py-12 px-4">
+  <div class="w-full max-w-md" x-data="registerForm()">
+    <div class="text-center mb-8">
+      <h1 class="font-display text-2xl font-bold text-dark">Crear Cuenta</h1>
+      <p class="text-gray-500 mt-2">Unete a la comunidad DiversIA</p>
+    </div>
+
+    <form @submit.prevent="submit" class="glass rounded-xl p-8 space-y-5">
+      <div x-show="error" x-cloak class="p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg" x-text="error"></div>
+      <div x-show="success" x-cloak class="p-3 bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg">
+        Cuenta creada. Redirigiendo...
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+        <input type="text" x-model="name" required minlength="2"
+               class="form-input w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none"
+               placeholder="Tu nombre">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <input type="email" x-model="email" required
+               class="form-input w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none"
+               placeholder="tu@email.com">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Contrasena</label>
+        <input type="password" x-model="password" required minlength="8"
+               class="form-input w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none"
+               placeholder="Min. 8 chars, mayuscula + numero">
+        <p class="text-xs text-gray-400 mt-1">Minimo 8 caracteres, 1 mayuscula, 1 numero</p>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-2">Tipo de cuenta</label>
+        <div class="grid grid-cols-3 gap-2">
+          <button type="button" @click="role='candidate'"
+                  :class="role === 'candidate' ? 'border-primary bg-primary/5 text-primary' : 'border-gray-200 text-gray-500'"
+                  class="border rounded-lg p-3 text-center text-xs font-medium transition">
+            <i data-lucide="user" class="w-5 h-5 mx-auto mb-1"></i>
+            Candidato
+          </button>
+          <button type="button" @click="role='company'"
+                  :class="role === 'company' ? 'border-green-500 bg-green-50 text-green-700' : 'border-gray-200 text-gray-500'"
+                  class="border rounded-lg p-3 text-center text-xs font-medium transition">
+            <i data-lucide="building-2" class="w-5 h-5 mx-auto mb-1"></i>
+            Empresa
+          </button>
+          <button type="button" @click="role='therapist'"
+                  :class="role === 'therapist' ? 'border-purple-500 bg-purple-50 text-purple-700' : 'border-gray-200 text-gray-500'"
+                  class="border rounded-lg p-3 text-center text-xs font-medium transition">
+            <i data-lucide="stethoscope" class="w-5 h-5 mx-auto mb-1"></i>
+            Terapeuta
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" :disabled="loading"
+              class="w-full py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary-deep transition disabled:opacity-50 flex items-center justify-center gap-2">
+        <span x-show="loading" class="spinner"></span>
+        <span x-text="loading ? 'Creando cuenta...' : 'Crear Cuenta'"></span>
+      </button>
+
+      <p class="text-center text-sm text-gray-500">
+        Ya tienes cuenta? <a href="/login" class="text-primary font-medium hover:underline">Inicia Sesion</a>
+      </p>
+    </form>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function registerForm() {
+  const params = new URLSearchParams(window.location.search);
+  return {
+    name: '', email: '', password: '',
+    role: params.get('role') || 'candidate',
+    error: '', success: false, loading: false,
+    async submit() {
+      this.error = '';
+      this.loading = true;
+      try {
+        const res = await fetch('/api/v1/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: this.name, email: this.email, password: this.password, role: this.role }),
+        });
+        const data = await res.json();
+        if (!res.ok) { this.error = data.detail || data.message || 'Error al registrar'; return; }
+        this.success = true;
+        Alpine.store('auth').setAuth(data.user, data.access_token);
+        setTimeout(() => { window.location.href = '/dashboard'; }, 1000);
+      } catch (e) {
+        this.error = 'Error de conexion. Intenta de nuevo.';
+      } finally {
+        this.loading = false;
+      }
+    }
+  }
+}
+</script>
+{% endblock %}

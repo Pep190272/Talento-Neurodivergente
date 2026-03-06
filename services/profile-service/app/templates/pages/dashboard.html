@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — DiversIA{% endblock %}
+
+{% block content %}
+<section class="py-8 px-4" x-data="dashboardApp()" x-init="init()">
+  <div class="max-w-7xl mx-auto">
+
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="font-display text-2xl font-bold text-dark">
+        Hola, <span x-text="$store.auth.user?.display_name || $store.auth.user?.email || 'Usuario'"></span>
+      </h1>
+      <p class="text-gray-500 mt-1">
+        <span x-text="roleLabel()"></span> &middot; DiversIA Eternals
+      </p>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <div class="glass rounded-xl p-5 hover-lift">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs text-gray-500 uppercase tracking-wider">Perfil</span>
+          <i data-lucide="user-check" class="w-4 h-4 text-primary"></i>
+        </div>
+        <div class="text-2xl font-display font-bold text-dark" x-text="profile ? 'Activo' : 'Pendiente'"></div>
+        <p class="text-xs text-gray-400 mt-1" x-text="profile?.status || 'Completa tu perfil'"></p>
+      </div>
+
+      <div class="glass rounded-xl p-5 hover-lift">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs text-gray-500 uppercase tracking-wider">Quiz</span>
+          <i data-lucide="brain" class="w-4 h-4 text-primary"></i>
+        </div>
+        <div class="text-2xl font-display font-bold text-dark" x-text="profile?.neuro_vector ? 'Completo' : 'Pendiente'"></div>
+        <p class="text-xs text-gray-400 mt-1" x-text="profile?.neuro_vector ? '24 dimensiones evaluadas' : 'Realiza tu evaluacion'"></p>
+      </div>
+
+      <div class="glass rounded-xl p-5 hover-lift">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs text-gray-500 uppercase tracking-wider">Matches</span>
+          <i data-lucide="handshake" class="w-4 h-4 text-primary"></i>
+        </div>
+        <div class="text-2xl font-display font-bold text-dark">-</div>
+        <p class="text-xs text-gray-400 mt-1">Completa el quiz primero</p>
+      </div>
+
+      <div class="glass rounded-xl p-5 hover-lift">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs text-gray-500 uppercase tracking-wider">Seguridad</span>
+          <i data-lucide="shield-check" class="w-4 h-4 text-green-500"></i>
+        </div>
+        <div class="text-2xl font-display font-bold text-green-600">GDPR</div>
+        <p class="text-xs text-gray-400 mt-1">Datos en EU, IA self-hosted</p>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="mb-8">
+      <h2 class="font-semibold text-lg mb-4">Acciones Rapidas</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
+        <!-- Candidate actions -->
+        <template x-if="$store.auth.role === 'candidate'">
+          <div class="space-y-4">
+            <a href="/quiz" class="block border border-gray-200 rounded-xl p-5 hover-lift hover:border-primary transition">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                  <i data-lucide="brain" class="w-5 h-5 text-primary"></i>
+                </div>
+                <div>
+                  <h3 class="font-medium text-sm">Quiz Neurocognitivo</h3>
+                  <p class="text-xs text-gray-400">Evalua tus 24 dimensiones</p>
+                </div>
+              </div>
+            </a>
+          </div>
+        </template>
+
+        <a href="/games" class="block border border-gray-200 rounded-xl p-5 hover-lift hover:border-primary transition">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
+              <i data-lucide="gamepad-2" class="w-5 h-5 text-purple-600"></i>
+            </div>
+            <div>
+              <h3 class="font-medium text-sm">Brain Suite</h3>
+              <p class="text-xs text-gray-400">10 juegos cognitivos</p>
+            </div>
+          </div>
+        </a>
+
+        <a href="/forms" class="block border border-gray-200 rounded-xl p-5 hover-lift hover:border-primary transition">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
+              <i data-lucide="file-text" class="w-5 h-5 text-green-600"></i>
+            </div>
+            <div>
+              <h3 class="font-medium text-sm">Formularios</h3>
+              <p class="text-xs text-gray-400">Completa tu perfil</p>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Profile Info -->
+    <div x-show="profile" class="glass rounded-xl p-6">
+      <h2 class="font-semibold text-lg mb-4">Tu Perfil</h2>
+      <div class="grid grid-cols-2 gap-4 text-sm">
+        <div><span class="text-gray-500">Nombre:</span> <span class="font-medium" x-text="profile?.display_name"></span></div>
+        <div><span class="text-gray-500">Rol:</span> <span class="font-medium" x-text="profile?.role"></span></div>
+        <div><span class="text-gray-500">Estado:</span> <span class="font-medium" x-text="profile?.status"></span></div>
+        <div><span class="text-gray-500">Vector 24D:</span> <span class="font-medium" x-text="profile?.neuro_vector ? 'Calculado' : 'Pendiente'"></span></div>
+      </div>
+    </div>
+
+    <div x-show="!profile && !loading" class="glass rounded-xl p-8 text-center">
+      <i data-lucide="user-plus" class="w-12 h-12 text-gray-300 mx-auto mb-4"></i>
+      <h3 class="font-semibold text-lg mb-2">Completa tu perfil</h3>
+      <p class="text-sm text-gray-500 mb-4">Crea tu perfil para acceder al matching y evaluaciones.</p>
+      <a href="/forms" class="inline-block px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-deep transition">Crear Perfil</a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function dashboardApp() {
+  return {
+    profile: null,
+    loading: true,
+    async init() {
+      if (!Alpine.store('auth').isLoggedIn) {
+        window.location.href = '/login';
+        return;
+      }
+      try {
+        this.profile = await api('/profiles/me');
+      } catch (e) {
+        if (e.status !== 404) console.error(e);
+      } finally {
+        this.loading = false;
+        this.$nextTick(() => lucide.createIcons());
+      }
+    },
+    roleLabel() {
+      const r = Alpine.store('auth').role;
+      return { candidate: 'Candidato', company: 'Empresa', therapist: 'Terapeuta' }[r] || r;
+    }
+  }
+}
+</script>
+{% endblock %}

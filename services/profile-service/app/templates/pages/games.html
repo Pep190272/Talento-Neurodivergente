@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+{% block title %}Brain Suite — DiversIA{% endblock %}
+
+{% block content %}
+<section class="py-8 px-4">
+  <div class="max-w-7xl mx-auto">
+    <div class="text-center mb-10">
+      <h1 class="font-display text-2xl font-bold text-dark">Brain Suite</h1>
+      <p class="text-gray-500 mt-2">Juegos cognitivos adaptados para mentes neurodivergentes</p>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+
+      <div class="glass rounded-xl p-6 hover-lift cursor-pointer" x-data="{ playing: false }">
+        <div class="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center mb-3">
+          <i data-lucide="grid-3x3" class="w-6 h-6 text-blue-600"></i>
+        </div>
+        <h3 class="font-semibold mb-1">Memory Grid</h3>
+        <p class="text-xs text-gray-500 mb-3">Entrena tu memoria de trabajo con patrones visuales</p>
+        <span class="text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded">Memoria</span>
+      </div>
+
+      <div class="glass rounded-xl p-6 hover-lift cursor-pointer">
+        <div class="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center mb-3">
+          <i data-lucide="shapes" class="w-6 h-6 text-purple-600"></i>
+        </div>
+        <h3 class="font-semibold mb-1">Pattern Matrix</h3>
+        <p class="text-xs text-gray-500 mb-3">Detecta patrones en matrices de formas y colores</p>
+        <span class="text-xs px-2 py-1 bg-purple-50 text-purple-600 rounded">Patrones</span>
+      </div>
+
+      <div class="glass rounded-xl p-6 hover-lift cursor-pointer">
+        <div class="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center mb-3">
+          <i data-lucide="calculator" class="w-6 h-6 text-green-600"></i>
+        </div>
+        <h3 class="font-semibold mb-1">Operacion 2.0</h3>
+        <p class="text-xs text-gray-500 mb-3">Resuelve operaciones matematicas a contrarreloj</p>
+        <span class="text-xs px-2 py-1 bg-green-50 text-green-600 rounded">Velocidad</span>
+      </div>
+
+      <div class="glass rounded-xl p-6 hover-lift cursor-pointer">
+        <div class="w-12 h-12 rounded-lg bg-yellow-100 flex items-center justify-center mb-3">
+          <i data-lucide="zap" class="w-6 h-6 text-yellow-600"></i>
+        </div>
+        <h3 class="font-semibold mb-1">Reaction Time</h3>
+        <p class="text-xs text-gray-500 mb-3">Mide tu velocidad de reaccion ante estimulos</p>
+        <span class="text-xs px-2 py-1 bg-yellow-50 text-yellow-600 rounded">Reaccion</span>
+      </div>
+
+      <div class="glass rounded-xl p-6 hover-lift cursor-pointer">
+        <div class="w-12 h-12 rounded-lg bg-red-100 flex items-center justify-center mb-3">
+          <i data-lucide="disc" class="w-6 h-6 text-red-600"></i>
+        </div>
+        <h3 class="font-semibold mb-1">Simon Says</h3>
+        <p class="text-xs text-gray-500 mb-3">Repite secuencias de colores y sonidos</p>
+        <span class="text-xs px-2 py-1 bg-red-50 text-red-600 rounded">Secuencias</span>
+      </div>
+
+      <div class="glass rounded-xl p-6 hover-lift cursor-pointer">
+        <div class="w-12 h-12 rounded-lg bg-indigo-100 flex items-center justify-center mb-3">
+          <i data-lucide="hash" class="w-6 h-6 text-indigo-600"></i>
+        </div>
+        <h3 class="font-semibold mb-1">Number Sequence</h3>
+        <p class="text-xs text-gray-500 mb-3">Completa la secuencia numerica correcta</p>
+        <span class="text-xs px-2 py-1 bg-indigo-50 text-indigo-600 rounded">Logica</span>
+      </div>
+
+      <div class="glass rounded-xl p-6 hover-lift cursor-pointer">
+        <div class="w-12 h-12 rounded-lg bg-teal-100 flex items-center justify-center mb-3">
+          <i data-lucide="type" class="w-6 h-6 text-teal-600"></i>
+        </div>
+        <h3 class="font-semibold mb-1">Word Builder</h3>
+        <p class="text-xs text-gray-500 mb-3">Construye palabras a partir de letras aleatorias</p>
+        <span class="text-xs px-2 py-1 bg-teal-50 text-teal-600 rounded">Lenguaje</span>
+      </div>
+
+      <div class="glass rounded-xl p-6 hover-lift cursor-pointer">
+        <div class="w-12 h-12 rounded-lg bg-pink-100 flex items-center justify-center mb-3">
+          <i data-lucide="palette" class="w-6 h-6 text-pink-600"></i>
+        </div>
+        <h3 class="font-semibold mb-1">Color Match</h3>
+        <p class="text-xs text-gray-500 mb-3">Empareja colores y entrena atencion selectiva</p>
+        <span class="text-xs px-2 py-1 bg-pink-50 text-pink-600 rounded">Atencion</span>
+      </div>
+
+      <div class="glass rounded-xl p-6 hover-lift cursor-pointer">
+        <div class="w-12 h-12 rounded-lg bg-orange-100 flex items-center justify-center mb-3">
+          <i data-lucide="triangle" class="w-6 h-6 text-orange-600"></i>
+        </div>
+        <h3 class="font-semibold mb-1">Shape Sorter</h3>
+        <p class="text-xs text-gray-500 mb-3">Clasifica formas segun reglas cambiantes</p>
+        <span class="text-xs px-2 py-1 bg-orange-50 text-orange-600 rounded">Flexibilidad</span>
+      </div>
+
+      <div class="glass rounded-xl p-6 hover-lift cursor-pointer">
+        <div class="w-12 h-12 rounded-lg bg-cyan-100 flex items-center justify-center mb-3">
+          <i data-lucide="route" class="w-6 h-6 text-cyan-600"></i>
+        </div>
+        <h3 class="font-semibold mb-1">Path Finder</h3>
+        <p class="text-xs text-gray-500 mb-3">Encuentra el camino optimo en un laberinto</p>
+        <span class="text-xs px-2 py-1 bg-cyan-50 text-cyan-600 rounded">Planificacion</span>
+      </div>
+    </div>
+
+    <div class="text-center mt-8">
+      <p class="text-sm text-gray-400">Los juegos se ejecutan completamente en tu navegador. Sin datos enviados al servidor.</p>
+    </div>
+  </div>
+</section>
+{% endblock %}
