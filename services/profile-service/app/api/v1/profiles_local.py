@@ -78,6 +78,10 @@ class TherapistRequest(BaseModel):
     support_areas: list[str] = []
 
 
+class QuizRequest(BaseModel):
+    answers: list[dict]
+
+
 @router.post("/")
 async def create_profile(body: ProfileRequest, request: Request) -> JSONResponse:
     user = _get_user_from_request(request)
@@ -129,6 +133,38 @@ async def create_therapist(body: TherapistRequest, request: Request) -> JSONResp
     return JSONResponse(content=_row_to_dict(row))
 
 
+@router.post("/quiz")
+async def submit_quiz(body: QuizRequest, request: Request) -> JSONResponse:
+    user = _get_user_from_request(request)
+    if not user:
+        return JSONResponse(status_code=401, content={"detail": "No autenticado"})
+
+    # Calculate neuro_vector: average scores per dimension
+    dim_scores: dict[str, list[float]] = {}
+    for a in body.answers:
+        dim = a.get("dimension", "")
+        val = a.get("value", 0.5)
+        dim_scores.setdefault(dim, []).append(val)
+
+    neuro_vector = {dim: round(sum(vals) / len(vals), 3) for dim, vals in dim_scores.items()}
+
+    db = _get_db()
+    existing = db.execute("SELECT user_id FROM profiles WHERE user_id = ?", (user.sub,)).fetchone()
+    vec_json = json.dumps(neuro_vector)
+    if existing:
+        db.execute("UPDATE profiles SET neuro_vector=? WHERE user_id=?", (vec_json, user.sub))
+    else:
+        db.execute(
+            "INSERT INTO profiles (user_id, display_name, role, neuro_vector) VALUES (?, ?, ?, ?)",
+            (user.sub, user.email, user.role, vec_json),
+        )
+    db.commit()
+
+    row = db.execute("SELECT * FROM profiles WHERE user_id = ?", (user.sub,)).fetchone()
+    db.close()
+    return JSONResponse(content=_row_to_dict(row))
+
+
 @router.get("/me")
 async def get_my_profile(request: Request) -> JSONResponse:
     user = _get_user_from_request(request)
@@ -147,10 +183,10 @@ async def get_my_profile(request: Request) -> JSONResponse:
 
 def _row_to_dict(row) -> dict:
     d = dict(row)
-    # Parse support_areas from JSON string
-    if d.get("support_areas"):
-        try:
-            d["support_areas"] = json.loads(d["support_areas"])
-        except (json.JSONDecodeError, TypeError):
-            d["support_areas"] = []
+    for key in ("support_areas", "neuro_vector"):
+        if d.get(key) and isinstance(d[key], str):
+            try:
+                d[key] = json.loads(d[key])
+            except (json.JSONDecodeError, TypeError):
+                d[key] = [] if key == "support_areas" else None
     return d

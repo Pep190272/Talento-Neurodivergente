@@ -13,11 +13,10 @@
 
       <!-- Desktop nav -->
       <div class="hidden md:flex items-center gap-6">
-        <a href="/" class="text-sm font-medium text-gray-600 hover:text-primary transition">Inicio</a>
-
-        <!-- Public: profile landing pages -->
+        <!-- Public: landing pages -->
         <template x-if="!$store.auth.isLoggedIn">
           <div class="flex items-center gap-6">
+            <a href="/" class="text-sm font-medium text-gray-600 hover:text-primary transition">Inicio</a>
             <a href="/para-candidatos" class="text-sm font-medium text-gray-600 hover:text-primary transition">Candidatos</a>
             <a href="/para-empresas" class="text-sm font-medium text-gray-600 hover:text-primary transition">Empresas</a>
             <a href="/para-terapeutas" class="text-sm font-medium text-gray-600 hover:text-primary transition">Terapeutas</a>
@@ -62,10 +61,9 @@
 
   <!-- Mobile menu -->
   <div x-show="open" x-cloak x-transition class="md:hidden bg-white border-t border-gray-100 px-4 pb-4">
-    <a href="/" class="block py-2 text-gray-600 hover:text-primary">Inicio</a>
-
     <template x-if="!$store.auth.isLoggedIn">
       <div>
+        <a href="/" class="block py-2 text-gray-600 hover:text-primary">Inicio</a>
         <a href="/para-candidatos" class="block py-2 text-gray-600 hover:text-primary">Candidatos</a>
         <a href="/para-empresas" class="block py-2 text-gray-600 hover:text-primary">Empresas</a>
         <a href="/para-terapeutas" class="block py-2 text-gray-600 hover:text-primary">Terapeutas</a>
