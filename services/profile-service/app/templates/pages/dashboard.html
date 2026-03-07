@@ -405,20 +405,30 @@
       <!-- ==================== THERAPIST DASHBOARD ==================== -->
       <template x-if="$store.auth.role === 'therapist'">
         <div>
-          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+          <!-- KPI Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div class="glass rounded-xl p-5 hover-lift">
               <div class="flex items-center justify-between mb-2">
                 <span class="text-xs text-gray-500 uppercase tracking-wider">Perfil</span>
                 <i data-lucide="stethoscope" class="w-4 h-4 text-purple-500"></i>
               </div>
-              <div class="text-2xl font-display font-bold text-dark" x-text="profile ? 'Activo' : 'Pendiente'"></div>
+              <div class="text-2xl font-display font-bold" :class="profile ? 'text-green-600' : 'text-gray-400'"
+                   x-text="profile ? 'Activo' : 'Pendiente'"></div>
+            </div>
+            <div class="glass rounded-xl p-5 hover-lift">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-gray-500 uppercase tracking-wider">Especialidad</span>
+                <i data-lucide="award" class="w-4 h-4 text-purple-500"></i>
+              </div>
+              <div class="text-lg font-display font-bold text-dark truncate"
+                   x-text="profile?.specialty || '-'"></div>
             </div>
             <div class="glass rounded-xl p-5 hover-lift">
               <div class="flex items-center justify-between mb-2">
                 <span class="text-xs text-gray-500 uppercase tracking-wider">Pacientes</span>
                 <i data-lucide="users" class="w-4 h-4 text-primary"></i>
               </div>
-              <div class="text-2xl font-display font-bold text-dark">-</div>
+              <div class="text-2xl font-display font-bold text-gray-400">-</div>
               <p class="text-xs text-gray-400 mt-1">Proximamente</p>
             </div>
             <div class="glass rounded-xl p-5 hover-lift">
@@ -427,10 +437,92 @@
                 <i data-lucide="shield-check" class="w-4 h-4 text-green-500"></i>
               </div>
               <div class="text-2xl font-display font-bold text-green-600">GDPR</div>
+              <p class="text-xs text-gray-400 mt-1">Datos en EU</p>
             </div>
           </div>
 
-          <div class="grid sm:grid-cols-2 gap-4 mb-6">
+          <!-- Professional profile card -->
+          <div class="grid lg:grid-cols-3 gap-6 mb-6">
+            <div class="lg:col-span-2 glass rounded-xl p-6">
+              <h2 class="font-semibold text-lg mb-4">
+                <i data-lucide="stethoscope" class="w-5 h-5 inline text-purple-500"></i>
+                Perfil Profesional
+              </h2>
+              <template x-if="profile">
+                <div class="space-y-4">
+                  <div class="flex items-center gap-4">
+                    <div class="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center">
+                      <span class="text-purple-600 font-display font-bold text-xl"
+                            x-text="(profile.display_name || '?')[0].toUpperCase()"></span>
+                    </div>
+                    <div>
+                      <p class="text-lg font-semibold" x-text="profile.display_name"></p>
+                      <p class="text-sm text-gray-500" x-text="profile.specialty || 'Especialidad no definida'"></p>
+                      <p class="text-xs text-gray-400" x-text="profile.license_number ? 'Colegiado: ' + profile.license_number : ''"></p>
+                    </div>
+                  </div>
+                  <div x-show="profile.bio" class="border-t border-gray-100 pt-4">
+                    <p class="text-sm text-gray-600" x-text="profile.bio"></p>
+                  </div>
+                  <div x-show="profile.support_areas && profile.support_areas.length > 0" class="border-t border-gray-100 pt-4">
+                    <h4 class="text-sm font-medium text-gray-700 mb-2">Areas de soporte</h4>
+                    <div class="flex flex-wrap gap-2">
+                      <template x-for="area in (profile.support_areas || [])" :key="area">
+                        <span class="px-3 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-700" x-text="area"></span>
+                      </template>
+                    </div>
+                  </div>
+                </div>
+              </template>
+              <template x-if="!profile">
+                <div class="text-center py-8">
+                  <p class="text-sm text-gray-500 mb-3">Completa tu perfil profesional para ser visible en la plataforma</p>
+                  <a href="/forms" class="px-5 py-2 bg-purple-600 text-white text-sm font-semibold rounded-lg hover:bg-purple-700 transition">
+                    Crear Perfil
+                  </a>
+                </div>
+              </template>
+            </div>
+
+            <!-- Visibility card -->
+            <div class="glass rounded-xl p-6">
+              <h3 class="font-semibold text-sm text-gray-500 uppercase tracking-wider mb-4">Tu Visibilidad</h3>
+              <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full flex items-center justify-center"
+                       :class="profile ? 'bg-green-100' : 'bg-gray-100'">
+                    <i data-lucide="check" class="w-4 h-4" :class="profile ? 'text-green-600' : 'text-gray-400'"></i>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium" :class="profile ? 'text-green-700' : 'text-gray-500'">Perfil profesional</p>
+                    <p class="text-xs text-gray-400" x-text="profile ? 'Completado' : 'Pendiente'"></p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full flex items-center justify-center"
+                       :class="profile?.license_number ? 'bg-green-100' : 'bg-gray-100'">
+                    <i data-lucide="badge-check" class="w-4 h-4" :class="profile?.license_number ? 'text-green-600' : 'text-gray-400'"></i>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium" :class="profile?.license_number ? 'text-green-700' : 'text-gray-500'">Numero de colegiado</p>
+                    <p class="text-xs text-gray-400" x-text="profile?.license_number ? 'Verificado' : 'No proporcionado'"></p>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                    <i data-lucide="book-open" class="w-4 h-4 text-gray-400"></i>
+                  </div>
+                  <div>
+                    <p class="text-sm font-medium text-gray-500">Cursos publicados</p>
+                    <p class="text-xs text-gray-400">Proximamente</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="grid sm:grid-cols-3 gap-4 mb-6">
             <a href="/forms" class="glass rounded-xl p-5 hover-lift hover:border-purple-400 transition flex items-center gap-4">
               <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center shrink-0">
                 <i data-lucide="file-text" class="w-5 h-5 text-purple-600"></i>
@@ -440,7 +532,7 @@
                 <p class="text-xs text-gray-400">Especialidad, areas de soporte</p>
               </div>
             </a>
-            <div class="glass rounded-xl p-5 opacity-50 flex items-center gap-4">
+            <div class="glass rounded-xl p-5 opacity-40 flex items-center gap-4">
               <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                 <i data-lucide="book-open" class="w-5 h-5 text-primary"></i>
               </div>
@@ -449,16 +541,26 @@
                 <p class="text-xs text-gray-400">Proximamente</p>
               </div>
             </div>
+            <div class="glass rounded-xl p-5 opacity-40 flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center shrink-0">
+                <i data-lucide="calendar" class="w-5 h-5 text-green-600"></i>
+              </div>
+              <div>
+                <h3 class="font-medium text-sm">Agenda</h3>
+                <p class="text-xs text-gray-400">Proximamente</p>
+              </div>
+            </div>
           </div>
 
+          <!-- Platform connection -->
           <div class="glass rounded-xl p-8 text-center">
-            <div class="w-16 h-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-4">
-              <i data-lucide="stethoscope" class="w-8 h-8 text-gray-300"></i>
+            <div class="w-16 h-16 mx-auto rounded-full bg-purple-50 flex items-center justify-center mb-4">
+              <i data-lucide="link" class="w-8 h-8 text-purple-300"></i>
             </div>
-            <h3 class="font-semibold text-lg mb-2">Dashboard de Terapeuta</h3>
+            <h3 class="font-semibold text-lg mb-2">Conexion con la plataforma</h3>
             <p class="text-sm text-gray-500 max-w-md mx-auto">
-              Aqui gestionaras tus servicios, publicaras cursos y conectaras
-              con candidatos que necesiten tu apoyo.
+              Proximamente podras conectar con candidatos, ofrecer sesiones de acompanamiento,
+              publicar cursos especializados y validar perfiles neurocognitivos.
             </p>
             <p class="text-xs text-gray-400 mt-2">Proximamente</p>
           </div>
