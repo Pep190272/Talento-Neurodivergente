@@ -262,17 +262,59 @@
             </a>
           </div>
 
-          <!-- Matching placeholder -->
-          <div class="glass rounded-xl p-8 text-center">
-            <div class="w-16 h-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-4">
-              <i data-lucide="handshake" class="w-8 h-8 text-gray-300"></i>
+          <!-- Matching section -->
+          <div class="glass rounded-xl p-6">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="font-semibold text-lg">
+                <i data-lucide="handshake" class="w-5 h-5 inline text-primary"></i>
+                Empleos Compatibles
+              </h2>
+              <a href="/jobs" class="text-xs text-primary hover:underline">Ver todos &rarr;</a>
             </div>
-            <h3 class="font-semibold text-lg mb-2">Matching Inteligente</h3>
-            <p class="text-sm text-gray-500 max-w-md mx-auto mb-2">
-              Cuando completes tu perfil y quiz, nuestro algoritmo 24D encontrara las empresas
-              mas compatibles con tu perfil neurocognitivo.
-            </p>
-            <p class="text-xs text-gray-400">Proximamente</p>
+
+            <template x-if="matchedJobs.length === 0 && !hasQuiz">
+              <div class="text-center py-6">
+                <p class="text-sm text-gray-500 mb-3">Completa el quiz 24D para que nuestro algoritmo encuentre empleos compatibles con tu perfil.</p>
+                <a href="/quiz" class="px-4 py-2 bg-primary text-white text-sm rounded-lg hover:bg-primary-deep transition">Hacer Quiz</a>
+              </div>
+            </template>
+
+            <template x-if="matchedJobs.length === 0 && hasQuiz">
+              <div class="text-center py-6">
+                <p class="text-sm text-gray-500">No hay ofertas publicadas aun. Las empresas estan en proceso de onboarding.</p>
+              </div>
+            </template>
+
+            <div class="space-y-3">
+              <template x-for="job in matchedJobs.slice(0, 3)" :key="job.id">
+                <div class="border border-gray-100 rounded-lg p-4 hover:border-primary/30 transition">
+                  <div class="flex items-start justify-between gap-3">
+                    <div class="flex-1">
+                      <div class="flex items-center gap-2 mb-1">
+                        <h4 class="font-medium text-sm" x-text="job.title"></h4>
+                        <span class="px-2 py-0.5 text-xs font-bold rounded-full"
+                              :class="job.match.pct >= 70 ? 'bg-green-100 text-green-700' : job.match.pct >= 50 ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-600'"
+                              x-text="job.match.pct + '%'"></span>
+                      </div>
+                      <div class="flex items-center gap-2 text-xs text-gray-500">
+                        <span x-show="job.company_name" x-text="job.company_name"></span>
+                        <span x-show="job.location">· <span x-text="job.location"></span></span>
+                        <span>· <span x-text="{'remote':'Remoto','hybrid':'Hibrido','onsite':'Presencial'}[job.modality] || job.modality"></span></span>
+                      </div>
+                      <div x-show="job.match.reasons && job.match.reasons.length > 0" class="mt-1">
+                        <p class="text-xs text-green-600" x-text="job.match.reasons[0]"></p>
+                      </div>
+                    </div>
+                    <div x-show="job.adaptations && job.adaptations.length > 0" class="text-right shrink-0">
+                      <span class="text-xs text-green-600">
+                        <i data-lucide="heart" class="w-3 h-3 inline"></i>
+                        <span x-text="job.adaptations.length"></span> adaptacion(es)
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </div>
           </div>
         </div>
       </template>
@@ -626,6 +668,7 @@ function dashboardApp() {
   return {
     profile: null,
     gameScores: {},
+    matchedJobs: [],
     loading: true,
     dimLabels,
     topDimensions: [],
@@ -699,13 +742,15 @@ function dashboardApp() {
         }
       }
 
-      // Load profile and game scores in parallel
-      const [profileResult, scoresResult] = await Promise.allSettled([
+      // Load profile, game scores, and matched jobs in parallel
+      const [profileResult, scoresResult, jobsResult] = await Promise.allSettled([
         api('/profiles/me'),
         api('/profiles/games/scores'),
+        api('/profiles/jobs/matched'),
       ]);
       if (profileResult.status === 'fulfilled') this.profile = profileResult.value;
       if (scoresResult.status === 'fulfilled') this.gameScores = scoresResult.value;
+      if (jobsResult.status === 'fulfilled') this.matchedJobs = jobsResult.value || [];
       this.loading = false;
 
       // Process neuro_vector data

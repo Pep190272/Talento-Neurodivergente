@@ -2,7 +2,7 @@
 
 **Fecha de inicio:** 10 de febrero de 2026
 **Ultima actualizacion:** 6 de marzo de 2026
-**Estado:** Sprints 1-5 completados — Migracion v2.0.0 en progreso (Fases 0-5 completadas)
+**Estado:** Sprints 1-5 completados — Migracion v2.0.0 en progreso (Fases 0-6 ~90% completadas)
 
 ---
 
@@ -657,4 +657,33 @@ Scripts npm: `test:e2e`, `test:e2e:public`, `test:e2e:auth`, `test:e2e:report`
 
 **Metricas:** 12 paginas funcionales, flujo completo register → profile → quiz → dashboard con radar chart
 
-**Proxima tarea:** Mejorar Brain Suite (juegos cognitivos reales), company dashboard, deploy
+### Sesion 10 — 7 Mar 2026
+
+**Trabajos realizados:**
+- Brain Suite: 3 juegos cognitivos jugables (Memory Grid, Reaction Time, Color Match/Stroop)
+- Persistencia de game scores en SQLite + integracion con dashboard
+- Dashboard candidato: radar chart 24D, top fortalezas, categorias, progreso
+- Dashboard empresa completo: KPIs, inclusivity score breakdown, ofertas de trabajo
+- Dashboard terapeuta: perfil profesional, especialidad, areas de soporte, visibilidad
+- Evaluacion de inclusividad: 18 preguntas, 6 categorias, scoring por area
+- Ofertas de trabajo CRUD: empresas publican, candidatos ven ofertas activas
+- **Matching inteligente 24D**: algoritmo que calcula compatibilidad candidato-empleo
+  - Mapeo skills → dimensiones neurocognitivas con pesos
+  - Boost por adaptaciones ofrecidas (horario flexible, espacio silencioso, etc.)
+  - Razones explicables ("Tu proceso visual es fortaleza para este puesto")
+  - GET /profiles/jobs/matched devuelve ofertas ordenadas por score
+- Candidate dashboard muestra top 3 empleos compatibles con scores
+- Candidate /jobs page muestra todas las ofertas con % compatibilidad y razones
+- Fix: migracion de BDs antiguas (ALTER TABLE para nuevas columnas)
+
+**Bugs corregidos:**
+- Perfil empresa "Internal Server Error": columnas faltantes en BD antigua
+- Inclusividad "Error al enviar" al 94%: misma causa (inclusivity_score column)
+
+**Metricas:**
+- 14 paginas funcionales (+ /jobs, /inclusivity)
+- 3 flujos completos: candidato, empresa, terapeuta
+- Matching 24D operativo con algoritmo de scoring + razones explicables
+- Fase 6 Frontend: ~90% completada
+
+**Proxima tarea:** Fase 7 — Deploy VPS + tests E2E cross-service

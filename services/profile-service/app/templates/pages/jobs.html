@@ -7,8 +7,10 @@
 
     <div class="flex items-center justify-between mb-8">
       <div>
-        <h1 class="font-display text-2xl font-bold text-dark">Ofertas de Trabajo</h1>
-        <p class="text-gray-500 mt-1" x-text="$store.auth.role === 'company' ? 'Gestiona tus ofertas' : 'Ofertas compatibles con tu perfil'"></p>
+        <h1 class="font-display text-2xl font-bold text-dark"
+            x-text="$store.auth.role === 'company' ? 'Tus Ofertas de Trabajo' : 'Empleos Compatibles'"></h1>
+        <p class="text-gray-500 mt-1"
+           x-text="$store.auth.role === 'company' ? 'Publica y gestiona ofertas' : 'Ofertas ordenadas por compatibilidad con tu perfil 24D'"></p>
       </div>
       <template x-if="$store.auth.role === 'company'">
         <button @click="showForm = !showForm"
@@ -19,8 +21,8 @@
       </template>
     </div>
 
-    <!-- Create Job Form -->
-    <div x-show="showForm" x-cloak class="glass rounded-xl p-6 mb-6">
+    <!-- Create Job Form (company only) -->
+    <div x-show="showForm && $store.auth.role === 'company'" x-cloak class="glass rounded-xl p-6 mb-6">
       <h2 class="font-semibold text-lg mb-4">Publicar Oferta</h2>
       <form @submit.prevent="createJob()" class="space-y-4">
         <div class="grid md:grid-cols-2 gap-4">
@@ -70,7 +72,7 @@
           <label class="block text-sm font-medium text-gray-700 mb-1">Adaptaciones ofrecidas (separadas por coma)</label>
           <input type="text" x-model="form.adaptations_text"
                  class="form-input w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none"
-                 placeholder="Horario flexible, Espacio silencioso, Auriculares permitidos, Instrucciones escritas...">
+                 placeholder="Horario flexible, Espacio silencioso, Auriculares permitidos...">
         </div>
         <div class="flex gap-3">
           <button type="submit" :disabled="saving"
@@ -83,7 +85,7 @@
       </form>
     </div>
 
-    <!-- Error message -->
+    <!-- Error -->
     <div x-show="error" x-cloak class="mb-6 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg" x-text="error"></div>
 
     <!-- Loading -->
@@ -91,74 +93,108 @@
       <div class="spinner"></div>
     </div>
 
-    <!-- Job listings -->
-    <div x-show="!loading">
-      <div x-show="jobs.length === 0" class="glass rounded-xl p-12 text-center">
-        <div class="w-16 h-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-4">
-          <i data-lucide="briefcase" class="w-8 h-8 text-gray-300"></i>
-        </div>
-        <h3 class="font-semibold text-lg mb-2" x-text="$store.auth.role === 'company' ? 'No tienes ofertas publicadas' : 'No hay ofertas disponibles'"></h3>
-        <p class="text-sm text-gray-500 mb-4" x-text="$store.auth.role === 'company'
-          ? 'Publica tu primera oferta para que los candidatos puedan encontrar tu empresa.'
-          : 'Las empresas aun no han publicado ofertas. Vuelve pronto.'"></p>
-        <template x-if="$store.auth.role === 'company'">
-          <button @click="showForm = true" class="px-5 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition">
-            Publicar Primera Oferta
-          </button>
-        </template>
+    <!-- Empty state -->
+    <div x-show="!loading && jobs.length === 0" class="glass rounded-xl p-12 text-center">
+      <div class="w-16 h-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-4">
+        <i data-lucide="briefcase" class="w-8 h-8 text-gray-300"></i>
       </div>
+      <h3 class="font-semibold text-lg mb-2"
+          x-text="$store.auth.role === 'company' ? 'No tienes ofertas publicadas' : 'No hay ofertas disponibles'"></h3>
+      <p class="text-sm text-gray-500 mb-4"
+         x-text="$store.auth.role === 'company'
+           ? 'Publica tu primera oferta para empezar a encontrar candidatos neurodivergentes.'
+           : 'Las empresas aun no han publicado ofertas. Vuelve pronto.'"></p>
+      <template x-if="$store.auth.role === 'company'">
+        <button @click="showForm = true" class="px-5 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 transition">
+          Publicar Primera Oferta
+        </button>
+      </template>
+    </div>
 
-      <div class="space-y-4">
-        <template x-for="job in jobs" :key="job.id">
-          <div class="glass rounded-xl p-6 hover-lift">
-            <div class="flex items-start justify-between mb-3">
-              <div>
+    <!-- Job listings -->
+    <div x-show="!loading && jobs.length > 0" class="space-y-4">
+      <template x-for="job in jobs" :key="job.id">
+        <div class="glass rounded-xl p-6 hover-lift">
+          <div class="flex items-start justify-between gap-4 mb-3">
+            <div class="flex-1">
+              <div class="flex items-center gap-3">
                 <h3 class="font-semibold text-lg" x-text="job.title"></h3>
-                <div class="flex items-center gap-3 mt-1 text-sm text-gray-500">
-                  <span x-show="job.location" class="flex items-center gap-1">
-                    <i data-lucide="map-pin" class="w-3 h-3"></i> <span x-text="job.location"></span>
-                  </span>
-                  <span class="flex items-center gap-1">
-                    <i data-lucide="monitor" class="w-3 h-3"></i>
-                    <span x-text="{'remote':'Remoto','hybrid':'Hibrido','onsite':'Presencial'}[job.modality] || job.modality"></span>
-                  </span>
-                  <span x-show="job.salary_range" class="flex items-center gap-1">
-                    <i data-lucide="banknote" class="w-3 h-3"></i> <span x-text="job.salary_range"></span>
-                  </span>
-                </div>
-              </div>
-              <div class="flex items-center gap-2">
-                <span class="px-2 py-1 text-xs rounded-full"
-                      :class="job.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'"
-                      x-text="job.status === 'active' ? 'Activa' : 'Cerrada'"></span>
-                <template x-if="$store.auth.role === 'company' && job.status === 'active'">
-                  <button @click="closeJob(job.id)" class="text-xs text-red-500 hover:underline">Cerrar</button>
+                <!-- Compatibility badge (candidate view) -->
+                <template x-if="job.match && job.match.pct > 0">
+                  <span class="px-2.5 py-1 text-xs font-bold rounded-full"
+                        :class="job.match.pct >= 70 ? 'bg-green-100 text-green-700' : job.match.pct >= 50 ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-600'"
+                        x-text="job.match.pct + '% compatible'"></span>
                 </template>
+              </div>
+              <div class="flex items-center gap-3 mt-1 text-sm text-gray-500 flex-wrap">
+                <span x-show="job.company_name" class="flex items-center gap-1">
+                  <i data-lucide="building-2" class="w-3 h-3"></i> <span x-text="job.company_name"></span>
+                </span>
+                <span x-show="job.location" class="flex items-center gap-1">
+                  <i data-lucide="map-pin" class="w-3 h-3"></i> <span x-text="job.location"></span>
+                </span>
+                <span class="flex items-center gap-1">
+                  <i data-lucide="monitor" class="w-3 h-3"></i>
+                  <span x-text="{'remote':'Remoto','hybrid':'Hibrido','onsite':'Presencial'}[job.modality] || job.modality"></span>
+                </span>
+                <span x-show="job.salary_range" class="flex items-center gap-1">
+                  <i data-lucide="banknote" class="w-3 h-3"></i> <span x-text="job.salary_range"></span>
+                </span>
               </div>
             </div>
-
-            <p x-show="job.description" class="text-sm text-gray-600 mb-3" x-text="job.description"></p>
-
-            <div x-show="job.required_skills && job.required_skills.length > 0" class="mb-3">
-              <p class="text-xs text-gray-500 mb-1">Competencias:</p>
-              <div class="flex flex-wrap gap-1">
-                <template x-for="skill in job.required_skills" :key="skill">
-                  <span class="px-2 py-0.5 text-xs bg-blue-50 text-blue-700 rounded" x-text="skill"></span>
-                </template>
-              </div>
-            </div>
-
-            <div x-show="job.adaptations && job.adaptations.length > 0">
-              <p class="text-xs text-gray-500 mb-1">Adaptaciones ofrecidas:</p>
-              <div class="flex flex-wrap gap-1">
-                <template x-for="adapt in job.adaptations" :key="adapt">
-                  <span class="px-2 py-0.5 text-xs bg-green-50 text-green-700 rounded" x-text="adapt"></span>
-                </template>
-              </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <span class="px-2 py-1 text-xs rounded-full"
+                    :class="job.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'"
+                    x-text="job.status === 'active' ? 'Activa' : 'Cerrada'"></span>
+              <template x-if="$store.auth.role === 'company' && job.status === 'active'">
+                <button @click="closeJob(job.id)" class="text-xs text-red-500 hover:underline">Cerrar</button>
+              </template>
             </div>
           </div>
-        </template>
-      </div>
+
+          <p x-show="job.description" class="text-sm text-gray-600 mb-3" x-text="job.description"></p>
+
+          <!-- Match reasons (candidate view) -->
+          <div x-show="job.match && job.match.reasons && job.match.reasons.length > 0" class="mb-3 p-3 rounded-lg"
+               :class="job.match && job.match.pct >= 70 ? 'bg-green-50' : 'bg-blue-50'">
+            <p class="text-xs font-medium mb-1"
+               :class="job.match && job.match.pct >= 70 ? 'text-green-700' : 'text-blue-700'">Por que eres compatible:</p>
+            <ul class="text-xs space-y-0.5"
+                :class="job.match && job.match.pct >= 70 ? 'text-green-600' : 'text-blue-600'">
+              <template x-for="reason in (job.match?.reasons || [])" :key="reason">
+                <li x-text="'• ' + reason"></li>
+              </template>
+            </ul>
+          </div>
+
+          <!-- Company inclusivity badge -->
+          <div x-show="job.company_inclusivity && job.company_inclusivity.overall" class="mb-3">
+            <span class="inline-flex items-center gap-1 px-2 py-1 text-xs rounded-full"
+                  :class="(job.company_inclusivity?.overall || 0) >= 0.7 ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'">
+              <i data-lucide="heart" class="w-3 h-3"></i>
+              Inclusividad: <span x-text="Math.round((job.company_inclusivity?.overall || 0) * 100) + '%'"></span>
+            </span>
+          </div>
+
+          <div x-show="job.required_skills && job.required_skills.length > 0" class="mb-3">
+            <p class="text-xs text-gray-500 mb-1">Competencias:</p>
+            <div class="flex flex-wrap gap-1">
+              <template x-for="skill in job.required_skills" :key="skill">
+                <span class="px-2 py-0.5 text-xs bg-blue-50 text-blue-700 rounded" x-text="skill"></span>
+              </template>
+            </div>
+          </div>
+
+          <div x-show="job.adaptations && job.adaptations.length > 0">
+            <p class="text-xs text-gray-500 mb-1">Adaptaciones ofrecidas:</p>
+            <div class="flex flex-wrap gap-1">
+              <template x-for="adapt in job.adaptations" :key="adapt">
+                <span class="px-2 py-0.5 text-xs bg-green-50 text-green-700 rounded" x-text="adapt"></span>
+              </template>
+            </div>
+          </div>
+        </div>
+      </template>
     </div>
   </div>
 </section>
@@ -185,7 +221,9 @@ function jobsApp() {
         return;
       }
       try {
-        this.jobs = await api('/profiles/jobs');
+        // Candidates get matched jobs (with scores), companies get their own jobs
+        const endpoint = Alpine.store('auth').role === 'candidate' ? '/profiles/jobs/matched' : '/profiles/jobs';
+        this.jobs = await api(endpoint);
       } catch (e) {
         console.log('Jobs API:', e.status || 'unavailable');
       } finally {

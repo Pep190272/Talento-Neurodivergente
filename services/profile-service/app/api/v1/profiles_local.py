@@ -295,6 +295,185 @@ async def get_game_scores(request: Request) -> JSONResponse:
     return JSONResponse(content=scores)
 
 
+# ==================== MATCHING ====================
+
+# Maps skills/keywords to relevant 24D dimensions with weights
+_SKILL_DIMENSION_MAP: dict[str, list[tuple[str, float]]] = {
+    # Technical skills → processing + executive
+    "python": [("processing_speed", 0.3), ("executive_planning", 0.4), ("creativity_pattern", 0.3)],
+    "javascript": [("processing_speed", 0.3), ("executive_planning", 0.3), ("processing_visual", 0.4)],
+    "react": [("processing_visual", 0.4), ("executive_flexibility", 0.3), ("creativity_innovation", 0.3)],
+    "typescript": [("processing_accuracy", 0.4), ("executive_planning", 0.3), ("attention_sustained", 0.3)],
+    "sql": [("memory_working", 0.3), ("executive_planning", 0.4), ("attention_sustained", 0.3)],
+    "css": [("processing_visual", 0.4), ("creativity_divergent", 0.3), ("attention_selective", 0.3)],
+    "data": [("creativity_pattern", 0.4), ("processing_accuracy", 0.3), ("memory_working", 0.3)],
+    "ai": [("creativity_innovation", 0.3), ("creativity_pattern", 0.4), ("executive_planning", 0.3)],
+    "ml": [("creativity_pattern", 0.4), ("processing_accuracy", 0.3), ("executive_planning", 0.3)],
+    # Soft skills → social + emotional
+    "equipo": [("social_collaboration", 0.4), ("social_communication", 0.3), ("emotional_awareness", 0.3)],
+    "trabajo en equipo": [("social_collaboration", 0.4), ("social_communication", 0.3), ("emotional_awareness", 0.3)],
+    "comunicacion": [("social_communication", 0.5), ("social_empathy", 0.3), ("emotional_regulation", 0.2)],
+    "liderazgo": [("executive_planning", 0.3), ("social_communication", 0.3), ("emotional_regulation", 0.4)],
+    "creatividad": [("creativity_divergent", 0.4), ("creativity_innovation", 0.4), ("creativity_pattern", 0.2)],
+    "organizacion": [("executive_planning", 0.5), ("attention_sustained", 0.3), ("memory_working", 0.2)],
+    "atencion al detalle": [("attention_selective", 0.4), ("processing_accuracy", 0.4), ("attention_sustained", 0.2)],
+    "resolucion de problemas": [("executive_flexibility", 0.3), ("creativity_pattern", 0.4), ("executive_planning", 0.3)],
+}
+
+# Adaptations boost compatibility (company offers accommodations)
+_ADAPTATION_BOOST: dict[str, list[tuple[str, float]]] = {
+    "horario flexible": [("executive_planning", 0.1), ("emotional_regulation", 0.1)],
+    "espacio silencioso": [("sensory_auditory", 0.15), ("attention_sustained", 0.1)],
+    "remoto": [("sensory_visual", 0.05), ("sensory_auditory", 0.1), ("emotional_regulation", 0.1)],
+    "100% remoto": [("sensory_visual", 0.05), ("sensory_auditory", 0.1), ("emotional_regulation", 0.1)],
+    "auriculares": [("sensory_auditory", 0.15), ("attention_selective", 0.1)],
+    "instrucciones escritas": [("memory_working", 0.1), ("attention_selective", 0.1)],
+    "fidget toys": [("sensory_tactile", 0.1), ("attention_sustained", 0.1)],
+}
+
+
+def _calculate_match_score(neuro_vector: dict, job: dict) -> dict:
+    """Calculate compatibility between a candidate's 24D profile and a job."""
+    if not neuro_vector:
+        return {"score": 0, "reasons": ["Completa el quiz para ver tu compatibilidad"]}
+
+    skills = job.get("required_skills", [])
+    adaptations = job.get("adaptations", [])
+    if isinstance(skills, str):
+        try:
+            skills = json.loads(skills)
+        except Exception:
+            skills = []
+    if isinstance(adaptations, str):
+        try:
+            adaptations = json.loads(adaptations)
+        except Exception:
+            adaptations = []
+
+    # Calculate weighted dimension scores for this job
+    dim_weights: dict[str, float] = {}
+    dim_totals: dict[str, float] = {}
+
+    for skill in skills:
+        key = skill.lower().strip()
+        mappings = _SKILL_DIMENSION_MAP.get(key, [])
+        # Also try partial matches
+        if not mappings:
+            for map_key, map_dims in _SKILL_DIMENSION_MAP.items():
+                if map_key in key or key in map_key:
+                    mappings = map_dims
+                    break
+        for dim, weight in mappings:
+            dim_weights[dim] = dim_weights.get(dim, 0) + weight
+            dim_totals[dim] = dim_totals.get(dim, 0) + 1
+
+    # If no skill mappings found, use a balanced default
+    if not dim_weights:
+        for dim in neuro_vector:
+            dim_weights[dim] = 1.0
+            dim_totals[dim] = 1
+
+    # Calculate base score from candidate's dimensions
+    total_score = 0.0
+    total_weight = 0.0
+    for dim, weight in dim_weights.items():
+        val = float(neuro_vector.get(dim, 0.5))
+        total_score += val * weight
+        total_weight += weight
+
+    base_score = (total_score / total_weight) if total_weight > 0 else 0.5
+
+    # Adaptation boost (company accommodates → higher compatibility)
+    boost = 0.0
+    for adaptation in adaptations:
+        key = adaptation.lower().strip()
+        mappings = _ADAPTATION_BOOST.get(key, [])
+        if not mappings:
+            for map_key, map_dims in _ADAPTATION_BOOST.items():
+                if map_key in key or key in map_key:
+                    mappings = map_dims
+                    break
+        for dim, b in mappings:
+            boost += b * float(neuro_vector.get(dim, 0.5))
+
+    final_score = min(1.0, base_score + boost * 0.3)
+
+    # Generate reasons
+    reasons = []
+    sorted_dims = sorted(dim_weights.items(), key=lambda x: float(neuro_vector.get(x[0], 0)) * x[1], reverse=True)
+    dim_labels = {
+        "attention_sustained": "atencion sostenida", "attention_selective": "atencion selectiva",
+        "memory_working": "memoria de trabajo", "processing_speed": "velocidad de proceso",
+        "processing_accuracy": "precision", "processing_visual": "proceso visual",
+        "executive_planning": "planificacion", "executive_flexibility": "flexibilidad cognitiva",
+        "social_collaboration": "colaboracion", "social_communication": "comunicacion",
+        "creativity_divergent": "pensamiento divergente", "creativity_pattern": "deteccion de patrones",
+        "creativity_innovation": "innovacion", "emotional_regulation": "regulacion emocional",
+        "sensory_auditory": "sensibilidad auditiva", "sensory_visual": "sensibilidad visual",
+    }
+    for dim, _ in sorted_dims[:3]:
+        label = dim_labels.get(dim, dim.replace("_", " "))
+        val = float(neuro_vector.get(dim, 0))
+        if val >= 0.7:
+            reasons.append(f"Tu {label} es una fortaleza clave para este puesto")
+        elif val >= 0.5:
+            reasons.append(f"Tu {label} se alinea bien con los requisitos")
+
+    if adaptations:
+        reasons.append(f"La empresa ofrece {len(adaptations)} adaptacion(es)")
+
+    return {"score": round(final_score, 3), "pct": round(final_score * 100), "reasons": reasons}
+
+
+@router.get("/jobs/matched")
+async def get_matched_jobs(request: Request) -> JSONResponse:
+    """Get all active jobs with compatibility scores for the current candidate."""
+    user = _get_user_from_request(request)
+    if not user:
+        return JSONResponse(status_code=401, content={"detail": "No autenticado"})
+
+    db = _get_db()
+    # Get candidate's neuro_vector
+    profile = db.execute("SELECT neuro_vector FROM profiles WHERE user_id = ?", (user.sub,)).fetchone()
+    neuro_vector = {}
+    if profile and profile["neuro_vector"]:
+        try:
+            nv = profile["neuro_vector"]
+            neuro_vector = json.loads(nv) if isinstance(nv, str) else nv
+        except Exception:
+            pass
+
+    # Get all active jobs with company info
+    rows = db.execute("""
+        SELECT j.*, p.display_name as company_name, p.sector as company_sector,
+               p.inclusivity_score as company_inclusivity
+        FROM job_offers j
+        LEFT JOIN profiles p ON j.company_user_id = p.user_id
+        WHERE j.status = 'active'
+        ORDER BY j.created_at DESC
+    """).fetchall()
+    db.close()
+
+    results = []
+    for row in rows:
+        job = _job_to_dict(dict(row))
+        match = _calculate_match_score(neuro_vector, job)
+        job["match"] = match
+        # Parse company inclusivity
+        inc = job.pop("company_inclusivity", None)
+        if inc and isinstance(inc, str):
+            try:
+                inc = json.loads(inc)
+            except Exception:
+                inc = None
+        job["company_inclusivity"] = inc
+        results.append(job)
+
+    # Sort by match score descending
+    results.sort(key=lambda x: x["match"]["score"], reverse=True)
+    return JSONResponse(content=results)
+
+
 # ==================== JOB OFFERS ====================
 
 class JobOfferRequest(BaseModel):
