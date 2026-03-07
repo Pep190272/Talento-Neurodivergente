@@ -5,119 +5,413 @@
 <section class="py-8 px-4" x-data="dashboardApp()" x-init="init()">
   <div class="max-w-7xl mx-auto">
 
-    <!-- Header -->
-    <div class="mb-8">
-      <h1 class="font-display text-2xl font-bold text-dark">
-        Hola, <span x-text="$store.auth.user?.display_name || $store.auth.user?.email || 'Usuario'"></span>
-      </h1>
-      <p class="text-gray-500 mt-1">
-        <span x-text="roleLabel()"></span> &middot; DiversIA Eternals
-      </p>
+    <!-- Loading -->
+    <div x-show="loading" class="flex items-center justify-center py-20">
+      <div class="spinner"></div>
     </div>
 
-    <!-- KPI Cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-      <div class="glass rounded-xl p-5 hover-lift">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-xs text-gray-500 uppercase tracking-wider">Perfil</span>
-          <i data-lucide="user-check" class="w-4 h-4 text-primary"></i>
+    <div x-show="!loading" x-cloak>
+
+      <!-- Header -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
+        <div>
+          <h1 class="font-display text-2xl font-bold text-dark">
+            Hola, <span x-text="$store.auth.user?.display_name || $store.auth.user?.email || 'Usuario'"></span>
+          </h1>
+          <p class="text-gray-500 mt-1">
+            <span x-text="roleLabel()"></span> &middot; DiversIA Eternals
+          </p>
         </div>
-        <div class="text-2xl font-display font-bold text-dark" x-text="profile ? 'Activo' : 'Pendiente'"></div>
-        <p class="text-xs text-gray-400 mt-1" x-text="profile?.status || 'Completa tu perfil'"></p>
+        <div class="flex items-center gap-2">
+          <span class="px-3 py-1 text-xs font-medium rounded-full"
+                :class="profile ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'"
+                x-text="profile ? 'Perfil activo' : 'Perfil pendiente'"></span>
+          <span class="px-3 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-700">
+            <i data-lucide="shield-check" class="w-3 h-3 inline"></i> GDPR
+          </span>
+        </div>
       </div>
 
-      <div class="glass rounded-xl p-5 hover-lift">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-xs text-gray-500 uppercase tracking-wider">Quiz</span>
-          <i data-lucide="brain" class="w-4 h-4 text-primary"></i>
-        </div>
-        <div class="text-2xl font-display font-bold text-dark" x-text="profile?.neuro_vector ? 'Completo' : 'Pendiente'"></div>
-        <p class="text-xs text-gray-400 mt-1" x-text="profile?.neuro_vector ? '24 dimensiones evaluadas' : 'Realiza tu evaluacion'"></p>
-      </div>
+      <!-- ==================== CANDIDATE DASHBOARD ==================== -->
+      <template x-if="$store.auth.role === 'candidate'">
+        <div>
+          <!-- Progress bar -->
+          <div class="glass rounded-xl p-5 mb-6">
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="text-sm font-semibold text-gray-700">Progreso del perfil</h2>
+              <span class="text-sm font-bold text-primary" x-text="progressPct() + '%'"></span>
+            </div>
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+              <div class="bg-primary h-2.5 rounded-full transition-all duration-500"
+                   :style="'width:' + progressPct() + '%'"></div>
+            </div>
+            <div class="flex justify-between mt-3 text-xs text-gray-400">
+              <span :class="profile ? 'text-green-600 font-medium' : ''">
+                <i data-lucide="user" class="w-3 h-3 inline"></i> Perfil
+              </span>
+              <span :class="hasQuiz ? 'text-green-600 font-medium' : ''">
+                <i data-lucide="brain" class="w-3 h-3 inline"></i> Quiz 24D
+              </span>
+              <span class="text-gray-300">
+                <i data-lucide="gamepad-2" class="w-3 h-3 inline"></i> Brain Suite
+              </span>
+              <span class="text-gray-300">
+                <i data-lucide="handshake" class="w-3 h-3 inline"></i> Matching
+              </span>
+            </div>
+          </div>
 
-      <div class="glass rounded-xl p-5 hover-lift">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-xs text-gray-500 uppercase tracking-wider">Matches</span>
-          <i data-lucide="handshake" class="w-4 h-4 text-primary"></i>
-        </div>
-        <div class="text-2xl font-display font-bold text-dark">-</div>
-        <p class="text-xs text-gray-400 mt-1">Completa el quiz primero</p>
-      </div>
+          <!-- Main grid: Chart + Profile -->
+          <div class="grid lg:grid-cols-5 gap-6 mb-6">
 
-      <div class="glass rounded-xl p-5 hover-lift">
-        <div class="flex items-center justify-between mb-2">
-          <span class="text-xs text-gray-500 uppercase tracking-wider">Seguridad</span>
-          <i data-lucide="shield-check" class="w-4 h-4 text-green-500"></i>
-        </div>
-        <div class="text-2xl font-display font-bold text-green-600">GDPR</div>
-        <p class="text-xs text-gray-400 mt-1">Datos en EU, IA self-hosted</p>
-      </div>
-    </div>
+            <!-- 24D Radar Chart (3 cols) -->
+            <div class="lg:col-span-3 glass rounded-xl p-6">
+              <div class="flex items-center justify-between mb-4">
+                <h2 class="font-semibold text-lg">
+                  <i data-lucide="brain" class="w-5 h-5 inline text-primary"></i>
+                  Perfil Neurocognitivo 24D
+                </h2>
+                <template x-if="!hasQuiz">
+                  <a href="/quiz" class="text-xs text-primary hover:underline">Realizar quiz &rarr;</a>
+                </template>
+              </div>
 
-    <!-- Quick Actions -->
-    <div class="mb-8">
-      <h2 class="font-semibold text-lg mb-4">Acciones Rapidas</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-
-        <!-- Candidate actions -->
-        <template x-if="$store.auth.role === 'candidate'">
-          <div class="space-y-4">
-            <a href="/quiz" class="block border border-gray-200 rounded-xl p-5 hover-lift hover:border-primary transition">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <i data-lucide="brain" class="w-5 h-5 text-primary"></i>
-                </div>
+              <template x-if="hasQuiz">
                 <div>
-                  <h3 class="font-medium text-sm">Quiz Neurocognitivo</h3>
-                  <p class="text-xs text-gray-400">Evalua tus 24 dimensiones</p>
+                  <div class="relative" style="max-height: 400px;">
+                    <canvas id="radarChart"></canvas>
+                  </div>
+                  <p class="text-xs text-gray-400 mt-3 text-center">
+                    Valores de 0 (bajo) a 1 (alto) &middot; No hay respuestas buenas ni malas
+                  </p>
                 </div>
+              </template>
+
+              <template x-if="!hasQuiz">
+                <div class="flex flex-col items-center justify-center py-12 text-center">
+                  <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                    <i data-lucide="brain" class="w-8 h-8 text-primary"></i>
+                  </div>
+                  <h3 class="font-semibold mb-2">Quiz no realizado</h3>
+                  <p class="text-sm text-gray-500 mb-4 max-w-sm">
+                    Completa la evaluacion de 24 dimensiones cognitivas para generar tu perfil neurodivergente.
+                  </p>
+                  <a href="/quiz"
+                     class="px-5 py-2.5 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-deep transition">
+                    Empezar Quiz
+                  </a>
+                </div>
+              </template>
+            </div>
+
+            <!-- Profile card + stats (2 cols) -->
+            <div class="lg:col-span-2 space-y-6">
+
+              <!-- Profile info -->
+              <div class="glass rounded-xl p-6">
+                <h3 class="font-semibold text-sm text-gray-500 uppercase tracking-wider mb-4">Tu Perfil</h3>
+                <template x-if="profile">
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-3">
+                      <div class="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                        <span class="text-primary font-display font-bold text-lg"
+                              x-text="(profile.display_name || '?')[0].toUpperCase()"></span>
+                      </div>
+                      <div>
+                        <p class="font-semibold" x-text="profile.display_name"></p>
+                        <p class="text-xs text-gray-400" x-text="$store.auth.user?.email"></p>
+                      </div>
+                    </div>
+                    <div class="border-t border-gray-100 pt-3 space-y-2 text-sm">
+                      <div class="flex justify-between" x-show="profile.location">
+                        <span class="text-gray-500">Ubicacion</span>
+                        <span class="font-medium" x-text="profile.location"></span>
+                      </div>
+                      <div class="flex justify-between" x-show="profile.bio">
+                        <span class="text-gray-500">Bio</span>
+                        <span class="font-medium truncate ml-4 max-w-[150px]" x-text="profile.bio"></span>
+                      </div>
+                      <div class="flex justify-between">
+                        <span class="text-gray-500">Estado</span>
+                        <span class="px-2 py-0.5 text-xs rounded-full bg-green-100 text-green-700"
+                              x-text="profile.status || 'active'"></span>
+                      </div>
+                    </div>
+                    <a href="/forms" class="block text-center text-xs text-primary hover:underline mt-2">
+                      Editar perfil &rarr;
+                    </a>
+                  </div>
+                </template>
+                <template x-if="!profile">
+                  <div class="text-center py-4">
+                    <p class="text-sm text-gray-500 mb-3">Aun no has creado tu perfil</p>
+                    <a href="/forms"
+                       class="px-4 py-2 bg-primary text-white text-sm rounded-lg hover:bg-primary-deep transition">
+                      Crear Perfil
+                    </a>
+                  </div>
+                </template>
+              </div>
+
+              <!-- Top dimensions -->
+              <div class="glass rounded-xl p-6" x-show="hasQuiz">
+                <h3 class="font-semibold text-sm text-gray-500 uppercase tracking-wider mb-4">Fortalezas Principales</h3>
+                <div class="space-y-3">
+                  <template x-for="dim in topDimensions" :key="dim.key">
+                    <div>
+                      <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-700" x-text="dimLabels[dim.key] || dim.key"></span>
+                        <span class="font-semibold text-primary" x-text="Math.round(dim.value * 100) + '%'"></span>
+                      </div>
+                      <div class="w-full bg-gray-200 rounded-full h-1.5">
+                        <div class="bg-primary h-1.5 rounded-full" :style="'width:' + (dim.value * 100) + '%'"></div>
+                      </div>
+                    </div>
+                  </template>
+                </div>
+              </div>
+
+              <!-- Growth areas -->
+              <div class="glass rounded-xl p-6" x-show="hasQuiz">
+                <h3 class="font-semibold text-sm text-gray-500 uppercase tracking-wider mb-4">Areas de Crecimiento</h3>
+                <div class="space-y-3">
+                  <template x-for="dim in bottomDimensions" :key="dim.key">
+                    <div>
+                      <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-700" x-text="dimLabels[dim.key] || dim.key"></span>
+                        <span class="font-semibold text-amber-600" x-text="Math.round(dim.value * 100) + '%'"></span>
+                      </div>
+                      <div class="w-full bg-gray-200 rounded-full h-1.5">
+                        <div class="bg-amber-400 h-1.5 rounded-full" :style="'width:' + (dim.value * 100) + '%'"></div>
+                      </div>
+                    </div>
+                  </template>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Dimension breakdown by category -->
+          <div class="glass rounded-xl p-6 mb-6" x-show="hasQuiz">
+            <h2 class="font-semibold text-lg mb-4">
+              <i data-lucide="bar-chart-3" class="w-5 h-5 inline text-primary"></i>
+              Desglose por Categoria
+            </h2>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <template x-for="cat in categories" :key="cat.name">
+                <div class="border border-gray-100 rounded-lg p-4">
+                  <div class="flex items-center gap-2 mb-3">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center" :class="cat.bgColor">
+                      <i :data-lucide="cat.icon" class="w-4 h-4" :class="cat.iconColor"></i>
+                    </div>
+                    <div>
+                      <h4 class="text-sm font-semibold" x-text="cat.name"></h4>
+                      <p class="text-xs text-gray-400" x-text="Math.round(cat.avg * 100) + '% promedio'"></p>
+                    </div>
+                  </div>
+                  <div class="space-y-2">
+                    <template x-for="dim in cat.dims" :key="dim.key">
+                      <div class="flex items-center gap-2">
+                        <div class="flex-1">
+                          <div class="text-xs text-gray-600 truncate" x-text="dimLabels[dim.key] || dim.key"></div>
+                        </div>
+                        <div class="w-16 bg-gray-200 rounded-full h-1.5">
+                          <div class="h-1.5 rounded-full" :class="cat.barColor"
+                               :style="'width:' + (dim.value * 100) + '%'"></div>
+                        </div>
+                        <span class="text-xs font-medium w-8 text-right" x-text="Math.round(dim.value * 100)"></span>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <!-- Quick Actions row -->
+          <div class="grid sm:grid-cols-3 gap-4 mb-6">
+            <a href="/quiz" class="glass rounded-xl p-5 hover-lift hover:border-primary transition flex items-center gap-4"
+               :class="hasQuiz ? 'opacity-60' : 'border-2 border-primary/30'">
+              <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <i data-lucide="brain" class="w-5 h-5 text-primary"></i>
+              </div>
+              <div>
+                <h3 class="font-medium text-sm" x-text="hasQuiz ? 'Repetir Quiz' : 'Hacer Quiz 24D'"></h3>
+                <p class="text-xs text-gray-400" x-text="hasQuiz ? 'Ya completado' : '5-10 min · 24 preguntas'"></p>
+              </div>
+            </a>
+
+            <a href="/games" class="glass rounded-xl p-5 hover-lift hover:border-purple-400 transition flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center shrink-0">
+                <i data-lucide="gamepad-2" class="w-5 h-5 text-purple-600"></i>
+              </div>
+              <div>
+                <h3 class="font-medium text-sm">Brain Suite</h3>
+                <p class="text-xs text-gray-400">10 juegos cognitivos</p>
+              </div>
+            </a>
+
+            <a href="/forms" class="glass rounded-xl p-5 hover-lift hover:border-green-400 transition flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center shrink-0">
+                <i data-lucide="file-text" class="w-5 h-5 text-green-600"></i>
+              </div>
+              <div>
+                <h3 class="font-medium text-sm">Editar Perfil</h3>
+                <p class="text-xs text-gray-400">Actualiza tus datos</p>
               </div>
             </a>
           </div>
-        </template>
 
-        <a href="/games" class="block border border-gray-200 rounded-xl p-5 hover-lift hover:border-primary transition">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-              <i data-lucide="gamepad-2" class="w-5 h-5 text-purple-600"></i>
+          <!-- Matching placeholder -->
+          <div class="glass rounded-xl p-8 text-center">
+            <div class="w-16 h-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-4">
+              <i data-lucide="handshake" class="w-8 h-8 text-gray-300"></i>
             </div>
-            <div>
-              <h3 class="font-medium text-sm">Brain Suite</h3>
-              <p class="text-xs text-gray-400">10 juegos cognitivos</p>
+            <h3 class="font-semibold text-lg mb-2">Matching Inteligente</h3>
+            <p class="text-sm text-gray-500 max-w-md mx-auto mb-2">
+              Cuando completes tu perfil y quiz, nuestro algoritmo 24D encontrara las empresas
+              mas compatibles con tu perfil neurocognitivo.
+            </p>
+            <p class="text-xs text-gray-400">Proximamente</p>
+          </div>
+        </div>
+      </template>
+
+      <!-- ==================== COMPANY DASHBOARD ==================== -->
+      <template x-if="$store.auth.role === 'company'">
+        <div>
+          <!-- KPI Cards -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div class="glass rounded-xl p-5 hover-lift">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-gray-500 uppercase tracking-wider">Perfil</span>
+                <i data-lucide="building-2" class="w-4 h-4 text-green-500"></i>
+              </div>
+              <div class="text-2xl font-display font-bold text-dark" x-text="profile ? 'Activo' : 'Pendiente'"></div>
+            </div>
+            <div class="glass rounded-xl p-5 hover-lift">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-gray-500 uppercase tracking-wider">Candidatos</span>
+                <i data-lucide="users" class="w-4 h-4 text-primary"></i>
+              </div>
+              <div class="text-2xl font-display font-bold text-dark">-</div>
+              <p class="text-xs text-gray-400 mt-1">Proximamente</p>
+            </div>
+            <div class="glass rounded-xl p-5 hover-lift">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-gray-500 uppercase tracking-wider">Inclusividad</span>
+                <i data-lucide="heart" class="w-4 h-4 text-pink-500"></i>
+              </div>
+              <div class="text-2xl font-display font-bold text-dark">-</div>
+              <p class="text-xs text-gray-400 mt-1">Score pendiente</p>
+            </div>
+            <div class="glass rounded-xl p-5 hover-lift">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-gray-500 uppercase tracking-wider">Seguridad</span>
+                <i data-lucide="shield-check" class="w-4 h-4 text-green-500"></i>
+              </div>
+              <div class="text-2xl font-display font-bold text-green-600">GDPR</div>
             </div>
           </div>
-        </a>
 
-        <a href="/forms" class="block border border-gray-200 rounded-xl p-5 hover-lift hover:border-primary transition">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-              <i data-lucide="file-text" class="w-5 h-5 text-green-600"></i>
-            </div>
-            <div>
-              <h3 class="font-medium text-sm">Formularios</h3>
-              <p class="text-xs text-gray-400">Completa tu perfil</p>
+          <div class="grid sm:grid-cols-2 gap-4 mb-6">
+            <a href="/forms" class="glass rounded-xl p-5 hover-lift hover:border-green-400 transition flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center shrink-0">
+                <i data-lucide="file-text" class="w-5 h-5 text-green-600"></i>
+              </div>
+              <div>
+                <h3 class="font-medium text-sm" x-text="profile ? 'Editar Perfil' : 'Completar Perfil'"></h3>
+                <p class="text-xs text-gray-400">Datos de tu empresa</p>
+              </div>
+            </a>
+            <div class="glass rounded-xl p-5 opacity-50 flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <i data-lucide="search" class="w-5 h-5 text-primary"></i>
+              </div>
+              <div>
+                <h3 class="font-medium text-sm">Buscar Candidatos</h3>
+                <p class="text-xs text-gray-400">Proximamente</p>
+              </div>
             </div>
           </div>
-        </a>
-      </div>
-    </div>
 
-    <!-- Profile Info -->
-    <div x-show="profile" class="glass rounded-xl p-6">
-      <h2 class="font-semibold text-lg mb-4">Tu Perfil</h2>
-      <div class="grid grid-cols-2 gap-4 text-sm">
-        <div><span class="text-gray-500">Nombre:</span> <span class="font-medium" x-text="profile?.display_name"></span></div>
-        <div><span class="text-gray-500">Rol:</span> <span class="font-medium" x-text="profile?.role"></span></div>
-        <div><span class="text-gray-500">Estado:</span> <span class="font-medium" x-text="profile?.status"></span></div>
-        <div><span class="text-gray-500">Vector 24D:</span> <span class="font-medium" x-text="profile?.neuro_vector ? 'Calculado' : 'Pendiente'"></span></div>
-      </div>
-    </div>
+          <div class="glass rounded-xl p-8 text-center">
+            <div class="w-16 h-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-4">
+              <i data-lucide="building-2" class="w-8 h-8 text-gray-300"></i>
+            </div>
+            <h3 class="font-semibold text-lg mb-2">Dashboard de Empresa</h3>
+            <p class="text-sm text-gray-500 max-w-md mx-auto">
+              Aqui veras tus candidatos compatibles, tu score de inclusividad
+              y herramientas para gestionar tu proceso de seleccion.
+            </p>
+            <p class="text-xs text-gray-400 mt-2">Proximamente</p>
+          </div>
+        </div>
+      </template>
 
-    <div x-show="!profile && !loading" class="glass rounded-xl p-8 text-center">
-      <i data-lucide="user-plus" class="w-12 h-12 text-gray-300 mx-auto mb-4"></i>
-      <h3 class="font-semibold text-lg mb-2">Completa tu perfil</h3>
-      <p class="text-sm text-gray-500 mb-4">Crea tu perfil para acceder al matching y evaluaciones.</p>
-      <a href="/forms" class="inline-block px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-deep transition">Crear Perfil</a>
+      <!-- ==================== THERAPIST DASHBOARD ==================== -->
+      <template x-if="$store.auth.role === 'therapist'">
+        <div>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+            <div class="glass rounded-xl p-5 hover-lift">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-gray-500 uppercase tracking-wider">Perfil</span>
+                <i data-lucide="stethoscope" class="w-4 h-4 text-purple-500"></i>
+              </div>
+              <div class="text-2xl font-display font-bold text-dark" x-text="profile ? 'Activo' : 'Pendiente'"></div>
+            </div>
+            <div class="glass rounded-xl p-5 hover-lift">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-gray-500 uppercase tracking-wider">Pacientes</span>
+                <i data-lucide="users" class="w-4 h-4 text-primary"></i>
+              </div>
+              <div class="text-2xl font-display font-bold text-dark">-</div>
+              <p class="text-xs text-gray-400 mt-1">Proximamente</p>
+            </div>
+            <div class="glass rounded-xl p-5 hover-lift">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-gray-500 uppercase tracking-wider">Seguridad</span>
+                <i data-lucide="shield-check" class="w-4 h-4 text-green-500"></i>
+              </div>
+              <div class="text-2xl font-display font-bold text-green-600">GDPR</div>
+            </div>
+          </div>
+
+          <div class="grid sm:grid-cols-2 gap-4 mb-6">
+            <a href="/forms" class="glass rounded-xl p-5 hover-lift hover:border-purple-400 transition flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center shrink-0">
+                <i data-lucide="file-text" class="w-5 h-5 text-purple-600"></i>
+              </div>
+              <div>
+                <h3 class="font-medium text-sm" x-text="profile ? 'Editar Perfil' : 'Completar Perfil'"></h3>
+                <p class="text-xs text-gray-400">Especialidad, areas de soporte</p>
+              </div>
+            </a>
+            <div class="glass rounded-xl p-5 opacity-50 flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <i data-lucide="book-open" class="w-5 h-5 text-primary"></i>
+              </div>
+              <div>
+                <h3 class="font-medium text-sm">Publicar Cursos</h3>
+                <p class="text-xs text-gray-400">Proximamente</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="glass rounded-xl p-8 text-center">
+            <div class="w-16 h-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-4">
+              <i data-lucide="stethoscope" class="w-8 h-8 text-gray-300"></i>
+            </div>
+            <h3 class="font-semibold text-lg mb-2">Dashboard de Terapeuta</h3>
+            <p class="text-sm text-gray-500 max-w-md mx-auto">
+              Aqui gestionaras tus servicios, publicaras cursos y conectaras
+              con candidatos que necesiten tu apoyo.
+            </p>
+            <p class="text-xs text-gray-400 mt-2">Proximamente</p>
+          </div>
+        </div>
+      </template>
+
     </div>
   </div>
 </section>
@@ -126,14 +420,80 @@
 {% block scripts %}
 <script>
 function dashboardApp() {
+  // Human-readable labels for each 24D dimension
+  const dimLabels = {
+    attention_sustained: 'Atencion sostenida',
+    attention_selective: 'Atencion selectiva',
+    attention_divided: 'Atencion dividida',
+    memory_working: 'Memoria de trabajo',
+    memory_short_term: 'Memoria a corto plazo',
+    memory_long_term: 'Memoria a largo plazo',
+    processing_speed: 'Velocidad de proceso',
+    processing_accuracy: 'Precision',
+    processing_visual: 'Proceso visual',
+    executive_planning: 'Planificacion',
+    executive_flexibility: 'Flexibilidad',
+    executive_inhibition: 'Inhibicion',
+    social_communication: 'Comunicacion',
+    social_empathy: 'Empatia',
+    social_collaboration: 'Colaboracion',
+    creativity_divergent: 'Pensamiento divergente',
+    creativity_pattern: 'Deteccion patrones',
+    creativity_innovation: 'Innovacion',
+    sensory_visual: 'Sens. visual',
+    sensory_auditory: 'Sens. auditiva',
+    sensory_tactile: 'Sens. tactil',
+    emotional_regulation: 'Regulacion emocional',
+    emotional_awareness: 'Conciencia emocional',
+    emotional_resilience: 'Resiliencia',
+  };
+
+  // Category definitions: 8 groups x 3 dimensions
+  const categoryDefs = [
+    { name: 'Atencion', icon: 'eye', bgColor: 'bg-blue-100', iconColor: 'text-blue-600', barColor: 'bg-blue-500',
+      keys: ['attention_sustained', 'attention_selective', 'attention_divided'] },
+    { name: 'Memoria', icon: 'database', bgColor: 'bg-indigo-100', iconColor: 'text-indigo-600', barColor: 'bg-indigo-500',
+      keys: ['memory_working', 'memory_short_term', 'memory_long_term'] },
+    { name: 'Procesamiento', icon: 'zap', bgColor: 'bg-cyan-100', iconColor: 'text-cyan-600', barColor: 'bg-cyan-500',
+      keys: ['processing_speed', 'processing_accuracy', 'processing_visual'] },
+    { name: 'Funcion Ejecutiva', icon: 'target', bgColor: 'bg-green-100', iconColor: 'text-green-600', barColor: 'bg-green-500',
+      keys: ['executive_planning', 'executive_flexibility', 'executive_inhibition'] },
+    { name: 'Social', icon: 'users', bgColor: 'bg-pink-100', iconColor: 'text-pink-600', barColor: 'bg-pink-500',
+      keys: ['social_communication', 'social_empathy', 'social_collaboration'] },
+    { name: 'Creatividad', icon: 'lightbulb', bgColor: 'bg-amber-100', iconColor: 'text-amber-600', barColor: 'bg-amber-500',
+      keys: ['creativity_divergent', 'creativity_pattern', 'creativity_innovation'] },
+    { name: 'Sensorial', icon: 'radio', bgColor: 'bg-purple-100', iconColor: 'text-purple-600', barColor: 'bg-purple-500',
+      keys: ['sensory_visual', 'sensory_auditory', 'sensory_tactile'] },
+    { name: 'Emocional', icon: 'heart', bgColor: 'bg-red-100', iconColor: 'text-red-600', barColor: 'bg-red-500',
+      keys: ['emotional_regulation', 'emotional_awareness', 'emotional_resilience'] },
+  ];
+
   return {
     profile: null,
     loading: true,
+    dimLabels,
+    topDimensions: [],
+    bottomDimensions: [],
+    categories: [],
+    radarChart: null,
+
+    get hasQuiz() {
+      return this.profile?.neuro_vector && typeof this.profile.neuro_vector === 'object'
+             && Object.keys(this.profile.neuro_vector).length > 0;
+    },
+
+    progressPct() {
+      let steps = 0;
+      if (this.profile) steps++;
+      if (this.hasQuiz) steps++;
+      // future: brain suite, matching
+      return Math.round((steps / 4) * 100);
+    },
+
     async init() {
-      // Wait for Alpine store to load from localStorage
       await this.$nextTick();
 
-      // Check auth — also check localStorage directly as fallback
+      // Auth recovery
       if (!Alpine.store('auth').isLoggedIn) {
         const saved = localStorage.getItem('diversia_auth');
         if (saved) {
@@ -142,24 +502,129 @@ function dashboardApp() {
             Alpine.store('auth').setAuth(data.user, data.token);
           } catch { /* ignore */ }
         }
-        // Still not logged in after recovery attempt
         if (!Alpine.store('auth').isLoggedIn) {
           window.location.href = '/login';
           return;
         }
       }
 
-      // Try to load profile from API (may not be available without PostgreSQL)
+      // Load profile
       try {
         this.profile = await api('/profiles/me');
       } catch (e) {
-        // 404 = no profile yet, other errors = API unavailable — both are OK
         console.log('Profile API:', e.status || 'unavailable');
       } finally {
         this.loading = false;
-        this.$nextTick(() => lucide.createIcons());
       }
+
+      // Process neuro_vector data
+      await this.$nextTick();
+      if (this.hasQuiz) {
+        this.processNeuroVector();
+      }
+      this.$nextTick(() => lucide.createIcons());
     },
+
+    processNeuroVector() {
+      const vec = this.profile.neuro_vector;
+
+      // Sort dimensions by value
+      const sorted = Object.entries(vec)
+        .map(([key, value]) => ({ key, value: parseFloat(value) }))
+        .sort((a, b) => b.value - a.value);
+
+      this.topDimensions = sorted.slice(0, 5);
+      this.bottomDimensions = sorted.slice(-3).reverse();
+
+      // Build category data
+      this.categories = categoryDefs.map(cat => {
+        const dims = cat.keys.map(k => ({ key: k, value: vec[k] || 0 }));
+        const avg = dims.reduce((s, d) => s + d.value, 0) / dims.length;
+        return { ...cat, dims, avg };
+      });
+
+      // Render radar chart
+      this.$nextTick(() => this.renderRadarChart(vec));
+    },
+
+    renderRadarChart(vec) {
+      const canvas = document.getElementById('radarChart');
+      if (!canvas) return;
+
+      // Destroy previous chart if any
+      if (this.radarChart) {
+        this.radarChart.destroy();
+      }
+
+      const keys = Object.keys(vec);
+      const labels = keys.map(k => dimLabels[k] || k);
+      const values = keys.map(k => parseFloat(vec[k]));
+
+      // Category colors for each point (8 categories x 3 dims)
+      const categoryColors = [
+        '#3B82F6','#3B82F6','#3B82F6',  // Attention - blue
+        '#6366F1','#6366F1','#6366F1',  // Memory - indigo
+        '#06B6D4','#06B6D4','#06B6D4',  // Processing - cyan
+        '#10B981','#10B981','#10B981',  // Executive - green
+        '#EC4899','#EC4899','#EC4899',  // Social - pink
+        '#F59E0B','#F59E0B','#F59E0B',  // Creativity - amber
+        '#8B5CF6','#8B5CF6','#8B5CF6',  // Sensory - purple
+        '#EF4444','#EF4444','#EF4444',  // Emotional - red
+      ];
+
+      this.radarChart = new Chart(canvas, {
+        type: 'radar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Tu perfil 24D',
+            data: values,
+            backgroundColor: 'rgba(4, 107, 210, 0.15)',
+            borderColor: '#046BD2',
+            borderWidth: 2,
+            pointBackgroundColor: categoryColors.slice(0, keys.length),
+            pointBorderColor: '#fff',
+            pointBorderWidth: 1,
+            pointRadius: 4,
+            pointHoverRadius: 7,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => `${Math.round(ctx.raw * 100)}%`,
+                title: (items) => items[0].label,
+              }
+            }
+          },
+          scales: {
+            r: {
+              beginAtZero: true,
+              max: 1,
+              ticks: {
+                stepSize: 0.25,
+                display: false,
+              },
+              grid: {
+                color: 'rgba(0,0,0,0.06)',
+              },
+              angleLines: {
+                color: 'rgba(0,0,0,0.06)',
+              },
+              pointLabels: {
+                font: { size: 10, family: 'Rajdhani' },
+                color: '#64748B',
+              }
+            }
+          }
+        }
+      });
+    },
+
     roleLabel() {
       const r = Alpine.store('auth').role;
       return { candidate: 'Candidato', company: 'Empresa', therapist: 'Terapeuta' }[r] || r;
