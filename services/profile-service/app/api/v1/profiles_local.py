@@ -39,6 +39,8 @@ def _get_db() -> sqlite3.Connection:
             license_number TEXT DEFAULT '',
             support_areas TEXT DEFAULT '[]',
             neuro_vector TEXT DEFAULT '',
+            inclusivity_score TEXT DEFAULT '',
+            company_size TEXT DEFAULT '',
             status TEXT DEFAULT 'active',
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
@@ -79,6 +81,7 @@ class ProfileRequest(BaseModel):
     bio: str = ""
     location: str = ""
     sector: str = ""
+    company_size: str = ""
 
 
 class TherapistRequest(BaseModel):
@@ -86,6 +89,10 @@ class TherapistRequest(BaseModel):
     bio: str = ""
     license_number: str = ""
     support_areas: list[str] = []
+
+
+class InclusivityRequest(BaseModel):
+    answers: list[dict]
 
 
 class GameScoreRequest(BaseModel):
@@ -109,13 +116,13 @@ async def create_profile(body: ProfileRequest, request: Request) -> JSONResponse
     if existing:
         # Update existing profile
         db.execute(
-            "UPDATE profiles SET display_name=?, bio=?, location=?, sector=? WHERE user_id=?",
-            (body.display_name, body.bio, body.location, body.sector, user.sub),
+            "UPDATE profiles SET display_name=?, bio=?, location=?, sector=?, company_size=? WHERE user_id=?",
+            (body.display_name, body.bio, body.location, body.sector, body.company_size, user.sub),
         )
     else:
         db.execute(
-            "INSERT INTO profiles (user_id, display_name, role, bio, location, sector) VALUES (?, ?, ?, ?, ?, ?)",
-            (user.sub, body.display_name, user.role, body.bio, body.location, body.sector),
+            "INSERT INTO profiles (user_id, display_name, role, bio, location, sector, company_size) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            (user.sub, body.display_name, user.role, body.bio, body.location, body.sector, body.company_size),
         )
     db.commit()
 
@@ -197,6 +204,41 @@ async def get_my_profile(request: Request) -> JSONResponse:
     return JSONResponse(content=_row_to_dict(row))
 
 
+@router.post("/inclusivity")
+async def submit_inclusivity(body: InclusivityRequest, request: Request) -> JSONResponse:
+    user = _get_user_from_request(request)
+    if not user:
+        return JSONResponse(status_code=401, content={"detail": "No autenticado"})
+
+    # Calculate inclusivity scores per category
+    cat_scores: dict[str, list[float]] = {}
+    for a in body.answers:
+        cat = a.get("category", "")
+        val = a.get("value", 0.5)
+        cat_scores.setdefault(cat, []).append(val)
+
+    inclusivity_score = {cat: round(sum(vals) / len(vals), 3) for cat, vals in cat_scores.items()}
+    # Overall score
+    all_vals = [v for vals in cat_scores.values() for v in vals]
+    inclusivity_score["overall"] = round(sum(all_vals) / len(all_vals), 3) if all_vals else 0
+
+    db = _get_db()
+    score_json = json.dumps(inclusivity_score)
+    existing = db.execute("SELECT user_id FROM profiles WHERE user_id = ?", (user.sub,)).fetchone()
+    if existing:
+        db.execute("UPDATE profiles SET inclusivity_score=? WHERE user_id=?", (score_json, user.sub))
+    else:
+        db.execute(
+            "INSERT INTO profiles (user_id, display_name, role, inclusivity_score) VALUES (?, ?, ?, ?)",
+            (user.sub, user.email, user.role, score_json),
+        )
+    db.commit()
+
+    row = db.execute("SELECT * FROM profiles WHERE user_id = ?", (user.sub,)).fetchone()
+    db.close()
+    return JSONResponse(content=_row_to_dict(row))
+
+
 @router.post("/games/score")
 async def save_game_score(body: GameScoreRequest, request: Request) -> JSONResponse:
     user = _get_user_from_request(request)
@@ -231,7 +273,7 @@ async def get_game_scores(request: Request) -> JSONResponse:
 
 def _row_to_dict(row) -> dict:
     d = dict(row)
-    for key in ("support_areas", "neuro_vector"):
+    for key in ("support_areas", "neuro_vector", "inclusivity_score"):
         if d.get(key) and isinstance(d[key], str):
             try:
                 d[key] = json.loads(d[key])

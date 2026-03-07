@@ -29,6 +29,7 @@
             <a href="/dashboard" class="text-sm font-medium text-gray-600 hover:text-primary transition">Dashboard</a>
             <a href="/quiz" class="text-sm font-medium text-gray-600 hover:text-primary transition" x-show="$store.auth.role === 'candidate'">Quiz</a>
             <a href="/games" class="text-sm font-medium text-gray-600 hover:text-primary transition" x-show="$store.auth.role === 'candidate'">Games</a>
+            <a href="/inclusivity" class="text-sm font-medium text-gray-600 hover:text-primary transition" x-show="$store.auth.role === 'company'">Inclusividad</a>
             <a href="/forms" class="text-sm font-medium text-gray-600 hover:text-primary transition">Formularios</a>
           </div>
         </template>
@@ -75,6 +76,7 @@
         <a href="/dashboard" class="block py-2 text-gray-600 hover:text-primary">Dashboard</a>
         <a href="/quiz" class="block py-2 text-gray-600 hover:text-primary" x-show="$store.auth.role === 'candidate'">Quiz</a>
         <a href="/games" class="block py-2 text-gray-600 hover:text-primary" x-show="$store.auth.role === 'candidate'">Games</a>
+        <a href="/inclusivity" class="block py-2 text-gray-600 hover:text-primary" x-show="$store.auth.role === 'company'">Inclusividad</a>
         <a href="/forms" class="block py-2 text-gray-600 hover:text-primary">Formularios</a>
       </div>
     </template>

@@ -287,23 +287,36 @@
                 <span class="text-xs text-gray-500 uppercase tracking-wider">Perfil</span>
                 <i data-lucide="building-2" class="w-4 h-4 text-green-500"></i>
               </div>
-              <div class="text-2xl font-display font-bold text-dark" x-text="profile ? 'Activo' : 'Pendiente'"></div>
-            </div>
-            <div class="glass rounded-xl p-5 hover-lift">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-xs text-gray-500 uppercase tracking-wider">Candidatos</span>
-                <i data-lucide="users" class="w-4 h-4 text-primary"></i>
-              </div>
-              <div class="text-2xl font-display font-bold text-dark">-</div>
-              <p class="text-xs text-gray-400 mt-1">Proximamente</p>
+              <div class="text-2xl font-display font-bold" :class="profile ? 'text-green-600' : 'text-gray-400'"
+                   x-text="profile ? 'Activo' : 'Pendiente'"></div>
             </div>
             <div class="glass rounded-xl p-5 hover-lift">
               <div class="flex items-center justify-between mb-2">
                 <span class="text-xs text-gray-500 uppercase tracking-wider">Inclusividad</span>
                 <i data-lucide="heart" class="w-4 h-4 text-pink-500"></i>
               </div>
-              <div class="text-2xl font-display font-bold text-dark">-</div>
-              <p class="text-xs text-gray-400 mt-1">Score pendiente</p>
+              <template x-if="hasInclusivity">
+                <div>
+                  <div class="text-2xl font-display font-bold"
+                       :class="inclusivityOverall >= 75 ? 'text-green-600' : inclusivityOverall >= 50 ? 'text-yellow-600' : 'text-red-500'"
+                       x-text="inclusivityOverall + '%'"></div>
+                  <p class="text-xs text-gray-400 mt-1">Score global</p>
+                </div>
+              </template>
+              <template x-if="!hasInclusivity">
+                <div>
+                  <div class="text-2xl font-display font-bold text-gray-400">-</div>
+                  <p class="text-xs text-gray-400 mt-1">Evaluacion pendiente</p>
+                </div>
+              </template>
+            </div>
+            <div class="glass rounded-xl p-5 hover-lift">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-gray-500 uppercase tracking-wider">Candidatos</span>
+                <i data-lucide="users" class="w-4 h-4 text-primary"></i>
+              </div>
+              <div class="text-2xl font-display font-bold text-gray-400">-</div>
+              <p class="text-xs text-gray-400 mt-1">Proximamente</p>
             </div>
             <div class="glass rounded-xl p-5 hover-lift">
               <div class="flex items-center justify-between mb-2">
@@ -311,20 +324,59 @@
                 <i data-lucide="shield-check" class="w-4 h-4 text-green-500"></i>
               </div>
               <div class="text-2xl font-display font-bold text-green-600">GDPR</div>
+              <p class="text-xs text-gray-400 mt-1">Datos en EU</p>
             </div>
           </div>
 
-          <div class="grid sm:grid-cols-2 gap-4 mb-6">
+          <!-- Inclusivity breakdown chart -->
+          <div x-show="hasInclusivity" class="glass rounded-xl p-6 mb-6">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="font-semibold text-lg">
+                <i data-lucide="heart" class="w-5 h-5 inline text-pink-500"></i>
+                Score de Inclusividad
+              </h2>
+              <a href="/inclusivity" class="text-xs text-green-600 hover:underline">Repetir evaluacion &rarr;</a>
+            </div>
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <template x-for="cat in inclusivityCategories" :key="cat.key">
+                <div class="border border-gray-100 rounded-lg p-4">
+                  <div class="flex justify-between text-sm mb-2">
+                    <span class="text-gray-700 font-medium" x-text="cat.label"></span>
+                    <span class="font-bold" :class="cat.pct >= 75 ? 'text-green-600' : cat.pct >= 50 ? 'text-yellow-600' : 'text-red-500'"
+                          x-text="cat.pct + '%'"></span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="h-2 rounded-full transition-all"
+                         :class="cat.pct >= 75 ? 'bg-green-500' : cat.pct >= 50 ? 'bg-yellow-400' : 'bg-red-400'"
+                         :style="'width:' + cat.pct + '%'"></div>
+                  </div>
+                </div>
+              </template>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="grid sm:grid-cols-3 gap-4 mb-6">
             <a href="/forms" class="glass rounded-xl p-5 hover-lift hover:border-green-400 transition flex items-center gap-4">
               <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center shrink-0">
                 <i data-lucide="file-text" class="w-5 h-5 text-green-600"></i>
               </div>
               <div>
                 <h3 class="font-medium text-sm" x-text="profile ? 'Editar Perfil' : 'Completar Perfil'"></h3>
-                <p class="text-xs text-gray-400">Datos de tu empresa</p>
+                <p class="text-xs text-gray-400">Datos de empresa</p>
               </div>
             </a>
-            <div class="glass rounded-xl p-5 opacity-50 flex items-center gap-4">
+            <a href="/inclusivity" class="glass rounded-xl p-5 hover-lift hover:border-pink-400 transition flex items-center gap-4"
+               :class="hasInclusivity ? 'opacity-60' : 'border-2 border-pink-200'">
+              <div class="w-10 h-10 rounded-lg bg-pink-100 flex items-center justify-center shrink-0">
+                <i data-lucide="heart" class="w-5 h-5 text-pink-600"></i>
+              </div>
+              <div>
+                <h3 class="font-medium text-sm" x-text="hasInclusivity ? 'Repetir Evaluacion' : 'Evaluar Inclusividad'"></h3>
+                <p class="text-xs text-gray-400">18 preguntas &middot; 5 min</p>
+              </div>
+            </a>
+            <div class="glass rounded-xl p-5 opacity-40 flex items-center gap-4">
               <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                 <i data-lucide="search" class="w-5 h-5 text-primary"></i>
               </div>
@@ -335,14 +387,15 @@
             </div>
           </div>
 
+          <!-- Matching placeholder -->
           <div class="glass rounded-xl p-8 text-center">
             <div class="w-16 h-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-4">
-              <i data-lucide="building-2" class="w-8 h-8 text-gray-300"></i>
+              <i data-lucide="handshake" class="w-8 h-8 text-gray-300"></i>
             </div>
-            <h3 class="font-semibold text-lg mb-2">Dashboard de Empresa</h3>
+            <h3 class="font-semibold text-lg mb-2">Matching Inteligente</h3>
             <p class="text-sm text-gray-500 max-w-md mx-auto">
-              Aqui veras tus candidatos compatibles, tu score de inclusividad
-              y herramientas para gestionar tu proceso de seleccion.
+              Cuando completes tu perfil y evaluacion de inclusividad, nuestro algoritmo
+              encontrara candidatos neurodivergentes compatibles con tu cultura empresarial.
             </p>
             <p class="text-xs text-gray-400 mt-2">Proximamente</p>
           </div>
@@ -481,6 +534,32 @@ function dashboardApp() {
     get hasQuiz() {
       return this.profile?.neuro_vector && typeof this.profile.neuro_vector === 'object'
              && Object.keys(this.profile.neuro_vector).length > 0;
+    },
+
+    get hasInclusivity() {
+      return this.profile?.inclusivity_score && typeof this.profile.inclusivity_score === 'object'
+             && this.profile.inclusivity_score.overall !== undefined;
+    },
+
+    get inclusivityOverall() {
+      if (!this.hasInclusivity) return 0;
+      return Math.round(this.profile.inclusivity_score.overall * 100);
+    },
+
+    get inclusivityCategories() {
+      if (!this.hasInclusivity) return [];
+      const catLabels = {
+        environment: 'Entorno sensorial',
+        culture: 'Cultura y comunicacion',
+        hiring: 'Procesos de seleccion',
+        adaptations: 'Adaptaciones laborales',
+        training: 'Formacion',
+        metrics: 'Medicion',
+      };
+      const score = this.profile.inclusivity_score;
+      return Object.entries(catLabels)
+        .filter(([k]) => score[k] !== undefined)
+        .map(([k, label]) => ({ key: k, label, pct: Math.round(score[k] * 100) }));
     },
 
     get hasGames() {

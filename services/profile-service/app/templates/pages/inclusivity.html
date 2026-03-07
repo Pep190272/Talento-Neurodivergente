@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+{% block title %}Evaluacion de Inclusividad — DiversIA{% endblock %}
+
+{% block content %}
+<section class="py-8 px-4">
+  <div class="max-w-3xl mx-auto" x-data="inclusivityApp()">
+
+    <!-- Intro -->
+    <div x-show="step === 'intro'" class="text-center">
+      <div class="w-20 h-20 mx-auto rounded-full bg-green-100 flex items-center justify-center mb-6">
+        <i data-lucide="heart" class="w-10 h-10 text-green-600"></i>
+      </div>
+      <h1 class="font-display text-2xl font-bold text-dark mb-3">Evaluacion de Inclusividad</h1>
+      <p class="text-gray-500 max-w-lg mx-auto mb-6">
+        Esta evaluacion mide el nivel de preparacion de tu empresa para integrar talento neurodivergente.
+        No hay respuestas buenas ni malas — el objetivo es identificar areas de mejora.
+      </p>
+      <div class="glass rounded-xl p-6 max-w-md mx-auto mb-6 text-left text-sm">
+        <h3 class="font-semibold mb-3">Se evaluan 6 areas:</h3>
+        <ul class="space-y-2 text-gray-600">
+          <li class="flex items-start gap-2"><i data-lucide="building-2" class="w-4 h-4 text-green-500 mt-0.5"></i> Entorno fisico y sensorial</li>
+          <li class="flex items-start gap-2"><i data-lucide="users" class="w-4 h-4 text-blue-500 mt-0.5"></i> Cultura y comunicacion</li>
+          <li class="flex items-start gap-2"><i data-lucide="briefcase" class="w-4 h-4 text-purple-500 mt-0.5"></i> Procesos de seleccion</li>
+          <li class="flex items-start gap-2"><i data-lucide="settings" class="w-4 h-4 text-orange-500 mt-0.5"></i> Adaptaciones laborales</li>
+          <li class="flex items-start gap-2"><i data-lucide="graduation-cap" class="w-4 h-4 text-cyan-500 mt-0.5"></i> Formacion y sensibilizacion</li>
+          <li class="flex items-start gap-2"><i data-lucide="bar-chart-3" class="w-4 h-4 text-pink-500 mt-0.5"></i> Medicion y seguimiento</li>
+        </ul>
+      </div>
+      <button @click="step = 'quiz'" class="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">
+        Empezar Evaluacion
+      </button>
+    </div>
+
+    <!-- Quiz -->
+    <div x-show="step === 'quiz'" x-cloak>
+      <div class="mb-6">
+        <div class="flex justify-between text-sm text-gray-500 mb-2">
+          <span>Pregunta <span x-text="currentQ + 1"></span> de <span x-text="questions.length"></span></span>
+          <span x-text="Math.round((currentQ / questions.length) * 100) + '%'"></span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div class="bg-green-500 h-2 rounded-full transition-all" :style="'width:' + ((currentQ / questions.length) * 100) + '%'"></div>
+        </div>
+      </div>
+
+      <div class="glass rounded-xl p-8">
+        <p class="text-xs text-gray-400 mb-2 uppercase tracking-wider" x-text="catLabels[questions[currentQ]?.category] || questions[currentQ]?.category"></p>
+        <h2 class="font-semibold text-lg mb-6" x-text="questions[currentQ]?.text"></h2>
+
+        <div class="space-y-3">
+          <template x-for="opt in [0.0, 0.25, 0.5, 0.75, 1.0]" :key="opt">
+            <button @click="answer(opt)"
+                    class="w-full text-left px-4 py-3 border border-gray-200 rounded-lg hover:border-green-500 hover:bg-green-50 transition text-sm">
+              <span x-text="labels[opt]"></span>
+            </button>
+          </template>
+        </div>
+      </div>
+
+      <div class="flex justify-between mt-4">
+        <button @click="currentQ > 0 && currentQ--" :disabled="currentQ === 0"
+                class="px-4 py-2 text-sm text-gray-500 hover:text-green-600 disabled:opacity-30">&larr; Anterior</button>
+        <span class="text-xs text-gray-400 self-center" x-text="answers.length + ' respondidas'"></span>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div x-show="step === 'result'" x-cloak>
+      <div class="text-center mb-8">
+        <div class="w-20 h-20 mx-auto rounded-full bg-green-100 flex items-center justify-center mb-6">
+          <i data-lucide="check-circle" class="w-10 h-10 text-green-600"></i>
+        </div>
+        <h2 class="font-display text-2xl font-bold text-dark mb-3">Evaluacion Completada</h2>
+        <p class="text-gray-500 mb-2">Score global de inclusividad</p>
+        <p class="text-5xl font-display font-bold text-green-600" x-text="overallScore + '%'"></p>
+      </div>
+
+      <!-- Category breakdown -->
+      <div class="glass rounded-xl p-6 mb-6">
+        <h3 class="font-semibold mb-4">Desglose por area</h3>
+        <div class="space-y-4">
+          <template x-for="cat in categoryResults" :key="cat.key">
+            <div>
+              <div class="flex justify-between text-sm mb-1">
+                <span class="text-gray-700" x-text="catLabels[cat.key] || cat.key"></span>
+                <span class="font-semibold" :class="cat.pct >= 75 ? 'text-green-600' : cat.pct >= 50 ? 'text-yellow-600' : 'text-red-500'"
+                      x-text="cat.pct + '%'"></span>
+              </div>
+              <div class="w-full bg-gray-200 rounded-full h-2">
+                <div class="h-2 rounded-full transition-all"
+                     :class="cat.pct >= 75 ? 'bg-green-500' : cat.pct >= 50 ? 'bg-yellow-400' : 'bg-red-400'"
+                     :style="'width:' + cat.pct + '%'"></div>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <a href="/dashboard" class="px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition">
+          Ver Dashboard
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function inclusivityApp() {
+  const categories = ['environment', 'culture', 'hiring', 'adaptations', 'training', 'metrics'];
+
+  const catLabels = {
+    environment: 'Entorno fisico y sensorial',
+    culture: 'Cultura y comunicacion',
+    hiring: 'Procesos de seleccion',
+    adaptations: 'Adaptaciones laborales',
+    training: 'Formacion y sensibilizacion',
+    metrics: 'Medicion y seguimiento',
+  };
+
+  const questionTexts = [
+    // Environment (3)
+    { text: 'Existen espacios de trabajo tranquilos o con baja estimulacion sensorial', category: 'environment' },
+    { text: 'La iluminacion es regulable o se permite el uso de gafas con filtro', category: 'environment' },
+    { text: 'Se permite el uso de auriculares o elementos de regulacion sensorial', category: 'environment' },
+    // Culture (3)
+    { text: 'Los managers estan formados en neurodiversidad', category: 'culture' },
+    { text: 'Se usan instrucciones claras y escritas (no solo verbales)', category: 'culture' },
+    { text: 'Existe un clima de apertura para hablar de diferencias cognitivas', category: 'culture' },
+    // Hiring (3)
+    { text: 'Las descripciones de empleo especifican solo requisitos realmente esenciales', category: 'hiring' },
+    { text: 'Se ofrecen alternativas al formato de entrevista tradicional', category: 'hiring' },
+    { text: 'Los procesos de seleccion evaluan competencias reales, no habilidades sociales por defecto', category: 'hiring' },
+    // Adaptations (3)
+    { text: 'Se ofrecen horarios flexibles o teletrabajo', category: 'adaptations' },
+    { text: 'Existe un proceso para solicitar adaptaciones razonables', category: 'adaptations' },
+    { text: 'Se permite personalizar el espacio de trabajo (por ej. uso de fidget toys)', category: 'adaptations' },
+    // Training (3)
+    { text: 'Se realizan formaciones periodicas sobre neurodiversidad para todo el equipo', category: 'training' },
+    { text: 'Los responsables de RRHH conocen las necesidades especificas de personas ND', category: 'training' },
+    { text: 'Se comparten recursos o guias sobre neurodiversidad en el lugar de trabajo', category: 'training' },
+    // Metrics (3)
+    { text: 'Se mide la satisfaccion laboral de empleados neurodivergentes', category: 'metrics' },
+    { text: 'Se hacen seguimientos periodicos de las adaptaciones implementadas', category: 'metrics' },
+    { text: 'Se tienen objetivos concretos de inclusion neurodivergente', category: 'metrics' },
+  ];
+
+  return {
+    step: 'intro',
+    currentQ: 0,
+    answers: [],
+    catLabels,
+    overallScore: 0,
+    categoryResults: [],
+    labels: { 0.0: 'No, en absoluto', 0.25: 'Poco implementado', 0.5: 'Parcialmente', 0.75: 'Bastante implementado', 1.0: 'Totalmente implementado' },
+    questions: questionTexts,
+
+    answer(value) {
+      this.answers.push({
+        category: this.questions[this.currentQ].category,
+        value: value,
+      });
+      if (this.currentQ < this.questions.length - 1) {
+        this.currentQ++;
+      } else {
+        this.submitAssessment();
+      }
+    },
+
+    async submitAssessment() {
+      try {
+        const result = await api('/profiles/inclusivity', {
+          method: 'POST',
+          body: JSON.stringify({ answers: this.answers }),
+        });
+
+        // Calculate results for display
+        const score = result.inclusivity_score || {};
+        this.overallScore = Math.round((score.overall || 0) * 100);
+        this.categoryResults = categories
+          .filter(c => score[c] !== undefined)
+          .map(c => ({ key: c, pct: Math.round(score[c] * 100) }));
+
+        this.step = 'result';
+        this.$nextTick(() => lucide.createIcons());
+      } catch (e) {
+        Alpine.store('toast').show(e.detail || 'Error al enviar evaluacion', 'error');
+      }
+    }
+  }
+}
+</script>
+{% endblock %}
