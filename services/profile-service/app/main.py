@@ -14,6 +14,7 @@ from slowapi.util import get_remote_address
 
 from .api.v1.auth_proxy import router as auth_proxy_router
 from .api.v1.pages import router as pages_router
+from .api.v1.profiles_local import router as profiles_local_router
 from .config import ProfileServiceSettings
 
 _settings = ProfileServiceSettings()
@@ -54,15 +55,9 @@ def create_app() -> FastAPI:
     if static_dir.exists():
         application.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
-    # Auth proxy (forwards to auth-service — works without DB)
+    # Local dev routes (SQLite — no PostgreSQL needed)
     application.include_router(auth_proxy_router)
-
-    # API routes (require PostgreSQL + asyncpg — graceful skip if unavailable)
-    try:
-        from .api.v1.profiles import router as profiles_router
-        application.include_router(profiles_router)
-    except Exception:
-        pass  # DB not configured — API routes disabled, HTML pages still work
+    application.include_router(profiles_local_router)
 
     # HTML page routes (always available, no DB needed)
     application.include_router(pages_router)

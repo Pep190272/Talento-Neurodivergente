@@ -1,27 +1,26 @@
 {% extends "base.html" %}
-{% block title %}Formularios — DiversIA{% endblock %}
+{% block title %}Completa tu Perfil — DiversIA{% endblock %}
 
 {% block content %}
 <section class="py-8 px-4">
   <div class="max-w-4xl mx-auto" x-data="formsApp()">
     <div class="text-center mb-8">
-      <h1 class="font-display text-2xl font-bold text-dark">Formularios de Registro</h1>
-      <p class="text-gray-500 mt-2">Completa tu perfil segun tu rol</p>
+      <h1 class="font-display text-2xl font-bold text-dark">Completa tu Perfil</h1>
+      <p class="text-gray-500 mt-2">
+        <span x-show="tab === 'candidate'">Perfil de Candidato</span>
+        <span x-show="tab === 'company'">Perfil de Empresa</span>
+        <span x-show="tab === 'therapist'">Perfil de Terapeuta</span>
+      </p>
     </div>
 
-    <!-- Role tabs -->
-    <div class="flex justify-center gap-2 mb-8">
-      <button @click="tab='candidate'" :class="tab === 'candidate' ? 'bg-primary text-white' : 'bg-gray-100 text-gray-600'"
-              class="px-5 py-2 rounded-lg text-sm font-medium transition">Candidato</button>
-      <button @click="tab='company'" :class="tab === 'company' ? 'bg-green-600 text-white' : 'bg-gray-100 text-gray-600'"
-              class="px-5 py-2 rounded-lg text-sm font-medium transition">Empresa</button>
-      <button @click="tab='therapist'" :class="tab === 'therapist' ? 'bg-purple-600 text-white' : 'bg-gray-100 text-gray-600'"
-              class="px-5 py-2 rounded-lg text-sm font-medium transition">Terapeuta</button>
+    <!-- Messages -->
+    <div x-show="error" x-cloak class="max-w-2xl mx-auto mb-6 p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg" x-text="error"></div>
+    <div x-show="success" x-cloak class="max-w-2xl mx-auto mb-6 p-3 bg-green-50 border border-green-200 text-green-700 text-sm rounded-lg">
+      Perfil guardado correctamente. <a href="/dashboard" class="underline font-medium">Ir al Dashboard</a>
     </div>
 
     <!-- Candidate Form -->
-    <div x-show="tab === 'candidate'" class="glass rounded-xl p-8">
-      <h2 class="font-semibold text-lg mb-6">Perfil de Candidato</h2>
+    <div x-show="tab === 'candidate'" class="glass rounded-xl p-8 max-w-2xl mx-auto">
       <form @submit.prevent="submitProfile" class="space-y-4">
         <div class="grid md:grid-cols-2 gap-4">
           <div>
@@ -42,8 +41,7 @@
                     class="form-input w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none"
                     placeholder="Cuentanos sobre ti, tus fortalezas y que buscas..."></textarea>
         </div>
-        <div x-show="error" class="p-3 bg-red-50 text-red-700 text-sm rounded-lg" x-text="error"></div>
-        <button type="submit" :disabled="loading"
+        <button type="submit" :disabled="loading || success"
                 class="px-6 py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary-deep transition disabled:opacity-50">
           <span x-text="loading ? 'Guardando...' : 'Guardar Perfil'"></span>
         </button>
@@ -51,8 +49,7 @@
     </div>
 
     <!-- Company Form -->
-    <div x-show="tab === 'company'" class="glass rounded-xl p-8">
-      <h2 class="font-semibold text-lg mb-6">Perfil de Empresa</h2>
+    <div x-show="tab === 'company'" class="glass rounded-xl p-8 max-w-2xl mx-auto">
       <form @submit.prevent="submitProfile" class="space-y-4">
         <div class="grid md:grid-cols-2 gap-4">
           <div>
@@ -73,17 +70,15 @@
                     class="form-input w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none"
                     placeholder="Describe tu empresa y su compromiso con la inclusion..."></textarea>
         </div>
-        <div x-show="error" class="p-3 bg-red-50 text-red-700 text-sm rounded-lg" x-text="error"></div>
-        <button type="submit" :disabled="loading"
+        <button type="submit" :disabled="loading || success"
                 class="px-6 py-2.5 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition disabled:opacity-50">
-          <span x-text="loading ? 'Guardando...' : 'Guardar Perfil Empresa'"></span>
+          <span x-text="loading ? 'Guardando...' : 'Guardar Perfil'"></span>
         </button>
       </form>
     </div>
 
     <!-- Therapist Form -->
-    <div x-show="tab === 'therapist'" class="glass rounded-xl p-8">
-      <h2 class="font-semibold text-lg mb-6">Perfil de Terapeuta</h2>
+    <div x-show="tab === 'therapist'" class="glass rounded-xl p-8 max-w-2xl mx-auto">
       <form @submit.prevent="submitTherapist" class="space-y-4">
         <div class="grid md:grid-cols-2 gap-4">
           <div>
@@ -93,7 +88,7 @@
                    placeholder="Psicologia clinica, Neuropsicologia...">
           </div>
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Numero de licencia</label>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Numero de colegiado</label>
             <input type="text" x-model="therapistForm.license_number"
                    class="form-input w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none"
                    placeholder="Numero de colegiado">
@@ -111,10 +106,9 @@
                  class="form-input w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none"
                  placeholder="TDAH, Autismo, Dislexia, Ansiedad...">
         </div>
-        <div x-show="error" class="p-3 bg-red-50 text-red-700 text-sm rounded-lg" x-text="error"></div>
-        <button type="submit" :disabled="loading"
+        <button type="submit" :disabled="loading || success"
                 class="px-6 py-2.5 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition disabled:opacity-50">
-          <span x-text="loading ? 'Guardando...' : 'Guardar Perfil Terapeuta'"></span>
+          <span x-text="loading ? 'Guardando...' : 'Guardar Perfil'"></span>
         </button>
       </form>
     </div>
@@ -125,17 +119,21 @@
 {% block scripts %}
 <script>
 function formsApp() {
+  const role = Alpine.store('auth').role || 'candidate';
+  const name = Alpine.store('auth').user?.display_name || '';
   return {
-    tab: 'candidate',
-    form: { display_name: '', bio: '', role: 'candidate', location: '', sector: '' },
+    tab: role,
+    form: { display_name: name, bio: '', role: role, location: '', sector: '' },
     therapistForm: { specialty: '', bio: '', license_number: '', support_areas_text: '' },
-    error: '', loading: false,
+    error: '', loading: false, success: false,
     async submitProfile() {
       this.error = '';
+      this.success = false;
       this.loading = true;
       try {
         this.form.role = this.tab;
         await api('/profiles/', { method: 'POST', body: JSON.stringify(this.form) });
+        this.success = true;
         Alpine.store('toast').show('Perfil guardado correctamente');
       } catch (e) {
         this.error = e.detail || e.message || 'Error al guardar';
@@ -143,6 +141,7 @@ function formsApp() {
     },
     async submitTherapist() {
       this.error = '';
+      this.success = false;
       this.loading = true;
       try {
         const data = { ...this.therapistForm,
@@ -150,6 +149,7 @@ function formsApp() {
         };
         delete data.support_areas_text;
         await api('/profiles/therapist', { method: 'POST', body: JSON.stringify(data) });
+        this.success = true;
         Alpine.store('toast').show('Perfil de terapeuta guardado');
       } catch (e) {
         this.error = e.detail || e.message || 'Error al guardar';
