@@ -15,16 +15,16 @@
 import { PrismaClient } from '@prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
 
-const connectionString = process.env.DATABASE_URL
-
-if (!connectionString) {
-  throw new Error(
-    '[Prisma] DATABASE_URL no está definida. ' +
-    'Crea un archivo .env.local con DATABASE_URL=postgresql://user:pass@host:5432/db'
-  )
-}
-
 function createPrismaClient(): PrismaClient {
+  const connectionString = process.env.DATABASE_URL
+
+  if (!connectionString) {
+    throw new Error(
+      '[Prisma] DATABASE_URL no está definida. ' +
+      'Crea un archivo .env.local con DATABASE_URL=postgresql://user:pass@host:5432/db'
+    )
+  }
+
   const adapter = new PrismaPg({ connectionString })
 
   return new PrismaClient({
@@ -33,12 +33,17 @@ function createPrismaClient(): PrismaClient {
   })
 }
 
-const globalForPrisma = globalThis as unknown as { prisma: PrismaClient }
+const globalForPrisma = globalThis as unknown as { prisma: PrismaClient | undefined }
 
-export const prisma = globalForPrisma.prisma ?? createPrismaClient()
-
-if (process.env.NODE_ENV !== 'production') {
-  globalForPrisma.prisma = prisma
-}
+// Lazy initialization: only creates the client when first accessed at runtime,
+// allowing Next.js to build without DATABASE_URL configured.
+export const prisma = new Proxy({} as PrismaClient, {
+  get(_target, prop) {
+    if (!globalForPrisma.prisma) {
+      globalForPrisma.prisma = createPrismaClient()
+    }
+    return Reflect.get(globalForPrisma.prisma, prop)
+  },
+})
 
 export default prisma

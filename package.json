@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "DATABASE_URL=${DATABASE_URL:-postgresql://placeholder:5432/db} prisma generate && next build",
     "start": "next start",
     "lint": "eslint .",
     "test": "vitest",
