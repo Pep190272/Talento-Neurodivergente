@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}DiversIA Eternals{% endblock %}</title>
+  <meta name="description" content="{% block description %}Plataforma de matching trilateral para talento neurodivergente{% endblock %}">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CDN (dev) — replace with build in production -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Orbitron', 'monospace'],
+            body: ['Rajdhani', 'sans-serif'],
+          },
+          colors: {
+            primary: { DEFAULT: '#046BD2', deep: '#045CB4', dark: '#034A9A' },
+            dark: '#1E293B',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Alpine.js -->
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="/static/css/app.css">
+  <!-- Lucide icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+
+  {% block head %}{% endblock %}
+</head>
+<body class="font-body bg-white text-dark antialiased" x-data x-init="$store.auth.init()">
+
+  {% include "partials/navbar.html" %}
+
+  <!-- Toast notification -->
+  <div class="toast" :class="[$store.toast.visible ? 'show' : '', 'toast-' + $store.toast.type]"
+       x-text="$store.toast.message"></div>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  {% include "partials/footer.html" %}
+
+  <script src="/static/js/app.js"></script>
+  <script>lucide.createIcons();</script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,99 @@
+<nav class="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm"
+     x-data="{ open: false }">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-[72px]">
+
+      <!-- Logo -->
+      <a href="/" class="flex items-center gap-2">
+        <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-primary to-primary-dark flex items-center justify-center">
+          <span class="text-white font-display font-bold text-sm">D</span>
+        </div>
+        <span class="font-display font-bold text-lg text-dark">Diversia<span class="text-primary">Eternals</span></span>
+      </a>
+
+      <!-- Desktop nav -->
+      <div class="hidden md:flex items-center gap-6">
+        <!-- Public: landing pages -->
+        <template x-if="!$store.auth.isLoggedIn">
+          <div class="flex items-center gap-6">
+            <a href="/" class="text-sm font-medium text-gray-600 hover:text-primary transition">Inicio</a>
+            <a href="/para-candidatos" class="text-sm font-medium text-gray-600 hover:text-primary transition">Candidatos</a>
+            <a href="/para-empresas" class="text-sm font-medium text-gray-600 hover:text-primary transition">Empresas</a>
+            <a href="/para-terapeutas" class="text-sm font-medium text-gray-600 hover:text-primary transition">Terapeutas</a>
+          </div>
+        </template>
+
+        <!-- Logged-in: app pages by role -->
+        <template x-if="$store.auth.isLoggedIn">
+          <div class="flex items-center gap-6">
+            <a href="/dashboard" class="text-sm font-medium text-gray-600 hover:text-primary transition">Dashboard</a>
+            <a href="/quiz" class="text-sm font-medium text-gray-600 hover:text-primary transition" x-show="$store.auth.role === 'candidate'">Quiz</a>
+            <a href="/games" class="text-sm font-medium text-gray-600 hover:text-primary transition" x-show="$store.auth.role === 'candidate'">Games</a>
+            <a href="/inclusivity" class="text-sm font-medium text-gray-600 hover:text-primary transition" x-show="$store.auth.role === 'company'">Inclusividad</a>
+            <a href="/jobs" class="text-sm font-medium text-gray-600 hover:text-primary transition" x-show="$store.auth.role === 'company'">Ofertas</a>
+            <a href="/jobs" class="text-sm font-medium text-gray-600 hover:text-primary transition" x-show="$store.auth.role === 'candidate'">Empleos</a>
+            <a href="/forms" class="text-sm font-medium text-gray-600 hover:text-primary transition">Formularios</a>
+          </div>
+        </template>
+      </div>
+
+      <!-- Right side -->
+      <div class="hidden md:flex items-center gap-3">
+        <template x-if="!$store.auth.isLoggedIn">
+          <div class="flex items-center gap-3">
+            <a href="/login" class="text-sm font-medium text-gray-600 hover:text-primary transition">Iniciar Sesion</a>
+            <a href="/register" class="px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-deep transition">Registrarse</a>
+          </div>
+        </template>
+        <template x-if="$store.auth.isLoggedIn">
+          <div class="flex items-center gap-3">
+            <span class="text-sm text-gray-500" x-text="$store.auth.user?.display_name || $store.auth.user?.email"></span>
+            <button @click="$store.auth.clear(); window.location.href='/'"
+                    class="text-sm text-gray-500 hover:text-danger transition">Salir</button>
+          </div>
+        </template>
+      </div>
+
+      <!-- Mobile menu button -->
+      <button @click="open = !open" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
+        <i data-lucide="menu" class="w-5 h-5" x-show="!open"></i>
+        <i data-lucide="x" class="w-5 h-5" x-show="open" x-cloak></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div x-show="open" x-cloak x-transition class="md:hidden bg-white border-t border-gray-100 px-4 pb-4">
+    <template x-if="!$store.auth.isLoggedIn">
+      <div>
+        <a href="/" class="block py-2 text-gray-600 hover:text-primary">Inicio</a>
+        <a href="/para-candidatos" class="block py-2 text-gray-600 hover:text-primary">Candidatos</a>
+        <a href="/para-empresas" class="block py-2 text-gray-600 hover:text-primary">Empresas</a>
+        <a href="/para-terapeutas" class="block py-2 text-gray-600 hover:text-primary">Terapeutas</a>
+      </div>
+    </template>
+
+    <template x-if="$store.auth.isLoggedIn">
+      <div>
+        <a href="/dashboard" class="block py-2 text-gray-600 hover:text-primary">Dashboard</a>
+        <a href="/quiz" class="block py-2 text-gray-600 hover:text-primary" x-show="$store.auth.role === 'candidate'">Quiz</a>
+        <a href="/games" class="block py-2 text-gray-600 hover:text-primary" x-show="$store.auth.role === 'candidate'">Games</a>
+        <a href="/inclusivity" class="block py-2 text-gray-600 hover:text-primary" x-show="$store.auth.role === 'company'">Inclusividad</a>
+        <a href="/jobs" class="block py-2 text-gray-600 hover:text-primary" x-show="$store.auth.role === 'company'">Ofertas</a>
+        <a href="/forms" class="block py-2 text-gray-600 hover:text-primary">Formularios</a>
+      </div>
+    </template>
+    <div class="border-t border-gray-100 mt-2 pt-2">
+      <template x-if="!$store.auth.isLoggedIn">
+        <div>
+          <a href="/login" class="block py-2 text-gray-600">Iniciar Sesion</a>
+          <a href="/register" class="block py-2 text-primary font-semibold">Registrarse</a>
+        </div>
+      </template>
+      <template x-if="$store.auth.isLoggedIn">
+        <button @click="$store.auth.clear(); window.location.href='/'"
+                class="block py-2 text-red-500">Salir</button>
+      </template>
+    </div>
+  </div>
+</nav>

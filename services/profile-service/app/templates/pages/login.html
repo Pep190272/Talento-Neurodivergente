@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}Iniciar Sesion — DiversIA{% endblock %}
+
+{% block content %}
+<section class="min-h-[80vh] flex items-center justify-center py-12 px-4">
+  <div class="w-full max-w-md" x-data="loginForm()">
+    <div class="text-center mb-8">
+      <h1 class="font-display text-2xl font-bold text-dark">Iniciar Sesion</h1>
+      <p class="text-gray-500 mt-2">Accede a tu cuenta DiversIA</p>
+    </div>
+
+    <form @submit.prevent="submit" class="glass rounded-xl p-8 space-y-5">
+      <!-- Error -->
+      <div x-show="error" x-cloak class="p-3 bg-red-50 border border-red-200 text-red-700 text-sm rounded-lg" x-text="error"></div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <input type="email" x-model="email" required
+               class="form-input w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none"
+               placeholder="tu@email.com">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Contrasena</label>
+        <input type="password" x-model="password" required
+               class="form-input w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none"
+               placeholder="Min. 8 caracteres">
+      </div>
+
+      <button type="submit" :disabled="loading"
+              class="w-full py-2.5 bg-primary text-white font-semibold rounded-lg hover:bg-primary-deep transition disabled:opacity-50 flex items-center justify-center gap-2">
+        <span x-show="loading" class="spinner"></span>
+        <span x-text="loading ? 'Entrando...' : 'Entrar'"></span>
+      </button>
+
+      <p class="text-center text-sm text-gray-500">
+        No tienes cuenta? <a href="/register" class="text-primary font-medium hover:underline">Registrate</a>
+      </p>
+    </form>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function loginForm() {
+  return {
+    email: '', password: '', error: '', loading: false,
+    async submit() {
+      this.error = '';
+      this.loading = true;
+      try {
+        const res = await fetch('/api/v1/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: this.email, password: this.password }),
+        });
+        const data = await res.json();
+        if (!res.ok) { this.error = data.detail || data.message || 'Credenciales invalidas'; return; }
+        Alpine.store('auth').setAuth(data.user, data.access_token);
+        window.location.href = '/dashboard';
+      } catch (e) {
+        this.error = 'Error de conexion. Intenta de nuevo.';
+      } finally {
+        this.loading = false;
+      }
+    }
+  }
+}
+</script>
+{% endblock %}

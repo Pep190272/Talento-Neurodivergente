@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% block title %}Para Candidatos — DiversIA Eternals{% endblock %}
+{% block description %}Descubre tus fortalezas cognitivas y conecta con empresas que valoran la neurodiversidad{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-blue-50 py-20 lg:py-28">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+      <div class="animate-fade-in">
+        <span class="inline-block px-3 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full mb-4">100% Gratuito para Candidatos</span>
+        <h1 class="font-display text-4xl lg:text-5xl font-bold text-dark leading-tight mb-6">
+          Descubre tus <span class="text-primary">fortalezas cognitivas</span> y encuentra tu lugar
+        </h1>
+        <p class="text-lg text-gray-600 mb-8 max-w-lg">
+          Completa nuestra evaluacion neurocognitiva de 24 dimensiones, obtén tu perfil unico y conecta con empresas que valoran lo que te hace diferente.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="/register?role=candidate" class="px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-deep transition hover-lift">
+            Registrarme Gratis
+          </a>
+          <a href="#como-funciona" class="px-6 py-3 border border-gray-300 text-gray-700 font-semibold rounded-lg hover:border-primary hover:text-primary transition">
+            Como Funciona
+          </a>
+        </div>
+      </div>
+      <div class="hidden lg:block">
+        <div class="relative">
+          <div class="w-80 h-80 mx-auto rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 p-8 flex flex-col items-center justify-center glass">
+            <i data-lucide="brain" class="w-16 h-16 text-primary mb-4"></i>
+            <div class="text-4xl font-display font-bold text-primary mb-1">24D</div>
+            <div class="text-sm text-gray-500 mb-4">Perfil Neurocognitivo</div>
+            <div class="w-full space-y-2">
+              <div class="flex items-center gap-2">
+                <div class="h-2 rounded-full bg-primary/60 flex-1" style="width:85%"></div>
+                <span class="text-xs text-gray-400">Creatividad</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="h-2 rounded-full bg-primary/40 flex-1" style="width:70%"></div>
+                <span class="text-xs text-gray-400">Atencion</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="h-2 rounded-full bg-primary/80 flex-1" style="width:92%"></div>
+                <span class="text-xs text-gray-400">Memoria</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Tu Viaje -->
+<section id="como-funciona" class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <h2 class="font-display text-3xl font-bold text-dark">Tu Viaje en DiversIA</h2>
+      <p class="text-gray-500 mt-2">De registro a empleo en 4 pasos</p>
+    </div>
+    <div class="grid md:grid-cols-4 gap-6">
+      <div class="text-center p-6">
+        <div class="w-14 h-14 mx-auto rounded-full bg-primary text-white flex items-center justify-center mb-4">
+          <span class="font-display font-bold">1</span>
+        </div>
+        <h3 class="font-semibold mb-2">Registrate</h3>
+        <p class="text-sm text-gray-500">Crea tu cuenta gratuita en 30 segundos. Solo nombre, email y password.</p>
+      </div>
+      <div class="text-center p-6">
+        <div class="w-14 h-14 mx-auto rounded-full bg-primary text-white flex items-center justify-center mb-4">
+          <span class="font-display font-bold">2</span>
+        </div>
+        <h3 class="font-semibold mb-2">Quiz 24D</h3>
+        <p class="text-sm text-gray-500">Completa el quiz neurocognitivo. 24 preguntas, 5 minutos, tu perfil unico.</p>
+      </div>
+      <div class="text-center p-6">
+        <div class="w-14 h-14 mx-auto rounded-full bg-primary text-white flex items-center justify-center mb-4">
+          <span class="font-display font-bold">3</span>
+        </div>
+        <h3 class="font-semibold mb-2">Brain Suite</h3>
+        <p class="text-sm text-gray-500">Entrena con 10 juegos cognitivos. Mejora tus dimensiones y diviertete.</p>
+      </div>
+      <div class="text-center p-6">
+        <div class="w-14 h-14 mx-auto rounded-full bg-primary text-white flex items-center justify-center mb-4">
+          <span class="font-display font-bold">4</span>
+        </div>
+        <h3 class="font-semibold mb-2">Matching</h3>
+        <p class="text-sm text-gray-500">Recibe ofertas de empresas que valoran tu perfil. Matching trilateral con IA.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Que Obtienes -->
+<section class="py-20 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-12">
+      <h2 class="font-display text-3xl font-bold text-dark">Que Obtienes</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="glass rounded-xl p-8 hover-lift">
+        <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
+          <i data-lucide="scan-eye" class="w-6 h-6 text-primary"></i>
+        </div>
+        <h3 class="font-semibold text-lg mb-2">Tu Perfil Cognitivo</h3>
+        <p class="text-sm text-gray-500">Mapa visual de tus 24 dimensiones cognitivas. Entiende donde brillas y que entornos laborales se adaptan mejor a ti.</p>
+      </div>
+      <div class="glass rounded-xl p-8 hover-lift">
+        <div class="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center mb-4">
+          <i data-lucide="target" class="w-6 h-6 text-green-700"></i>
+        </div>
+        <h3 class="font-semibold text-lg mb-2">Ofertas Compatibles</h3>
+        <p class="text-sm text-gray-500">Solo ves empresas cuya cultura y puestos encajan con tu perfil. Sin ruido, sin perder el tiempo.</p>
+      </div>
+      <div class="glass rounded-xl p-8 hover-lift">
+        <div class="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center mb-4">
+          <i data-lucide="heart-handshake" class="w-6 h-6 text-purple-700"></i>
+        </div>
+        <h3 class="font-semibold text-lg mb-2">Apoyo Profesional</h3>
+        <p class="text-sm text-gray-500">Acceso a terapeutas especializados que te acompanan en el proceso. Tu decides si quieres ese apoyo.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Privacidad -->
+<section class="py-16 bg-white">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <div class="w-16 h-16 mx-auto rounded-full bg-green-100 flex items-center justify-center mb-6">
+      <i data-lucide="shield-check" class="w-8 h-8 text-green-600"></i>
+    </div>
+    <h2 class="font-display text-2xl font-bold text-dark mb-4">Tus Datos Son Tuyos</h2>
+    <p class="text-gray-500 mb-8">Nuestra IA es self-hosted (no enviamos tus datos a terceros). Cumplimos GDPR y EU AI Act. Residencia de datos en la Union Europea. Tu decides quien ve tu perfil.</p>
+    <a href="/register?role=candidate" class="inline-block px-8 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-deep transition hover-lift">
+      Empezar Gratis
+    </a>
+  </div>
+</section>
+{% endblock %}

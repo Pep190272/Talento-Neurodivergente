@@ -2,18 +2,25 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 from slowapi import Limiter
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
-from .api.v1.profiles import router as profiles_router
+from .api.v1.auth_proxy import router as auth_proxy_router
+from .api.v1.pages import router as pages_router
+from .api.v1.profiles_local import router as profiles_local_router
 from .config import ProfileServiceSettings
 
 _settings = ProfileServiceSettings()
 limiter = Limiter(key_func=get_remote_address, default_limits=["60/minute"])
+
+BASE_DIR = Path(__file__).resolve().parent
 
 
 def create_app() -> FastAPI:
@@ -43,7 +50,17 @@ def create_app() -> FastAPI:
         allow_headers=["Authorization", "Content-Type"],
     )
 
-    application.include_router(profiles_router)
+    # Static files (CSS, JS, images)
+    static_dir = BASE_DIR / "static"
+    if static_dir.exists():
+        application.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
+
+    # Local dev routes (SQLite — no PostgreSQL needed)
+    application.include_router(auth_proxy_router)
+    application.include_router(profiles_local_router)
+
+    # HTML page routes (always available, no DB needed)
+    application.include_router(pages_router)
 
     @application.get("/health")
     async def health() -> dict:

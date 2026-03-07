@@ -1,0 +1,155 @@
+{% extends "base.html" %}
+{% block title %}Quiz Neurocognitivo — DiversIA{% endblock %}
+
+{% block content %}
+<section class="py-8 px-4">
+  <div class="max-w-3xl mx-auto" x-data="quizApp()">
+
+    <!-- Intro -->
+    <div x-show="step === 'intro'" class="text-center">
+      <div class="w-20 h-20 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-6">
+        <i data-lucide="brain" class="w-10 h-10 text-primary"></i>
+      </div>
+      <h1 class="font-display text-2xl font-bold text-dark mb-3">Evaluacion Neurocognitiva</h1>
+      <p class="text-gray-500 max-w-lg mx-auto mb-6">
+        Este quiz evalua tus fortalezas cognitivas en 24 dimensiones. No hay respuestas correctas o incorrectas.
+        Responde honestamente segun como te percibes.
+      </p>
+      <div class="glass rounded-xl p-6 max-w-md mx-auto mb-6 text-left text-sm">
+        <h3 class="font-semibold mb-3">Antes de empezar:</h3>
+        <ul class="space-y-2 text-gray-600">
+          <li class="flex items-start gap-2"><i data-lucide="clock" class="w-4 h-4 text-primary mt-0.5"></i> Duracion aproximada: 5-10 minutos</li>
+          <li class="flex items-start gap-2"><i data-lucide="shield" class="w-4 h-4 text-green-500 mt-0.5"></i> Tus datos se procesan en servidores EU (GDPR)</li>
+          <li class="flex items-start gap-2"><i data-lucide="lock" class="w-4 h-4 text-primary mt-0.5"></i> Sin IA externa — procesamiento self-hosted</li>
+        </ul>
+      </div>
+      <button @click="step = 'quiz'" class="px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-deep transition">
+        Empezar Quiz
+      </button>
+    </div>
+
+    <!-- Quiz -->
+    <div x-show="step === 'quiz'" x-cloak>
+      <div class="mb-6">
+        <div class="flex justify-between text-sm text-gray-500 mb-2">
+          <span>Pregunta <span x-text="currentQ + 1"></span> de <span x-text="questions.length"></span></span>
+          <span x-text="Math.round((currentQ / questions.length) * 100) + '%'"></span>
+        </div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div class="bg-primary h-2 rounded-full transition-all" :style="'width:' + ((currentQ / questions.length) * 100) + '%'"></div>
+        </div>
+      </div>
+
+      <div class="glass rounded-xl p-8">
+        <h2 class="font-semibold text-lg mb-2" x-text="questions[currentQ]?.text"></h2>
+        <p class="text-xs text-gray-400 mb-6">Dimension: <span x-text="questions[currentQ]?.dimension"></span></p>
+
+        <div class="space-y-3">
+          <template x-for="opt in [0.0, 0.25, 0.5, 0.75, 1.0]" :key="opt">
+            <button @click="answer(opt)"
+                    class="w-full text-left px-4 py-3 border border-gray-200 rounded-lg hover:border-primary hover:bg-primary/5 transition text-sm">
+              <span x-text="labels[opt]"></span>
+            </button>
+          </template>
+        </div>
+      </div>
+
+      <div class="flex justify-between mt-4">
+        <button @click="currentQ > 0 && currentQ--" :disabled="currentQ === 0"
+                class="px-4 py-2 text-sm text-gray-500 hover:text-primary disabled:opacity-30">&larr; Anterior</button>
+        <span class="text-xs text-gray-400 self-center" x-text="answers.length + ' respondidas'"></span>
+      </div>
+    </div>
+
+    <!-- Result -->
+    <div x-show="step === 'result'" x-cloak class="text-center">
+      <div class="w-20 h-20 mx-auto rounded-full bg-green-100 flex items-center justify-center mb-6">
+        <i data-lucide="check-circle" class="w-10 h-10 text-green-600"></i>
+      </div>
+      <h2 class="font-display text-2xl font-bold text-dark mb-3">Evaluacion Completada</h2>
+      <p class="text-gray-500 mb-6">Tu vector neurocognitivo de 24 dimensiones ha sido calculado.</p>
+      <a href="/dashboard" class="px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-deep transition">
+        Ver Dashboard
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function quizApp() {
+  const dimensions = [
+    'attention_sustained', 'attention_selective', 'attention_divided',
+    'memory_working', 'memory_short_term', 'memory_long_term',
+    'processing_speed', 'processing_accuracy', 'processing_visual',
+    'executive_planning', 'executive_flexibility', 'executive_inhibition',
+    'social_communication', 'social_empathy', 'social_collaboration',
+    'creativity_divergent', 'creativity_pattern', 'creativity_innovation',
+    'sensory_visual', 'sensory_auditory', 'sensory_tactile',
+    'emotional_regulation', 'emotional_awareness', 'emotional_resilience',
+  ];
+
+  const questionTexts = [
+    'Puedo mantener la concentracion en una tarea durante periodos largos',
+    'Puedo filtrar distracciones y focalizarme en lo importante',
+    'Puedo hacer varias cosas a la vez sin perder calidad',
+    'Puedo retener informacion mientras la proceso mentalmente',
+    'Recuerdo bien lo que acabo de leer o escuchar',
+    'Recuerdo eventos y conocimientos de hace tiempo',
+    'Proceso informacion y tomo decisiones rapidamente',
+    'Mis resultados son precisos y con pocos errores',
+    'Proceso bien la informacion visual (graficos, mapas, diagramas)',
+    'Planifico mis tareas y sigo un plan hasta completarlo',
+    'Me adapto bien cuando cambian los planes',
+    'Puedo controlar impulsos y esperar antes de actuar',
+    'Me comunico de forma clara y entiendo a los demas',
+    'Percibo las emociones de los demas con facilidad',
+    'Trabajo bien en equipo y colaboro activamente',
+    'Genero ideas originales y soluciones creativas',
+    'Detecto patrones y conexiones que otros no ven',
+    'Propongo mejoras e innovaciones en mi entorno',
+    'Soy sensible a estimulos visuales (luz, colores, movimiento)',
+    'Soy sensible a estimulos auditivos (ruidos, musica, voces)',
+    'Soy sensible a texturas, temperaturas y estimulos tactiles',
+    'Gestiono bien mis emociones en situaciones de estres',
+    'Identifico y nombro mis emociones con claridad',
+    'Me recupero bien de situaciones dificiles',
+  ];
+
+  return {
+    step: 'intro',
+    currentQ: 0,
+    answers: [],
+    labels: { 0.0: 'Nada de acuerdo', 0.25: 'Poco de acuerdo', 0.5: 'Neutral', 0.75: 'Bastante de acuerdo', 1.0: 'Totalmente de acuerdo' },
+    questions: dimensions.map((dim, i) => ({ dimension: dim, text: questionTexts[i], id: `q_${i}` })),
+
+    answer(value) {
+      this.answers.push({
+        question_id: this.questions[this.currentQ].id,
+        dimension: this.questions[this.currentQ].dimension,
+        value: value,
+      });
+      if (this.currentQ < this.questions.length - 1) {
+        this.currentQ++;
+      } else {
+        this.submitQuiz();
+      }
+    },
+
+    async submitQuiz() {
+      try {
+        await api('/profiles/quiz', {
+          method: 'POST',
+          body: JSON.stringify({ answers: this.answers }),
+        });
+        this.step = 'result';
+        this.$nextTick(() => lucide.createIcons());
+      } catch (e) {
+        Alpine.store('toast').show(e.detail || 'Error al enviar quiz', 'error');
+      }
+    }
+  }
+}
+</script>
+{% endblock %}

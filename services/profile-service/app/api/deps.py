@@ -6,17 +6,17 @@ from fastapi import Depends, HTTPException, Request
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from shared.auth import TokenPayload, decode_access_token
-from shared.config import JWTSettings
 
 from app.application.use_cases.create_profile import CreateProfileUseCase
 from app.application.use_cases.submit_quiz import SubmitQuizUseCase
 from app.application.use_cases.register_therapist import RegisterTherapistUseCase
+from app.config import ProfileServiceSettings
 from app.infrastructure.database import get_session
 from app.infrastructure.persistence.profile_repository import SQLAlchemyProfileRepository
 from app.infrastructure.persistence.assessment_repository import SQLAlchemyAssessmentRepository
 from app.infrastructure.persistence.therapist_repository import SQLAlchemyTherapistRepository
 
-_jwt_settings = JWTSettings()
+_settings = ProfileServiceSettings()
 
 
 async def get_current_user(request: Request) -> TokenPayload:
@@ -29,7 +29,7 @@ async def get_current_user(request: Request) -> TokenPayload:
     if not token:
         raise HTTPException(status_code=401, detail="Not authenticated")
     try:
-        payload = decode_access_token(token, secret=_jwt_settings.JWT_SECRET)
+        payload = decode_access_token(token, secret=_settings.jwt_secret)
     except Exception:
         raise HTTPException(status_code=401, detail="Invalid or expired token")
     if payload.is_expired:

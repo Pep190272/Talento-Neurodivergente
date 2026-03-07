@@ -47,6 +47,7 @@ next-env.d.ts
 tmpclaude-*
 *.tmp
 nul
+local_auth.db
 
 # IDE and editor settings
 .claude/

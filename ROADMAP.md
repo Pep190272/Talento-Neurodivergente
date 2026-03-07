@@ -2,7 +2,7 @@
 
 **Fecha de inicio:** 10 de febrero de 2026
 **Ultima actualizacion:** 6 de marzo de 2026
-**Estado:** Sprints 1-5 completados — Migracion v2.0.0 en progreso (Fases 0-5 completadas)
+**Estado:** Sprints 1-5 completados — Migracion v2.0.0 en progreso (Fases 0-6 ~90% completadas)
 
 ---
 
@@ -99,7 +99,7 @@ Migrar de monolito Next.js a 4 microservicios Python/FastAPI:
 | 3 | profile-service: NeurocognitiveAssessment, quiz normalization | Completado | - |
 | 4 | intelligence-service: TalentReport, LLM client, anonymizer | Completado | - |
 | 5 | Persistencia: SQLAlchemy ORM, Alembic, OWASP, seed data | Completado | 36 |
-| **6** | **Frontend Jinja2 + Alpine.js + Tailwind CSS** | **Pendiente** | - |
+| **6** | **Frontend Jinja2 + Alpine.js + Tailwind CSS** | **En progreso** | - |
 | **7** | **Deploy VPS + tests E2E cross-service** | **Pendiente** | - |
 
 ### Stack v2.0.0
@@ -617,3 +617,73 @@ Scripts npm: `test:e2e`, `test:e2e:public`, `test:e2e:auth`, `test:e2e:report`
 **Metricas:** 126 tests nuevos (pytest) + 272 legacy (Vitest) = 398 total, 0 failing
 
 **Proxima sesion:** Fase 6 — Frontend Jinja2 + Alpine.js + Tailwind CSS
+
+### Sesion 8-9 — 6-7 Mar 2026
+
+**Trabajos realizados:**
+- Fase 6 Frontend: profile-service standalone mode (SQLite, sin PostgreSQL)
+- Self-contained auth: register/login/me/logout en SQLite (auth_proxy.py)
+- Self-contained profiles: CRUD + quiz en SQLite (profiles_local.py)
+- JWT unificado: DEV_JWT_SECRET centralizado en config.py (fix login loop)
+- 12 paginas HTML con Jinja2 + Alpine.js + Tailwind CSS:
+  - Landing (/), /para-candidatos, /para-empresas, /para-terapeutas
+  - /about (con testimonios), /faq (accordion Alpine.js)
+  - /login, /register, /dashboard, /forms, /quiz, /games
+- Navbar contextual: publica (landing links + Login) vs logueada (Dashboard + role actions)
+- Forms auto-detect role desde Alpine store (sin tabs redundantes)
+- Quiz 24D: 24 preguntas → neuro_vector calculado y almacenado
+- Dashboard candidato con radar chart (Chart.js):
+  - Grafico radar 24D con colores por categoria
+  - Top 5 fortalezas + 3 areas de crecimiento
+  - Desglose por 8 categorias (Atencion, Memoria, Procesamiento, Ejecutiva, Social, Creatividad, Sensorial, Emocional)
+  - Barra de progreso del perfil
+  - Placeholders para matching y Brain Suite
+- Dashboards empresa y terapeuta (placeholder con KPIs y acciones)
+- api() helper con fallback para servicios no disponibles (non-JSON responses)
+
+**Bugs corregidos:**
+- asyncpg ModuleNotFoundError: lazy-loading de database engine
+- Register "Not Found": auth movido de proxy httpx a SQLite local
+- Login redirect loop: JWT secret mismatch entre auth_proxy y deps.py
+- Forms "JSON no valido": endpoint apuntaba a PostgreSQL (500 text/plain)
+- Quiz "Not Found" al 95%: endpoint /profiles/quiz no existia
+- "Inicio" visible en navbar logueada: movido a bloque publico
+
+**Decisiones:**
+- Modo standalone: 1 comando (`uvicorn`) para desarrollo local, sin Docker/PostgreSQL
+- Candidato es flujo prioritario (#1), empresa (#2), terapeuta (#3)
+- Modelo de negocio: candidatos gratis, empresas pagan por acceso, terapeutas pagan por publicar cursos
+- Chart.js para visualizacion 24D (radar chart)
+
+**Metricas:** 12 paginas funcionales, flujo completo register → profile → quiz → dashboard con radar chart
+
+### Sesion 10 — 7 Mar 2026
+
+**Trabajos realizados:**
+- Brain Suite: 3 juegos cognitivos jugables (Memory Grid, Reaction Time, Color Match/Stroop)
+- Persistencia de game scores en SQLite + integracion con dashboard
+- Dashboard candidato: radar chart 24D, top fortalezas, categorias, progreso
+- Dashboard empresa completo: KPIs, inclusivity score breakdown, ofertas de trabajo
+- Dashboard terapeuta: perfil profesional, especialidad, areas de soporte, visibilidad
+- Evaluacion de inclusividad: 18 preguntas, 6 categorias, scoring por area
+- Ofertas de trabajo CRUD: empresas publican, candidatos ven ofertas activas
+- **Matching inteligente 24D**: algoritmo que calcula compatibilidad candidato-empleo
+  - Mapeo skills → dimensiones neurocognitivas con pesos
+  - Boost por adaptaciones ofrecidas (horario flexible, espacio silencioso, etc.)
+  - Razones explicables ("Tu proceso visual es fortaleza para este puesto")
+  - GET /profiles/jobs/matched devuelve ofertas ordenadas por score
+- Candidate dashboard muestra top 3 empleos compatibles con scores
+- Candidate /jobs page muestra todas las ofertas con % compatibilidad y razones
+- Fix: migracion de BDs antiguas (ALTER TABLE para nuevas columnas)
+
+**Bugs corregidos:**
+- Perfil empresa "Internal Server Error": columnas faltantes en BD antigua
+- Inclusividad "Error al enviar" al 94%: misma causa (inclusivity_score column)
+
+**Metricas:**
+- 14 paginas funcionales (+ /jobs, /inclusivity)
+- 3 flujos completos: candidato, empresa, terapeuta
+- Matching 24D operativo con algoritmo de scoring + razones explicables
+- Fase 6 Frontend: ~90% completada
+
+**Proxima tarea:** Fase 7 — Deploy VPS + tests E2E cross-service
