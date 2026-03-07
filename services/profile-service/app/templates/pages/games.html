@@ -2,103 +2,313 @@
 {% block title %}Brain Suite — DiversIA{% endblock %}
 
 {% block content %}
-<section class="py-8 px-4">
+<section class="py-8 px-4" x-data="brainSuite()">
   <div class="max-w-7xl mx-auto">
+
+    <!-- Header -->
     <div class="text-center mb-10">
       <h1 class="font-display text-2xl font-bold text-dark">Brain Suite</h1>
       <p class="text-gray-500 mt-2">Juegos cognitivos adaptados para mentes neurodivergentes</p>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+    <!-- Active game overlay -->
+    <template x-if="activeGame">
+      <div class="mb-8">
+        <button @click="closeGame()" class="text-sm text-gray-500 hover:text-primary mb-4 flex items-center gap-1">
+          <i data-lucide="arrow-left" class="w-4 h-4"></i> Volver a juegos
+        </button>
 
-      <div class="glass rounded-xl p-6 hover-lift cursor-pointer" x-data="{ playing: false }">
+        <!-- ===== MEMORY GRID ===== -->
+        <div x-show="activeGame === 'memory'" class="glass rounded-xl p-6 max-w-lg mx-auto">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="font-semibold text-lg">Memory Grid</h2>
+            <div class="flex items-center gap-3 text-sm">
+              <span class="text-gray-500">Nivel: <strong x-text="memory.level"></strong></span>
+              <span class="text-gray-500">Puntos: <strong x-text="memory.score"></strong></span>
+            </div>
+          </div>
+
+          <!-- Instructions -->
+          <div x-show="memory.phase === 'ready'" class="text-center py-6">
+            <p class="text-sm text-gray-600 mb-4">Memoriza las casillas iluminadas y reproduce el patron.</p>
+            <button @click="memoryStart()" class="px-5 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-deep transition">
+              Empezar
+            </button>
+          </div>
+
+          <!-- Grid -->
+          <div x-show="memory.phase !== 'ready' && memory.phase !== 'gameover'">
+            <p class="text-xs text-center mb-3" :class="memory.phase === 'show' ? 'text-primary font-medium' : 'text-gray-400'"
+               x-text="memory.phase === 'show' ? 'Memoriza el patron...' : 'Reproduce el patron'"></p>
+            <div class="grid gap-2 mx-auto" :style="'grid-template-columns: repeat(' + memory.gridSize + ', 1fr); max-width:' + (memory.gridSize * 60) + 'px'">
+              <template x-for="i in memory.gridSize * memory.gridSize" :key="i">
+                <button class="aspect-square rounded-lg border-2 transition-all duration-200"
+                        :class="{
+                          'bg-primary border-primary scale-105': memory.phase === 'show' && memory.pattern.includes(i - 1),
+                          'bg-green-500 border-green-500': memory.phase === 'input' && memory.correct.includes(i - 1),
+                          'bg-red-400 border-red-400': memory.phase === 'input' && memory.wrong === (i - 1),
+                          'border-gray-200 hover:border-primary/50 cursor-pointer': memory.phase === 'input' && !memory.correct.includes(i - 1) && memory.wrong !== (i - 1),
+                          'border-gray-200': memory.phase === 'show' && !memory.pattern.includes(i - 1),
+                        }"
+                        :disabled="memory.phase !== 'input'"
+                        @click="memoryTap(i - 1)">
+                </button>
+              </template>
+            </div>
+          </div>
+
+          <!-- Game over -->
+          <div x-show="memory.phase === 'gameover'" class="text-center py-6">
+            <div class="text-4xl mb-2" x-text="memory.score >= 5 ? '🎉' : '💪'"></div>
+            <h3 class="font-semibold text-lg mb-1">Fin del juego</h3>
+            <p class="text-sm text-gray-500 mb-1">Puntuacion: <strong x-text="memory.score"></strong></p>
+            <p class="text-sm text-gray-500 mb-4">Nivel alcanzado: <strong x-text="memory.level"></strong></p>
+            <button @click="memoryReset()" class="px-5 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-deep transition">
+              Jugar de nuevo
+            </button>
+          </div>
+        </div>
+
+        <!-- ===== REACTION TIME ===== -->
+        <div x-show="activeGame === 'reaction'" class="glass rounded-xl p-6 max-w-lg mx-auto">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="font-semibold text-lg">Reaction Time</h2>
+            <span class="text-sm text-gray-500">Ronda: <strong x-text="reaction.round"></strong>/5</span>
+          </div>
+
+          <!-- Waiting / Ready / Click zone -->
+          <div class="rounded-xl h-64 flex items-center justify-center cursor-pointer select-none transition-colors duration-200"
+               :class="{
+                 'bg-gray-100': reaction.phase === 'idle',
+                 'bg-red-500': reaction.phase === 'wait',
+                 'bg-green-500': reaction.phase === 'go',
+                 'bg-blue-100': reaction.phase === 'result' || reaction.phase === 'done',
+                 'bg-yellow-100': reaction.phase === 'early',
+               }"
+               @click="reactionClick()">
+            <div class="text-center">
+              <template x-if="reaction.phase === 'idle'">
+                <div>
+                  <p class="text-gray-600 font-medium mb-3">Mide tu velocidad de reaccion</p>
+                  <p class="text-sm text-gray-400">Haz clic cuando la pantalla se ponga <strong class="text-green-600">verde</strong></p>
+                  <p class="text-sm text-primary mt-3 font-semibold">Clic para empezar</p>
+                </div>
+              </template>
+              <template x-if="reaction.phase === 'wait'">
+                <p class="text-white text-xl font-bold">Espera...</p>
+              </template>
+              <template x-if="reaction.phase === 'go'">
+                <p class="text-white text-2xl font-bold">CLIC AHORA!</p>
+              </template>
+              <template x-if="reaction.phase === 'early'">
+                <div>
+                  <p class="text-yellow-800 font-bold text-lg">Demasiado pronto!</p>
+                  <p class="text-yellow-700 text-sm mt-1">Clic para reintentar</p>
+                </div>
+              </template>
+              <template x-if="reaction.phase === 'result'">
+                <div>
+                  <p class="text-3xl font-display font-bold text-primary" x-text="reaction.lastTime + ' ms'"></p>
+                  <p class="text-sm text-gray-500 mt-1">Clic para siguiente ronda</p>
+                </div>
+              </template>
+              <template x-if="reaction.phase === 'done'">
+                <div>
+                  <p class="text-sm text-gray-500 mb-1">Tiempo promedio</p>
+                  <p class="text-4xl font-display font-bold text-primary" x-text="reaction.avg + ' ms'"></p>
+                  <p class="text-sm mt-2" :class="reaction.avg < 300 ? 'text-green-600' : reaction.avg < 400 ? 'text-yellow-600' : 'text-red-500'"
+                     x-text="reaction.avg < 250 ? 'Excelente!' : reaction.avg < 350 ? 'Muy bien' : reaction.avg < 450 ? 'Normal' : 'Sigue practicando'"></p>
+                  <div class="mt-3 space-y-1">
+                    <template x-for="(t, i) in reaction.times" :key="i">
+                      <p class="text-xs text-gray-400">Ronda <span x-text="i+1"></span>: <span x-text="t"></span> ms</p>
+                    </template>
+                  </div>
+                  <p class="text-sm text-primary mt-3 font-semibold cursor-pointer" @click.stop="reactionReset()">Jugar de nuevo</p>
+                </div>
+              </template>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== COLOR MATCH (Stroop Test) ===== -->
+        <div x-show="activeGame === 'stroop'" class="glass rounded-xl p-6 max-w-lg mx-auto">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="font-semibold text-lg">Color Match</h2>
+            <div class="flex items-center gap-3 text-sm">
+              <span class="text-gray-500">Correctas: <strong x-text="stroop.correct"></strong></span>
+              <span class="text-gray-500">Tiempo: <strong x-text="stroop.timeLeft"></strong>s</span>
+            </div>
+          </div>
+
+          <!-- Instructions -->
+          <div x-show="stroop.phase === 'idle'" class="text-center py-8">
+            <p class="text-sm text-gray-600 mb-2">Se mostrara una palabra de color escrita en un color diferente.</p>
+            <p class="text-sm text-gray-600 mb-4">Selecciona el <strong>color de la TINTA</strong>, no lo que dice la palabra.</p>
+            <button @click="stroopStart()" class="px-5 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-deep transition">
+              Empezar (30s)
+            </button>
+          </div>
+
+          <!-- Game -->
+          <div x-show="stroop.phase === 'playing'">
+            <div class="text-center py-6">
+              <p class="text-5xl font-display font-bold mb-6" :style="'color:' + stroop.inkColor"
+                 x-text="stroop.word"></p>
+              <p class="text-xs text-gray-400 mb-4">De que color esta ESCRITA la palabra?</p>
+              <div class="flex justify-center gap-3 flex-wrap">
+                <template x-for="c in stroop.colors" :key="c.name">
+                  <button @click="stroopAnswer(c.name)"
+                          class="w-16 h-16 rounded-xl border-2 border-gray-200 hover:scale-110 transition-transform"
+                          :style="'background-color:' + c.hex">
+                  </button>
+                </template>
+              </div>
+            </div>
+            <!-- Timer bar -->
+            <div class="w-full bg-gray-200 rounded-full h-1.5 mt-4">
+              <div class="bg-primary h-1.5 rounded-full transition-all duration-1000"
+                   :style="'width:' + (stroop.timeLeft / 30 * 100) + '%'"></div>
+            </div>
+          </div>
+
+          <!-- Results -->
+          <div x-show="stroop.phase === 'done'" class="text-center py-8">
+            <div class="text-4xl mb-2" x-text="stroop.correct >= 15 ? '🎉' : stroop.correct >= 10 ? '👏' : '💪'"></div>
+            <p class="text-sm text-gray-500 mb-1">Respuestas correctas</p>
+            <p class="text-4xl font-display font-bold text-primary" x-text="stroop.correct"></p>
+            <p class="text-sm text-gray-500 mt-1">de <span x-text="stroop.total"></span> intentos
+              (<span x-text="stroop.total > 0 ? Math.round(stroop.correct / stroop.total * 100) : 0"></span>% precision)</p>
+            <button @click="stroopReset()" class="mt-4 px-5 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-deep transition">
+              Jugar de nuevo
+            </button>
+          </div>
+        </div>
+      </div>
+    </template>
+
+    <!-- Game cards grid -->
+    <div x-show="!activeGame" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+
+      <!-- Playable games -->
+      <div @click="openGame('memory')" class="glass rounded-xl p-6 hover-lift cursor-pointer group">
         <div class="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center mb-3">
           <i data-lucide="grid-3x3" class="w-6 h-6 text-blue-600"></i>
         </div>
         <h3 class="font-semibold mb-1">Memory Grid</h3>
         <p class="text-xs text-gray-500 mb-3">Entrena tu memoria de trabajo con patrones visuales</p>
-        <span class="text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded">Memoria</span>
-      </div>
-
-      <div class="glass rounded-xl p-6 hover-lift cursor-pointer">
-        <div class="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center mb-3">
-          <i data-lucide="shapes" class="w-6 h-6 text-purple-600"></i>
+        <div class="flex items-center justify-between">
+          <span class="text-xs px-2 py-1 bg-blue-50 text-blue-600 rounded">Memoria</span>
+          <span class="text-xs text-primary font-medium opacity-0 group-hover:opacity-100 transition">Jugar &rarr;</span>
         </div>
-        <h3 class="font-semibold mb-1">Pattern Matrix</h3>
-        <p class="text-xs text-gray-500 mb-3">Detecta patrones en matrices de formas y colores</p>
-        <span class="text-xs px-2 py-1 bg-purple-50 text-purple-600 rounded">Patrones</span>
       </div>
 
-      <div class="glass rounded-xl p-6 hover-lift cursor-pointer">
-        <div class="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center mb-3">
-          <i data-lucide="calculator" class="w-6 h-6 text-green-600"></i>
-        </div>
-        <h3 class="font-semibold mb-1">Operacion 2.0</h3>
-        <p class="text-xs text-gray-500 mb-3">Resuelve operaciones matematicas a contrarreloj</p>
-        <span class="text-xs px-2 py-1 bg-green-50 text-green-600 rounded">Velocidad</span>
-      </div>
-
-      <div class="glass rounded-xl p-6 hover-lift cursor-pointer">
+      <div @click="openGame('reaction')" class="glass rounded-xl p-6 hover-lift cursor-pointer group">
         <div class="w-12 h-12 rounded-lg bg-yellow-100 flex items-center justify-center mb-3">
           <i data-lucide="zap" class="w-6 h-6 text-yellow-600"></i>
         </div>
         <h3 class="font-semibold mb-1">Reaction Time</h3>
         <p class="text-xs text-gray-500 mb-3">Mide tu velocidad de reaccion ante estimulos</p>
-        <span class="text-xs px-2 py-1 bg-yellow-50 text-yellow-600 rounded">Reaccion</span>
+        <div class="flex items-center justify-between">
+          <span class="text-xs px-2 py-1 bg-yellow-50 text-yellow-600 rounded">Reaccion</span>
+          <span class="text-xs text-primary font-medium opacity-0 group-hover:opacity-100 transition">Jugar &rarr;</span>
+        </div>
       </div>
 
-      <div class="glass rounded-xl p-6 hover-lift cursor-pointer">
+      <div @click="openGame('stroop')" class="glass rounded-xl p-6 hover-lift cursor-pointer group">
+        <div class="w-12 h-12 rounded-lg bg-pink-100 flex items-center justify-center mb-3">
+          <i data-lucide="palette" class="w-6 h-6 text-pink-600"></i>
+        </div>
+        <h3 class="font-semibold mb-1">Color Match</h3>
+        <p class="text-xs text-gray-500 mb-3">Test de Stroop: atencion selectiva y control inhibitorio</p>
+        <div class="flex items-center justify-between">
+          <span class="text-xs px-2 py-1 bg-pink-50 text-pink-600 rounded">Atencion</span>
+          <span class="text-xs text-primary font-medium opacity-0 group-hover:opacity-100 transition">Jugar &rarr;</span>
+        </div>
+      </div>
+
+      <!-- Coming soon games -->
+      <div class="glass rounded-xl p-6 opacity-60">
+        <div class="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center mb-3">
+          <i data-lucide="shapes" class="w-6 h-6 text-purple-600"></i>
+        </div>
+        <h3 class="font-semibold mb-1">Pattern Matrix</h3>
+        <p class="text-xs text-gray-500 mb-3">Detecta patrones en matrices de formas y colores</p>
+        <div class="flex items-center justify-between">
+          <span class="text-xs px-2 py-1 bg-purple-50 text-purple-600 rounded">Patrones</span>
+          <span class="text-xs text-gray-400">Proximamente</span>
+        </div>
+      </div>
+
+      <div class="glass rounded-xl p-6 opacity-60">
+        <div class="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center mb-3">
+          <i data-lucide="calculator" class="w-6 h-6 text-green-600"></i>
+        </div>
+        <h3 class="font-semibold mb-1">Operacion 2.0</h3>
+        <p class="text-xs text-gray-500 mb-3">Resuelve operaciones matematicas a contrarreloj</p>
+        <div class="flex items-center justify-between">
+          <span class="text-xs px-2 py-1 bg-green-50 text-green-600 rounded">Velocidad</span>
+          <span class="text-xs text-gray-400">Proximamente</span>
+        </div>
+      </div>
+
+      <div class="glass rounded-xl p-6 opacity-60">
         <div class="w-12 h-12 rounded-lg bg-red-100 flex items-center justify-center mb-3">
           <i data-lucide="disc" class="w-6 h-6 text-red-600"></i>
         </div>
         <h3 class="font-semibold mb-1">Simon Says</h3>
         <p class="text-xs text-gray-500 mb-3">Repite secuencias de colores y sonidos</p>
-        <span class="text-xs px-2 py-1 bg-red-50 text-red-600 rounded">Secuencias</span>
+        <div class="flex items-center justify-between">
+          <span class="text-xs px-2 py-1 bg-red-50 text-red-600 rounded">Secuencias</span>
+          <span class="text-xs text-gray-400">Proximamente</span>
+        </div>
       </div>
 
-      <div class="glass rounded-xl p-6 hover-lift cursor-pointer">
+      <div class="glass rounded-xl p-6 opacity-60">
         <div class="w-12 h-12 rounded-lg bg-indigo-100 flex items-center justify-center mb-3">
           <i data-lucide="hash" class="w-6 h-6 text-indigo-600"></i>
         </div>
         <h3 class="font-semibold mb-1">Number Sequence</h3>
         <p class="text-xs text-gray-500 mb-3">Completa la secuencia numerica correcta</p>
-        <span class="text-xs px-2 py-1 bg-indigo-50 text-indigo-600 rounded">Logica</span>
+        <div class="flex items-center justify-between">
+          <span class="text-xs px-2 py-1 bg-indigo-50 text-indigo-600 rounded">Logica</span>
+          <span class="text-xs text-gray-400">Proximamente</span>
+        </div>
       </div>
 
-      <div class="glass rounded-xl p-6 hover-lift cursor-pointer">
+      <div class="glass rounded-xl p-6 opacity-60">
         <div class="w-12 h-12 rounded-lg bg-teal-100 flex items-center justify-center mb-3">
           <i data-lucide="type" class="w-6 h-6 text-teal-600"></i>
         </div>
         <h3 class="font-semibold mb-1">Word Builder</h3>
         <p class="text-xs text-gray-500 mb-3">Construye palabras a partir de letras aleatorias</p>
-        <span class="text-xs px-2 py-1 bg-teal-50 text-teal-600 rounded">Lenguaje</span>
-      </div>
-
-      <div class="glass rounded-xl p-6 hover-lift cursor-pointer">
-        <div class="w-12 h-12 rounded-lg bg-pink-100 flex items-center justify-center mb-3">
-          <i data-lucide="palette" class="w-6 h-6 text-pink-600"></i>
+        <div class="flex items-center justify-between">
+          <span class="text-xs px-2 py-1 bg-teal-50 text-teal-600 rounded">Lenguaje</span>
+          <span class="text-xs text-gray-400">Proximamente</span>
         </div>
-        <h3 class="font-semibold mb-1">Color Match</h3>
-        <p class="text-xs text-gray-500 mb-3">Empareja colores y entrena atencion selectiva</p>
-        <span class="text-xs px-2 py-1 bg-pink-50 text-pink-600 rounded">Atencion</span>
       </div>
 
-      <div class="glass rounded-xl p-6 hover-lift cursor-pointer">
+      <div class="glass rounded-xl p-6 opacity-60">
         <div class="w-12 h-12 rounded-lg bg-orange-100 flex items-center justify-center mb-3">
           <i data-lucide="triangle" class="w-6 h-6 text-orange-600"></i>
         </div>
         <h3 class="font-semibold mb-1">Shape Sorter</h3>
         <p class="text-xs text-gray-500 mb-3">Clasifica formas segun reglas cambiantes</p>
-        <span class="text-xs px-2 py-1 bg-orange-50 text-orange-600 rounded">Flexibilidad</span>
+        <div class="flex items-center justify-between">
+          <span class="text-xs px-2 py-1 bg-orange-50 text-orange-600 rounded">Flexibilidad</span>
+          <span class="text-xs text-gray-400">Proximamente</span>
+        </div>
       </div>
 
-      <div class="glass rounded-xl p-6 hover-lift cursor-pointer">
+      <div class="glass rounded-xl p-6 opacity-60">
         <div class="w-12 h-12 rounded-lg bg-cyan-100 flex items-center justify-center mb-3">
           <i data-lucide="route" class="w-6 h-6 text-cyan-600"></i>
         </div>
         <h3 class="font-semibold mb-1">Path Finder</h3>
         <p class="text-xs text-gray-500 mb-3">Encuentra el camino optimo en un laberinto</p>
-        <span class="text-xs px-2 py-1 bg-cyan-50 text-cyan-600 rounded">Planificacion</span>
+        <div class="flex items-center justify-between">
+          <span class="text-xs px-2 py-1 bg-cyan-50 text-cyan-600 rounded">Planificacion</span>
+          <span class="text-xs text-gray-400">Proximamente</span>
+        </div>
       </div>
     </div>
 
@@ -107,4 +317,209 @@
     </div>
   </div>
 </section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function brainSuite() {
+  return {
+    activeGame: null,
+
+    // ==================== MEMORY GRID ====================
+    memory: {
+      phase: 'ready', // ready, show, input, gameover
+      gridSize: 3,
+      level: 1,
+      score: 0,
+      pattern: [],
+      correct: [],
+      wrong: null,
+      inputIdx: 0,
+    },
+
+    // ==================== REACTION TIME ====================
+    reaction: {
+      phase: 'idle', // idle, wait, go, early, result, done
+      round: 0,
+      times: [],
+      lastTime: 0,
+      avg: 0,
+      goTimestamp: 0,
+      _timeout: null,
+    },
+
+    // ==================== STROOP TEST ====================
+    stroop: {
+      phase: 'idle', // idle, playing, done
+      colors: [
+        { name: 'rojo', hex: '#EF4444' },
+        { name: 'azul', hex: '#3B82F6' },
+        { name: 'verde', hex: '#10B981' },
+        { name: 'amarillo', hex: '#F59E0B' },
+        { name: 'morado', hex: '#8B5CF6' },
+      ],
+      word: '',
+      inkColor: '',
+      correctAnswer: '',
+      correct: 0,
+      total: 0,
+      timeLeft: 30,
+      _interval: null,
+    },
+
+    openGame(name) {
+      this.activeGame = name;
+      this.$nextTick(() => lucide.createIcons());
+    },
+
+    closeGame() {
+      // Clear any running timers
+      if (this.reaction._timeout) clearTimeout(this.reaction._timeout);
+      if (this.stroop._interval) clearInterval(this.stroop._interval);
+      this.activeGame = null;
+      this.memoryReset();
+      this.reactionReset();
+      this.stroopReset();
+      this.$nextTick(() => lucide.createIcons());
+    },
+
+    // ==================== MEMORY GRID LOGIC ====================
+
+    memoryStart() {
+      const count = this.memory.level + 2; // 3 cells at level 1, 4 at 2...
+      const total = this.memory.gridSize * this.memory.gridSize;
+      const cells = new Set();
+      while (cells.size < Math.min(count, total)) {
+        cells.add(Math.floor(Math.random() * total));
+      }
+      this.memory.pattern = [...cells];
+      this.memory.correct = [];
+      this.memory.wrong = null;
+      this.memory.inputIdx = 0;
+      this.memory.phase = 'show';
+
+      // Show for 1.5s + 0.3s per level
+      setTimeout(() => {
+        this.memory.phase = 'input';
+      }, 1500 + this.memory.level * 300);
+    },
+
+    memoryTap(cell) {
+      if (this.memory.phase !== 'input') return;
+      if (this.memory.correct.includes(cell)) return;
+
+      if (this.memory.pattern.includes(cell)) {
+        this.memory.correct.push(cell);
+        if (this.memory.correct.length === this.memory.pattern.length) {
+          // Level complete
+          this.memory.score += this.memory.level;
+          this.memory.level++;
+          if (this.memory.level > 3 && this.memory.gridSize < 5) {
+            this.memory.gridSize++;
+          }
+          setTimeout(() => this.memoryStart(), 600);
+        }
+      } else {
+        this.memory.wrong = cell;
+        setTimeout(() => {
+          this.memory.phase = 'gameover';
+        }, 800);
+      }
+    },
+
+    memoryReset() {
+      this.memory = {
+        phase: 'ready', gridSize: 3, level: 1, score: 0,
+        pattern: [], correct: [], wrong: null, inputIdx: 0,
+      };
+    },
+
+    // ==================== REACTION TIME LOGIC ====================
+
+    reactionClick() {
+      const r = this.reaction;
+      if (r.phase === 'idle' || r.phase === 'result' || r.phase === 'early') {
+        // Start a new round
+        r.round = r.phase === 'idle' ? 1 : (r.phase === 'early' ? r.round : r.round + 1);
+        r.phase = 'wait';
+        const delay = 1500 + Math.random() * 3000; // 1.5-4.5s random
+        r._timeout = setTimeout(() => {
+          r.phase = 'go';
+          r.goTimestamp = performance.now();
+        }, delay);
+      } else if (r.phase === 'wait') {
+        // Clicked too early
+        clearTimeout(r._timeout);
+        r.phase = 'early';
+      } else if (r.phase === 'go') {
+        // Record time
+        r.lastTime = Math.round(performance.now() - r.goTimestamp);
+        r.times.push(r.lastTime);
+        if (r.round >= 5) {
+          r.avg = Math.round(r.times.reduce((a, b) => a + b) / r.times.length);
+          r.phase = 'done';
+        } else {
+          r.phase = 'result';
+        }
+      }
+    },
+
+    reactionReset() {
+      if (this.reaction._timeout) clearTimeout(this.reaction._timeout);
+      this.reaction = {
+        phase: 'idle', round: 0, times: [], lastTime: 0, avg: 0,
+        goTimestamp: 0, _timeout: null,
+      };
+    },
+
+    // ==================== STROOP TEST LOGIC ====================
+
+    stroopStart() {
+      this.stroop.correct = 0;
+      this.stroop.total = 0;
+      this.stroop.timeLeft = 30;
+      this.stroop.phase = 'playing';
+      this.stroopNextWord();
+
+      this.stroop._interval = setInterval(() => {
+        this.stroop.timeLeft--;
+        if (this.stroop.timeLeft <= 0) {
+          clearInterval(this.stroop._interval);
+          this.stroop.phase = 'done';
+        }
+      }, 1000);
+    },
+
+    stroopNextWord() {
+      const colors = this.stroop.colors;
+      // Pick word and ink color (must be different for Stroop effect)
+      const wordIdx = Math.floor(Math.random() * colors.length);
+      let inkIdx = wordIdx;
+      while (inkIdx === wordIdx) {
+        inkIdx = Math.floor(Math.random() * colors.length);
+      }
+      this.stroop.word = colors[wordIdx].name.toUpperCase();
+      this.stroop.inkColor = colors[inkIdx].hex;
+      this.stroop.correctAnswer = colors[inkIdx].name;
+    },
+
+    stroopAnswer(colorName) {
+      if (this.stroop.phase !== 'playing') return;
+      this.stroop.total++;
+      if (colorName === this.stroop.correctAnswer) {
+        this.stroop.correct++;
+      }
+      this.stroopNextWord();
+    },
+
+    stroopReset() {
+      if (this.stroop._interval) clearInterval(this.stroop._interval);
+      this.stroop.phase = 'idle';
+      this.stroop.correct = 0;
+      this.stroop.total = 0;
+      this.stroop.timeLeft = 30;
+    },
+  }
+}
+</script>
 {% endblock %}
