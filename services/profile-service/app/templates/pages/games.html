@@ -367,6 +367,17 @@ function brainSuite() {
       _interval: null,
     },
 
+    async saveScore(game, score, details = {}) {
+      try {
+        await api('/profiles/games/score', {
+          method: 'POST',
+          body: JSON.stringify({ game, score, details }),
+        });
+      } catch (e) {
+        console.log('Score save:', e.status || 'unavailable');
+      }
+    },
+
     openGame(name) {
       this.activeGame = name;
       this.$nextTick(() => lucide.createIcons());
@@ -421,6 +432,7 @@ function brainSuite() {
         }
       } else {
         this.memory.wrong = cell;
+        this.saveScore('memory', this.memory.score, { level: this.memory.level });
         setTimeout(() => {
           this.memory.phase = 'gameover';
         }, 800);
@@ -458,6 +470,7 @@ function brainSuite() {
         if (r.round >= 5) {
           r.avg = Math.round(r.times.reduce((a, b) => a + b) / r.times.length);
           r.phase = 'done';
+          this.saveScore('reaction', Math.max(0, 500 - r.avg), { avg_ms: r.avg, times: r.times });
         } else {
           r.phase = 'result';
         }
@@ -486,6 +499,7 @@ function brainSuite() {
         if (this.stroop.timeLeft <= 0) {
           clearInterval(this.stroop._interval);
           this.stroop.phase = 'done';
+          this.saveScore('stroop', this.stroop.correct, { total: this.stroop.total, accuracy: this.stroop.total > 0 ? Math.round(this.stroop.correct / this.stroop.total * 100) : 0 });
         }
       }, 1000);
     },

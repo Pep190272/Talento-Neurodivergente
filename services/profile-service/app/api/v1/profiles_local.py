@@ -43,6 +43,16 @@ def _get_db() -> sqlite3.Connection:
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS game_scores (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id TEXT NOT NULL,
+            game TEXT NOT NULL,
+            score INTEGER NOT NULL,
+            details TEXT DEFAULT '{}',
+            played_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
     conn.commit()
     return conn
 
@@ -76,6 +86,12 @@ class TherapistRequest(BaseModel):
     bio: str = ""
     license_number: str = ""
     support_areas: list[str] = []
+
+
+class GameScoreRequest(BaseModel):
+    game: str
+    score: int
+    details: dict = {}
 
 
 class QuizRequest(BaseModel):
@@ -179,6 +195,38 @@ async def get_my_profile(request: Request) -> JSONResponse:
         return JSONResponse(status_code=404, content={"detail": "Perfil no encontrado"})
 
     return JSONResponse(content=_row_to_dict(row))
+
+
+@router.post("/games/score")
+async def save_game_score(body: GameScoreRequest, request: Request) -> JSONResponse:
+    user = _get_user_from_request(request)
+    if not user:
+        return JSONResponse(status_code=401, content={"detail": "No autenticado"})
+
+    db = _get_db()
+    db.execute(
+        "INSERT INTO game_scores (user_id, game, score, details) VALUES (?, ?, ?, ?)",
+        (user.sub, body.game, body.score, json.dumps(body.details)),
+    )
+    db.commit()
+    db.close()
+    return JSONResponse(content={"status": "ok", "game": body.game, "score": body.score})
+
+
+@router.get("/games/scores")
+async def get_game_scores(request: Request) -> JSONResponse:
+    user = _get_user_from_request(request)
+    if not user:
+        return JSONResponse(status_code=401, content={"detail": "No autenticado"})
+
+    db = _get_db()
+    rows = db.execute(
+        "SELECT game, MAX(score) as best_score, COUNT(*) as plays FROM game_scores WHERE user_id = ? GROUP BY game",
+        (user.sub,),
+    ).fetchall()
+    db.close()
+    scores = {r["game"]: {"best": r["best_score"], "plays": r["plays"]} for r in rows}
+    return JSONResponse(content=scores)
 
 
 def _row_to_dict(row) -> dict:

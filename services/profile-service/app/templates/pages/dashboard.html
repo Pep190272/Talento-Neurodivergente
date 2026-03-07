@@ -52,7 +52,7 @@
               <span :class="hasQuiz ? 'text-green-600 font-medium' : ''">
                 <i data-lucide="brain" class="w-3 h-3 inline"></i> Quiz 24D
               </span>
-              <span class="text-gray-300">
+              <span :class="hasGames ? 'text-green-600 font-medium' : 'text-gray-300'">
                 <i data-lucide="gamepad-2" class="w-3 h-3 inline"></i> Brain Suite
               </span>
               <span class="text-gray-300">
@@ -247,7 +247,7 @@
               </div>
               <div>
                 <h3 class="font-medium text-sm">Brain Suite</h3>
-                <p class="text-xs text-gray-400">10 juegos cognitivos</p>
+                <p class="text-xs text-gray-400" x-text="hasGames ? totalPlays + ' partidas jugadas' : '3 juegos disponibles'"></p>
               </div>
             </a>
 
@@ -470,6 +470,7 @@ function dashboardApp() {
 
   return {
     profile: null,
+    gameScores: {},
     loading: true,
     dimLabels,
     topDimensions: [],
@@ -482,11 +483,20 @@ function dashboardApp() {
              && Object.keys(this.profile.neuro_vector).length > 0;
     },
 
+    get hasGames() {
+      return Object.keys(this.gameScores).length > 0;
+    },
+
+    get totalPlays() {
+      return Object.values(this.gameScores).reduce((s, g) => s + (g.plays || 0), 0);
+    },
+
     progressPct() {
       let steps = 0;
       if (this.profile) steps++;
       if (this.hasQuiz) steps++;
-      // future: brain suite, matching
+      if (this.hasGames) steps++;
+      // future: matching
       return Math.round((steps / 4) * 100);
     },
 
@@ -508,14 +518,14 @@ function dashboardApp() {
         }
       }
 
-      // Load profile
-      try {
-        this.profile = await api('/profiles/me');
-      } catch (e) {
-        console.log('Profile API:', e.status || 'unavailable');
-      } finally {
-        this.loading = false;
-      }
+      // Load profile and game scores in parallel
+      const [profileResult, scoresResult] = await Promise.allSettled([
+        api('/profiles/me'),
+        api('/profiles/games/scores'),
+      ]);
+      if (profileResult.status === 'fulfilled') this.profile = profileResult.value;
+      if (scoresResult.status === 'fulfilled') this.gameScores = scoresResult.value;
+      this.loading = false;
 
       // Process neuro_vector data
       await this.$nextTick();
