@@ -1,6 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
   // El job lint de la CI corre `eslint .` por separado; desactivar aquí evita
   // que `next build` corra ESLint internamente (conflicto con flat config).
   eslint: {
