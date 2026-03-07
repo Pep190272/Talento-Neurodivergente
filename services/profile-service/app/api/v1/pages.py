@@ -74,3 +74,8 @@ async def games(request: Request) -> HTMLResponse:
 @router.get("/inclusivity", response_class=HTMLResponse)
 async def inclusivity(request: Request) -> HTMLResponse:
     return templates.TemplateResponse("pages/inclusivity.html", {"request": request})
+
+
+@router.get("/jobs", response_class=HTMLResponse)
+async def jobs(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse("pages/jobs.html", {"request": request})

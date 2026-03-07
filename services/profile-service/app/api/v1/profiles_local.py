@@ -45,6 +45,15 @@ def _get_db() -> sqlite3.Connection:
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
+    # Migrate: add columns that may be missing from older DBs
+    for col, default in [
+        ("inclusivity_score", "''"),
+        ("company_size", "''"),
+    ]:
+        try:
+            conn.execute(f"ALTER TABLE profiles ADD COLUMN {col} TEXT DEFAULT {default}")
+        except sqlite3.OperationalError:
+            pass  # column already exists
     conn.execute("""
         CREATE TABLE IF NOT EXISTS game_scores (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -53,6 +62,21 @@ def _get_db() -> sqlite3.Connection:
             score INTEGER NOT NULL,
             details TEXT DEFAULT '{}',
             played_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    """)
+    conn.execute("""
+        CREATE TABLE IF NOT EXISTS job_offers (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            company_user_id TEXT NOT NULL,
+            title TEXT NOT NULL,
+            description TEXT DEFAULT '',
+            location TEXT DEFAULT '',
+            modality TEXT DEFAULT 'remote',
+            required_skills TEXT DEFAULT '[]',
+            adaptations TEXT DEFAULT '[]',
+            salary_range TEXT DEFAULT '',
+            status TEXT DEFAULT 'active',
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     """)
     conn.commit()
@@ -269,6 +293,90 @@ async def get_game_scores(request: Request) -> JSONResponse:
     db.close()
     scores = {r["game"]: {"best": r["best_score"], "plays": r["plays"]} for r in rows}
     return JSONResponse(content=scores)
+
+
+# ==================== JOB OFFERS ====================
+
+class JobOfferRequest(BaseModel):
+    title: str
+    description: str = ""
+    location: str = ""
+    modality: str = "remote"
+    required_skills: list[str] = []
+    adaptations: list[str] = []
+    salary_range: str = ""
+
+
+@router.post("/jobs")
+async def create_job(body: JobOfferRequest, request: Request) -> JSONResponse:
+    user = _get_user_from_request(request)
+    if not user:
+        return JSONResponse(status_code=401, content={"detail": "No autenticado"})
+    if user.role != "company":
+        return JSONResponse(status_code=403, content={"detail": "Solo empresas pueden publicar ofertas"})
+
+    db = _get_db()
+    cursor = db.execute(
+        """INSERT INTO job_offers (company_user_id, title, description, location, modality,
+           required_skills, adaptations, salary_range)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+        (user.sub, body.title, body.description, body.location, body.modality,
+         json.dumps(body.required_skills), json.dumps(body.adaptations), body.salary_range),
+    )
+    job_id = cursor.lastrowid
+    db.commit()
+    row = db.execute("SELECT * FROM job_offers WHERE id = ?", (job_id,)).fetchone()
+    db.close()
+    return JSONResponse(content=_job_to_dict(row))
+
+
+@router.get("/jobs")
+async def get_my_jobs(request: Request) -> JSONResponse:
+    user = _get_user_from_request(request)
+    if not user:
+        return JSONResponse(status_code=401, content={"detail": "No autenticado"})
+
+    db = _get_db()
+    if user.role == "company":
+        rows = db.execute(
+            "SELECT * FROM job_offers WHERE company_user_id = ? ORDER BY created_at DESC", (user.sub,)
+        ).fetchall()
+    else:
+        # Candidates and therapists see all active offers
+        rows = db.execute(
+            "SELECT * FROM job_offers WHERE status = 'active' ORDER BY created_at DESC"
+        ).fetchall()
+    db.close()
+    return JSONResponse(content=[_job_to_dict(r) for r in rows])
+
+
+@router.delete("/jobs/{job_id}")
+async def delete_job(job_id: int, request: Request) -> JSONResponse:
+    user = _get_user_from_request(request)
+    if not user:
+        return JSONResponse(status_code=401, content={"detail": "No autenticado"})
+
+    db = _get_db()
+    row = db.execute("SELECT * FROM job_offers WHERE id = ? AND company_user_id = ?", (job_id, user.sub)).fetchone()
+    if not row:
+        db.close()
+        return JSONResponse(status_code=404, content={"detail": "Oferta no encontrada"})
+
+    db.execute("UPDATE job_offers SET status = 'closed' WHERE id = ?", (job_id,))
+    db.commit()
+    db.close()
+    return JSONResponse(content={"status": "ok", "id": job_id})
+
+
+def _job_to_dict(row) -> dict:
+    d = dict(row)
+    for key in ("required_skills", "adaptations"):
+        if d.get(key) and isinstance(d[key], str):
+            try:
+                d[key] = json.loads(d[key])
+            except (json.JSONDecodeError, TypeError):
+                d[key] = []
+    return d
 
 
 def _row_to_dict(row) -> dict:
