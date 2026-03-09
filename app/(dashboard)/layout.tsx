@@ -41,8 +41,16 @@ export default async function DashboardLayout({
                     {userType === 'individual' && (
                         <>
                             <NavLink href="/dashboard/candidate" icon="👋" label="Inicio" />
-                            <NavLink href="/dashboard/candidate/profile" icon="user" label="Mi Perfil" />
-                            <NavLink href="/dashboard/candidate/matches" icon="star" label="Mis Matches" />
+                            <NavLink href="/quiz" icon="🧠" label="Quiz 24D" />
+                            <NavLink href="/games" icon="🎮" label="Brain Suite" />
+                            <NavLink href="/jobs" icon="briefcase" label="Empleos" />
+                        </>
+                    )}
+
+                    {userType === 'therapist' && (
+                        <>
+                            <NavLink href="/dashboard/therapist" icon="📊" label="Resumen" />
+                            <NavLink href="/forms" icon="📝" label="Mi Perfil" />
                         </>
                     )}
                 </nav>
