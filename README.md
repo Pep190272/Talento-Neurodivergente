@@ -34,16 +34,14 @@ Solo se ejecuta **profile-service** en el puerto **:8002**:
         SQLite (local)
 ```
 
-### Arquitectura objetivo (pendiente deploy)
-
-4 microservicios existen como codigo con tests, pero **NO estan desplegados**:
+### Servicios
 
 | Servicio | Puerto | Estado | Tests |
 |----------|--------|--------|-------|
-| **profile-service** | :8002 | Operativo (dev) | 83 |
-| **auth-service** | :8001 | Codigo listo, NO desplegado | 48 |
-| **matching-service** | :8003 | Codigo listo, NO desplegado | 53 |
-| **intelligence-service** | :8004 | Codigo listo, NO desplegado | 36 |
+| **profile-service** | :8002 | **Operativo** — corre en localhost:8002 | 83 |
+| **auth-service** | :8001 | Codigo listo, pendiente deploy | 48 |
+| **matching-service** | :8003 | Codigo listo, pendiente deploy | 53 |
+| **intelligence-service** | :8004 | Codigo listo, pendiente deploy | 36 |
 | **shared kernel** | — | Libreria compartida | 13 |
 
 Cada servicio sigue **Clean Architecture**:
