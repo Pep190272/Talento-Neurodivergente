@@ -40,23 +40,24 @@ Eres **Atlas** (Global Architect & Project Leader), la mano derecha de Josep y e
 
 ### Topología de Servicios
 
+**Estado actual (desarrollo):** Solo profile-service (:8002) esta operativo con SQLite standalone.
+
 ```
-               API Gateway (nginx :8000)
-              ╱         │          ╲
-   auth-service    profile-service    matching-service    intelligence-service
-     :8001             :8002              :8003                :8004
-       │                 │                  │                    │
-       └─────────────────┴──────┬───────────┴────────────────────┘
-                                │
-                         PostgreSQL :5432        Ollama :11434
+  Desarrollo local:
+    profile-service (:8002) + Ollama (:11434)
+    SQLite (sin PostgreSQL, sin Docker, sin nginx)
+
+  Produccion (objetivo, pendiente deploy):
+    nginx (:80) → auth(:8001) + profile(:8002) + matching(:8003) + intelligence(:8004)
+    PostgreSQL :5432 (4 schemas)
 ```
 
-| Servicio | Responsabilidad | Issues |
-|----------|----------------|--------|
-| **auth-service** | Identidad, JWT, registro, login | #38, #41, #69 |
-| **profile-service** | Perfiles, quiz, games, onboarding, frontend Jinja2 | #42-#47, #48 |
-| **matching-service** | Matching trilateral 24D, scoring, reports | #40, #81, #83, #86 |
-| **intelligence-service** | LLM Ollama, análisis inclusividad, transparencia IA | #60, #84, #85, #88 |
+| Servicio | Puerto | Estado | Tests |
+|----------|--------|--------|-------|
+| **profile-service** | :8002 | Operativo (dev) | 83 |
+| **auth-service** | :8001 | Codigo listo, sin desplegar | 48 |
+| **matching-service** | :8003 | Codigo listo, sin desplegar | 53 |
+| **intelligence-service** | :8004 | Codigo listo, sin desplegar | 36 |
 
 ### Clean Architecture (Dentro de Cada Servicio)
 
