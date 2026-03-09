@@ -6,14 +6,31 @@ import { useLanguage } from '../../hooks/useLanguage'
 import { useSession, signOut } from 'next-auth/react'
 import './Navbar.css'
 
-const navItems = [
+// Public nav items (shown to everyone)
+const publicNavItems = [
   { name: 'Home', href: '/', key: 'navbar.home' },
   { name: 'Features', href: '/features', key: 'navbar.features' },
-  { name: 'Forms', href: '/forms', key: 'navbar.forms' },
-  { name: 'Games', href: '/games', key: 'navbar.games' },
-  { name: 'Quiz', href: '/quiz', key: 'navbar.quiz' },
   { name: 'About', href: '/about', key: 'navbar.about' },
 ]
+
+// Role-specific nav items (shown only when logged in, filtered by role)
+const roleNavItems = {
+  individual: [
+    { name: 'Dashboard', href: '/dashboard', key: 'navbar.dashboard' },
+    { name: 'Quiz', href: '/quiz', key: 'navbar.quiz' },
+    { name: 'Games', href: '/games', key: 'navbar.games' },
+    { name: 'Jobs', href: '/jobs', key: 'navbar.jobs' },
+  ],
+  company: [
+    { name: 'Dashboard', href: '/dashboard', key: 'navbar.dashboard' },
+    { name: 'Jobs', href: '/jobs', key: 'navbar.jobs' },
+    { name: 'Forms', href: '/forms', key: 'navbar.forms' },
+  ],
+  therapist: [
+    { name: 'Dashboard', href: '/dashboard', key: 'navbar.dashboard' },
+    { name: 'Forms', href: '/forms', key: 'navbar.forms' },
+  ],
+}
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
@@ -80,7 +97,7 @@ export default function Navbar() {
           </div>
 
           <ul className={`menu${open ? ' open' : ''}`}>
-            {navItems.map((item, index) => (
+            {publicNavItems.map((item, index) => (
               <li key={item.href} className="menu-item" style={{ '--delay': `${index * 0.1}s` }}>
                 <Link
                   href={item.href}
@@ -94,18 +111,20 @@ export default function Navbar() {
                 </Link>
               </li>
             ))}
-            {status === 'authenticated' && (
-              <li className="menu-item" style={{ '--delay': '0.9s' }}>
+            {status === 'authenticated' && (roleNavItems[session?.user?.type] || roleNavItems.individual).map((item, index) => (
+              <li key={item.href} className="menu-item" style={{ '--delay': `${(publicNavItems.length + index) * 0.1}s` }}>
                 <Link
-                  href="/dashboard"
-                  className={`link${pathname === '/dashboard' ? ' active' : ''}`}
+                  href={item.href}
+                  className={`link${pathname === item.href ? ' active' : ''}`}
                   onClick={() => setOpen(false)}
                 >
-                  <span className="link-text">{t('navbar.dashboard')}</span>
+                  <span className="link-text">
+                    {t(item.key)}
+                  </span>
                   <span className="link-bg"></span>
                 </Link>
               </li>
-            )}
+            ))}
           </ul>
         </div>
 

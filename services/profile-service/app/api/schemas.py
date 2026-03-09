@@ -56,5 +56,19 @@ class TherapistResponse(BaseModel):
     verification_status: str
 
 
+class QuizQuestionResponse(BaseModel):
+    question_id: str
+    dimension: str
+    category: str
+    text_es: str
+    text_en: str
+
+
+class QuizQuestionsListResponse(BaseModel):
+    total: int
+    dimensions: int
+    questions: list[QuizQuestionResponse]
+
+
 class ErrorResponse(BaseModel):
     detail: str

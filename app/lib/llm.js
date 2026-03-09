@@ -152,8 +152,13 @@ export async function analyzeJobInclusivity(jobData) {
         console.warn('LLM analysis failed:', error.message)
 
         // Fallback: basic analysis without LLM
+        // Base: 50, +10 per accommodation (cap 6), +5 premium, capped at 100
         const accommodationsCount = jobData.accommodations?.length || 0
-        const baseScore = 50 + (accommodationsCount * 10)
+        const premiumTerms = ['remote', 'flexible hours', 'async', 'written documentation', 'sensory']
+        const premiumCount = (jobData.accommodations || []).filter(a =>
+            premiumTerms.some(p => a.toLowerCase().includes(p))
+        ).length
+        const baseScore = 50 + (Math.min(accommodationsCount, 6) * 10) + (premiumCount * 5)
 
         return {
             score: Math.min(baseScore, 100),
@@ -161,10 +166,10 @@ export async function analyzeJobInclusivity(jobData) {
             issues: [],
             accommodations: {
                 count: accommodationsCount,
-                quality: accommodationsCount >= 3 ? 'good' : 'poor'
+                quality: accommodationsCount >= 4 ? 'excellent' : accommodationsCount >= 2 ? 'good' : 'poor'
             },
-            suggestions: 'LLM analysis unavailable. Basic scoring applied.',
-            fallback: true // Flag to indicate this is a fallback response
+            suggestions: 'LLM analysis unavailable. Score based on accommodation count and quality.',
+            fallback: true
         }
     }
 }

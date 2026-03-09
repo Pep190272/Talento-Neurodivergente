@@ -17,6 +17,7 @@ from ..schemas import (
     AssessmentResponse,
     CreateProfileRequest,
     ProfileResponse,
+    QuizQuestionsListResponse,
     SubmitQuizRequest,
     TherapistRegisterRequest,
     TherapistResponse,
@@ -112,6 +113,75 @@ async def submit_quiz(
         raise HTTPException(status_code=400, detail=str(e))
 
     return AssessmentResponse(**result.__dict__)
+
+
+@router.get("/quiz/questions", response_model=QuizQuestionsListResponse)
+async def get_quiz_questions() -> QuizQuestionsListResponse:
+    """Return the 24-dimension neurocognitive quiz questions.
+
+    Public endpoint — no auth required. Questions are deterministic
+    and mapped 1:1 to NeuroVector24D dimensions.
+    """
+    from shared.domain.value_objects import (
+        ALL_DIMENSIONS,
+        COGNITIVE_DIMS,
+        SOCIAL_DIMS,
+        WORK_DIMS,
+        TECHNICAL_DIMS,
+    )
+
+    QUESTION_TEXTS = {
+        "attention": ("Puedo mantener la concentración en una tarea durante periodos largos", "I can sustain focus on a task for long periods"),
+        "memory": ("Recuerdo bien información que he aprendido recientemente", "I remember recently learned information well"),
+        "processing_speed": ("Proceso información y tomo decisiones rápidamente", "I process information and make decisions quickly"),
+        "pattern_recognition": ("Detecto patrones y conexiones que otros no ven", "I detect patterns and connections others miss"),
+        "creative_thinking": ("Genero ideas originales y soluciones creativas", "I generate original ideas and creative solutions"),
+        "analytical_thinking": ("Analizo problemas complejos de forma metódica", "I analyze complex problems methodically"),
+        "verbal_reasoning": ("Me expreso bien verbalmente y comprendo textos complejos", "I express myself well verbally and understand complex texts"),
+        "spatial_reasoning": ("Proceso bien información visual como gráficos y diagramas", "I process visual information like charts and diagrams well"),
+        "communication_style": ("Me comunico de forma clara y entiendo a los demás", "I communicate clearly and understand others"),
+        "teamwork": ("Trabajo bien en equipo y colaboro activamente", "I work well in teams and actively collaborate"),
+        "leadership": ("Tomo la iniciativa y guío a otros cuando es necesario", "I take initiative and guide others when needed"),
+        "conflict_resolution": ("Resuelvo desacuerdos de forma constructiva", "I resolve disagreements constructively"),
+        "task_switching": ("Me adapto bien cuando cambian los planes o tareas", "I adapt well when plans or tasks change"),
+        "deadline_management": ("Gestiono bien los plazos y entregas", "I manage deadlines and deliverables well"),
+        "autonomy": ("Trabajo mejor cuando tengo libertad para decidir cómo hacer las cosas", "I work best when I have freedom to decide how to do things"),
+        "structure_need": ("Necesito instrucciones claras y estructura para ser productivo", "I need clear instructions and structure to be productive"),
+        "sensory_sensitivity": ("Soy sensible a estímulos sensoriales (ruidos, luces, texturas)", "I am sensitive to sensory stimuli (noise, lights, textures)"),
+        "stress_tolerance": ("Gestiono bien mis emociones en situaciones de estrés", "I manage my emotions well in stressful situations"),
+        "domain_expertise": ("Tengo conocimiento profundo en mi área de especialización", "I have deep knowledge in my area of expertise"),
+        "learning_speed": ("Aprendo nuevos conceptos y habilidades rápidamente", "I learn new concepts and skills quickly"),
+        "problem_solving": ("Encuentro soluciones efectivas a problemas difíciles", "I find effective solutions to difficult problems"),
+        "detail_orientation": ("Presto atención a los detalles y soy minucioso", "I pay attention to details and am thorough"),
+        "abstract_thinking": ("Comprendo bien conceptos abstractos y teóricos", "I understand abstract and theoretical concepts well"),
+        "technical_depth": ("Disfruto profundizando en temas técnicos complejos", "I enjoy diving deep into complex technical topics"),
+    }
+
+    def _category_for(dim: str) -> str:
+        if dim in COGNITIVE_DIMS:
+            return "cognitive"
+        if dim in SOCIAL_DIMS:
+            return "social"
+        if dim in WORK_DIMS:
+            return "work"
+        return "technical"
+
+    questions = [
+        {
+            "question_id": f"q_{i}",
+            "dimension": dim,
+            "category": _category_for(dim),
+            "text_es": QUESTION_TEXTS[dim][0],
+            "text_en": QUESTION_TEXTS[dim][1],
+        }
+        for i, dim in enumerate(ALL_DIMENSIONS)
+    ]
+
+    return QuizQuestionsListResponse(
+        total=len(questions),
+        dimensions=24,
+        questions=questions,
+    )
 
 
 @router.post("/therapist", response_model=TherapistResponse, status_code=status.HTTP_201_CREATED)

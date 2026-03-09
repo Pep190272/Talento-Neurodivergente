@@ -7,6 +7,52 @@ import { FaBrain, FaCheck, FaListOl, FaRegClock, FaRobot, FaVolumeUp, FaRedo } f
 import "./quiz.css";
 import QuizDashboard from "./dashboard";
 import { useLanguage } from '../hooks/useLanguage';
+import { backendApi } from '../lib/backend-api';
+
+// Mapping from quiz set questions to NeuroVector24D dimensions.
+// Each quiz set maps question index → dimension name.
+const QUIZ_DIMENSION_MAP = {
+  neurodiversity: ['attention', 'stress_tolerance', 'structure_need', 'task_switching'],
+  workplace: ['communication_style', 'stress_tolerance', 'leadership', 'teamwork'],
+  cognitive: ['pattern_recognition', 'problem_solving', 'creative_thinking', 'analytical_thinking'],
+  ai: ['memory', 'problem_solving', 'creative_thinking', 'learning_speed'],
+};
+
+/**
+ * Convert frontend quiz answers to backend NeuroVector24D format.
+ * MCQ answers (0-3) → normalized to 0.0-1.0 range.
+ * Slider answers (1-10) → normalized to 0.0-1.0.
+ * Text/draggable → treated as 0.5 (neutral).
+ */
+function mapAnswersToBackend(quizKey, quizSet, answers) {
+  const dimensions = QUIZ_DIMENSION_MAP[quizKey] || QUIZ_DIMENSION_MAP.neurodiversity;
+  return answers.map((answer, idx) => {
+    const question = quizSet[idx];
+    const dimension = dimensions[idx] || 'attention';
+    let value = 0.5;
+
+    if (question?.type === 'mcq') {
+      // Correct answer = 1.0, wrong = based on distance
+      value = answer === question.answer ? 1.0 : 0.25;
+    } else if (question?.type === 'slider') {
+      // Normalize slider (1-10) to 0.0-1.0
+      value = typeof answer === 'number' ? (answer - 1) / 9 : 0.5;
+    } else if (question?.type === 'draggable') {
+      // Compare ordering similarity
+      if (Array.isArray(answer) && Array.isArray(question.answer)) {
+        const matches = answer.filter((a, i) => a === question.answer[i]).length;
+        value = matches / question.answer.length;
+      }
+    }
+    // Text answers → 0.5 (neutral, needs manual review)
+
+    return {
+      question_id: `q_${idx}`,
+      dimension,
+      value: Math.max(0.0, Math.min(1.0, value)),
+    };
+  }).filter(a => a.value !== null);
+}
 
 // Local quiz sets
 const getQuizSets = (lang) => ({
@@ -254,8 +300,7 @@ export default function QuizPage() {
       setLoading(false);
     }
     loadQuiz();
-    // eslint-disable-next-line
-  }, [language]);
+  }, [mounted, language]);
 
   // Timer
   useEffect(() => {
@@ -299,12 +344,14 @@ export default function QuizPage() {
     setShowExplanation(false);
     setState((s) => ({ ...s, current: s.current - 1 }));
   };
-  const handleSubmit = () => {
-    // --- AI Feedback Stub ---
-    // Here you would call OpenAI or API with answers for feedback
+  const handleSubmit = async () => {
     const tips = language === 'es' ? "¡Excelente trabajo! Revisa tus respuestas e intenta nuevamente para obtener una puntuación más alta." : "Great job! Review your answers and try again for a higher score.";
     setState((s) => ({ ...s, completed: true, aiTips: tips }));
     speak(t('quizContent.quiz.results.congratulations'));
+
+    // Persist to backend (fire-and-forget — localStorage is primary storage)
+    const backendAnswers = mapAnswersToBackend(quizKey, quizSet, state.answers);
+    backendApi('/profiles/quiz', { body: { answers: backendAnswers } });
   };
   const handleRestart = () => {
     if (quizKey) localStorage.removeItem(`quiz-progress-${quizKey}`);
