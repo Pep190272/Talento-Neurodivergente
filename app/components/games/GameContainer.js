@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import { backendApi } from "../../lib/backend-api";
 import MemoryGrid from "./MemoryGrid";
 import PatternMatrix from "./PatternMatrix";
 import Operacion from "./Operacion";
@@ -47,10 +48,20 @@ export default function GameContainer({ gameKey }) {
   const handleGameOver = (stats) => {
     setGameStats(stats);
     setShowStats(true);
-    // --- AI Feedback Stub ---
-    // Here you would call OpenAI API with stats to get adaptive tips:
-    // fetch('/api/ai-feedback', { method: 'POST', body: JSON.stringify({ gameKey, stats }) })
-    //   .then(res => res.json()).then(data => setGameStats(s => ({ ...s, aiTips: data.tips })));
+
+    // Persist to backend (fire-and-forget — localStorage is primary storage)
+    backendApi('/profiles/games/score', {
+      body: {
+        game: gameKey,
+        score: stats.score || 0,
+        details: {
+          accuracy: stats.accuracy,
+          reactionTime: stats.reactionTime,
+          moves: stats.moves,
+          level: stats.level,
+        },
+      },
+    });
   };
 
   const GameComponent = gameComponents[gameKey];
