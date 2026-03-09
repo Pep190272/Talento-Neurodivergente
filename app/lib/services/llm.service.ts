@@ -318,8 +318,6 @@ export async function analyzeJobInclusivity(
   jobData: JobData,
   identifier = 'system'
 ): Promise<InclusivityAnalysis> {
-  assertRateLimit(`llm:inclusivity:${identifier}`)
-
   const key = cacheKey('inclusivity', {
     title: jobData.title,
     desc: jobData.description?.slice(0, 200),
@@ -329,6 +327,7 @@ export async function analyzeJobInclusivity(
   if (cached) return cached
 
   try {
+    assertRateLimit(`llm:inclusivity:${identifier}`)
     const raw = await generateCompletion(buildInclusivityPrompt(jobData))
     const analysis = parseJSON<InclusivityAnalysis>(raw)
 
@@ -341,12 +340,17 @@ export async function analyzeJobInclusivity(
     console.warn('[LlmService] analyzeJobInclusivity fallback:', (error as Error).message)
 
     const count = jobData.accommodations?.length ?? 0
+    const premiumTerms = ['remote', 'flexible hours', 'async', 'written documentation', 'sensory']
+    const premiumCount = jobData.accommodations?.filter(a =>
+      premiumTerms.some(p => a.toLowerCase().includes(p))
+    ).length ?? 0
+    const fallbackScore = Math.min(50 + Math.min(count, 6) * 10 + premiumCount * 5, 100)
     const fallback: InclusivityAnalysis = {
-      score: Math.min(50 + count * 10, 100),
+      score: fallbackScore,
       discriminatoryLanguage: false,
       issues: [],
-      accommodations: { count, quality: count >= 3 ? 'good' : 'poor' },
-      suggestions: 'LLM analysis unavailable. Score based on accommodation count only.',
+      accommodations: { count, quality: count >= 4 ? 'excellent' : count >= 2 ? 'good' : 'poor' },
+      suggestions: 'LLM analysis unavailable. Score based on accommodation count and quality.',
       fallback: true,
     }
     return fallback
@@ -363,8 +367,6 @@ export async function evaluateCandidate(
   job: JobData,
   identifier = 'system'
 ): Promise<CandidateEvaluation> {
-  assertRateLimit(`llm:candidate:${identifier}`)
-
   const key = cacheKey('candidate-eval', {
     skills: [...candidate.skills].sort(),
     jobTitle: job.title,
@@ -374,6 +376,7 @@ export async function evaluateCandidate(
   if (cached) return cached
 
   try {
+    assertRateLimit(`llm:candidate:${identifier}`)
     const raw = await generateCompletion(buildCandidateEvalPrompt(candidate, job))
     const evaluation = parseJSON<CandidateEvaluation>(raw)
 
@@ -417,8 +420,6 @@ export async function explainMatch(
   breakdown: ScoreBreakdown,
   identifier = 'system'
 ): Promise<MatchingExplanation> {
-  assertRateLimit(`llm:explain:${identifier}`)
-
   const key = cacheKey('match-explain', {
     skills: [...candidate.skills].sort(),
     jobTitle: job.title,
@@ -428,6 +429,7 @@ export async function explainMatch(
   if (cached) return cached
 
   try {
+    assertRateLimit(`llm:explain:${identifier}`)
     const raw = await generateCompletion(
       buildMatchExplanationPrompt(candidate, job, score, breakdown)
     )
@@ -476,6 +478,10 @@ export async function checkOllamaHealth(): Promise<boolean> {
  * Purge expired cache entries.
  * Returns the number of entries purged.
  */
+export function clearCache(): void {
+  _cache.clear()
+}
+
 export function purgeExpiredCache(): number {
   const now = Date.now()
   let purged = 0

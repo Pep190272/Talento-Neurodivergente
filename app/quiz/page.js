@@ -254,8 +254,7 @@ export default function QuizPage() {
       setLoading(false);
     }
     loadQuiz();
-    // eslint-disable-next-line
-  }, [language]);
+  }, [mounted, language]);
 
   // Timer
   useEffect(() => {
