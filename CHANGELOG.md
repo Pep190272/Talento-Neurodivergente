@@ -7,6 +7,22 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [2.1.0-saas] - 2026-03-09
+
+### Sesion 2026-03-09 PM — Expansion SaaS: modelo de negocio + bounded contexts
+
+#### Added
+- **ADR-005**: modelo de negocio SaaS + Marketplace (Stripe), planes empresa/candidato/terapeuta
+- **5 bounded contexts**: subscriptions, learning, community, marketplace, analytics
+- **21 tablas SQL** en migracion `services/migrations/20260309_001_create_saas_bounded_contexts.sql`
+- **5 schemas PostgreSQL** nuevos en `init-schemas.sql`
+
+#### Architecture
+- Bounded contexts: 4 → 9
+- Modelo de negocio: Empresas (49-399+ EUR/mes), Candidatos B2C (0-19.99 EUR), Terapeutas (0-29 EUR)
+
+---
+
 ## [2.0.0-microservices] - 2026-03-09
 
 ### Sesion 2026-03-08/09 — Issues backlog, use cases, infraestructura
@@ -66,7 +82,7 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Sesion 2026-03-04 — Arquitectura y scaffolding
 
-**Decision estrategica**: Migrar de monolito Next.js a 4 microservicios Python/FastAPI con Clean Architecture.
+**Decision estrategica**: Migrar de monolito Next.js a microservicios Python/FastAPI con Clean Architecture (4 core + 5 SaaS planificados).
 
 #### Added
 - Estructura monorepo `services/` con Clean Architecture

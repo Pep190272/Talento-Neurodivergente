@@ -8,7 +8,7 @@
 
 ## Estado General
 
-**profile-service es el unico servicio operativo.** Corre en el puerto :8002 con SQLite standalone — no requiere PostgreSQL, Docker ni nginx. Los otros 3 microservicios (auth, matching, intelligence) existen como codigo con tests pero no estan desplegados. El frontend legacy Next.js sigue en Vercel.
+**profile-service es el unico servicio operativo.** Corre en el puerto :8002 con SQLite standalone — no requiere PostgreSQL, Docker ni nginx. Los otros 3 microservicios core (auth, matching, intelligence) existen como codigo con tests pero no estan desplegados. Ademas, 5 nuevos bounded contexts SaaS estan disenados con migracion SQL lista (subscriptions, learning, community, marketplace, analytics — ver ADR-005). El frontend legacy Next.js sigue en Vercel.
 
 ---
 
@@ -115,12 +115,28 @@ Unica pendiente: #78 (Llama 3.1 8B) — descartada, Llama 3.2:3b se mantiene.
 
 ---
 
+## Expansion SaaS (ADR-005, 9 Mar 2026)
+
+5 bounded contexts nuevos con 21 tablas SQL (migracion lista, sin aplicar):
+
+| Schema | Servicio futuro | Puerto | Tablas |
+|--------|----------------|--------|--------|
+| subscriptions | subscription-service | :8005 | plans, subscriptions, invoices |
+| learning | learning-service | :8006 | courses, modules, lessons, enrollments, lesson_progress, certificates |
+| community | community-service | :8007 | groups, posts, comments, memberships, events |
+| marketplace | marketplace-service | :8008 | providers, services, bookings, reviews |
+| analytics | analytics-service | :8009 | metric_snapshots, dei_reports, usage_events |
+
+Modelo de negocio: SaaS mixto con Stripe. Empresas pagan (49-399+ EUR/mes), candidatos gratis.
+
+---
+
 ## Proximos Pasos
 
 1. Verificar Docker Compose end-to-end
 2. Build Tailwind CSS (reemplazar CDN)
 3. Deploy a app.diversia.click
-4. Paginas de error (404, 500)
+4. Fase 1 post-deploy: subscription-service + Stripe
 5. Beta con usuarios reales
 
 ---

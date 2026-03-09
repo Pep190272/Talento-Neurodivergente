@@ -26,7 +26,7 @@
 | Bloqueador (Feb 2026) | Solucion |
 |----------------------|----------|
 | JSON File Storage | SQLAlchemy 2.0 + SQLite standalone |
-| Arquitectura monolitica | 4 microservicios Python/FastAPI |
+| Arquitectura monolitica | 4 microservicios core + 5 bounded contexts SaaS (ADR-005) |
 | NextAuth vs Auth0 | JWT custom en auth-service |
 | LLM self-hosted | Ollama + Llama 3.2 3B |
 | 0 tests | 233 tests passing |
@@ -36,7 +36,7 @@
 ## SIGUIENTE PASO: Docker Compose + Deploy
 
 ### 1. Verificar Docker Compose
-- [ ] `docker compose up` arranca los 4 servicios + postgres + nginx
+- [ ] `docker compose up` arranca los 4 servicios core + postgres + nginx
 - [ ] Health checks funcionan (/health)
 - [ ] nginx rutea correctamente
 - [ ] Comunicacion inter-servicio funciona

@@ -85,12 +85,13 @@ ollama pull llama3.2:3b
 
 ```
 Talento-Neurodivergente/
-├── services/                    # Microservicios Python/FastAPI
+├── services/                    # Microservicios Python/FastAPI (9 bounded contexts)
 │   ├── profile-service/         # ACTIVO — perfiles, quiz, games, jobs, frontend
 │   ├── auth-service/            # Codigo listo, sin desplegar
 │   ├── matching-service/        # Codigo listo, sin desplegar
 │   ├── intelligence-service/    # Codigo listo, sin desplegar
 │   ├── shared/                  # Shared kernel (value objects, auth, rate limiter)
+│   ├── migrations/              # SQL migrations (21 tablas SaaS expansion)
 │   └── docker-compose.yml       # Orquestacion (sin verificar)
 ├── app/                         # Frontend Next.js (legacy, en Vercel)
 ├── prisma/                      # Schema Prisma (legacy)
@@ -141,7 +142,7 @@ cd services/shared && python -m pytest tests/ -q             # 13 tests
 ## Roadmap resumido
 
 ### Completado
-- [x] 4 microservicios con Clean Architecture y 233 tests
+- [x] 4 microservicios operativos + 5 bounded contexts SaaS disenados (ver ADR-005)
 - [x] Frontend Jinja2 (14 paginas) + auth standalone SQLite
 - [x] Quiz 24D + radar chart + 3 juegos cognitivos
 - [x] Matching 24D con scoring y razones
@@ -152,6 +153,7 @@ cd services/shared && python -m pytest tests/ -q             # 13 tests
 - [ ] Verificar Docker Compose end-to-end
 - [ ] Build Tailwind CSS (sin CDN)
 - [ ] Deploy a app.diversia.click
+- [ ] Fase 1: subscription-service + Stripe (monetizacion)
 - [ ] Beta con usuarios reales
 
 Ver [ROADMAP.md](ROADMAP.md) para el plan completo.

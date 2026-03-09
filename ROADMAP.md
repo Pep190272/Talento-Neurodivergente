@@ -28,13 +28,13 @@
 | **shared kernel** | Listo — value objects, auth, rate limiter | 13 passing |
 | **Frontend (Jinja2)** | 14 paginas funcionales, Alpine.js + Tailwind CDN | Sin tests |
 | **SQLite standalone** | Funcional — auth_proxy + profiles_local sin PostgreSQL | — |
-| **Docker Compose** | Definido — 4 servicios + postgres + nginx | Sin verificar |
+| **Docker Compose** | Definido — 4 servicios + postgres + nginx (5 mas planificados) | Sin verificar |
 
 **Total: 233 tests, 0 failing**
 
 ### Que NO funciona (lo que falta)
 
-- Docker Compose no verificado (los 4 servicios juntos)
+- Docker Compose no verificado (4 servicios core juntos)
 - Build de Tailwind CSS (usa CDN — no valido para produccion)
 - Paginas de error (404, 500)
 - Deploy a VPS (app.diversia.click)
@@ -72,14 +72,20 @@
                          |
                    PostgreSQL 16
               (schemas: auth, profiles, matching, ai)
+              + 5 schemas SaaS: subscriptions, learning,
+                community, marketplace, analytics
 ```
+
+> **Expansion SaaS (ADR-005):** 5 nuevos bounded contexts disenados con 21 tablas.
+> Servicios: subscription(:8005), learning(:8006), community(:8007), marketplace(:8008), analytics(:8009).
+> Ver `docs/adr/ADR-005.md` y `services/migrations/20260309_001_create_saas_bounded_contexts.sql`.
 
 ---
 
 ## FASE ACTUAL — Verificar y desplegar
 
 ### Paso 1: Docker Compose end-to-end
-- [ ] `docker compose up` arranca los 4 servicios + postgres + nginx
+- [ ] `docker compose up` arranca los 4 servicios core + postgres + nginx
 - [ ] Health checks funcionan (/health en cada servicio)
 - [ ] nginx rutea correctamente a cada servicio
 - [ ] Seed data se carga en primera ejecucion
@@ -126,6 +132,7 @@
 | v0.x | Feb 2026 | Monolito Next.js — Sprints 1-5 |
 | v1.0.0 | 26 Feb | Monolito production-ready (272 tests, OWASP audit) |
 | v2.0.0-dev | 4-9 Mar | Microservicios Python/FastAPI (233 tests, 14 paginas) |
+| v2.1.0-saas | 9 Mar | Expansion SaaS: 5 bounded contexts, modelo de negocio (ADR-005) |
 | **v2.0.0** | **TBD** | **Deploy a app.diversia.click** |
 
 ---
@@ -193,7 +200,7 @@ docker compose up --build
 <summary>Sesiones 6-11 (Mar 2026) — Microservicios Python</summary>
 
 ### Sesion 6 (4 Mar): Scaffolding + auth + matching
-- 4 servicios Python/FastAPI, Docker Compose, nginx
+- 4 servicios Python/FastAPI core, Docker Compose, nginx
 - auth-service: 48 tests, matching-service: 42 tests
 
 ### Sesion 7 (5-6 Mar): profile + intelligence + persistencia
@@ -216,5 +223,11 @@ docker compose up --build
 - Backup/restore scripts PostgreSQL
 - 4 suites E2E tests
 - 233 tests totales
+
+### Sesion 12 (9 Mar PM): Expansion SaaS + modelo de negocio
+- ADR-005: modelo de negocio SaaS + Marketplace, Stripe
+- 5 bounded contexts nuevos: subscriptions, learning, community, marketplace, analytics
+- 21 tablas SQL, 5 schemas PostgreSQL
+- Planes: Empresa (49-399 EUR), Candidato B2C (0-19.99 EUR), Terapeuta (0-29 EUR)
 
 </details>

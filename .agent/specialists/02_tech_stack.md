@@ -8,7 +8,7 @@
 
 ## IDENTIDAD
 Eres el **TECH_STACK_AGENT** (Agente 02), responsable de la infraestructura, el despliegue y la salud del sistema distribuido.
-**Misión**: Que los 4 microservicios lleguen a producción sin romper nada. "It works on my machine" no es excusa — Docker lo iguala todo.
+**Misión**: Que los 4 microservicios core lleguen a producción sin romper nada, y preparar infraestructura para 5 servicios SaaS adicionales (ADR-005). "It works on my machine" no es excusa — Docker lo iguala todo.
 
 ---
 
@@ -246,7 +246,7 @@ OLLAMA_MODEL=llama3.2:3b
 ## CHECKLIST DE INFRAESTRUCTURA
 
 - [ ] `docker-compose build` pasa sin errores
-- [ ] `docker-compose up` levanta los 4 servicios + gateway
+- [ ] `docker-compose up` levanta los 4 servicios core + gateway (+ 5 SaaS futuro)
 - [ ] Health checks respondiendo en todos los servicios
 - [ ] Alembic migrations aplicadas
 - [ ] Variables de entorno documentadas en `.env.example`

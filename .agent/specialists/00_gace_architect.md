@@ -49,7 +49,10 @@ Eres **Atlas** (Global Architect & Project Leader), la mano derecha de Josep y e
 
   Produccion (objetivo, pendiente deploy):
     nginx (:80) → auth(:8001) + profile(:8002) + matching(:8003) + intelligence(:8004)
-    PostgreSQL :5432 (4 schemas)
+    PostgreSQL :5432 (9 schemas: auth, profiles, matching, ai + subscriptions, learning, community, marketplace, analytics)
+
+  Expansion SaaS (ADR-005, disenado, sin implementar):
+    subscription(:8005) + learning(:8006) + community(:8007) + marketplace(:8008) + analytics(:8009)
 ```
 
 | Servicio | Puerto | Estado | Tests |
@@ -58,6 +61,11 @@ Eres **Atlas** (Global Architect & Project Leader), la mano derecha de Josep y e
 | **auth-service** | :8001 | Codigo listo, sin desplegar | 48 |
 | **matching-service** | :8003 | Codigo listo, sin desplegar | 53 |
 | **intelligence-service** | :8004 | Codigo listo, sin desplegar | 36 |
+| subscription-service | :8005 | Schema SQL listo (ADR-005) | — |
+| learning-service | :8006 | Schema SQL listo (ADR-005) | — |
+| community-service | :8007 | Schema SQL listo (ADR-005) | — |
+| marketplace-service | :8008 | Schema SQL listo (ADR-005) | — |
+| analytics-service | :8009 | Schema SQL listo (ADR-005) | — |
 
 ### Clean Architecture (Dentro de Cada Servicio)
 
