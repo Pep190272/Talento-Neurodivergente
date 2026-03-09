@@ -1,8 +1,9 @@
 # Decisiones de Arquitectura Pendientes — DiversIA
 
 **Fecha:** 2026-03-09
-**Estado:** BORRADOR PARA REVISIÓN
+**Estado:** APROBADO (sesion 2026-03-09)
 **Autor:** Auditoría técnica
+**Resultado:** Todas las decisiones aprobadas → ver ADR-005 para implementacion
 
 ---
 
@@ -308,4 +309,26 @@ Los early adopters no van a pagar los primeros 6 meses. Mejor tener un producto 
 
 ---
 
-**ACCIÓN REQUERIDA:** Revisa este documento y dime qué decisiones apruebas, cuáles quieres modificar, y cuáles necesitas más información antes de decidir.
+## Estado de las decisiones (actualizado 9 Mar 2026)
+
+| # | Decision | Resultado |
+|---|----------|-----------|
+| 1 | Comunicacion inter-servicio | **Aprobado: HTTP Sincrono** |
+| 2 | Quien paga | **Aprobado: Empresa + Terapeuta (candidato gratis)** |
+| 3 | Planes empresa | **Aprobado: Free/Starter(49)/Pro(149)/Enterprise(399+)** |
+| 4 | Planes terapeuta | **Aprobado: Free/Profesional(29)** |
+| 5 | Pasarela de pago | **Aprobado: Stripe** |
+| 6 | Early adopters | **Aprobado: 6 meses gratis PRO** |
+| 7 | Servicio de pagos | **Actualizado: Nuevo subscription-service (:8005)** — la escala justifica servicio dedicado |
+| 8 | Prioridad | **Aprobado: Funcionalidad primero, pagos en Fase 1 post-deploy** |
+
+### Nuevas decisiones tomadas (9 Mar 2026)
+
+| # | Decision | Resultado |
+|---|----------|-----------|
+| 9 | Planes candidato B2C | **Aprobado: Free/Pro(9.99)/Pro+(19.99)** |
+| 10 | 5 nuevos bounded contexts | **Aprobado: subscriptions/learning/community/marketplace/analytics** |
+| 11 | Estrategia de base de datos | **Aprobado: schemas separados en misma PostgreSQL** |
+| 12 | Prioridad de nuevos contextos | **Aprobado: subscriptions → analytics → learning → community → marketplace** |
+
+Ver **ADR-005** para detalles completos de implementacion.

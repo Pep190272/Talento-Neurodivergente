@@ -84,15 +84,58 @@
 
 ---
 
-## Preguntas Estrategicas (abiertas)
+## Preguntas Estrategicas — RESUELTAS (9 Mar 2026)
 
-### Modelo de Negocio
-- [ ] Revenue? (SaaS / Marketplace / Mixto)
-- [ ] Quien paga? (Empresas / Individuos / Terapeutas)
+### Modelo de Negocio — DEFINIDO (ver ADR-005)
+- [x] Revenue: **SaaS + Marketplace mixto**
+- [x] Quien paga: **Empresas (49-399+ EUR/mes) + Terapeutas (29 EUR/mes). Candidatos gratis.**
+- [x] Pasarela: **Stripe** (1.5% + 0.25 EUR/tx)
+- [x] Early adopters: PRO gratis 6 meses (primeras 20 empresas, 50 terapeutas)
+- [x] Breakeven estimado: Mes 7
+
+### Modelo de Datos SaaS — DEFINIDO (ver ADR-005)
+- [x] 5 nuevos Bounded Contexts: subscriptions, learning, community, marketplace, analytics
+- [x] 5 nuevos schemas PostgreSQL con 21 tablas totales
+- [x] Migracion SQL creada: `services/migrations/20260309_001_create_saas_bounded_contexts.sql`
+- [x] DDD-first: dominio modelado antes que tablas
 
 ### Compliance Internacional
 - [ ] Paises LATAM prioritarios?
 - [ ] Certificaciones? (ISO 27001, SOC 2, ENS)
+
+---
+
+## Prioridad de Implementacion (post-deploy)
+
+### Fase 0: Deploy (inmediato)
+- [ ] Docker Compose + deploy a app.diversia.click
+
+### Fase 1: Subscriptions (Mes 1 post-deploy)
+- [ ] subscription-service (:8005)
+- [ ] Stripe checkout + webhooks
+- [ ] Planes empresa (Free/Starter/Pro/Enterprise)
+- [ ] Planes candidato (Free/Pro/Pro+)
+
+### Fase 2: Analytics (Mes 2)
+- [ ] analytics-service (:8009)
+- [ ] Dashboard DEI para empresas
+- [ ] Reportes ESG/CSRD
+- [ ] Usage event tracking
+
+### Fase 3: Learning (Mes 3)
+- [ ] learning-service (:8006)
+- [ ] Cursos adaptativos por perfil neurocognitivo
+- [ ] Certificaciones verificables
+
+### Fase 4: Community (Mes 4)
+- [ ] community-service (:8007)
+- [ ] Grupos tematicos + moderacion
+- [ ] Eventos (webinars, workshops)
+
+### Fase 5: Marketplace (Mes 5)
+- [ ] marketplace-service (:8008)
+- [ ] Directorio de proveedores
+- [ ] Reservas + comisiones
 
 ---
 
