@@ -1,689 +1,468 @@
-# ROADMAP — DiversIA Eternals
+# ROADMAP — DiversIA (app.diversia.click)
 
 **Fecha de inicio:** 10 de febrero de 2026
-**Ultima actualizacion:** 6 de marzo de 2026
-**Estado:** Sprints 1-5 completados — Migracion v2.0.0 en progreso (Fases 0-6 ~90% completadas)
+**Ultima actualizacion:** 8 de marzo de 2026
+**Estado:** Desarrollo local — NO se commitea a GitHub hasta completar migracion
 
 ---
 
-## Indice
+## Principios de trabajo
 
-1. [Progreso Actual](#progreso-actual)
-2. [Migracion v2.0.0 — Microservicios Python/FastAPI](#migracion-v200--microservicios-pythonfastapi)
-3. [Sprint 1: Fundaciones Criticas](#sprint-1-fundaciones-criticas)
-4. [Sprint 2: Tests y Limpieza](#sprint-2-tests-y-limpieza)
-5. [Sprint 3: Arquitectura y Capas](#sprint-3-arquitectura-y-capas)
-6. [Sprint 4: LLM y Compliance](#sprint-4-llm-y-compliance)
-7. [Sprint 5: Seguridad y Deploy](#sprint-5-seguridad-y-deploy)
-8. [Decisiones Tecnicas](#decisiones-tecnicas)
-9. [Preguntas Estrategicas Pendientes](#preguntas-estrategicas-pendientes)
-10. [Notas de Sesion](#notas-de-sesion)
+1. **Todo el desarrollo es local** hasta tener la app completa y funcional
+2. **No se pushea a GitHub** hasta preparar el deploy a VPS
+3. **El repo de GitHub mantiene la app Node.js** funcional en produccion (Vercel)
+4. **El dominio objetivo es `app.diversia.click`** — subdominio del VPS existente
+5. **Commitear localmente** para tracking, pero sin push
 
 ---
 
-## Progreso Actual
+## Estado actual del proyecto (8 marzo 2026)
 
-### Completado
+### Que tenemos (lo que funciona)
 
-| Tarea | Fecha | Detalle |
-|-------|-------|---------|
-| Auditoria completa del proyecto | 10 Feb | 76 archivos temp eliminados, build arreglado |
-| Dependabot: Next.js 15.5.9 a 15.5.12 | 20 Feb | CVE-2026-23864 (DoS, CVSS 7.5) parcheado |
-| Migracion JSON a PostgreSQL (codigo) | 20 Feb | 4 modulos: therapists, matching, consent, dashboards |
-| Expansion schema Prisma | 20 Feb | Therapist (3 a 33 cols), Connection (4 a 17), Matching (+consent/expiracion) |
-| prisma migrate deploy | 20 Feb | 5 migraciones aplicadas exitosamente en PostgreSQL 16 |
-| seed.ts actualizado | 20 Feb | 4 users, 2 jobs, 3 matchings, 4 connections, 7 audit logs |
-| Bug fix: dashboards.ts | 20 Feb | `company.profile.name` a `company.name` (campo inexistente) |
-| Bug fix: dashboards.ts audit | 20 Feb | `storage.getAuditLogsForUser()` a `audit.ts` (Prisma) |
-| API route actualizada | 20 Feb | `individuals/[userId]` usa consent.ts en vez de storage.js |
-| prisma.config.ts seed command | 20 Feb | Migrado de package.json (requisito Prisma 7) |
-| PrismaClient adapter fix | 20 Feb | seed.ts usa `@prisma/adapter-pg` (requisito Prisma 7) |
-| Archivos legacy `.js` eliminados | 21 Feb | therapists.js, matching.js, consent.js, dashboards.js |
-| Prisma mock para tests | 21 Feb | `tests/helpers/prisma-mock.js` — in-memory stateful mock |
-| Tests suite verde | 21 Feb | 15 passed, 1 skipped, 0 failed (191 tests + 5 skipped) |
-| Bug fix: therapists.ts | 21 Feb | Campos `welcomeEmailSent`, `redirectTo`, `rejectionReason` en normalizer |
-| forms/route.js migrado a Prisma | 21 Feb | Modelo `FormSubmission` + ruta sin `fs` |
-| CI/CD GitHub Actions | 21 Feb | Workflow: test + build + lint |
-| Tests obsoletos a pending/ | 21 Feb | Movidos temporalmente; reemplazados y eliminados en Sprint 2 |
+| Componente | Estado | Tests |
+|-----------|--------|-------|
+| **auth-service** | Completo — register, login, JWT, bcrypt | 48 passing |
+| **profile-service** | Completo — perfiles, quiz 24D, games, jobs, inclusivity | 57 passing |
+| **matching-service** | Completo — scoring trilateral 24D, batch matching | 53 passing |
+| **intelligence-service** | Completo — reports LLM, anonymizer, prompt builder | 36 passing |
+| **shared kernel** | Completo — value objects, domain exceptions | Incluido en tests |
+| **Frontend (Jinja2)** | 14 paginas funcionales, Alpine.js + Tailwind CDN | Sin tests |
+| **SQLite standalone** | Funcional — auth_proxy + profiles_local sin PostgreSQL | Manual |
+| **Docker Compose** | Definido — 4 servicios + postgres + nginx | Sin verificar |
 
-### Sprint 2 — Completado (22 Feb 2026)
+**Total: 194 tests unitarios, 0 failing**
 
-| Tarea | Fecha | Detalle |
-|-------|-------|---------|
-| Proteccion de branch `main` | 22 Feb | Ruleset: require PR, no direct push to main |
-| Dependabot PR reviewed + merged | 22 Feb | Next.js 15.5.9 a 15.5.12 (merge via GitHub UI) |
-| GitHub Issues #25, #26, #27 creados | 22 Feb | Sprints 3, 4, 5 planificados con labels |
-| Tests reactivados (matching) | 22 Feb | 12 tests: calculateMatch, runMatching, expiration, invalidation |
-| Tests reactivados (consent) | 22 Feb | 20 tests: acceptMatch, rejectMatch, revokeConsent, therapistAccess |
-| Tests reactivados (audit) | 22 Feb | 15 tests: logDataAccess, GDPR export, AI decisions, EU AI Act |
-| Tests reactivados (dashboards) | 22 Feb | 14 tests: individual, company, therapist dashboards + views |
-| Integration tests migrados a Prisma | 22 Feb | middleware_auth (8 tests), registration-flow (12 tests) |
-| Suite completa verde | 22 Feb | 272 passed, 5 skipped, 0 failed (de 191 a 272 tests) |
+### Que NO tenemos (lo que falta)
 
-### Estado de Modulos
-
-| Modulo | Storage | Archivo | Estado |
-|--------|---------|---------|--------|
-| `individuals.ts` | Prisma | Pre-existente | Operativo |
-| `companies.ts` | Prisma | Pre-existente | Operativo |
-| `audit.ts` | Prisma | Pre-existente | Operativo |
-| `therapists.ts` | Prisma | Nuevo (`.js` eliminado) | Operativo |
-| `matching.ts` | Prisma | Nuevo (`.js` eliminado) | Operativo |
-| `consent.ts` | Prisma | Nuevo (`.js` eliminado) | Operativo |
-| `dashboards.ts` | Prisma | Nuevo (`.js` eliminado) | Operativo |
-| `storage.js` | JSON files | Legacy | Solo tests lo usan — pending removal |
+- Tests de integracion cross-service (un servicio llama a otro)
+- Tests E2E del frontend (Playwright o similar para Python)
+- Use cases completos documentados (flujos de usuario end-to-end)
+- Validacion de que Docker Compose arranca y los servicios se comunican
+- Build de Tailwind CSS (ahora usa CDN — no valido para produccion)
+- Paginas de error (404, 500)
+- Configuracion de produccion (CORS, secrets, dominio)
+- Deploy a VPS (app.diversia.click)
+- Migracion de datos del monolito Node.js (si hay datos reales)
 
 ---
 
-## Migracion v2.0.0 — Microservicios Python/FastAPI
-
-**Periodo:** 4-6 marzo 2026
-**Estado:** Fases 0-5 completadas, Fase 6-7 pendientes
-**Decision:** ADR-003 + ADR-004
-
-### Motivacion
-
-Migrar de monolito Next.js a 4 microservicios Python/FastAPI:
-1. Python es estandar en AI/ML — mejor ecosistema para matching 24D
-2. Microservicios permiten escalar matching-service independientemente
-3. Clean Architecture con domain layer puro (testeable, sin framework)
-4. Alineacion con modelo de negocio
-
-### Fases
-
-| Fase | Descripcion | Estado | Tests |
-|------|------------|--------|-------|
-| 0 | Scaffolding: carpetas, Docker Compose, nginx, pyproject.toml | Completado | - |
-| 1 | auth-service: User entity, Register/Login use cases, JWT, API | Completado | 48 |
-| 2 | matching-service: MatchRequest, RunMatching, scoring 24D | Completado | 42 |
-| 3 | profile-service: NeurocognitiveAssessment, quiz normalization | Completado | - |
-| 4 | intelligence-service: TalentReport, LLM client, anonymizer | Completado | - |
-| 5 | Persistencia: SQLAlchemy ORM, Alembic, OWASP, seed data | Completado | 36 |
-| **6** | **Frontend Jinja2 + Alpine.js + Tailwind CSS** | **En progreso** | - |
-| **7** | **Deploy VPS + tests E2E cross-service** | **Pendiente** | - |
-
-### Stack v2.0.0
-
-- **Backend**: Python 3.12 + FastAPI + SQLAlchemy 2.0 + Pydantic v2
-- **Frontend**: Jinja2 + Alpine.js + Tailwind CSS (pendiente)
-- **Tests**: pytest 9.0 (reemplaza Vitest)
-- **Auth**: JWT custom + bcrypt (reemplaza NextAuth)
-- **DB**: PostgreSQL 16 (se mantiene, ORM: SQLAlchemy en vez de Prisma)
-- **LLM**: Ollama + Llama 3.2 3B (se mantiene, accedido desde Python)
-- **Deploy**: Docker Compose + Dokploy (reemplaza Vercel)
-
-### Coexistencia
-
-- Next.js sigue funcionando durante la migracion (272 tests Vitest pasan)
-- Tablas Prisma en schema `public` no se tocan
-- Nuevos servicios usan schemas propios: auth, profiles, matching, ai
-- Se eliminara Next.js cuando el frontend Jinja2 este completo (Issue #63)
-
----
-
-## Sprints Historicos (v1.0.0 — Monolito Next.js)
-
-> Los sprints 1-5 documentan la evolucion del monolito Next.js desde su estado inicial
-> hasta production-ready (v1.0.0). Esta seccion es referencia historica.
-
----
-
-## Sprint 1: Fundaciones Criticas
-
-**Periodo:** 10-21 Feb 2026
-**Estado:** COMPLETADO
-
-### 1.1 Migracion JSON a PostgreSQL — COMPLETADO
-
-- [x] Expansion schema Prisma (Therapist, Connection, Matching)
-- [x] `therapists.js` a `therapists.ts` (Prisma)
-- [x] `matching.js` a `matching.ts` (Prisma)
-- [x] `consent.js` a `consent.ts` (Prisma)
-- [x] `dashboards.js` a `dashboards.ts` (Prisma)
-- [x] API route `individuals/[userId]` actualizada
-- [x] `prisma migrate deploy` ejecutado (5 migraciones)
-- [x] seed.ts expandido y verificado
-
-**Resultado:** 0 consumidores de `storage.js` en `app/`. Todos los modulos de negocio usan PostgreSQL via Prisma.
-
-### 1.2 Seguridad: Dependabot — COMPLETADO
-
-- [x] Next.js 15.5.9 a 15.5.12 (CVE-2026-23864, CVSS 7.5)
-
-### 1.3 Tests: Actualizar para modulos `.ts` — COMPLETADO
-
-- [x] Actualizar tests en `tests/unit/actors/therapist.test.js` para importar desde `.ts`
-- [x] Crear `tests/helpers/prisma-mock.js` — in-memory mock con CRUD, $transaction, push, increment
-- [x] Verificar que tests existentes pasan con nuevos modulos (191 tests pasan)
-- [x] Skip condicional para `prisma.test.js` (requiere DATABASE_URL)
-- [x] ~~Mover tests obsoletos a `tests/pending/`~~ Eliminados (reemplazados en Sprint 2)
-
-### 1.4 Limpieza: Eliminar archivos legacy — COMPLETADO
-
-- [x] Eliminar `app/lib/therapists.js`
-- [x] Eliminar `app/lib/matching.js`
-- [x] Eliminar `app/lib/consent.js`
-- [x] Eliminar `app/lib/dashboards.js`
-- [x] `app/lib/storage.js` mantenido — solo tests lo usan (pending removal)
-
-### 1.5 Migrar `app/api/forms/route.js` — COMPLETADO
-
-- [x] Modelo `FormSubmission` agregado al schema Prisma
-- [x] Ruta migrada de `fs` directo a `prisma.formSubmission.create/findMany`
-
-### 1.6 CI/CD Basico — COMPLETADO
-
-- [x] GitHub Actions workflow: test + build + lint
-
----
-
-## Sprint 2: Tests y Limpieza
-
-**Periodo:** Semana 3-4 Feb 2026
-**Estado:** COMPLETADO
-
-### 2.1 Corregir Tests Existentes — COMPLETADO
-
-**Estado previo:** 191 tests (Sprint 1)
-**Estado final:** 272 tests, 0 failed, 5 skipped
-
-- [x] Prisma mock configurado (`tests/helpers/prisma-mock.js`)
-- [x] `tests/unit/actors/therapist.test.js` — 29 tests (Sprint 1)
-- [x] `tests/unit/matching/matching.test.js` — 12 tests (scoring, expiration, invalidation)
-- [x] `tests/unit/matching/consent.test.js` — 20 tests (accept/reject/revoke, privacy, therapist)
-- [x] `tests/unit/dashboards/dashboards.test.js` — 14 tests (individual, company, therapist)
-- [x] `tests/unit/privacy/audit.test.js` — 15 tests (GDPR logging, AI audit, data export)
-- [x] `tests/integration/middleware_auth.test.js` — 8 tests (auth redirect, security headers, rate limiting)
-- [x] `tests/integration/registration-flow.test.js` — 12 tests (individual, company, therapist flows)
-- [x] Tests de `individuals` y `companies` verificados (23 + 23 tests)
-
-### 2.2 Setup CI/CD Basico — COMPLETADO
-
-- [x] GitHub Actions workflow: tests + build + lint
-- [x] Proteccion de branch `main` (Ruleset: require PR, no direct push)
-- [x] Dependabot configurado y PR mergeado (Next.js 15.5.12)
-
-### 2.3 Planificacion Sprints 3-5 — COMPLETADO
-
-- [x] GitHub Issue #25: Sprint 3 — Arquitectura y Capas
-- [x] GitHub Issue #26: Sprint 4 — LLM y Compliance
-- [x] GitHub Issue #27: Sprint 5 — Seguridad y Deploy
-- [x] Labels creadas: architecture, compliance, AI/ML, testing, deployment, security
-
-### 2.4 Migracion TypeScript Progresiva — EN CURSO
-
-**Regla:** "Si editas un `.js`, conviertelo a `.ts` en el mismo commit"
-
-- [x] API routes migradas (matching, individuals, consent, dashboards, therapists, audit)
-- [ ] Componentes React criticos (`.jsx` a `.tsx`) — Sprint 3+
-- [ ] Objetivo: >80% TypeScript antes de quitar `ignoreBuildErrors`
-
----
-
-## Sprint 3: Arquitectura y Capas
-
-**Periodo:** Febrero-Marzo 2026
-**Estado:** EN PROGRESO
-
-### 3.1 Extraer Service Layer — COMPLETADO
+## Arquitectura de servicios
 
 ```
-app/lib/
-  services/          # Logica de negocio pura (sin Prisma)
-    users.ts              # (pre-existente, 1 metodo)
-    matching.service.ts   # Scoring algorithm, weights, thresholds
-    consent.service.ts    # Consent validation, privacy logic
-    profiles.service.ts   # Profile normalization, validation, completion
-  repositories/      # Data access layer (solo Prisma)
-    individual.repository.ts  # User + Individual CRUD
-    company.repository.ts     # User + Company + Job CRUD
-    therapist.repository.ts   # User + Therapist CRUD
+                    ┌─────────────┐
+                    │   nginx     │  :80 / :443
+                    │   gateway   │  app.diversia.click
+                    └──────┬──────┘
+           ┌───────────────┼───────────────┐
+           │               │               │
+    ┌──────▼──────┐ ┌──────▼──────┐ ┌──────▼──────┐
+    │   profile   │ │    auth     │ │ intelligence│
+    │   :8002     │ │   :8001     │ │   :8003     │
+    │ HTML+API    │ │ JWT+Users   │ │ LLM Reports │
+    └──────┬──────┘ └─────────────┘ └─────────────┘
+           │
+    ┌──────▼──────┐        ┌──────────────┐
+    │  matching   │        │  PostgreSQL  │
+    │   :8004     │        │   :5432      │
+    │ Scoring 24D │        │  4 schemas   │
+    └─────────────┘        └──────────────┘
 ```
 
-- [x] Crear `repositories/` con queries Prisma encapsuladas
-- [x] Crear `services/` con logica extraida de modulos actuales
-- [x] Refactorizar lib files para usar repos/services (individuals, companies, therapists, matching, consent)
-- [x] Logica testeable sin depender de Prisma/HTTP/framework
+### Servicios y puertos
 
-### 3.2 Refactorizar API Routes — COMPLETADO
+| Servicio | Puerto | Responsabilidad |
+|----------|--------|-----------------|
+| nginx gateway | 80/443 | Reverse proxy, SSL, routing |
+| auth-service | 8001 | Registro, login, JWT, roles |
+| profile-service | 8002 | Perfiles, quiz, games, frontend HTML |
+| intelligence-service | 8003 | Informes LLM, anonimizacion |
+| matching-service | 8004 | Algoritmo 24D, compatibilidad |
+| PostgreSQL | 5432 | Base de datos compartida (4 schemas) |
+| Ollama | 11434 | LLM self-hosted (Llama 3.2 3B) |
 
-API routes ya eran thin wrappers (no tocaban Prisma directamente). Con el refactoring:
+---
 
+## FASE 1 — Casos de uso y flujos (PENDIENTE)
+
+> Definir QUE hace la app antes de seguir construyendo
+
+### 1.1 Documentar flujos de usuario
+
+**Candidato:**
+1. Registrarse (nombre, email, password, rol=candidate)
+2. Completar quiz neurocognitivo (24 preguntas → vector 24D)
+3. Jugar Brain Suite (3 juegos → scores complementarios)
+4. Ver dashboard con radar chart 24D + fortalezas + areas de crecimiento
+5. Editar perfil (bio, ubicacion, habilidades)
+6. Ver ofertas de empleo con % compatibilidad
+7. Aplicar a ofertas (consentimiento explicito — GDPR)
+8. Recibir informe de talento (generado por LLM)
+
+**Empresa:**
+1. Registrarse (nombre empresa, email, password, rol=company)
+2. Completar evaluacion de inclusividad (18 preguntas, 6 categorias)
+3. Ver dashboard con score de inclusividad
+4. Publicar ofertas de empleo (titulo, descripcion, habilidades, adaptaciones)
+5. Ver candidatos compatibles con % matching
+6. Solicitar conexion con candidato (requiere consentimiento)
+7. Recibir informe de matching (explicacion IA — EU AI Act)
+
+**Terapeuta:**
+1. Registrarse (nombre, email, password, rol=therapist)
+2. Completar perfil profesional (especialidad, licencia, areas)
+3. Ver dashboard con estadisticas
+4. Publicar cursos/talleres (futuro)
+5. Conectar con candidatos (futuro)
+
+### 1.2 Mapear endpoints necesarios por flujo
+
+Para cada paso del flujo, verificar que existe:
+- Ruta HTML (Jinja2) para la UI
+- Endpoint API para la logica
+- Test unitario para el use case
+- Test de integracion para la conexion
+
+### 1.3 Identificar gaps
+
+Comparar lo que el frontend llama vs lo que el backend expone.
+Documentar endpoints faltantes o incompletos.
+
+---
+
+## FASE 2 — Completar la capa de aplicacion (PENDIENTE)
+
+> Use cases, repositorios, y la logica que conecta frontend con dominio
+
+### 2.1 Use cases faltantes
+
+| Use case | Servicio | Estado |
+|----------|----------|--------|
+| RegisterUser | auth-service | Implementado |
+| LoginUser | auth-service | Implementado |
+| CreateProfile | profile-service | Implementado |
+| SubmitQuiz | profile-service | Implementado |
+| SaveGameScore | profile-service | Implementado (SQLite) |
+| GetDashboard | profile-service | Implementado (SQLite) |
+| CreateJobOffer | profile-service | Implementado (SQLite) |
+| EvaluateInclusivity | profile-service | Implementado (SQLite) |
+| CalculateMatch | matching-service | Implementado |
+| RunBatchMatching | matching-service | Implementado |
+| GenerateReport | intelligence-service | Implementado |
+| **ApplyToJob** | profile-service | **FALTA** |
+| **RequestConnection** | profile-service | **FALTA** |
+| **ManageConsent** | profile-service | **FALTA** |
+| **ExportData (GDPR)** | profile-service | **FALTA** |
+| **DeleteAccount (GDPR)** | profile-service | **FALTA** |
+| **VerifyTherapist** | profile-service | **FALTA** |
+
+### 2.2 Repositorios (PostgreSQL)
+
+Migrar de SQLite standalone a repositorios SQLAlchemy reales:
+- [ ] UserRepository (auth-service) — ya tiene ORM, falta wiring completo
+- [ ] ProfileRepository (profile-service) — migrar profiles_local.py a ORM
+- [ ] JobRepository (profile-service) — migrar jobs de SQLite a ORM
+- [ ] InclusivityRepository (profile-service) — migrar de SQLite a ORM
+- [ ] GameScoreRepository (profile-service) — migrar de SQLite a ORM
+
+### 2.3 Comunicacion inter-servicio
+
+- [ ] profile-service → auth-service: validar JWT (actualmente local)
+- [ ] profile-service → matching-service: solicitar matching
+- [ ] profile-service → intelligence-service: solicitar informe
+- [ ] Definir patron: HTTP sync vs eventos async vs shared DB
+
+---
+
+## FASE 3 — Tests completos (PENDIENTE)
+
+> Suite de tests que garantice que todo funciona
+
+### 3.1 Tests unitarios adicionales
+
+- [ ] Use cases faltantes de Fase 2 (ApplyToJob, ManageConsent, etc.)
+- [ ] Repositorios SQLAlchemy (con SQLite in-memory para tests)
+- [ ] Frontend: tests de templates Jinja2 (renderizado correcto)
+
+### 3.2 Tests de integracion
+
+- [ ] auth-service: register + login + obtener token
+- [ ] profile-service: crear perfil + quiz + ver dashboard
+- [ ] matching-service: calcular match con datos reales
+- [ ] intelligence-service: generar informe con mock LLM
+- [ ] Cross-service: login → perfil → matching → informe
+
+### 3.3 Tests E2E (Playwright o httpx)
+
+- [ ] Flujo candidato completo: register → quiz → dashboard → jobs
+- [ ] Flujo empresa: register → inclusivity → jobs → candidatos
+- [ ] Flujo terapeuta: register → perfil → dashboard
+- [ ] GDPR: export datos + delete account
+- [ ] Errores: 404, 401, 403, 500
+
+### 3.4 Objetivo
+
+- **Minimo 300 tests** (194 actuales + ~100 nuevos)
+- **0 failing**
+- **Cobertura de todos los flujos criticos**
+
+---
+
+## FASE 4 — Frontend production-ready (PENDIENTE)
+
+> De CDN a build propio, paginas de error, accesibilidad
+
+### 4.1 Build de Tailwind CSS
+
+- [ ] Instalar Tailwind CSS como dependencia (no CDN)
+- [ ] Configurar build pipeline (postcss + purge)
+- [ ] Generar `app.min.css` con solo los estilos usados
+- [ ] Evaluar: Vite, esbuild, o simple postcss CLI
+
+### 4.2 Bundle de JavaScript
+
+- [ ] Alpine.js: vendor bundle local (no CDN)
+- [ ] Chart.js: vendor bundle local (no CDN)
+- [ ] Lucide icons: solo los iconos usados (tree-shake)
+- [ ] app.js: minificado
+
+### 4.3 Paginas de error
+
+- [ ] 404.html — pagina no encontrada
+- [ ] 500.html — error del servidor
+- [ ] 401.html — no autenticado (redirect a login)
+- [ ] Middleware FastAPI para servir estas paginas
+
+### 4.4 Accesibilidad
+
+- [ ] Verificar ARIA labels en formularios
+- [ ] Verificar contraste de colores (WCAG AA)
+- [ ] Verificar navegacion por teclado
+- [ ] Focus traps en modales
+
+### 4.5 SEO basico
+
+- [ ] Meta tags (title, description) por pagina
+- [ ] Open Graph tags para redes sociales
+- [ ] robots.txt
+- [ ] sitemap.xml
+
+---
+
+## FASE 5 — Docker y entorno de produccion (PENDIENTE)
+
+> Verificar que Docker Compose funciona end-to-end
+
+### 5.1 Verificar Docker Compose
+
+- [ ] `docker compose up` arranca los 4 servicios + postgres + nginx
+- [ ] Migraciones Alembic se ejecutan automaticamente
+- [ ] Health checks funcionan (/health en cada servicio)
+- [ ] nginx rutea correctamente a cada servicio
+- [ ] Seed data se carga en primera ejecucion
+
+### 5.2 Variables de entorno
+
+- [ ] `.env.production` con todas las variables necesarias
+- [ ] JWT_SECRET unico y seguro (no dev default)
+- [ ] DATABASE_URL apuntando a PostgreSQL
+- [ ] OLLAMA_URL apuntando al servicio Ollama
+- [ ] CORS_ORIGINS configurado para app.diversia.click
+
+### 5.3 SSL y dominio
+
+- [ ] Configurar app.diversia.click en DNS
+- [ ] Certificado SSL (Let's Encrypt via Dokploy o certbot)
+- [ ] nginx con HTTPS + redirect HTTP → HTTPS
+- [ ] HSTS header
+
+### 5.4 Seguridad de produccion
+
+- [ ] Rate limiting con Redis (no in-memory)
+- [ ] CORS estricto (solo app.diversia.click)
+- [ ] CSP headers
+- [ ] Secrets en Dokploy env vars (no en archivos)
+- [ ] PostgreSQL: password fuerte, no accesible externamente
+
+---
+
+## FASE 6 — Deploy a VPS (PENDIENTE)
+
+> Subir a app.diversia.click y verificar
+
+### 6.1 Preparar repositorio
+
+- [ ] Actualizar repo GitHub con todos los cambios locales
+- [ ] Limpiar archivos innecesarios (.pyc, __pycache__, SQLite DBs)
+- [ ] Verificar .gitignore completo
+- [ ] Tag de version (v2.0.0)
+
+### 6.2 Deploy
+
+- [ ] Push a GitHub
+- [ ] SSH al VPS
+- [ ] `git pull` en el VPS
+- [ ] `docker compose up -d --build`
+- [ ] Verificar que todos los servicios arrancan
+- [ ] Verificar que app.diversia.click responde
+
+### 6.3 Migracion de datos (si aplica)
+
+- [ ] Evaluar si hay datos reales en la app Node.js (Vercel)
+- [ ] Si hay usuarios reales: script de migracion Prisma → SQLAlchemy
+- [ ] Si no hay datos reales: solo seed data
+
+### 6.4 Validacion post-deploy
+
+- [ ] Registro de usuario funciona
+- [ ] Login funciona
+- [ ] Quiz + dashboard funciona
+- [ ] Games funciona
+- [ ] Matching funciona
+- [ ] Inclusivity funciona
+- [ ] Jobs funciona
+
+### 6.5 Retirar app Node.js
+
+- [ ] Verificar que app.diversia.click funciona al 100%
+- [ ] Redirigir dominio principal (si aplica)
+- [ ] Desactivar deploy de Vercel
+- [ ] Eliminar archivos Node.js del repo (app/, prisma/, package.json, etc.)
+
+---
+
+## FASE 7 — Post-deploy (FUTURO)
+
+> Mejoras continuas una vez la app esta en produccion
+
+### 7.1 Monitoring
+
+- [ ] Logs centralizados (Loki/Grafana o simple log rotation)
+- [ ] Health check dashboard
+- [ ] Alertas por servicio caido
+
+### 7.2 Backups
+
+- [ ] Backup automatizado de PostgreSQL (cron → S3/Backblaze)
+- [ ] Retention policy para backups
+
+### 7.3 Funcionalidades pendientes
+
+- [ ] Verificacion de terapeutas (licencia profesional)
+- [ ] Catalogo de cursos/talleres de terapeutas
+- [ ] Pipeline de candidatos para empresas (vista tipo Kanban)
+- [ ] Notificaciones (email o in-app)
+- [ ] App movil (si se confirma necesidad)
+- [ ] Bias detection en descripciones de empleo
+- [ ] AI Transparency Log (EU AI Act)
+
+### 7.4 Legal/Compliance
+
+- [ ] Privacy Policy (documento legal)
+- [ ] Terms of Service
+- [ ] DPO contact designado
+- [ ] Cookie consent banner
+- [ ] AI Act compliance audit
+
+---
+
+## Historial de versiones
+
+| Version | Fecha | Descripcion |
+|---------|-------|-------------|
+| v0.x | Feb 2026 | Monolito Next.js — Sprints 1-5 |
+| v1.0.0 | 26 Feb | Monolito production-ready (272 tests, OWASP audit) |
+| v2.0.0-dev | 4-7 Mar | Microservicios Python/FastAPI (194 tests, 14 paginas) |
+| **v2.0.0** | **TBD** | **Deploy a app.diversia.click** |
+
+---
+
+## Referencia rapida: como ejecutar
+
+### Desarrollo local (standalone)
+
+```bash
+cd services/profile-service
+pip install -e ".[dev]"
+uvicorn app.main:app --reload --port 8002
+# Abre http://localhost:8002
 ```
-API Route → lib file (orquestacion) → service (logica) + repository (datos)
+
+### Tests
+
+```bash
+# Todos los servicios
+cd services/auth-service && python -m pytest tests/ -q
+cd services/profile-service && python -m pytest tests/ -q
+cd services/matching-service && python -m pytest tests/ -q
+cd services/intelligence-service && python -m pytest tests/ -q
 ```
 
-- [x] Verificar que API routes no requieren cambios (ya delegaban a lib files)
-- [x] Tests pasando sin regresiones (272+ tests)
+### Docker (cuando este listo)
 
-### 3.3 Decision Arquitectonica: Monolito Next.js
-
-**Decision: Mantener monolito Next.js** (22 Feb 2026)
-
-**Contexto:**
-- Equipo pequeno (1-2 personas), MVP pre-revenue
-- Sin multiples frontends confirmados aun
-- Deploy unico simplifica operaciones
-- PostgreSQL via Prisma ya esta desacoplado
-
-**Justificacion:**
-
-| Criterio | Monolito Next.js | Backend separado (NestJS) |
-|----------|-----------------|--------------------------|
-| Velocidad de desarrollo | Alta — 1 repo, 1 deploy | Baja — 2 repos, 2 deploys, CORS |
-| Complejidad operativa | Baja — Vercel/VPS unico | Alta — 2 servicios, API gateway |
-| Coste | Bajo — 1 instancia | Alto — 2+ instancias |
-| App movil futura | React Native + API routes | Nativo con backend dedicado |
-| Testabilidad | Con service layer: Alta | Alta por defecto |
-| Migracion futura | Service layer ya preparada | N/A |
-
-**Ruta de escape:** El service layer extraido en 3.1 permite migrar a backend separado
-en el futuro sin reescribir logica de negocio. Los services son funciones puras,
-los repositories encapsulan Prisma. Solo habria que:
-1. Copiar `services/` y `repositories/` a un proyecto NestJS/Fastify
-2. Exponer como controllers REST/GraphQL
-3. Apuntar el frontend Next.js a la nueva API
-
-**Trigger para reconsiderar:**
-- App movil nativa confirmada como requisito
-- >3 desarrolladores backend simultaneos
-- Necesidad de escalar API independientemente del frontend
+```bash
+cd services
+docker compose up --build
+# Abre http://localhost (nginx)
+```
 
 ---
 
-## Sprint 4: LLM y Compliance
+## Sprints historicos (v1.0.0 — referencia)
 
-**Periodo:** Marzo-Abril 2026
-**Estado:** En progreso (decision LLM tomada)
+> Documentacion completa de la evolucion del monolito Next.js.
+> Ver commits en rama `master` para el codigo original.
 
-### 4.1 LLM Self-Hosted: Mantener Ollama + Upgrade Modelo
+<details>
+<summary>Sprint 1-5 (Feb 2026) — Click para expandir</summary>
 
-**Decision (25 Feb 2026):** Mantener Ollama self-hosted en el VPS. No migrar a API externa.
+### Sprint 1: Fundaciones Criticas (10-21 Feb)
+- Migracion JSON → PostgreSQL (Prisma)
+- 191 tests, build exitoso
+- Dependabot: Next.js 15.5.12
 
-**Motivos:**
-- Control de datos: los datos no salen de nuestra infraestructura (GDPR Art. 9 — datos neurodivergentes)
-- Coste cero: sin API fees externos (Gemini free tier: 5 RPM, insuficiente para produccion)
-- Colocalizacion: `diversia-ollama` y `diversia-db` corren en el mismo VPS
-- Llama 3.2 3B > Gemma 2B: IFEval 77.4 vs 61.9 (+25% en seguir instrucciones)
+### Sprint 2: Tests y Limpieza (22 Feb)
+- 272 tests (de 191), 0 failed
+- Branch protection, CI/CD
+- Issues #25-#27 planificadas
 
-**Modelo anterior:** `gemma:2b`
-**Modelo actual:** `llama3.2:3b` (3B parametros, ~2GB RAM, dentro del limite de 4GB del contenedor)
+### Sprint 3: Arquitectura (22-25 Feb)
+- Service + Repository layer extraidos
+- Decision: mantener monolito (equipo pequeno, MVP)
 
-- [x] Cambiar modelo de `gemma:2b` a `llama3.2:3b` en `app/lib/llm.js`
-- [x] Migrar `app/lib/llm.js` a `app/lib/services/llm.service.ts` (TypeScript, arquitectura Sprint 3)
-- [x] 3 prompts profesionales especializados:
-  - **Inclusivity Analysis** — scoring DEI, deteccion lenguaje discriminatorio, sugerencias accionables
-  - **Candidate Evaluation** — fit score, fortalezas cognitivas, retos con mitigacion, recomendacion
-  - **Matching Explanation** — explicacion al candidato (EU AI Act Art. 13: transparencia IA)
-- [x] Rate limiting: 10 llamadas/min por identificador (control de carga de inferencia)
-- [x] TTL Cache en memoria: 1h inclusividad / 30min evaluacion / 15min matching
-- [x] `app/api/chat/route.ts` conectado a Ollama real (NeuroDialect ya no es demo)
-- [x] `docs/DESPLIEGUE_VPS.md` + `docs/NEXT_STEPS.md` actualizados
+### Sprint 4: LLM y Compliance (25 Feb)
+- Ollama + Llama 3.2 3B (self-hosted, GDPR Art. 9)
+- GDPR ~90% (export, delete, consent, retention)
 
-### 4.2 GDPR Compliance Completo
+### Sprint 5: Seguridad y Deploy (26 Feb)
+- OWASP audit: 7 vulnerabilidades corregidas
+- Playwright E2E: 25+ tests
+- Vercel deploy funcional
 
-**Estado anterior:** ~70% implementado
-**Estado actual:** ~90% implementado (codigo completo; Privacy Policy y DPO son items legales/organizativos)
+</details>
 
-- [x] Data Retention Policy — `app/lib/gdpr-retention.ts` con periodos definidos:
-  - Audit logs: 7 anos (GDPR Art. 5 + EU AI Act Art. 12)
-  - Usuarios eliminados: 30 dias antes de hard-delete
-  - Matchings expirados: 90 dias
-  - Connections revocadas: 90 dias
-  - Form submissions: 1 ano
-  - Funcion `purgeExpiredData()` para cron job diario
-- [x] Right to be Forgotten completo — `anonymizeUserAccount()` mejorado con cascade:
-  - Anonimiza Individual: nombre, diagnosticos, location, historial medico, skills
-  - Anonimiza User: email → `deleted_<id>@anonymized.local`
-  - Revoca todas las Connections activas (retira consentimiento)
-  - Retira todos los Matchings PENDING (WITHDRAWN) + limpia candidateData
-  - Ruta dedicada: `DELETE /api/individuals/[userId]/gdpr/delete`
-- [x] Data Portability — `GET /api/individuals/[userId]/gdpr/export?format=json|csv`
-  - Incluye: perfil, connections, matchings, audit log como sujeto
-  - Formatos: JSON estructurado + CSV multi-seccion
-  - Audit log del propio export (GDPR Art. 5 — transparencia)
-- [x] Consent Management UI backend — `GET /api/individuals/[userId]/consents`
-  - Lista todas las conexiones (activas + revocadas) con info de empresa/job
-  - Incluye `canRevoke` flag y endpoint de revocacion por conexion
-  - Info GDPR integrada (Art. 7, derecho al olvido, portabilidad)
-- [ ] Privacy Policy (documento legal — pendiente equipo legal/producto)
-- [ ] DPO Contact designado (organizativo — pendiente decision interna)
+### Sesiones de migracion v2.0.0
 
----
+<details>
+<summary>Sesiones 6-10 (Mar 2026) — Click para expandir</summary>
 
-## Sprint 5: Seguridad y Deploy
+### Sesion 6 (4 Mar): Scaffolding + auth + matching
+- 4 servicios Python/FastAPI, Docker Compose, nginx
+- auth-service: 48 tests, matching-service: 42 tests
 
-**Periodo:** Febrero 2026
-**Estado:** En progreso (Issue #27)
+### Sesion 7 (5-6 Mar): profile + intelligence + persistencia
+- profile-service + intelligence-service implementados
+- SQLAlchemy ORM, Alembic, OWASP hardening
+- 36 tests adicionales (126 total microservicios)
 
-### 5.1 Auditoria de Seguridad (OWASP Top 10) ✅ Completado
+### Sesiones 8-9 (6-7 Mar): Frontend Jinja2
+- 12 paginas HTML con Alpine.js + Tailwind
+- Auth standalone (SQLite), quiz 24D, radar chart
+- Dashboard candidato/empresa/terapeuta
 
-**Audit realizado 26 Feb 2026 — 7 vulnerabilidades corregidas**
+### Sesion 10 (7 Mar): Brain Suite + Matching 24D
+- 3 juegos cognitivos, inclusivity assessment
+- Job CRUD, matching 24D con scoring + razones
+- 14 paginas, 194 tests totales
 
-**OWASP A01: Broken Access Control (CRITICO)**
-- [x] 3 rutas de consent sin auth: `POST /api/consent/{accept,reject,revoke}` — cualquier usuario podia actuar en nombre de otro. Fix: `auth()` + `session.user.id !== userId → 403`
-- [x] Dashboard individual sin auth: `GET /api/dashboards/individual/:userId` — exponia datos de cualquier usuario. Fix: auth + ownership check
-- [x] Dashboard empresa sin auth: `GET /api/dashboards/company/:companyId` — exponia pipeline completo de cualquier empresa. Fix: auth + `findCompanyByUserId()` → 403
-- [x] Matching candidato sin auth: `GET /api/matching/candidates/:userId` — exponia matches de cualquier candidato. Fix: auth + ownership
-- [x] Matching job sin auth: `GET /api/matching/jobs/:jobId` — exponia candidatos de cualquier empresa. Fix: auth + ownership via `job.companyId`
-
-**OWASP A05: Security Misconfiguration**
-- [x] CSP (Content-Security-Policy) no implementado — añadido en middleware.js (development + production)
-- [x] HSTS (Strict-Transport-Security) no implementado — añadido en produccion (max-age=31536000)
-
-**Verificado y correcto (no requirio cambios):**
-- [x] SQL Injection: Prisma con type-safe queries, sin `$queryRaw` ni `$executeRaw`
-- [x] Broken Auth: NextAuth configurado correctamente (JWT, bcrypt, errores genericos)
-- [x] Sensitive Data Exposure: AES-256-GCM para datos medicos, password hashes no expuestos
-- [x] XSS: Sin `dangerouslySetInnerHTML`, JSX escapa por defecto
-- [x] Rate Limiting: implementado en middleware (IP-based, diferenciado por tipo de operacion)
-- [x] Headers basicos: X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy
-
-**Deuda tecnica identificada (no bloqueante):**
-- `grantConsent`/`rejectConsent` en routes de consent tienen signature incorrecta (4 args vs 2-3 esperados). Bug pre-existente, requiere refactoring del flujo de consent.
-- Zod validation falta en 8 rutas (usan validacion manual). Recomendado para Sprint 6.
-
-### 5.2 Tests E2E (Playwright) ✅ Completado
-
-**@playwright/test v1.58.2 instalado, 5 suites, 25+ tests**
-
-- [x] `playwright.config.ts` — 3 projects: setup, public, authenticated
-- [x] `tests/e2e/setup/global.setup.ts` — crea usuarios de test via API, guarda sesiones NextAuth
-- [x] `tests/e2e/public/auth.spec.ts` — 7 tests: páginas publicas, protección de rutas, login
-- [x] `tests/e2e/authenticated/dashboard-candidate.spec.ts` — 4 tests: dashboard + API access control
-- [x] `tests/e2e/authenticated/dashboard-company.spec.ts` — 5 tests: dashboard empresa + jobs
-- [x] `tests/e2e/authenticated/consent.spec.ts` — 7 tests: flujo consent (accept/reject/revoke)
-- [x] `tests/e2e/authenticated/gdpr.spec.ts` — 7 tests: export y delete account (GDPR)
-
-Scripts npm: `test:e2e`, `test:e2e:public`, `test:e2e:auth`, `test:e2e:report`
-
-**Flujos cubiertos:**
-- Registro candidato UI (formulario visible con campos correctos)
-- Proteccion de rutas (sin sesion → redirect a login)
-- Login correcto e incorrecto
-- Dashboard candidato y empresa (autenticados)
-- Consentimiento (accept/reject/revoke) — access control real
-- GDPR export y delete account (con skip en CI para tests destructivos)
-
-**Flujos pendientes (requieren DB con datos seed reales):**
-- Matching automatico end-to-end
-- Pipeline de empresa con candidatos reales
-- Aceptacion de match con matchId real (depende de seed data)
-
-### 5.3 Deployment
-
-**Estado actual: App en produccion en Vercel (desplegada previamente)**
-**Ver documentacion completa: `docs/ARQUITECTURA_DEPLOY.md`**
-
-- [x] Vercel: desplegado y funcionando
-- [x] PostgreSQL en VPS Hostinger (Dokploy) — mismo VPS que Ollama
-- [x] Ollama + Llama 3.2 3B en VPS (self-hosted, GDPR Art. 9)
-- [x] Variables de entorno documentadas en `.env.example`
-- [ ] Backup automatizado (cron en VPS → S3/Backblaze) — pendiente
-- [ ] Monitoring: Sentry + Vercel Analytics — pendiente
-- [ ] Branch protection en main — pendiente configurar en Gitea
-
----
-
-## Decisiones Tecnicas
-
-### Tomadas
-
-| Decision | Resultado | Fecha |
-|----------|-----------|-------|
-| PostgreSQL + Prisma | Aprobado y ejecutado | 10 Feb |
-| JSON a PostgreSQL (migracion) | Completado para todos los modulos | 20 Feb |
-| Next.js 15 (mantener) | Actualizado a 15.5.12 | 20 Feb |
-| Vitest (mantener) | Aprobado | 10 Feb |
-| TypeScript progresivo | En progreso (modulos `.ts` creados) | 20 Feb |
-| JSON columns para datos semi-estructurados | Certifications, metadata, companyContracts como `Json` | 20 Feb |
-| `clients[]` como String array | MVP adecuado, tabla intermedia futura si >100 clientes | 20 Feb |
-| MatchingStatus como enum Prisma | PENDING, APPROVED, REJECTED, WITHDRAWN, CONTESTED | 20 Feb |
-| Connection.status como String | "active", "revoked" — por simplicidad | 20 Feb |
-| Prisma 7 adapter pattern | `@prisma/adapter-pg` en runtime, `env('DATABASE_URL')` en CLI | 20 Feb |
-| Monolito Next.js (mantener) | Service + Repository layer para desacoplar | 22 Feb |
-| Service + Repository Layer | Logica pura en services, Prisma solo en repositories | 22 Feb |
-| LLM Self-Hosted (Ollama) | Mantener self-hosted, upgrade Gemma 2B → Llama 3.2 3B | 25 Feb |
-
-| Migracion a Python/FastAPI | Aprobado y ejecutado (ADR-003) | 4 Mar |
-| Arquitectura microservicios | 4 servicios con Clean Architecture (ADR-004) | 4 Mar |
-| NextAuth → JWT custom | Reemplazado por auth-service con JWT + bcrypt | 4 Mar |
-| Vercel → Docker Compose + Dokploy | Frontend migrara a Jinja2 servido desde profile-service | 4 Mar |
-
-### Pendientes
-
-| Decision | Opciones | Depende de |
-|----------|----------|------------|
-| Eliminar Next.js | Cuando frontend Jinja2 este completo | Issue #63 |
-| Hosting definitivo | VPS actual (Dokploy) vs managed (Railway/Render) | Budget, escala |
-
----
-
-## Preguntas Estrategicas Pendientes
-
-> Estas preguntas fueron planteadas en la sesion del 10 Feb y siguen abiertas.
-> Las respuestas definen la arquitectura objetivo y el go-to-market.
-
-### Modelo de Negocio
-- [ ] Modelo de revenue? (SaaS / Marketplace / Mixto / Freemium)
-- [ ] Quien paga? (Empresas / Individuos / Terapeutas)
-- [ ] Cliente principal? (Grandes empresas / Pymes / Startups)
-
-### Compliance y Jurisdicciones
-- [ ] Paises LATAM prioritarios? (Mexico, Argentina, Colombia, Chile)
-- [ ] Almacenar diagnosticos medicos explicitos o solo perfiles de fortalezas?
-- [ ] Terapeutas empleados o independientes?
-- [ ] Certificaciones necesarias? (ISO 27001, SOC 2, ENS, HIPAA)
-
-### Arquitectura y Escalabilidad
-- [ ] Multiples frontends previstos? (App movil, widget embebible)
-- [ ] Capacidad DevOps? (Solo / Equipo pequeno / Equipo grande)
-- [ ] Proyeccion usuarios 12 meses?
-- [ ] Estado inversion $400K?
-
----
-
-## Notas de Sesion
-
-### Sesion 1 — 10 Feb 2026
-
-**Trabajos realizados:**
-- Auditoria completa del proyecto
-- Limpieza de 76 archivos temporales
-- Correccion de errores de build (exports faltantes, params await)
-- Build exitoso verificado
-- ROADMAP y framework de consultoria creados
-
-**Decisiones:**
-- PostgreSQL + Prisma confirmado
-- Migracion JSON a PostgreSQL es prioridad #1
-- TypeScript progresivo (archivo por archivo)
-
-### Sesion 2 — 20 Feb 2026
-
-**Trabajos realizados:**
-- Dependabot merge: Next.js 15.5.12 (CVE-2026-23864)
-- Migracion completa JSON a PostgreSQL (4 modulos)
-- Schema Prisma expandido (Therapist, Connection, Matching)
-- 5 migraciones aplicadas en PostgreSQL 16
-- seed.ts reescrito con datos de prueba completos
-- 2 bugs corregidos en dashboards (company.profile.name, audit logs)
-- API route actualizada (storage.js a consent.ts)
-- Documentacion de migracion creada
-
-**Decisiones tecnicas:**
-- JSON columns para datos semi-estructurados (certifications, metadata)
-- `clients[]` como String array en Therapist (adecuado para MVP)
-- MatchingStatus como enum, Connection.status como string
-- `@prisma/adapter-pg` obligatorio en Prisma 7 para runtime
-- Seed command en `prisma.config.ts` (no en package.json)
-
-**Bugs encontrados y corregidos:**
-- `dashboards.js` accedia a `company.profile.name` que no existia (Prisma normaliza como `company.name`)
-- `dashboards.js` llamaba a `storage.getAuditLogsForUser()` pero audit logs se escribian a PostgreSQL via `audit.ts`
-- `seed.ts` usaba `new PrismaClient()` sin adapter (Prisma 7 requiere `@prisma/adapter-pg`)
-- `seed.ts` upsert sin `include` impedia acceder a IDs de relaciones
-
----
-
-## Referencias
-
-- [docs/MIGRATION_JSON_TO_POSTGRESQL.md](docs/MIGRATION_JSON_TO_POSTGRESQL.md) — Detalle tecnico de la migracion
-- [docs/AUDITORIA_PROYECTO_2026-02-10.md](docs/AUDITORIA_PROYECTO_2026-02-10.md) — Auditoria inicial
-- [prisma/schema.prisma](prisma/schema.prisma) — Schema de base de datos
-- [SECURITY_IMPLEMENTATION.md](SECURITY_IMPLEMENTATION.md) — Sistema de seguridad
-
----
-
-### Sesion 3 — 21 Feb 2026
-
-**Trabajos realizados:**
-- Eliminacion de 4 archivos legacy `.js` (therapists, matching, consent, dashboards)
-- Creacion de `tests/helpers/prisma-mock.js` (in-memory stateful Prisma mock)
-- 29 tests de therapist pasando con mock de Prisma (antes fallaban)
-- Bug fix en `therapists.ts`: campos `welcomeEmailSent`, `redirectTo`, `rejectionReason`
-- Migracion `forms/route.js` de `fs` directo a Prisma (`FormSubmission` model)
-- Schema Prisma: nuevo modelo `FormSubmission`
-- Fix: `prisma.test.js` con skip condicional (sin DATABASE_URL)
-- Tests obsoletos movidos a `tests/pending/integration/`
-- CI/CD: GitHub Actions workflow (test + build + lint)
-- Suite de tests 100% verde: 15 pasados, 1 skipped, 0 failed (191 tests)
-
-**Decisiones tecnicas:**
-- `storage.js` mantenido temporalmente — solo tests lo usan, eliminacion cuando se migren
-- Tests de `pending/unit/` requieren refactoring significativo (Sprint 2)
-- Prisma mock soporta: CRUD, $transaction, include, push, increment, findMany
-
-**Tests suite status:**
-- Antes: 15 passed, 3 failed
-- Despues: 15 passed, 1 skipped, 0 failed
-
-**Proxima sesion:** Reactivar tests pending, migracion TypeScript progresiva, proteccion de branch main
-
-### Sesion 4 — 22 Feb 2026
-
-**Trabajos realizados:**
-- Proteccion de branch `main` configurada (Ruleset en GitHub)
-- Dependabot PR revisado, explicado al usuario, y mergeado (Next.js 15.5.12)
-- GitHub Issues #25, #26, #27 creados para Sprints 3, 4, 5
-- Labels de GitHub creadas (architecture, compliance, AI/ML, testing, deployment, security)
-- 4 nuevos archivos de test unitarios creados:
-  - `tests/unit/matching/matching.test.js` (12 tests)
-  - `tests/unit/matching/consent.test.js` (20 tests)
-  - `tests/unit/dashboards/dashboards.test.js` (14 tests)
-  - `tests/unit/privacy/audit.test.js` (15 tests)
-- 2 tests de integracion reescritos para Prisma:
-  - `tests/integration/middleware_auth.test.js` (8 tests)
-  - `tests/integration/registration-flow.test.js` (12 tests)
-- Suite de tests 100% verde: 272 passed, 5 skipped, 0 failed
-
-**Metricas de tests:**
-- Antes (Sprint 1): 191 tests
-- Despues (Sprint 2): 272 tests (+81 tests, +42%)
-- Cobertura de modulos: matching, consent, audit, dashboards, middleware, registration
-
-**Sprint 2 completado al 100%**
-
-### Sesion 5 — 25-26 Feb 2026
-
-**Trabajos realizados:**
-- Sprint 3 completado: Service + Repository Layer extraidos
-- Sprint 4 completado: LLM upgrade a Llama 3.2 3B, GDPR compliance ~90%
-- Sprint 5 completado: OWASP audit (7 vulns corregidas), E2E Playwright (25+ tests)
-- v1.0.0 release: 272 tests, 0 failing, production-ready monolith
-
-**Metricas:** 272 tests passing, 0 failing, build exitoso
-
-### Sesion 6 — 4 Mar 2026
-
-**Trabajos realizados:**
-- Decision estrategica: migrar a microservicios Python/FastAPI (ADR-003, ADR-004)
-- Scaffolding completo: 4 servicios, Docker Compose, nginx gateway
-- auth-service implementado: User entity, Register/Login use cases, JWT, 48 tests
-- matching-service implementado: MatchRequest, RunMatching, scoring 24D, 42 tests
-- Documentacion GACE actualizada para v2.0.0
-
-### Sesion 7 — 5-6 Mar 2026
-
-**Trabajos realizados:**
-- profile-service implementado: NeurocognitiveAssessment, quiz normalization
-- intelligence-service implementado: TalentReport, LLM client, anonymizer, prompt builder
-- SQLAlchemy ORM + DI wiring para todos los servicios
-- Alembic migrations para auth-service
-- OWASP hardening: CORS env-aware, rate limiting, seed data
-- 36 nuevos tests de seguridad y persistencia
-- Documentacion completa actualizada (README, PROJECT_STATUS, ROADMAP, CHANGELOG, NEXT_STEPS)
-
-**Metricas:** 126 tests nuevos (pytest) + 272 legacy (Vitest) = 398 total, 0 failing
-
-**Proxima sesion:** Fase 6 — Frontend Jinja2 + Alpine.js + Tailwind CSS
-
-### Sesion 8-9 — 6-7 Mar 2026
-
-**Trabajos realizados:**
-- Fase 6 Frontend: profile-service standalone mode (SQLite, sin PostgreSQL)
-- Self-contained auth: register/login/me/logout en SQLite (auth_proxy.py)
-- Self-contained profiles: CRUD + quiz en SQLite (profiles_local.py)
-- JWT unificado: DEV_JWT_SECRET centralizado en config.py (fix login loop)
-- 12 paginas HTML con Jinja2 + Alpine.js + Tailwind CSS:
-  - Landing (/), /para-candidatos, /para-empresas, /para-terapeutas
-  - /about (con testimonios), /faq (accordion Alpine.js)
-  - /login, /register, /dashboard, /forms, /quiz, /games
-- Navbar contextual: publica (landing links + Login) vs logueada (Dashboard + role actions)
-- Forms auto-detect role desde Alpine store (sin tabs redundantes)
-- Quiz 24D: 24 preguntas → neuro_vector calculado y almacenado
-- Dashboard candidato con radar chart (Chart.js):
-  - Grafico radar 24D con colores por categoria
-  - Top 5 fortalezas + 3 areas de crecimiento
-  - Desglose por 8 categorias (Atencion, Memoria, Procesamiento, Ejecutiva, Social, Creatividad, Sensorial, Emocional)
-  - Barra de progreso del perfil
-  - Placeholders para matching y Brain Suite
-- Dashboards empresa y terapeuta (placeholder con KPIs y acciones)
-- api() helper con fallback para servicios no disponibles (non-JSON responses)
-
-**Bugs corregidos:**
-- asyncpg ModuleNotFoundError: lazy-loading de database engine
-- Register "Not Found": auth movido de proxy httpx a SQLite local
-- Login redirect loop: JWT secret mismatch entre auth_proxy y deps.py
-- Forms "JSON no valido": endpoint apuntaba a PostgreSQL (500 text/plain)
-- Quiz "Not Found" al 95%: endpoint /profiles/quiz no existia
-- "Inicio" visible en navbar logueada: movido a bloque publico
-
-**Decisiones:**
-- Modo standalone: 1 comando (`uvicorn`) para desarrollo local, sin Docker/PostgreSQL
-- Candidato es flujo prioritario (#1), empresa (#2), terapeuta (#3)
-- Modelo de negocio: candidatos gratis, empresas pagan por acceso, terapeutas pagan por publicar cursos
-- Chart.js para visualizacion 24D (radar chart)
-
-**Metricas:** 12 paginas funcionales, flujo completo register → profile → quiz → dashboard con radar chart
-
-### Sesion 10 — 7 Mar 2026
-
-**Trabajos realizados:**
-- Brain Suite: 3 juegos cognitivos jugables (Memory Grid, Reaction Time, Color Match/Stroop)
-- Persistencia de game scores en SQLite + integracion con dashboard
-- Dashboard candidato: radar chart 24D, top fortalezas, categorias, progreso
-- Dashboard empresa completo: KPIs, inclusivity score breakdown, ofertas de trabajo
-- Dashboard terapeuta: perfil profesional, especialidad, areas de soporte, visibilidad
-- Evaluacion de inclusividad: 18 preguntas, 6 categorias, scoring por area
-- Ofertas de trabajo CRUD: empresas publican, candidatos ven ofertas activas
-- **Matching inteligente 24D**: algoritmo que calcula compatibilidad candidato-empleo
-  - Mapeo skills → dimensiones neurocognitivas con pesos
-  - Boost por adaptaciones ofrecidas (horario flexible, espacio silencioso, etc.)
-  - Razones explicables ("Tu proceso visual es fortaleza para este puesto")
-  - GET /profiles/jobs/matched devuelve ofertas ordenadas por score
-- Candidate dashboard muestra top 3 empleos compatibles con scores
-- Candidate /jobs page muestra todas las ofertas con % compatibilidad y razones
-- Fix: migracion de BDs antiguas (ALTER TABLE para nuevas columnas)
-
-**Bugs corregidos:**
-- Perfil empresa "Internal Server Error": columnas faltantes en BD antigua
-- Inclusividad "Error al enviar" al 94%: misma causa (inclusivity_score column)
-
-**Metricas:**
-- 14 paginas funcionales (+ /jobs, /inclusivity)
-- 3 flujos completos: candidato, empresa, terapeuta
-- Matching 24D operativo con algoritmo de scoring + razones explicables
-- Fase 6 Frontend: ~90% completada
-
-**Proxima tarea:** Fase 7 — Deploy VPS + tests E2E cross-service
+</details>
