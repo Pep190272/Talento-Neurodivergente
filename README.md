@@ -156,9 +156,11 @@ cd services/shared && python -m pytest tests/ -q             # 13 tests
 
 Ver [ROADMAP.md](ROADMAP.md) para el plan completo.
 
-## License
+## Licencia
 
-MIT License — ver [LICENSE](LICENSE).
+Copyright (c) 2026 DiversIA Eternals. Todos los derechos reservados.
+
+Este codigo es privado y confidencial. No se permite su copia, distribucion ni modificacion sin autorizacion escrita del propietario.
 
 ---
 
