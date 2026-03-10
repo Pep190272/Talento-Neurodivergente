@@ -15,6 +15,8 @@ from app.infrastructure.database import get_session
 from app.infrastructure.persistence.profile_repository import SQLAlchemyProfileRepository
 from app.infrastructure.persistence.assessment_repository import SQLAlchemyAssessmentRepository
 from app.infrastructure.persistence.therapist_repository import SQLAlchemyTherapistRepository
+from app.infrastructure.persistence.job_repository import SQLAlchemyJobRepository
+from app.infrastructure.persistence.game_score_repository import SQLAlchemyGameScoreRepository
 
 _settings = ProfileServiceSettings()
 
@@ -72,3 +74,15 @@ async def get_register_therapist_use_case(
     therapist_repo: SQLAlchemyTherapistRepository = Depends(get_therapist_repo),
 ) -> RegisterTherapistUseCase:
     return RegisterTherapistUseCase(therapist_repo)
+
+
+async def get_job_repo(
+    session: AsyncSession = Depends(get_session),
+) -> SQLAlchemyJobRepository:
+    return SQLAlchemyJobRepository(session)
+
+
+async def get_game_score_repo(
+    session: AsyncSession = Depends(get_session),
+) -> SQLAlchemyGameScoreRepository:
+    return SQLAlchemyGameScoreRepository(session)

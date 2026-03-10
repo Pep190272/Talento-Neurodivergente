@@ -12,9 +12,8 @@ from slowapi import Limiter
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
-from .api.v1.auth_proxy import router as auth_proxy_router
 from .api.v1.pages import router as pages_router
-from .api.v1.profiles_local import router as profiles_local_router
+from .api.v1.profiles import router as profiles_router
 from .config import ProfileServiceSettings
 
 _settings = ProfileServiceSettings()
@@ -55,11 +54,10 @@ def create_app() -> FastAPI:
     if static_dir.exists():
         application.mount("/static", StaticFiles(directory=str(static_dir)), name="static")
 
-    # Local dev routes (SQLite — no PostgreSQL needed)
-    application.include_router(auth_proxy_router)
-    application.include_router(profiles_local_router)
+    # DDD routes — profiles, jobs, games, quiz, therapist (PostgreSQL)
+    application.include_router(profiles_router)
 
-    # HTML page routes (always available, no DB needed)
+    # HTML page routes (Jinja2 templates)
     application.include_router(pages_router)
 
     @application.get("/health")

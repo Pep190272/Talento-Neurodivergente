@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from datetime import datetime, timezone
 
-from sqlalchemy import Boolean, DateTime, Enum, Float, String, Text, JSON
+from sqlalchemy import Boolean, DateTime, Enum, Float, Integer, String, Text, JSON
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 from shared.domain import NeuroVector24D, UserRole
@@ -227,3 +227,42 @@ class AssessmentModel(Base):
             created_at=a.created_at,
             updated_at=a.updated_at,
         )
+
+
+class JobOfferModel(Base):
+    __tablename__ = "job_offers"
+    __table_args__ = {"schema": "profiles"}
+
+    id: Mapped[str] = mapped_column(String(25), primary_key=True)
+    company_user_id: Mapped[str] = mapped_column(String(25), nullable=False, index=True)
+    title: Mapped[str] = mapped_column(String(255), nullable=False)
+    description: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    location: Mapped[str] = mapped_column(String(255), nullable=False, default="")
+    modality: Mapped[str] = mapped_column(String(50), nullable=False, default="remote")
+    required_skills: Mapped[dict] = mapped_column(JSON, nullable=False, default=list)
+    adaptations: Mapped[dict] = mapped_column(JSON, nullable=False, default=list)
+    salary_range: Mapped[str] = mapped_column(String(100), nullable=False, default="")
+    status: Mapped[str] = mapped_column(
+        Enum("active", "closed", "draft", name="job_status", schema="profiles"),
+        nullable=False, default="active",
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
+    )
+    updated_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
+    )
+
+
+class GameScoreModel(Base):
+    __tablename__ = "game_scores"
+    __table_args__ = {"schema": "profiles"}
+
+    id: Mapped[str] = mapped_column(String(25), primary_key=True)
+    user_id: Mapped[str] = mapped_column(String(25), nullable=False, index=True)
+    game: Mapped[str] = mapped_column(String(100), nullable=False)
+    score: Mapped[int] = mapped_column(Integer, nullable=False)
+    details: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    played_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc)
+    )
