@@ -155,13 +155,6 @@ services:
       matching-service:
         condition: service_healthy
     restart: unless-stopped
-    networks:
-      - dokploy-network
-      - default
-
-networks:
-  dokploy-network:
-    external: true
 
 volumes:
   postgres-data:
