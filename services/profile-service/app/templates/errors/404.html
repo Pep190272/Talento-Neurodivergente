@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}404 — Pagina no encontrada | DiversIA{% endblock %}
+
+{% block content %}
+<section class="flex items-center justify-center min-h-[70vh] px-4">
+  <div class="text-center max-w-lg">
+    <p class="text-8xl font-display font-black text-primary mb-4">404</p>
+    <h1 class="text-3xl font-display font-bold text-dark mb-4">Pagina no encontrada</h1>
+    <p class="text-lg text-gray-600 mb-8">
+      La ruta que buscas no existe o ha sido movida.
+    </p>
+    <a href="/" class="inline-block px-8 py-3 bg-primary text-white font-semibold rounded-lg hover-lift">
+      Volver al inicio
+    </a>
+  </div>
+</section>
+{% endblock %}
