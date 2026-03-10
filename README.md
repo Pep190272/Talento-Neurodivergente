@@ -9,17 +9,35 @@ Plataforma de matching trilateral 24D para talento neurodivergente. Conecta cand
 | Backend | Python + FastAPI | 3.12 / 0.115+ |
 | ORM | SQLAlchemy | 2.0 |
 | Validacion | Pydantic | v2 |
-| Base de datos | SQLite (desarrollo) | — |
+| Base de datos | PostgreSQL 16 (prod) / SQLite (dev) | — |
 | Tests | pytest | 9.0+ |
 | LLM | Ollama + Llama 3.2 3B | Self-hosted EU |
 | Frontend | Jinja2 + Alpine.js + Tailwind CSS (CDN) | — |
-| Frontend (legacy) | Next.js 15 | Vercel, en deprecacion |
+| Gateway | nginx | Alpine |
+| Infraestructura | Docker Compose + Dokploy | VPS Hostinger (Paris) |
 
 ## Arquitectura
 
-### Lo que funciona HOY (desarrollo local)
+### Produccion (app.diversia.click)
 
-Solo se ejecuta **profile-service** en el puerto **:8002**:
+```
+Internet → Traefik (Dokploy) → nginx gateway (:8000)
+                                      |
+                    +---------+---------+---------+
+                    |         |         |         |
+              auth-service  profile  matching  intelligence
+                (:8001)    (:8002)   (:8003)    (:8004)
+                    |         |         |         |
+                    +---------+---------+---------+
+                              |
+                        PostgreSQL 16
+                  (schemas: auth, profiles, matching, ai)
+                  + 5 schemas SaaS planificados
+```
+
+### Desarrollo local
+
+Solo se ejecuta **profile-service** en el puerto **:8002** con SQLite:
 
 ```
   profile-service (:8002)     Ollama (:11434)
@@ -38,10 +56,10 @@ Solo se ejecuta **profile-service** en el puerto **:8002**:
 
 | Servicio | Puerto | Estado | Tests |
 |----------|--------|--------|-------|
-| **profile-service** | :8002 | **Operativo** — corre en localhost:8002 | 83 |
-| **auth-service** | :8001 | Codigo listo, pendiente deploy | 48 |
-| **matching-service** | :8003 | Codigo listo, pendiente deploy | 53 |
-| **intelligence-service** | :8004 | Codigo listo, pendiente deploy | 36 |
+| **auth-service** | :8001 | **Produccion** (app.diversia.click) | 48 |
+| **profile-service** | :8002 | **Produccion** (app.diversia.click) | 83 |
+| **matching-service** | :8003 | **Produccion** (app.diversia.click) | 53 |
+| **intelligence-service** | :8004 | **Produccion** (app.diversia.click) | 36 |
 | **shared kernel** | — | Libreria compartida | 13 |
 
 Cada servicio sigue **Clean Architecture**:
@@ -74,6 +92,16 @@ uvicorn app.main:app --reload --port 8002
 
 No requiere PostgreSQL, Docker, ni nginx. Usa SQLite automaticamente.
 
+### Produccion (Docker Compose)
+
+```bash
+cd services
+docker compose -f docker-compose.prod.yml up --build
+# Acceder via nginx en http://localhost:8000
+```
+
+Requiere PostgreSQL y la red `dokploy-network` (o usar `docker-compose.yml` para desarrollo).
+
 ### Ollama (opcional)
 
 ```bash
@@ -86,17 +114,19 @@ ollama pull llama3.2:3b
 ```
 Talento-Neurodivergente/
 ├── services/                    # Microservicios Python/FastAPI (9 bounded contexts)
-│   ├── profile-service/         # ACTIVO — perfiles, quiz, games, jobs, frontend
-│   ├── auth-service/            # Codigo listo, sin desplegar
-│   ├── matching-service/        # Codigo listo, sin desplegar
-│   ├── intelligence-service/    # Codigo listo, sin desplegar
+│   ├── profile-service/         # Perfiles, quiz, games, jobs, frontend
+│   ├── auth-service/            # Autenticacion JWT + bcrypt
+│   ├── matching-service/        # Matching trilateral 24D
+│   ├── intelligence-service/    # Reportes LLM via Ollama
 │   ├── shared/                  # Shared kernel (value objects, auth, rate limiter)
+│   ├── gateway/                 # nginx config
 │   ├── migrations/              # SQL migrations (21 tablas SaaS expansion)
-│   └── docker-compose.yml       # Orquestacion (sin verificar)
+│   ├── docker-compose.yml       # Desarrollo local
+│   └── docker-compose.prod.yml  # Produccion (Dokploy)
 ├── app/                         # Frontend Next.js (legacy, en Vercel)
 ├── prisma/                      # Schema Prisma (legacy)
-├── tests/                       # Tests E2E (listos, requieren servicios corriendo)
-├── scripts/                     # backup-postgres.sh, restore-postgres.sh, admin
+├── tests/                       # Tests E2E
+├── scripts/                     # backup-postgres.sh, restore-postgres.sh
 ├── docs/                        # Documentacion, ADRs, sesiones
 └── .agent/                      # Sistema de agentes GACE
 ```
@@ -104,8 +134,8 @@ Talento-Neurodivergente/
 ## Tests
 
 ```bash
-cd services/profile-service && python -m pytest tests/ -q    # 83 tests
 cd services/auth-service && python -m pytest tests/ -q       # 48 tests
+cd services/profile-service && python -m pytest tests/ -q    # 83 tests
 cd services/matching-service && python -m pytest tests/ -q   # 53 tests
 cd services/intelligence-service && python -m pytest tests/ -q  # 36 tests
 cd services/shared && python -m pytest tests/ -q             # 13 tests
@@ -125,9 +155,9 @@ cd services/shared && python -m pytest tests/ -q             # 13 tests
 
 | Entorno | Que corre | Estado |
 |---------|-----------|--------|
+| **app.diversia.click** | 4 microservicios + PostgreSQL + nginx + Ollama (Dokploy) | **Operativo** |
 | **Desarrollo local** | profile-service :8002 + SQLite | Funcional |
-| **Vercel** | Next.js legacy (frontend) | En produccion, pendiente retirar |
-| **VPS Hostinger (Paris)** | Ollama + (futuro: Docker Compose) | Ollama operativo |
+| **Vercel** | Next.js legacy (frontend) | Pendiente retirar |
 
 ## Costes
 
@@ -136,25 +166,26 @@ cd services/shared && python -m pytest tests/ -q             # 13 tests
 | VPS Hostinger (2 CPU, 8GB RAM, Paris EU) | ~40 EUR/mes |
 | Frontend legacy Vercel | 0 EUR |
 | Dominio diversia.click | ~10 EUR/ano |
-| Desarrollo IA (Claude Opus 4, ~10 sesiones) | ~80 EUR total |
+| Desarrollo IA (Claude Opus 4, ~12 sesiones) | ~100 EUR total |
 | **Total mensual operativo** | **~40 EUR/mes** |
 
 ## Roadmap resumido
 
 ### Completado
 - [x] 4 microservicios operativos + 5 bounded contexts SaaS disenados (ver ADR-005)
-- [x] Frontend Jinja2 (14 paginas) + auth standalone SQLite
+- [x] Frontend Jinja2 (14 paginas) + Alpine.js + Tailwind CSS
 - [x] Quiz 24D + radar chart + 3 juegos cognitivos
 - [x] Matching 24D con scoring y razones
 - [x] GDPR + EU AI Act compliance
 - [x] 28/29 issues del backlog resueltas
+- [x] Deploy a produccion (app.diversia.click)
+- [x] Docker Compose verificado end-to-end
 
 ### Pendiente
-- [ ] Verificar Docker Compose end-to-end
 - [ ] Build Tailwind CSS (sin CDN)
-- [ ] Deploy a app.diversia.click
 - [ ] Fase 1: subscription-service + Stripe (monetizacion)
-- [ ] Beta con usuarios reales
+- [ ] Beta con usuarios reales (5-50)
+- [ ] Retirar frontend legacy Next.js (Vercel)
 
 Ver [ROADMAP.md](ROADMAP.md) para el plan completo.
 

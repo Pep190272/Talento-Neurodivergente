@@ -1,79 +1,62 @@
 # ROADMAP — DiversIA (app.diversia.click)
 
 **Fecha de inicio:** 10 de febrero de 2026
-**Ultima actualizacion:** 9 de marzo de 2026
-**Estado:** Desarrollo local — profile-service operativo en :8002
+**Ultima actualizacion:** 10 de marzo de 2026
+**Estado:** Produccion — app.diversia.click operativa
 
 ---
 
 ## Principios de trabajo
 
-1. **Todo el desarrollo es local** hasta tener la app completa y funcional
-2. **No se pushea a GitHub** hasta preparar el deploy a VPS
-3. **El repo de GitHub mantiene la app Node.js** funcional en produccion (Vercel)
-4. **El dominio objetivo es `app.diversia.click`** — subdominio del VPS existente
+1. **Produccion primero**: la app corre en `app.diversia.click` via Dokploy
+2. **Iteracion rapida**: deploy continuo desde GitHub → Dokploy
+3. **El dominio principal es `app.diversia.click`** — VPS Hostinger (Paris, EU)
 
 ---
 
-## Estado actual del proyecto (9 marzo 2026)
+## Estado actual del proyecto (10 marzo 2026)
 
-### Que funciona (desarrollo local)
+### Que funciona en produccion (app.diversia.click)
 
 | Componente | Estado | Tests |
 |-----------|--------|-------|
+| **auth-service** (:8001) | Operativo — register, login, JWT, bcrypt | 48 passing |
 | **profile-service** (:8002) | Operativo — frontend, auth, quiz, games, jobs, matching | 83 passing |
-| **auth-service** (codigo) | Listo — register, login, JWT, bcrypt | 48 passing |
-| **matching-service** (codigo) | Listo — scoring trilateral 24D, batch matching | 53 passing |
-| **intelligence-service** (codigo) | Listo — reports LLM, anonymizer, prompt builder | 36 passing |
-| **shared kernel** | Listo — value objects, auth, rate limiter | 13 passing |
-| **Frontend (Jinja2)** | 14 paginas funcionales, Alpine.js + Tailwind CDN | Sin tests |
-| **SQLite standalone** | Funcional — auth_proxy + profiles_local sin PostgreSQL | — |
-| **Docker Compose** | Definido — 4 servicios + postgres + nginx (5 mas planificados) | Sin verificar |
+| **matching-service** (:8003) | Operativo — scoring trilateral 24D, batch matching | 53 passing |
+| **intelligence-service** (:8004) | Operativo — reports LLM, anonymizer, prompt builder | 36 passing |
+| **shared kernel** | Libreria — value objects, auth, rate limiter | 13 passing |
+| **nginx gateway** (:8000) | Operativo — routing, rate limiting, security headers | — |
+| **PostgreSQL 16** (:5432) | Operativo — 4 schemas core | — |
+| **Ollama** (:11434) | Operativo — Llama 3.2 3B self-hosted | — |
+| **Frontend (Jinja2)** | 14 paginas, Alpine.js + Tailwind CDN | — |
 
 **Total: 233 tests, 0 failing**
 
-### Que NO funciona (lo que falta)
+### Que falta
 
-- Docker Compose no verificado (4 servicios core juntos)
-- Build de Tailwind CSS (usa CDN — no valido para produccion)
-- Paginas de error (404, 500)
-- Deploy a VPS (app.diversia.click)
+- Build de Tailwind CSS (usa CDN — funcional pero no optimo)
+- Fase 1 SaaS: subscription-service + Stripe
 - Beta con usuarios reales
+- Retirar frontend legacy Next.js (Vercel)
 
 ---
 
-## Arquitectura (estado real)
-
-### Desarrollo (lo que corre HOY)
+## Arquitectura (produccion)
 
 ```
-  profile-service (:8002)     Ollama (:11434)
-  ┌───────────────────────┐   ┌──────────────┐
-  │ Frontend (14 paginas) │   │ Llama 3.2 3B │
-  │ Auth (SQLite)         │──▶│ Self-hosted   │
-  │ Profiles, Quiz, Games │   └──────────────┘
-  │ Jobs, Matching 24D    │
-  └───────────┬───────────┘
-              │
-        SQLite (local)
-```
-
-### Produccion (objetivo, NO desplegado)
-
-```
-                    nginx gateway (:80)
-                         |
-        +----------------+----------------+----------------+
-        |                |                |                |
-  auth-service     profile-service  matching-service  intelligence-service
-    (:8001)           (:8002)          (:8003)            (:8004)
-        |                |                |                |
-        +----------------+----------------+----------------+
-                         |
-                   PostgreSQL 16
-              (schemas: auth, profiles, matching, ai)
-              + 5 schemas SaaS: subscriptions, learning,
-                community, marketplace, analytics
+Internet → Traefik (Dokploy) → nginx gateway (:8000)
+                                      |
+                    +---------+---------+---------+
+                    |         |         |         |
+              auth-service  profile  matching  intelligence
+                (:8001)    (:8002)   (:8003)    (:8004)
+                    |         |         |         |
+                    +---------+---------+---------+
+                              |
+                        PostgreSQL 16
+                  (schemas: auth, profiles, matching, ai)
+                  + 5 schemas SaaS: subscriptions, learning,
+                    community, marketplace, analytics
 ```
 
 > **Expansion SaaS (ADR-005):** 5 nuevos bounded contexts disenados con 21 tablas.
@@ -82,31 +65,27 @@
 
 ---
 
-## FASE ACTUAL — Verificar y desplegar
+## FASE ACTUAL — Post-deploy
 
-### Paso 1: Docker Compose end-to-end
-- [ ] `docker compose up` arranca los 4 servicios core + postgres + nginx
-- [ ] Health checks funcionan (/health en cada servicio)
-- [ ] nginx rutea correctamente a cada servicio
-- [ ] Seed data se carga en primera ejecucion
+### Completado (10 Mar 2026)
+- [x] Docker Compose arranca los 4 servicios core + postgres + nginx + ollama
+- [x] Health checks funcionan (/health en cada servicio)
+- [x] nginx rutea correctamente a cada servicio
+- [x] Deploy a app.diversia.click via Dokploy
+- [x] SSL (Let's Encrypt via Traefik)
+- [x] DNS dinamico en nginx (resolver 127.0.0.11)
 
-### Paso 2: Build de frontend
+### Pendiente: Build de frontend
 - [ ] Instalar Tailwind CSS como dependencia (no CDN)
 - [ ] Build pipeline (postcss + purge)
 - [ ] Alpine.js + Chart.js como vendor bundles locales
 
-### Paso 3: Paginas de error
-- [ ] 404.html, 500.html, 401.html
-- [ ] Middleware FastAPI para servir estas paginas
+### Pendiente: Fase 1 SaaS
+- [ ] subscription-service + Stripe
+- [ ] Planes empresa/candidato/terapeuta
+- [ ] Webhook handling
 
-### Paso 4: Deploy a VPS
-- [ ] Push a GitHub
-- [ ] SSH al VPS
-- [ ] `docker compose up -d --build`
-- [ ] Configurar app.diversia.click + SSL (Let's Encrypt)
-- [ ] Verificar flujos completos
-
-### Paso 5: Beta
+### Pendiente: Beta
 - [ ] 5-10 empresas inclusivas
 - [ ] 20-50 candidatos neurodivergentes
 - [ ] 5-10 terapeutas/especialistas
@@ -117,10 +96,10 @@
 
 | Concepto | Coste | Notas |
 |----------|-------|-------|
-| VPS Hostinger (2 CPU, 8GB RAM) | ~40 EUR/mes | Paris EU, PostgreSQL + Ollama + servicios |
+| VPS Hostinger (2 CPU, 8GB RAM) | ~40 EUR/mes | Paris EU, todo corre aqui |
 | Frontend legacy (Vercel) | 0 EUR | Hobby plan, se retirara |
 | Dominio diversia.click | ~10 EUR/ano | Hostinger |
-| Desarrollo IA (Claude Opus 4) | ~80 EUR total | ~10 sesiones, ~800k tokens |
+| Desarrollo IA (Claude Opus 4) | ~100 EUR total | ~12 sesiones |
 | **Total mensual** | **~40 EUR/mes** | Sin contar desarrollo |
 
 ---
@@ -133,7 +112,7 @@
 | v1.0.0 | 26 Feb | Monolito production-ready (272 tests, OWASP audit) |
 | v2.0.0-dev | 4-9 Mar | Microservicios Python/FastAPI (233 tests, 14 paginas) |
 | v2.1.0-saas | 9 Mar | Expansion SaaS: 5 bounded contexts, modelo de negocio (ADR-005) |
-| **v2.0.0** | **TBD** | **Deploy a app.diversia.click** |
+| **v2.0.0** | **10 Mar** | **Deploy a app.diversia.click — produccion** |
 
 ---
 
@@ -148,6 +127,14 @@ uvicorn app.main:app --reload --port 8002
 # Abre http://localhost:8002
 ```
 
+### Produccion (Docker Compose)
+
+```bash
+cd services
+docker compose -f docker-compose.prod.yml up --build
+# Acceder via http://localhost:8000 (nginx)
+```
+
 ### Tests
 
 ```bash
@@ -157,14 +144,6 @@ cd services/matching-service && python -m pytest tests/ -q     # 53 tests
 cd services/intelligence-service && python -m pytest tests/ -q # 36 tests
 cd services/shared && python -m pytest tests/ -q               # 13 tests
 # Total: 233 tests, 0 failing
-```
-
-### Docker (cuando este verificado)
-
-```bash
-cd services
-docker compose up --build
-# Abre http://localhost (nginx)
 ```
 
 ---
@@ -197,7 +176,7 @@ docker compose up --build
 </details>
 
 <details>
-<summary>Sesiones 6-11 (Mar 2026) — Microservicios Python</summary>
+<summary>Sesiones 6-12 (Mar 2026) — Microservicios Python</summary>
 
 ### Sesion 6 (4 Mar): Scaffolding + auth + matching
 - 4 servicios Python/FastAPI core, Docker Compose, nginx
@@ -229,5 +208,12 @@ docker compose up --build
 - 5 bounded contexts nuevos: subscriptions, learning, community, marketplace, analytics
 - 21 tablas SQL, 5 schemas PostgreSQL
 - Planes: Empresa (49-399 EUR), Candidato B2C (0-19.99 EUR), Terapeuta (0-29 EUR)
+
+### Sesion 13 (10 Mar): Deploy a produccion
+- Docker Compose produccion para Dokploy
+- 12 fixes iterativos (build + networking)
+- nginx DNS dinamico (resolver 127.0.0.11 + variables)
+- Red interna explicita + dokploy-network para gateway
+- **app.diversia.click operativa**
 
 </details>

@@ -1,405 +1,193 @@
-# 🚀 Despliegue VPS - Ollama + Llama 3.2 3B para Diversia
+# Despliegue VPS - DiversIA Microservicios
 
-**Fecha**: 24 de enero de 2026 (actualizado 25 Feb 2026)
-**Servidor**: VPS Hostinger (París, Francia)
-**IP**: 77.83.232.203
-**Tecnologías**: Dokploy, Docker, Ollama, Llama 3.2 3B
-**Decision**: Self-hosted definitivo por GDPR Art. 9 (datos neurodivergentes)
+**Fecha original**: 24 de enero de 2026 (Ollama)
+**Ultima actualizacion**: 10 de marzo de 2026 (microservicios completos)
+**Servidor**: VPS Hostinger (Paris, Francia)
+**URL**: https://app.diversia.click
+**Tecnologias**: Dokploy, Docker Compose, Traefik, nginx, PostgreSQL 16, Ollama
 
 ---
 
-## 📊 Especificaciones del VPS
+## Especificaciones del VPS
 
-| Característica | Valor |
+| Caracteristica | Valor |
 |----------------|-------|
 | **Proveedor** | Hostinger |
 | **CPU** | 2 cores |
 | **RAM** | 8 GB |
 | **Disco** | 100 GB SSD |
 | **OS** | Ubuntu 24.04 LTS |
-| **Panel** | Dokploy (pre-instalado) |
-| **Ubicación** | París, Francia 🇫🇷 |
+| **Panel** | Dokploy |
+| **Ubicacion** | Paris, Francia (EU — GDPR compliant) |
 
 ---
 
-## ✅ Proceso de Despliegue (Paso a Paso)
-
-### **PASO 1: Acceso a Dokploy**
-
-1. **Abrir panel de Hostinger**:
-   - URL: `https://hpanel.hostinger.com/vps/1929568/overview`
-
-2. **Navegar a "OS & Panel"** en el menú lateral
-
-3. **Hacer clic en "Manage panel"** (arriba a la derecha)
-   - Esto abre Dokploy en nueva pestaña
-   - URL típica: `http://77.83.232.203:3000`
-
-4. **Iniciar sesión en Dokploy** con credenciales de Hostinger
-
----
-
-### **PASO 2: Crear Proyecto en Dokploy**
-
-1. **En Dokploy Dashboard**, ir a **"Projects"** (menú lateral)
-
-2. **Hacer clic en el botón "+"** para crear nuevo proyecto
-
-3. **Rellenar formulario**:
-   - **Project Name**: `Diversia`
-   - **Description**: `Impulso del talento neurodivergente`
-   - **Application ID**: `diversia-acef0q` (auto-generado)
-
-4. **Hacer clic en "Create"**
-
-5. **Acceder al proyecto** haciendo clic sobre el nombre "Diversia"
-
----
-
-### **PASO 3: Crear Compose para Ollama**
-
-1. **Dentro del proyecto Diversia**, buscar panel de pestañas superior:
-   - General
-   - Environment
-   - Domains
-   - **Deployments** ← Aquí encontrarás opciones
-
-2. **En la sección "Deploy Settings"**, hacer clic en **"Compose"** (botón arriba a la derecha)
-
-3. **En "Provider"**, seleccionar **"Raw"** (último botón)
-   - Ignorar GitHub, GitLab, Bitbucket
-
-4. **Pegar el siguiente `docker-compose.yml`**:
-
-```yaml
-version: '3.8'
-
-services:
-  ollama:
-    image: ollama/ollama:latest
-    container_name: diversia-ollama
-    ports:
-      - "11434:11434"
-    volumes:
-      - ollama-data:/root/.ollama
-    environment:
-      - OLLAMA_HOST=0.0.0.0
-      - OLLAMA_ORIGINS=*
-    deploy:
-      resources:
-        limits:
-          memory: 4G
-        reservations:
-          memory: 2G
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-
-volumes:
-  ollama-data:
-    driver: local
-```
-
-5. **Hacer clic en "Save"** o "Create"
-
-6. **Hacer clic en "Deploy"**
-
-7. **Esperar 1-2 minutos** mientras descarga la imagen Docker de Ollama
-
----
-
-### **PASO 4: Acceder al Terminal del Contenedor**
-
-1. **En Dokploy**, dentro del proyecto "Diversia", buscar la lista de servicios
-
-2. **Localizar el servicio** `diversia-ollama` con estado **"running"** (verde)
-
-3. **Hacer clic en el botón de menú** (tres puntitos) del servicio
-
-4. **Seleccionar "Docker Terminal"** o "Open Terminal"
-
-5. **Se abrirá una terminal web** mostrando:
-   ```
-   root@2e1c5d75c3f4:/#
-   ```
-
----
-
-### **PASO 5: Descargar Modelo Llama 3.2 3B**
-
-> **Nota**: Originalmente se usaba Gemma 2B. Se actualizó a Llama 3.2 3B (25 Feb 2026)
-> por mejor calidad en seguir instrucciones (IFEval 77.4 vs 61.9).
-
-1. **En la terminal del contenedor**, ejecutar:
-
-```bash
-ollama pull llama3.2:3b
-```
-
-2. **Esperar la descarga** (~2 GB, tarda 3-5 minutos):
-   ```
-   pulling manifest
-   pulling 4b2ac8... 100% ▕████████▏ 2.0 GB
-   success
-   ```
-
-3. **Verificar que se descargó**:
-
-```bash
-ollama list
-```
-
-**Salida esperada**:
-```
-NAME            ID          SIZE      MODIFIED
-llama3.2:3b     a1b2c3d4    2.0 GB    2 minutes ago
-```
-
----
-
-### **PASO 6: Probar el Modelo**
-
-1. **En la misma terminal**, ejecutar test:
-
-```bash
-ollama run llama3.2:3b "Analiza esta oferta de trabajo: Software Engineer for young and dynamic team"
-```
-
-2. **Esperar respuesta** (10-15 segundos primera vez):
-   - El modelo analizará y retornará texto
-
-3. **Si ves texto de análisis** → ✅ **Funcionando correctamente**
-
-4. **Salir del test**:
-   - Presionar `Ctrl+D` o escribir `/bye`
-
-5. **Salir del contenedor**:
-
-```bash
-exit
-```
-
----
-
-### **PASO 7: Configurar Variables de Entorno en Next.js**
-
-1. **En tu PC**, abrir el archivo `.env.local` del proyecto
-
-2. **Añadir al FINAL del archivo**:
-
-```bash
-# ============================================================================
-# OLLAMA - LLM LOCAL PARA ANÁLISIS DE INCLUSIVIDAD
-# ============================================================================
-# URL del servidor Ollama en VPS Hostinger
-OLLAMA_HOST=http://77.83.232.203:11434
-OLLAMA_MODEL=llama3.2:3b
-```
-
-3. **Guardar el archivo** (`Ctrl+S`)
-
-4. **Reiniciar el servidor Next.js**:
-   - Detener: `Ctrl+C` en la terminal donde corre `npm run dev`
-   - Iniciar: `npm run dev`
-
----
-
-## 🔍 Verificación del Despliegue
-
-### **Test desde tu app local**
-
-Crear archivo temporal `test-ollama.js`:
-
-```javascript
-// test-ollama.js
-const OLLAMA_HOST = 'http://77.83.232.203:11434'
-
-async function testOllama() {
-  try {
-    const response = await fetch(`${OLLAMA_HOST}/api/generate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'llama3.2:3b',
-        prompt: 'Say hello in one sentence',
-        stream: false
-      })
-    })
-    
-    const data = await response.json()
-    console.log('✅ Ollama responde:', data.response)
-  } catch (error) {
-    console.error('❌ Error:', error.message)
-  }
-}
-
-testOllama()
-```
-
-**Ejecutar**:
-```bash
-node test-ollama.js
-```
-
-**Salida esperada**:
-```
-✅ Ollama responde: Hello! How can I help you today?
-```
-
----
-
-## 📊 Arquitectura Final
+## Arquitectura desplegada (10 Mar 2026)
 
 ```
 Internet
-    ↓
-Next.js App (Local/Vercel)
-    ↓ HTTP Request
-VPS Hostinger (77.83.232.203:11434)
-    ↓
-Dokploy
-    ↓
-Docker Container (diversia-ollama)
-    ↓
-Ollama Service
-    ↓
-Llama 3.2 3B Model (~2 GB en RAM)
-    ↓
-JSON Response ← Análisis
+    |
+app.diversia.click (DNS)
+    |
+Traefik (Dokploy — auto SSL)
+    |
+dokploy-network
+    |
+nginx gateway (:8000)
+    |
+internal network (bridge)
+    |
++----------+----------+----------+----------+----------+
+|          |          |          |          |          |
+auth     profile   matching  intelligence  db       ollama
+:8001    :8002     :8003     :8004        :5432    :11434
 ```
 
+### Redes Docker
+
+| Red | Tipo | Servicios | Proposito |
+|-----|------|-----------|-----------|
+| `dokploy-network` | External | gateway | Traefik → nginx |
+| `internal` | Bridge | todos | Comunicacion inter-servicio |
+
+### Contenedores
+
+| Contenedor | Imagen | Puerto | Health check |
+|-----------|--------|--------|-------------|
+| diversia-gateway | nginx:alpine | 8000 | — |
+| diversia-auth | auth-service (custom) | 8001 | /health |
+| diversia-profile | profile-service (custom) | 8002 | /health |
+| diversia-matching | matching-service (custom) | 8003 | /health |
+| diversia-intelligence | intelligence-service (custom) | 8004 | /health |
+| diversia-db | postgres:16-alpine | 5432 | pg_isready |
+| diversia-ollama | ollama/ollama:latest | 11434 | ollama list |
+
 ---
 
-## 🔒 Seguridad
+## Configuracion de Dokploy
 
-### **Puertos Expuestos**
-- **11434**: Ollama API (público, sin autenticación)
+### Compose Service
 
-⚠️ **Recomendación**: En producción, configurar firewall para permitir solo:
-- IP de Vercel (si despliegas ahí)
-- Tu IP local (para desarrollo)
+El deploy se gestiona via un **Compose service** en Dokploy:
+- **Proyecto**: Diversia
+- **Provider**: GitHub (rama `main`)
+- **Compose path**: `services/docker-compose.prod.yml`
+- **Dominio**: `app.diversia.click` apuntando al servicio gateway (:8000)
 
-### **Datos Sensibles**
-- ✅ Ollama corre en tu VPS (no envías datos a terceros)
-- ✅ 100% GDPR compliant (datos no salen de tu infraestructura)
-- ✅ No hay API keys externas
+### Variables de entorno
 
----
-
-## 🛠️ Mantenimiento
-
-### **Actualizar el modelo**
-
-```bash
-# Acceder al contenedor
-docker exec -it diversia-ollama bash
-
-# Actualizar modelo
-ollama pull llama3.2:3b
-
-# Salir
-exit
+Configuradas en Dokploy Environment:
+```
+POSTGRES_USER=<usuario>
+POSTGRES_PASSWORD=<password>
+POSTGRES_DB=diversia_db
+JWT_SECRET=<secret>
 ```
 
-### **Ver logs del contenedor**
+### Dominio
 
-En Dokploy:
-1. Ir a proyecto "Diversia"
-2. Hacer clic en servicio `diversia-ollama`
-3. Pestaña "Logs"
-
-### **Reiniciar servicio**
-
-En Dokploy:
-1. Servicio `diversia-ollama`
-2. Botón "Restart"
+- **Dominio**: `app.diversia.click`
+- **SSL**: Automatico via Traefik/Let's Encrypt
+- **Puerto interno**: 8000 (nginx gateway)
 
 ---
 
-## 📊 Consumo de Recursos
+## Proceso de deploy
 
-### **RAM Utilizada**
+### Deploy inicial
 
-| Servicio | RAM |
-|----------|-----|
-| Supabase (otro proyecto) | ~2.5 GB |
+1. Crear proyecto "Diversia" en Dokploy
+2. Crear Compose service apuntando al repo GitHub
+3. Configurar `docker-compose.prod.yml` como compose file
+4. Configurar variables de entorno
+5. Configurar dominio `app.diversia.click` → puerto 8000
+6. Deploy
+
+### Redeploy (actualizaciones)
+
+1. Push a rama en GitHub
+2. Merge PR a `main`
+3. En Dokploy: click "Deploy" (o configurar auto-deploy en push)
+
+---
+
+## nginx Gateway
+
+El gateway usa DNS dinamico de Docker para resolver servicios:
+
+```nginx
+resolver 127.0.0.11 valid=10s ipv6=off;
+
+location /api/v1/auth/ {
+    set $auth_upstream http://auth-service:8001;
+    proxy_pass $auth_upstream;
+}
+```
+
+Esto evita que nginx cachee IPs al arrancar y falle con 502 cuando Docker reasigna IPs.
+
+### Security headers
+
+- `X-Frame-Options: DENY`
+- `X-Content-Type-Options: nosniff`
+- `Content-Security-Policy` con `unsafe-inline` y `unsafe-eval` (Alpine.js)
+- `Strict-Transport-Security` (HSTS)
+- Rate limiting por zona (auth: 10r/s, api: 30r/s, ai: 5r/s)
+
+---
+
+## Troubleshooting
+
+### 502 Bad Gateway
+
+**Causa comun**: nginx cachea DNS al arrancar.
+**Solucion**: Usar `resolver 127.0.0.11` + variables `set $upstream` en nginx.conf.
+
+### 404 Traefik
+
+**Causa comun**: gateway no esta en `dokploy-network`.
+**Solucion**: Asegurar que gateway tiene `networks: [internal, dokploy-network]`.
+
+### Servicios no se conectan entre si
+
+**Causa comun**: red `default` no funciona con redes externas.
+**Solucion**: Usar red `internal` nombrada explicitamente.
+
+### Migraciones fallan al reiniciar
+
+**Causa comun**: Alembic migraciones no son idempotentes.
+**Solucion**: Usar `IF NOT EXISTS` en todas las operaciones DDL.
+
+---
+
+## Consumo de Recursos
+
+| Servicio | RAM estimada |
+|----------|-------------|
+| PostgreSQL 16 | ~300 MB |
+| 4 microservicios Python | ~400 MB total |
+| nginx | ~10 MB |
 | Ollama + Llama 3.2 3B | ~2.5 GB |
-| Sistema Ubuntu | ~0.5 GB |
-| Docker overhead | ~0.3 GB |
-| **Total** | **~5.3 GB de 8 GB** |
+| Docker overhead | ~300 MB |
+| Sistema Ubuntu | ~500 MB |
+| **Total** | **~4 GB de 8 GB** |
 
-**Margen disponible**: ~2.7 GB ✅
-
-### **Disco**
-
-| Item | Espacio |
-|------|---------|
-| Imagen Ollama | ~800 MB |
-| Modelo Llama 3.2 3B | ~2 GB |
-| Volumen `ollama-data` | ~50 MB |
-| **Total** | **~2.4 GB de 100 GB** |
+**Margen disponible**: ~4 GB
 
 ---
 
-## ⚠️ Limitaciones Conocidas
+## Seguridad
 
-1. **CPU (2 cores)**:
-   - Latencia de respuesta: **3-5 segundos** por análisis
-   - Solo 1 request simultánea recomendada
-
-2. **RAM (8 GB)**:
-   - **Modelo Phi-3 Mini (3.8B)**: No cabe con Supabase corriendo
-   - **Llama 3.2 3B**: Funciona OK, ~2.5GB RAM
-
-3. **Sin GPU**:
-   - Respuestas más lentas que con GPU (10x más lento)
-   - Suficiente para análisis batch de jobs
+- LLM self-hosted (datos no salen de la UE)
+- PostgreSQL solo accesible dentro de la red Docker
+- Ollama solo accesible dentro de la red Docker (cambiado de publico a interno)
+- SSL automatico en todas las rutas publicas
+- Rate limiting en nginx gateway
+- JWT con bcrypt para autenticacion
+- Pydantic v2 para validacion de inputs
 
 ---
 
-## 🚀 Próximos Pasos
-
-1. ✅ Infraestructura desplegada
-2. ✅ Modelo funcionando
-3. ⏳ Integración con Next.js (`app/lib/llm.js`)
-4. ⏳ Implementar `analyzeJobInclusivity()`
-5. ⏳ Tests y validación
-
----
-
-## 📞 Troubleshooting
-
-### Problema: "Connection refused" al puerto 11434
-
-**Solución**:
-1. Verificar que contenedor esté corriendo:
-   ```bash
-   docker ps | grep ollama
-   ```
-2. Verificar en Dokploy que servicio está "running" (verde)
-3. Reiniciar contenedor si está stopped
-
-### Problema: Modelo responde muy lento (>30s)
-
-**Solución**:
-- Es normal en CPU sin GPU
-- Si es crítico, migrar a Modal.com o RunPod con GPU
-
-### Problema: "Out of memory"
-
-**Solución**:
-1. Detener Supabase temporalmente:
-   ```bash
-   docker stop <supabase-container-name>
-   ```
-2. Usar modelo más pequeño (Gemma 2B o Gemma 3 1B como alternativa mínima)
-
----
-
-**Documentación creada**: 24 de enero de 2026  
-**Última actualización**: 24 de enero de 2026  
-**Autor**: GACE + TECH_STACK_AGENT
-**Modelo actualizado**: Gemma 2B → Llama 3.2 3B (25 Feb 2026, decision GDPR Art. 9)
+**Documentacion creada**: 24 de enero de 2026
+**Ultima actualizacion**: 10 de marzo de 2026
+**Autor**: GACE + Claude Opus 4.6

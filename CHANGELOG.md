@@ -7,6 +7,27 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [2.0.0] - 2026-03-10
+
+### Sesion 2026-03-10 — Deploy a produccion app.diversia.click
+
+#### Added
+- **docker-compose.prod.yml**: configuracion de produccion para Dokploy
+- **Red `internal`** explicita para comunicacion entre servicios
+- **DNS dinamico en nginx**: `resolver 127.0.0.11 valid=10s` + variables `set $upstream`
+- **CSP actualizado**: `unsafe-eval` para Alpine.js reactive expressions
+
+#### Fixed
+- 6 fixes de build: URL-encode credenciales, psycopg2-binary, PYTHONPATH, defaults env, migraciones idempotentes, email-validator
+- 6 fixes de red: Traefik labels, dokploy-network, CSP, red default, red interna, DNS caching nginx
+
+#### Deployment
+- **app.diversia.click operativa** — 4 microservicios + PostgreSQL + nginx + Ollama
+- VPS Hostinger (Paris, EU) via Dokploy
+- SSL automatico via Traefik/Let's Encrypt
+
+---
+
 ## [2.1.0-saas] - 2026-03-09
 
 ### Sesion 2026-03-09 PM — Expansion SaaS: modelo de negocio + bounded contexts

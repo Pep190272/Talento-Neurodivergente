@@ -1,80 +1,53 @@
 # Proximos Pasos — DiversIA Eternals
 
-**Ultima actualizacion:** 9 de marzo de 2026
-**Estado actual:** v2.0.0-microservices — profile-service operativo en :8002, 233 tests
-**Branch activa:** `claude/review-issues-app-refactor-FZuy5`
+**Ultima actualizacion:** 10 de marzo de 2026
+**Estado actual:** v2.0.0 — produccion en app.diversia.click, 233 tests
+**Branch principal:** `main`
 
 ---
 
-## Estado Actual (9 Mar 2026)
+## Estado Actual (10 Mar 2026)
 
-### Que funciona
+### Que funciona en produccion (app.diversia.click)
 
-- **profile-service** (:8002): frontend Jinja2, auth SQLite, quiz 24D, games, jobs, matching, inclusivity
-- **auth-service**: codigo + 48 tests (sin desplegar)
-- **matching-service**: codigo + 53 tests (sin desplegar)
-- **intelligence-service**: codigo + 36 tests (sin desplegar)
-- **shared kernel**: rate limiter Redis-ready + 13 tests
+- **4 microservicios** corriendo: auth, profile, matching, intelligence
+- **PostgreSQL 16** con 4 schemas core
+- **nginx gateway** con DNS dinamico, rate limiting, security headers
+- **Ollama + Llama 3.2 3B** self-hosted (EU)
 - **233 tests totales**, 0 failing
 - **28/29 issues** del backlog resueltas
-- **Use cases GDPR**: ApplyToJob, ManageConsent, ExportData, DeleteAccount, VerifyTherapist
-- **E2E tests**: 4 suites escritas (requieren servicios para ejecutar)
-- **Backup scripts**: backup-postgres.sh + restore-postgres.sh
+- **SSL automatico** via Traefik/Let's Encrypt
 
-### Bloqueadores Historicos — TODOS RESUELTOS
+### Completado (10 Mar 2026)
 
-| Bloqueador (Feb 2026) | Solucion |
-|----------------------|----------|
-| JSON File Storage | SQLAlchemy 2.0 + SQLite standalone |
-| Arquitectura monolitica | 4 microservicios core + 5 bounded contexts SaaS (ADR-005) |
-| NextAuth vs Auth0 | JWT custom en auth-service |
-| LLM self-hosted | Ollama + Llama 3.2 3B |
-| 0 tests | 233 tests passing |
+- [x] Docker Compose verificado end-to-end
+- [x] Deploy a app.diversia.click via Dokploy
+- [x] Health checks funcionan (/health)
+- [x] nginx rutea correctamente
+- [x] Registro + login funciona
+- [x] SSL + HTTPS
 
 ---
 
-## SIGUIENTE PASO: Docker Compose + Deploy
+## SIGUIENTE PASO: Optimizar + Monetizar
 
-### 1. Verificar Docker Compose
-- [ ] `docker compose up` arranca los 4 servicios core + postgres + nginx
-- [ ] Health checks funcionan (/health)
-- [ ] nginx rutea correctamente
-- [ ] Comunicacion inter-servicio funciona
-
-### 2. Build de frontend
+### 1. Build de frontend (optimizacion)
 - [ ] Tailwind CSS como dependencia (no CDN)
 - [ ] Alpine.js + Chart.js como vendor bundles
 - [ ] Generar `app.min.css` con purge
 
-### 3. Paginas de error
-- [ ] 404, 500, 401
-- [ ] Middleware FastAPI
-
-### 4. Deploy a VPS
-- [ ] Push a GitHub
-- [ ] `docker compose up -d --build` en VPS
-- [ ] SSL (Let's Encrypt) + app.diversia.click
-- [ ] Variables de entorno en produccion
-
-### 5. Validacion post-deploy
-- [ ] Registro + login funciona
-- [ ] Quiz + dashboard funciona
-- [ ] Jobs + matching funciona
-- [ ] GDPR (export + delete) funciona
-
-### 6. Retirar Next.js (Issue #63)
-- [ ] Verificar que app.diversia.click funciona al 100%
+### 2. Retirar Next.js legacy (Issue #63)
+- [ ] Verificar que app.diversia.click cubre todas las funciones
 - [ ] Desactivar Vercel
 - [ ] Limpiar app/, prisma/, package.json del repo
 
+### 3. Monitoring
+- [ ] Logs centralizados (Dokploy ya tiene basico)
+- [ ] Alertas por servicio caido
+
 ---
 
-## Despues del Deploy
-
-### Monitoring
-- [ ] Logs centralizados
-- [ ] Health check dashboard
-- [ ] Alertas por servicio caido
+## Despues de Optimizar
 
 ### Beta
 - [ ] 5-10 empresas inclusivas
@@ -84,33 +57,9 @@
 
 ---
 
-## Preguntas Estrategicas — RESUELTAS (9 Mar 2026)
+## Prioridad de Implementacion SaaS
 
-### Modelo de Negocio — DEFINIDO (ver ADR-005)
-- [x] Revenue: **SaaS + Marketplace mixto**
-- [x] Quien paga: **Empresas (49-399+ EUR/mes) + Terapeutas (29 EUR/mes). Candidatos gratis.**
-- [x] Pasarela: **Stripe** (1.5% + 0.25 EUR/tx)
-- [x] Early adopters: PRO gratis 6 meses (primeras 20 empresas, 50 terapeutas)
-- [x] Breakeven estimado: Mes 7
-
-### Modelo de Datos SaaS — DEFINIDO (ver ADR-005)
-- [x] 5 nuevos Bounded Contexts: subscriptions, learning, community, marketplace, analytics
-- [x] 5 nuevos schemas PostgreSQL con 21 tablas totales
-- [x] Migracion SQL creada: `services/migrations/20260309_001_create_saas_bounded_contexts.sql`
-- [x] DDD-first: dominio modelado antes que tablas
-
-### Compliance Internacional
-- [ ] Paises LATAM prioritarios?
-- [ ] Certificaciones? (ISO 27001, SOC 2, ENS)
-
----
-
-## Prioridad de Implementacion (post-deploy)
-
-### Fase 0: Deploy (inmediato)
-- [ ] Docker Compose + deploy a app.diversia.click
-
-### Fase 1: Subscriptions (Mes 1 post-deploy)
+### Fase 1: Subscriptions (Mes 1 post-beta)
 - [ ] subscription-service (:8005)
 - [ ] Stripe checkout + webhooks
 - [ ] Planes empresa (Free/Starter/Pro/Enterprise)
@@ -139,4 +88,19 @@
 
 ---
 
-**Proxima accion inmediata:** Verificar Docker Compose y preparar deploy a app.diversia.click
+## Preguntas Estrategicas Resueltas
+
+### Modelo de Negocio — DEFINIDO (ver ADR-005)
+- [x] Revenue: **SaaS + Marketplace mixto**
+- [x] Quien paga: **Empresas (49-399+ EUR/mes) + Terapeutas (29 EUR/mes). Candidatos gratis.**
+- [x] Pasarela: **Stripe** (1.5% + 0.25 EUR/tx)
+- [x] Early adopters: PRO gratis 6 meses (primeras 20 empresas, 50 terapeutas)
+- [x] Breakeven estimado: Mes 7
+
+### Pendientes
+- [ ] Paises LATAM prioritarios?
+- [ ] Certificaciones? (ISO 27001, SOC 2, ENS)
+
+---
+
+**Proxima accion inmediata:** Build Tailwind CSS + preparar beta con usuarios reales

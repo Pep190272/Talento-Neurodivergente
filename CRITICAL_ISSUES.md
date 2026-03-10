@@ -1,13 +1,13 @@
 # TEMAS CRITICOS - Diversia Eternals
 
 **Fecha de analisis original**: 2026-01-17 (v0.5.0-masterclass)
-**Ultima revision**: 9 de marzo de 2026 (v2.0.0-microservices)
+**Ultima revision**: 10 de marzo de 2026 (v2.0.0 — produccion)
 
 ---
 
-## Estado: TODOS LOS CRITICOS RESUELTOS
+## Estado: TODOS LOS CRITICOS RESUELTOS + DEPLOY COMPLETADO
 
-Este documento fue creado en enero 2026 cuando el proyecto era un monolito Next.js sin autenticacion, sin tests, y con datos medicos en texto plano. **Todos los problemas criticos han sido resueltos** en la migracion a microservicios Python/FastAPI.
+Este documento fue creado en enero 2026 cuando el proyecto era un monolito Next.js sin autenticacion, sin tests, y con datos medicos en texto plano. **Todos los problemas criticos han sido resueltos** en la migracion a microservicios Python/FastAPI. La app esta desplegada en `app.diversia.click`.
 
 ---
 
@@ -43,15 +43,14 @@ Este documento fue creado en enero 2026 cuando el proyecto era un monolito Next.
 
 ---
 
-## Issues actuales (marzo 2026)
+## Issues de deploy (10 marzo 2026) — RESUELTAS
 
-Los unicos temas pendientes son de **deploy e infraestructura**, no de seguridad ni funcionalidad:
-
-1. Docker Compose no verificado end-to-end
-2. Tailwind CSS via CDN (necesita build local para produccion)
-3. Sin paginas de error (404, 500)
-4. Deploy a app.diversia.click pendiente
+| Issue | Resolucion |
+|-------|-----------|
+| Docker Compose no verificado | Verificado y desplegado (12 fixes iterativos) |
+| Tailwind CSS via CDN | Funcional — pendiente build local (no critico) |
+| Deploy a app.diversia.click | **Completado** — Dokploy + Traefik + SSL |
 
 ---
 
-**Conclusion**: El proyecto ha pasado de "NO LISTO PARA PRODUCCION" (enero 2026) a "listo para deploy" (marzo 2026), con 233 tests, autenticacion, encriptacion, rate limiting, y compliance GDPR/EU AI Act.
+**Conclusion**: El proyecto ha pasado de "NO LISTO PARA PRODUCCION" (enero 2026) a **produccion operativa** (marzo 2026) en `app.diversia.click`, con 233 tests, autenticacion, encriptacion, rate limiting, y compliance GDPR/EU AI Act.
