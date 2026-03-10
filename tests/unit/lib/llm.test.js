@@ -5,7 +5,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
-import { generateCompletion, analyzeJobInclusivity, checkOllamaHealth } from '@/lib/services/llm.service'
+import { generateCompletion, analyzeJobInclusivity, checkOllamaHealth, clearCache } from '@/lib/services/llm.service'
 
 // Mock environment variables (must match current model — llama3.2:3b)
 process.env.OLLAMA_HOST = 'http://localhost:11434'
@@ -14,8 +14,9 @@ process.env.OLLAMA_MODEL = 'llama3.2:3b'
 describe('🤖 LLM Client - Ollama Integration', () => {
 
     beforeEach(() => {
-        // Clear all mocks before each test
+        // Clear all mocks and LLM cache before each test
         vi.clearAllMocks()
+        clearCache()
     })
 
     afterEach(() => {

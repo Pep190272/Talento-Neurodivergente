@@ -9,37 +9,58 @@ Plataforma de matching trilateral 24D para talento neurodivergente. Conecta cand
 | Backend | Python + FastAPI | 3.12 / 0.115+ |
 | ORM | SQLAlchemy | 2.0 |
 | Validacion | Pydantic | v2 |
-| Base de datos | PostgreSQL | 16 |
-| Migraciones | Alembic | 1.13+ |
+| Base de datos | PostgreSQL 16 (prod) / SQLite (dev) | — |
 | Tests | pytest | 9.0+ |
 | LLM | Ollama + Llama 3.2 3B | Self-hosted EU |
-| Gateway | nginx | 1.25 |
-| Contenedores | Docker Compose | v2 |
-| Frontend (legacy) | Next.js | 15.x |
-| Frontend (nuevo) | Jinja2 + Alpine.js + Tailwind | Pendiente |
+| Frontend | Jinja2 + Alpine.js + Tailwind CSS (CDN) | — |
+| Gateway | nginx | Alpine |
+| Infraestructura | Docker Compose + Dokploy | VPS Hostinger (Paris) |
 
 ## Arquitectura
 
+### Produccion (app.diversia.click)
+
 ```
-                    nginx gateway (:80)
-                         |
-        +----------------+----------------+----------------+
-        |                |                |                |
-  auth-service     profile-service  matching-service  intelligence-service
-    (:8001)           (:8002)          (:8003)            (:8004)
-        |                |                |                |
-        +----------------+----------------+----------------+
-                         |
-                   PostgreSQL 16
-              (schemas: auth, profiles, matching, ai)
+Internet → Traefik (Dokploy) → nginx gateway (:8000)
+                                      |
+                    +---------+---------+---------+
+                    |         |         |         |
+              auth-service  profile  matching  intelligence
+                (:8001)    (:8002)   (:8003)    (:8004)
+                    |         |         |         |
+                    +---------+---------+---------+
+                              |
+                        PostgreSQL 16
+                  (schemas: auth, profiles, matching, ai)
+                  + 5 schemas SaaS planificados
 ```
 
-### 4 Microservicios (Clean Architecture)
+### Desarrollo local
 
-1. **auth-service** (:8001) — Registro, login, JWT, gestion de usuarios
-2. **profile-service** (:8002) — Perfiles neurodivergentes, quiz, evaluacion neurocognitiva
-3. **matching-service** (:8003) — Matching trilateral 24D, scoring multidimensional
-4. **intelligence-service** (:8004) — Reportes LLM, anonimizacion, prompt builder, transparencia IA
+Solo se ejecuta **profile-service** en el puerto **:8002** con SQLite:
+
+```
+  profile-service (:8002)     Ollama (:11434)
+  ┌───────────────────────┐   ┌──────────────┐
+  │ Frontend (14 paginas) │   │ Llama 3.2 3B │
+  │ Auth proxy (SQLite)   │──▶│ Self-hosted   │
+  │ Profiles, Quiz, Games │   └──────────────┘
+  │ Jobs, Inclusivity     │
+  │ Matching 24D          │
+  └───────────┬───────────┘
+              │
+        SQLite (local)
+```
+
+### Servicios
+
+| Servicio | Puerto | Estado | Tests |
+|----------|--------|--------|-------|
+| **auth-service** | :8001 | **Produccion** (app.diversia.click) | 48 |
+| **profile-service** | :8002 | **Produccion** (app.diversia.click) | 83 |
+| **matching-service** | :8003 | **Produccion** (app.diversia.click) | 53 |
+| **intelligence-service** | :8004 | **Produccion** (app.diversia.click) | 36 |
+| **shared kernel** | — | Libreria compartida | 13 |
 
 Cada servicio sigue **Clean Architecture**:
 ```
@@ -57,146 +78,122 @@ service/
 ## Setup Rapido
 
 ### Prerequisitos
-- Docker y Docker Compose v2
-- Python 3.12+ (para desarrollo local sin Docker)
+- Python 3.12+
+- Ollama (opcional, para LLM)
 
-### Con Docker Compose (recomendado)
+### Desarrollo local
 
 ```bash
-# Clonar el repositorio
-git clone https://github.com/Pep190272/Talento-Neurodivergente.git
-cd Talento-Neurodivergente/services
-
-# Copiar variables de entorno
-cp ../.env.example .env
-
-# Levantar todos los servicios
-docker-compose up --build
+cd services/profile-service
+pip install -e ".[dev]"
+uvicorn app.main:app --reload --port 8002
+# Abrir http://localhost:8002
 ```
 
-Los servicios estaran disponibles en:
-- Gateway: http://localhost:80
-- Auth API: http://localhost:8001/docs
-- Profile API: http://localhost:8002/docs
-- Matching API: http://localhost:8003/docs
-- Intelligence API: http://localhost:8004/docs
+No requiere PostgreSQL, Docker, ni nginx. Usa SQLite automaticamente.
 
-### Desarrollo Local (sin Docker)
+### Produccion (Docker Compose)
 
 ```bash
-cd services/auth-service
-pip install -e ".[dev]"
-pytest
-uvicorn app.main:app --reload --port 8001
+cd services
+docker compose -f docker-compose.prod.yml up --build
+# Acceder via nginx en http://localhost:8000
+```
+
+Requiere PostgreSQL y la red `dokploy-network` (o usar `docker-compose.yml` para desarrollo).
+
+### Ollama (opcional)
+
+```bash
+ollama pull llama3.2:3b
+# Se conecta a http://localhost:11434
 ```
 
 ## Estructura del Proyecto
 
 ```
 Talento-Neurodivergente/
-├── services/                    # Microservicios Python/FastAPI
-│   ├── auth-service/            # Autenticacion y usuarios
-│   ├── profile-service/         # Perfiles neurodivergentes
+├── services/                    # Microservicios Python/FastAPI (9 bounded contexts)
+│   ├── profile-service/         # Perfiles, quiz, games, jobs, frontend
+│   ├── auth-service/            # Autenticacion JWT + bcrypt
 │   ├── matching-service/        # Matching trilateral 24D
-│   ├── intelligence-service/    # LLM y analisis IA
-│   ├── gateway/nginx.conf       # API Gateway
-│   ├── docker-compose.yml       # Orquestacion
-│   └── init-schemas.sql         # Schemas PostgreSQL
-├── app/                         # Frontend Next.js (legacy, en migracion)
+│   ├── intelligence-service/    # Reportes LLM via Ollama
+│   ├── shared/                  # Shared kernel (value objects, auth, rate limiter)
+│   ├── gateway/                 # nginx config
+│   ├── migrations/              # SQL migrations (21 tablas SaaS expansion)
+│   ├── docker-compose.yml       # Desarrollo local
+│   └── docker-compose.prod.yml  # Produccion (Dokploy)
+├── app/                         # Frontend Next.js (legacy, en Vercel)
 ├── prisma/                      # Schema Prisma (legacy)
-├── tests/                       # Tests Vitest (legacy, 272 tests)
-├── docs/                        # Documentacion
-│   ├── adr/                     # Architecture Decision Records
-│   ├── sessions/                # Notas de sesion
-│   └── ...
-├── .agent/                      # Sistema de agentes GACE
-├── CHANGELOG.md                 # Historial de cambios
-├── ROADMAP.md                   # Plan de desarrollo
-└── PROJECT_STATUS.md            # Estado actual del proyecto
+├── tests/                       # Tests E2E
+├── scripts/                     # backup-postgres.sh, restore-postgres.sh
+├── docs/                        # Documentacion, ADRs, sesiones
+└── .agent/                      # Sistema de agentes GACE
 ```
 
 ## Tests
 
 ```bash
-# Tests de microservicios (pytest)
-cd services/auth-service && pytest          # 48 tests
-cd services/matching-service && pytest      # 42 tests
-cd services/auth-service && pytest tests/   # 36 tests seguridad/persistencia
-
-# Tests legacy (Vitest) — siguen pasando
-npm test                                    # 272 tests
+cd services/auth-service && python -m pytest tests/ -q       # 48 tests
+cd services/profile-service && python -m pytest tests/ -q    # 83 tests
+cd services/matching-service && python -m pytest tests/ -q   # 53 tests
+cd services/intelligence-service && python -m pytest tests/ -q  # 36 tests
+cd services/shared && python -m pytest tests/ -q             # 13 tests
 ```
 
-**Total tests: 398** (126 nuevos pytest + 272 legacy Vitest)
+**Total: 233 tests, 0 failing**
 
 ## Seguridad y Compliance
 
-### Proteccion de Datos
-- **Encriptacion at rest**: AES-256-GCM para datos medicos sensibles
-- **Autenticacion**: JWT custom con bcrypt (microservicios) + NextAuth v5 (legacy)
-- **Autorizacion**: 3 actores (Individual, Terapeuta, Empresa)
-- **Rate Limiting**: Por servicio con slowapi
-- **CORS**: Configuracion env-aware (desarrollo vs produccion)
-- **OWASP**: Top 10 auditado y corregido
-
-### IA/LLM Privacy
-- **Self-Hosted LLM**: Llama 3.2 3B via Ollama en VPS EU (Paris)
-- **Zero Data Leaks**: Sin APIs de terceros para IA
-- **Data Residency**: Todo el procesamiento IA en servidores EU
-- **Procesamiento efimero**: Datos en memoria solo durante analisis
-- **No Training**: El modelo nunca se entrena con datos de produccion
-
-### Compliance
-- **GDPR**: Art. 5, 9, 25, 32, 44-49 (datos neurodivergentes = categoria especial)
-- **HIPAA Ready**: Encriptacion de datos medicos y controles de acceso
-- **EU AI Act**: Sistema IA de alto riesgo compliant (self-hosted, auditable, transparente)
-
-Ver [SECURITY_IMPLEMENTATION.md](./SECURITY_IMPLEMENTATION.md) para detalles del stack legacy.
+- **Autenticacion**: JWT custom con bcrypt
+- **Rate Limiting**: Sliding window (in-memory + Redis ready)
+- **LLM Self-Hosted**: Llama 3.2 3B via Ollama (zero data leaks, EU residency)
+- **GDPR**: Art. 6, 7, 9, 15, 17, 20 — consent granular, export, delete, audit trail 7 anos
+- **EU AI Act**: Art. 13, 14, 22 — transparencia, supervision humana, derecho a impugnar
 
 ## Deployment
 
-### Produccion (VPS Hostinger + Dokploy)
-- **Servicios**: Docker Compose con 4 microservicios + PostgreSQL + Ollama
-- **Localizacion**: Paris, Francia (EU — cumplimiento GDPR)
-- **Coste**: ~€40/mes (VPS con 2 CPU, 8GB RAM, 100GB SSD)
+| Entorno | Que corre | Estado |
+|---------|-----------|--------|
+| **app.diversia.click** | 4 microservicios + PostgreSQL + nginx + Ollama (Dokploy) | **Operativo** |
+| **Desarrollo local** | profile-service :8002 + SQLite | Funcional |
+| **Vercel** | Next.js legacy (frontend) | Pendiente retirar |
 
-### Legacy (Vercel)
-- El frontend Next.js sigue desplegado en Vercel durante la migracion
-- Se eliminara cuando el frontend Jinja2 este completo
+## Costes
 
-## Roadmap
+| Concepto | Coste |
+|----------|-------|
+| VPS Hostinger (2 CPU, 8GB RAM, Paris EU) | ~40 EUR/mes |
+| Frontend legacy Vercel | 0 EUR |
+| Dominio diversia.click | ~10 EUR/ano |
+| Desarrollo IA (Claude Opus 4, ~12 sesiones) | ~100 EUR total |
+| **Total mensual operativo** | **~40 EUR/mes** |
+
+## Roadmap resumido
 
 ### Completado
-- [x] Migracion JSON a PostgreSQL (Prisma)
-- [x] 272 tests unitarios + integracion + E2E
-- [x] LLM self-hosted (Ollama + Llama 3.2 3B)
-- [x] OWASP security audit (7 vulnerabilidades corregidas)
-- [x] Arquitectura microservicios Python/FastAPI (4 servicios)
-- [x] Clean Architecture con domain layer puro
-- [x] 126 tests nuevos (pytest)
-- [x] Alembic migrations
-- [x] GDPR compliance ~90%
+- [x] 4 microservicios operativos + 5 bounded contexts SaaS disenados (ver ADR-005)
+- [x] Frontend Jinja2 (14 paginas) + Alpine.js + Tailwind CSS
+- [x] Quiz 24D + radar chart + 3 juegos cognitivos
+- [x] Matching 24D con scoring y razones
+- [x] GDPR + EU AI Act compliance
+- [x] 28/29 issues del backlog resueltas
+- [x] Deploy a produccion (app.diversia.click)
+- [x] Docker Compose verificado end-to-end
 
 ### Pendiente
-- [ ] Frontend Jinja2 + Alpine.js + Tailwind CSS
-- [ ] Eliminar Next.js legacy (Issue #63)
-- [ ] Deploy microservicios en VPS
-- [ ] Tests E2E cross-service
-- [ ] Backup automatizado
-- [ ] Monitoring (Sentry)
-- [ ] Beta con usuarios reales
+- [ ] Build Tailwind CSS (sin CDN)
+- [ ] Fase 1: subscription-service + Stripe (monetizacion)
+- [ ] Beta con usuarios reales (5-50)
+- [ ] Retirar frontend legacy Next.js (Vercel)
 
-## Contributing
+Ver [ROADMAP.md](ROADMAP.md) para el plan completo.
 
-1. Fork el repositorio
-2. Crea una feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit tus cambios (`git commit -m 'Add amazing feature'`)
-4. Push a la branch (`git push origin feature/amazing-feature`)
-5. Abre un Pull Request
+## Licencia
 
-## License
+Copyright (c) 2026 DiversIA Eternals. Todos los derechos reservados.
 
-Este proyecto esta licenciado bajo la MIT License — ver [LICENSE](LICENSE).
+Este codigo es privado y confidencial. No se permite su copia, distribucion ni modificacion sin autorizacion escrita del propietario.
 
 ---
 

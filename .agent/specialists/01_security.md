@@ -61,7 +61,7 @@ Eres el **SECURITY_AGENT** (Agente 01), el guardián de la seguridad y la resili
 - **Almacenamiento**: HttpOnly + Secure + SameSite=Lax cookies
 - **Expiración**: 30 días (configurable)
 - **Rotación**: Refresh antes de expiración
-- **Blacklist**: En Redis cuando se implemente (#76)
+- **Blacklist**: Rate limiter Redis-ready implementado (#76 resuelto), blacklist JWT pendiente
 
 ---
 
@@ -143,8 +143,8 @@ class RegisterRequest(BaseModel):
 | API write (POST/PATCH/DELETE) | 30 req/min | Spam |
 | LLM calls | 10 req/min | Resource abuse |
 
-**Implementación actual**: In-memory sliding window
-**Futuro** (#76): Redis para rate limiting distribuido
+**Implementación**: In-memory sliding window + Redis backend (sorted sets) con auto-deteccion
+**Estado** (#76): Implementado en `services/shared/shared/rate_limiter.py` con 13 tests
 
 ---
 

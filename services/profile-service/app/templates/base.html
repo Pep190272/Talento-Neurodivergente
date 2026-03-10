@@ -11,34 +11,15 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Tailwind CDN (dev) — replace with build in production -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: {
-            display: ['Orbitron', 'monospace'],
-            body: ['Rajdhani', 'sans-serif'],
-          },
-          colors: {
-            primary: { DEFAULT: '#046BD2', deep: '#045CB4', dark: '#034A9A' },
-            dark: '#1E293B',
-          }
-        }
-      }
-    }
-  </script>
+  <!-- Tailwind CSS (compiled) + custom styles -->
+  <link rel="stylesheet" href="/static/css/styles.css">
 
   <!-- Alpine.js -->
-  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
-  <!-- Custom styles -->
-  <link rel="stylesheet" href="/static/css/app.css">
+  <script defer src="/static/js/vendor/alpine.3.14.8.min.js"></script>
   <!-- Lucide icons -->
-  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+  <script src="/static/js/vendor/lucide.0.469.0.min.js"></script>
   <!-- Chart.js -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+  <script src="/static/js/vendor/chart.4.4.7.umd.min.js"></script>
 
   {% block head %}{% endblock %}
 </head>

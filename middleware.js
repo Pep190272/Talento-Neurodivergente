@@ -39,7 +39,24 @@ export default async function middleware(req) {
     }
   }
 
-  // 2. Redirigir si usuario ya logueado intenta ir a Login
+  // 2. Role-based route protection — return 403 if role doesn't match
+  if (session) {
+    const role = session.user?.type
+    const roleRouteRules = [
+      // Candidate-only routes
+      { pattern: '/quiz', allowed: ['individual'] },
+      { pattern: '/games', allowed: ['individual'] },
+      // Company-only routes
+      { pattern: '/inclusivity', allowed: ['company'] },
+    ]
+    for (const rule of roleRouteRules) {
+      if (path.startsWith(rule.pattern) && !rule.allowed.includes(role)) {
+        return new NextResponse('Forbidden — your role cannot access this page', { status: 403 })
+      }
+    }
+  }
+
+  // 3. Redirigir si usuario ya logueado intenta ir a Login
   if ((path === '/login' || path === '/register') && session) {
     // Redirigir a su dashboard correspondiente según rol
     const role = session.user?.type

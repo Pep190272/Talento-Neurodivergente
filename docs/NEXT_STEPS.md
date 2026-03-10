@@ -1,135 +1,106 @@
 # Proximos Pasos — DiversIA Eternals
 
-**Ultima actualizacion:** 6 de marzo de 2026
-**Estado actual:** v2.0.0-microservices — 4 servicios implementados, frontend pendiente
-**Version:** v2.0.0-microservices
-**Branch activa:** `claude/review-issues-app-refactor-FZuy5`
+**Ultima actualizacion:** 10 de marzo de 2026
+**Estado actual:** v2.0.0 — produccion en app.diversia.click, 233 tests
+**Branch principal:** `main`
 
 ---
 
-## Estado Actual (6 Mar 2026)
+## Estado Actual (10 Mar 2026)
 
-### Completado en sesiones 4-7 Mar
+### Que funciona en produccion (app.diversia.click)
 
-- auth-service: registro, login, JWT, 48 tests, Alembic migrations
-- matching-service: matching trilateral 24D, scoring, 42 tests
-- profile-service: evaluacion neurocognitiva, quiz normalization
-- intelligence-service: LLM reports, anonymization, prompt builder
-- SQLAlchemy ORM + DI wiring para todos los servicios
-- OWASP hardening: CORS env-aware, rate limiting, seed data, 36 tests
-- Docker Compose + nginx gateway configurados
-- Documentacion completa actualizada
+- **4 microservicios** corriendo: auth, profile, matching, intelligence
+- **PostgreSQL 16** con 4 schemas core
+- **nginx gateway** con DNS dinamico, rate limiting, security headers
+- **Ollama + Llama 3.2 3B** self-hosted (EU)
+- **233 tests totales**, 0 failing
+- **28/29 issues** del backlog resueltas
+- **SSL automatico** via Traefik/Let's Encrypt
 
-### Bloqueadores Historicos — RESUELTOS
+### Completado (10 Mar 2026)
 
-| Bloqueador (Feb 2026) | Estado (Mar 2026) | Solucion |
-|----------------------|-------------------|----------|
-| JSON File Storage | RESUELTO | PostgreSQL 16 + SQLAlchemy 2.0 |
-| Arquitectura monolitica | RESUELTO | 4 microservicios Python/FastAPI |
-| TypeScript parcial | RESUELTO | Migrado a Python con type hints + Pydantic v2 |
-| NextAuth vs Auth0 | RESUELTO | JWT custom en auth-service |
-| LLM self-hosted | RESUELTO | Ollama + Llama 3.2 3B en VPS EU |
+- [x] Docker Compose verificado end-to-end
+- [x] Deploy a app.diversia.click via Dokploy
+- [x] Health checks funcionan (/health)
+- [x] nginx rutea correctamente
+- [x] Registro + login funciona
+- [x] SSL + HTTPS
 
 ---
 
-## SIGUIENTE PASO: Fase 6 — Frontend Jinja2
+## SIGUIENTE PASO: Optimizar + Monetizar
 
-### Objetivo
-Implementar el frontend dentro de profile-service usando Jinja2 + Alpine.js + Tailwind CSS, reemplazando el frontend Next.js legacy.
+### 1. Build de frontend (optimizacion)
+- [ ] Tailwind CSS como dependencia (no CDN)
+- [ ] Alpine.js + Chart.js como vendor bundles
+- [ ] Generar `app.min.css` con purge
 
-### Tareas
+### 2. Retirar Next.js legacy (Issue #63)
+- [ ] Verificar que app.diversia.click cubre todas las funciones
+- [ ] Desactivar Vercel
+- [ ] Limpiar app/, prisma/, package.json del repo
 
-#### 6.1 Setup Jinja2 en profile-service
-- [ ] Instalar `jinja2` y `python-multipart` en profile-service
-- [ ] Configurar `Jinja2Templates` en FastAPI
-- [ ] Crear estructura `templates/` y `static/`
-- [ ] Tailwind CSS build pipeline
-
-#### 6.2 Paginas Publicas
-- [ ] Landing page (home)
-- [ ] Login y registro
-- [ ] Informacion (about, privacy policy)
-
-#### 6.3 Dashboard Candidato
-- [ ] Perfil neurodivergente (vista y edicion)
-- [ ] Quiz/evaluacion neurocognitiva
-- [ ] Matches y estado
-- [ ] Consentimientos activos (GDPR)
-
-#### 6.4 Dashboard Empresa
-- [ ] Gestion de jobs
-- [ ] Pipeline de candidatos
-- [ ] Analisis de inclusividad (LLM)
-
-#### 6.5 Dashboard Terapeuta
-- [ ] Gestion de pacientes
-- [ ] Reportes y evaluaciones
-
-#### 6.6 Eliminacion de Next.js (Issue #63)
-- [ ] Verificar que todas las funcionalidades estan cubiertas
-- [ ] Eliminar `app/`, `prisma/`, `package.json`, `next.config.js`
-- [ ] Actualizar Docker Compose para servir solo microservicios
-- [ ] Redirigir dominio de Vercel al VPS
+### 3. Monitoring
+- [ ] Logs centralizados (Dokploy ya tiene basico)
+- [ ] Alertas por servicio caido
 
 ---
 
-## Despues del Frontend: Fase 7
+## Despues de Optimizar
 
-### 7.1 Deploy en VPS
-- [ ] Subir Docker Compose al VPS via Dokploy
-- [ ] Configurar SSL/TLS (Let's Encrypt)
-- [ ] Variables de entorno en produccion
-- [ ] Healthchecks para cada servicio
-
-### 7.2 Tests E2E Cross-Service
-- [ ] Flujo completo: registro → login → perfil → matching
-- [ ] Flujo empresa: login → crear job → ver candidatos → analisis LLM
-- [ ] Flujo consent: accept/reject/revoke entre actores
-- [ ] GDPR: export data, delete account
-
-### 7.3 Monitoring y Observabilidad
-- [ ] Sentry para error tracking
-- [ ] Healthcheck endpoints (`/health`)
-- [ ] Structured logging (JSON)
-- [ ] Backup automatizado PostgreSQL (cron → S3/Backblaze)
-
-### 7.4 Beta con Usuarios Reales
+### Beta
 - [ ] 5-10 empresas inclusivas
 - [ ] 20-50 candidatos neurodivergentes
 - [ ] 5-10 terapeutas/especialistas
-- [ ] Feedback loop y iteracion
+- [ ] Feedback loop
 
 ---
 
-## Preguntas Estrategicas (siguen abiertas)
+## Prioridad de Implementacion SaaS
 
-> Estas preguntas fueron planteadas en febrero y siguen pendientes de respuesta del founder.
+### Fase 1: Subscriptions (Mes 1 post-beta)
+- [ ] subscription-service (:8005)
+- [ ] Stripe checkout + webhooks
+- [ ] Planes empresa (Free/Starter/Pro/Enterprise)
+- [ ] Planes candidato (Free/Pro/Pro+)
 
-### Modelo de Negocio
-- [ ] Modelo de revenue? (SaaS / Marketplace / Mixto / Freemium)
-- [ ] Quien paga? (Empresas / Individuos / Terapeutas)
-- [ ] Comision por contratacion o solo subscripcion?
+### Fase 2: Analytics (Mes 2)
+- [ ] analytics-service (:8009)
+- [ ] Dashboard DEI para empresas
+- [ ] Reportes ESG/CSRD
+- [ ] Usage event tracking
 
-### Compliance Internacional
+### Fase 3: Learning (Mes 3)
+- [ ] learning-service (:8006)
+- [ ] Cursos adaptativos por perfil neurocognitivo
+- [ ] Certificaciones verificables
+
+### Fase 4: Community (Mes 4)
+- [ ] community-service (:8007)
+- [ ] Grupos tematicos + moderacion
+- [ ] Eventos (webinars, workshops)
+
+### Fase 5: Marketplace (Mes 5)
+- [ ] marketplace-service (:8008)
+- [ ] Directorio de proveedores
+- [ ] Reservas + comisiones
+
+---
+
+## Preguntas Estrategicas Resueltas
+
+### Modelo de Negocio — DEFINIDO (ver ADR-005)
+- [x] Revenue: **SaaS + Marketplace mixto**
+- [x] Quien paga: **Empresas (49-399+ EUR/mes) + Terapeutas (29 EUR/mes). Candidatos gratis.**
+- [x] Pasarela: **Stripe** (1.5% + 0.25 EUR/tx)
+- [x] Early adopters: PRO gratis 6 meses (primeras 20 empresas, 50 terapeutas)
+- [x] Breakeven estimado: Mes 7
+
+### Pendientes
 - [ ] Paises LATAM prioritarios?
-- [ ] Certificaciones necesarias? (ISO 27001, SOC 2, ENS)
-
-### Equipo
-- [ ] Capacidad DevOps?
-- [ ] Proyeccion usuarios 12 meses?
-- [ ] Estado inversion $400K?
+- [ ] Certificaciones? (ISO 27001, SOC 2, ENS)
 
 ---
 
-## Referencias
-
-- [ROADMAP.md](../ROADMAP.md) — Plan de desarrollo completo
-- [PROJECT_STATUS.md](../PROJECT_STATUS.md) — Estado actual del proyecto
-- [CHANGELOG.md](../CHANGELOG.md) — Historial de versiones
-- [docs/adr/ADR-003.md](adr/ADR-003.md) — Migracion a Python/FastAPI
-- [docs/adr/ADR-004.md](adr/ADR-004.md) — Arquitectura microservicios
-- [Issue #63](https://github.com/Pep190272/Talento-Neurodivergente/issues/63) — Eliminar Next.js
-
----
-
-**Proxima accion inmediata:** Implementar Jinja2 templates en profile-service
+**Proxima accion inmediata:** Build Tailwind CSS + preparar beta con usuarios reales

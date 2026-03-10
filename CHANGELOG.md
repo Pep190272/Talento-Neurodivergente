@@ -7,63 +7,111 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
-## [2.0.0-microservices] - 2026-03-05
+## [2.0.0] - 2026-03-10
 
-### Sesion 2026-03-05 — Implementacion completa de 4 microservicios
+### Sesion 2026-03-10 — Deploy a produccion app.diversia.click
+
+#### Added
+- **docker-compose.prod.yml**: configuracion de produccion para Dokploy
+- **Red `internal`** explicita para comunicacion entre servicios
+- **DNS dinamico en nginx**: `resolver 127.0.0.11 valid=10s` + variables `set $upstream`
+- **CSP actualizado**: `unsafe-eval` para Alpine.js reactive expressions
+
+#### Fixed
+- 6 fixes de build: URL-encode credenciales, psycopg2-binary, PYTHONPATH, defaults env, migraciones idempotentes, email-validator
+- 6 fixes de red: Traefik labels, dokploy-network, CSP, red default, red interna, DNS caching nginx
+
+#### Deployment
+- **app.diversia.click operativa** — 4 microservicios + PostgreSQL + nginx + Ollama
+- VPS Hostinger (Paris, EU) via Dokploy
+- SSL automatico via Traefik/Let's Encrypt
+
+---
+
+## [2.1.0-saas] - 2026-03-09
+
+### Sesion 2026-03-09 PM — Expansion SaaS: modelo de negocio + bounded contexts
+
+#### Added
+- **ADR-005**: modelo de negocio SaaS + Marketplace (Stripe), planes empresa/candidato/terapeuta
+- **5 bounded contexts**: subscriptions, learning, community, marketplace, analytics
+- **21 tablas SQL** en migracion `services/migrations/20260309_001_create_saas_bounded_contexts.sql`
+- **5 schemas PostgreSQL** nuevos en `init-schemas.sql`
+
+#### Architecture
+- Bounded contexts: 4 → 9
+- Modelo de negocio: Empresas (49-399+ EUR/mes), Candidatos B2C (0-19.99 EUR), Terapeutas (0-29 EUR)
+
+---
+
+## [2.0.0-microservices] - 2026-03-09
+
+### Sesion 2026-03-08/09 — Issues backlog, use cases, infraestructura
+
+#### Added
+- **5 use cases GDPR** en profile-service: ApplyToJob, ManageConsent, ExportData, DeleteAccount, VerifyTherapist
+- **Rate limiter Redis-ready** en shared kernel: sliding window con sorted sets + fallback in-memory
+- **Backup/restore scripts**: backup-postgres.sh (pg_dump, rotacion, S3/B2) + restore-postgres.sh
+- **4 suites E2E tests**: candidate flow, company flow, therapist flow, GDPR compliance
+- **14 APIs nuevas** en el monolito Next.js: bias detection, transparency, therapist catalog, consent dashboard, pipeline, match contest
+- **Skills taxonomy** (70+ skills, O*NET/ESCO), **accommodations catalog** (30+ JAN/NICE)
+- **3 documentos tecnicos**: cognitive-domains-mapping, neuro-vector-clinical-standards, cognitive-domain-framework
+- Eliminado storage.js legacy, error handler centralizado
+
+#### Metricas
+- Tests: **233** (83 profile + 53 matching + 48 auth + 36 intelligence + 13 shared)
+- Issues resueltas: **28 de 29**
+- Use cases nuevos: 5 (GDPR compliant)
+- E2E test suites: 4 (listos para ejecutar con servicios desplegados)
+
+---
+
+### Sesion 2026-03-07 — Brain Suite + Matching 24D
+
+#### Added
+- 3 juegos cognitivos (Pattern Matrix, Memory Grid, Reaction Time)
+- Inclusivity assessment para empresas (18 preguntas, 6 categorias)
+- Job CRUD con analisis de inclusividad via LLM
+- Matching 24D con scoring trilateral y razones
+- 14 paginas frontend Jinja2
+
+---
+
+### Sesion 2026-03-06 — Frontend Jinja2
+
+#### Added
+- 12 paginas HTML con Alpine.js + Tailwind CSS (CDN)
+- Auth standalone (SQLite) — registro, login sin PostgreSQL
+- Quiz neurocognitivo 24D con radar chart (Chart.js)
+- Dashboards candidato/empresa/terapeuta
+
+#### Changed
+- Documentacion actualizada: README, PROJECT_STATUS, ROADMAP, NEXT_STEPS, .env.example
+
+---
+
+### Sesion 2026-03-05 — profile-service + intelligence-service
 
 #### Added
 - **profile-service**: Evaluacion neurocognitiva, quiz normalization, CRUD perfiles
 - **intelligence-service**: LLM talent reports, anonymization layer, prompt builder
 - **SQLAlchemy ORM + DI wiring** para profile-service e intelligence-service
-- **Alembic migrations** para auth-service (tablas User en schema `auth`)
+- **Alembic migrations** para auth-service
 - **OWASP hardening**: CORS env-aware, rate limiting por servicio, seed data
-- **36 nuevos tests** de seguridad y persistencia
-- Documentacion completa actualizada (README, PROJECT_STATUS, ROADMAP, CHANGELOG, NEXT_STEPS)
-
-#### Metricas
-- Tests nuevos (microservicios): **126** (48 auth + 42 matching + 36 security/persistence)
-- Tests legacy (Next.js/Vitest): **272** (sin regresiones)
-- Servicios operativos: **4/4** (auth, profile, matching, intelligence)
 
 ---
 
 ### Sesion 2026-03-04 — Arquitectura y scaffolding
 
-**Decision estrategica**: Migrar de monolito Next.js a 4 microservicios Python/FastAPI con Clean Architecture.
+**Decision estrategica**: Migrar de monolito Next.js a microservicios Python/FastAPI con Clean Architecture (4 core + 5 SaaS planificados).
 
-**Razones:**
-1. Python es estandar en AI/ML — mejor ecosistema para matching 24D
-2. Microservicios permiten escalar matching-service independientemente
-3. Clean Architecture con domain layer puro (sin framework dependencies)
-4. Alineacion con modelo de negocio (servicios independientes)
-5. Activo profesional y aprendizaje en arquitecturas distribuidas
-
-#### Nuevo Stack:
-- **Backend**: Python 3.12 + FastAPI + SQLAlchemy 2.0 + Pydantic v2
-- **Frontend**: Jinja2 + Alpine.js + Tailwind CSS (pendiente)
-- **Tests**: pytest (reemplaza Vitest)
-- **Auth**: JWT custom + bcrypt (reemplaza NextAuth)
-- **DB**: PostgreSQL 16 (se mantiene, ORM cambia a SQLAlchemy)
-- **LLM**: Ollama (se mantiene, accedido desde Python)
-- **Deploy**: Docker Compose + Dokploy
-
-#### 4 Microservicios:
-1. **auth-service** (:8001) — Identidad, JWT, registro, login — 48 tests
-2. **profile-service** (:8002) — Perfiles, quiz, games, onboarding, frontend
-3. **matching-service** (:8003) — Matching trilateral 24D, scoring — 42 tests
-4. **intelligence-service** (:8004) — LLM, analisis, transparencia IA
-
-#### Documentacion Actualizada:
-- `.agent/specialists/00-03` → v2.0.0 (microservicios)
-- `.agent/METHODOLOGY.md` → **NUEVO** (versionado, commits, PRs, costes)
-- `docs/adr/ADR-003.md` → Migracion Python/FastAPI
-- `docs/adr/ADR-004.md` → Arquitectura microservicios
-
-### Migration Notes
-- Next.js sigue funcionando en paralelo durante la migracion
-- Tablas Prisma en schema `public` no se tocan
-- Nuevos servicios crean tablas en schemas propios (auth, profiles, matching, ai)
-- Los 272 tests de Vitest deben seguir pasando hasta completar migracion
+#### Added
+- Estructura monorepo `services/` con Clean Architecture
+- Shared kernel: BaseEntity, NeuroVector24D (24 dims), Email, Score, JWT utils
+- Docker Compose: PostgreSQL 16, Ollama, auth-service, profile-service, nginx
+- **auth-service**: domain, use cases, API — 48 tests
+- **matching-service**: TrilateralScorer 24D, batch matching — 42 tests
+- ADR-003 (migracion Python/FastAPI), ADR-004 (microservicios)
 
 ---
 
@@ -71,7 +119,7 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ### Production-Ready Monolith
 - 272 tests passing, 0 failing
-- PostgreSQL + Prisma migración completa
+- PostgreSQL + Prisma migracion completa
 - Security audit OWASP (7 vulnerabilidades corregidas)
 - E2E tests con Playwright (25+ tests)
 - LLM self-hosted (Ollama/Llama 3.2 3B)
@@ -82,385 +130,31 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [0.6.0-security] - 2026-01-18
 
-### 🔐 Added - Sistema de Seguridad Enterprise-Grade
-
-**Implementación completa de seguridad siguiendo HIPAA, GDPR y OWASP**
-
-#### Nuevos Módulos de Seguridad:
-- `app/lib/encryption.js` - Encriptación AES-256-GCM para datos médicos
-- `app/lib/rate-limiter.js` - Rate limiting in-memory con sliding window
-- `app/lib/schemas.js` - Validación de inputs con Zod (5 schemas completos)
-- `app/lib/auth.js` - Configuración NextAuth.js v5
-- `app/api/auth/[...nextauth]/route.js` - NextAuth API handler
-- `middleware.js` - Middleware global: Auth + Rate limiting + Security headers
-
-#### Funcionalidades de Seguridad:
-
-**1. Encriptación de Datos Médicos (HIPAA Compliance)**
-- ✅ Algoritmo AES-256-GCM con IV aleatorio por encriptación
-- ✅ Campos encriptados: diagnoses, therapistId, medicalHistory, accommodationsNeeded
-- ✅ Encriptación/desencriptación transparente en storage
-- ✅ Formato: `encrypted:iv:authTag:ciphertext`
-- ✅ Solo aplica a userType: 'individual'
-
-**2. Autenticación (NextAuth.js v5)**
-- ✅ Login con credenciales (email + password)
-- ✅ Password hashing con bcrypt (10 rounds)
-- ✅ JWT sessions (30 días de duración)
-- ✅ 3 tipos de usuario: individual, therapist, company
-- ✅ Session incluye userId y userType
-- ✅ Páginas de error personalizadas
-
-**3. Autorización - 3 Actores**
-- ✅ **Individual Owner**: Full access a su propio perfil (self-access)
-- ✅ **Therapist → Patient**: Full access a pacientes asignados (verifica therapistId)
-- ✅ **Company → Candidate**: Limited access con connection/consent activa
-  - Filtra datos según `connection.sharedData[]`
-  - `shareDiagnosis: false` por defecto (NUNCA compartir sin permiso)
-  - Bloquea acceso si consent revocado
-- ✅ Audit logging en cada acceso (sensitivityLevel: low/medium/high)
-
-**4. Rate Limiting**
-- ✅ Auth endpoints: 5 requests/min (protección brute force)
-- ✅ API read (GET): 100 requests/min
-- ✅ API write (POST/PATCH/DELETE): 30 requests/min
-- ✅ API general: 60 requests/min
-- ✅ Headers X-RateLimit-* en respuestas
-- ✅ Status 429 con Retry-After cuando excede límite
-- ✅ Algoritmo sliding window (limpia requests antiguos)
-
-**5. Validación de Inputs (Zod)**
-- ✅ `individualCreateSchema` - Validación completa para registro
-- ✅ `individualUpdateSchema` - Validación para actualización
-- ✅ `companyCreateSchema` - Validación para companies
-- ✅ `therapistCreateSchema` - Validación para therapists
-- ✅ `jobCreateSchema` - Validación para job postings
-- ✅ Password strength: min 8 chars, mayúsculas, minúsculas, números
-- ✅ Email validation con lowercase y trim
-- ✅ Enum para diagnoses (previene valores inválidos)
-- ✅ Límites de longitud en todos los campos
-
-**6. Security Headers**
-- ✅ X-Frame-Options: DENY (prevenir clickjacking)
-- ✅ X-Content-Type-Options: nosniff (prevenir MIME sniffing)
-- ✅ X-XSS-Protection: 1; mode=block (protección XSS legacy)
-- ✅ Referrer-Policy: strict-origin-when-cross-origin
-- ✅ Permissions-Policy: camera=(), microphone=(), geolocation=()
-
-#### Archivos Modificados:
-- `app/lib/storage.js` - Integración de encriptación transparente
-- `app/lib/individuals.js` - Soporte para passwordHash y medicalHistory
-- `app/api/individuals/[userId]/route.js` - Autorización completa con 3 actores
-
-#### Tests Implementados:
-```
-✅ tests/lib/encryption.test.js (11 tests)
-  - Encriptar/desencriptar texto plano
-  - Formato encrypted:iv:tag:ciphertext
-  - Fallar con clave incorrecta
-  - IV aleatorio por encriptación
-  - Validación de inputs
-
-✅ tests/lib/storage.test.js (10 tests)
-  - Encriptar diagnoses al guardar
-  - Desencriptar automáticamente al leer
-  - NO encriptar campos no sensibles
-  - Encriptar therapistId, accommodationsNeeded
-  - Manejo de valores undefined/null
-
-Total: 21 tests de seguridad pasando (100%)
-```
-
-#### Tests Legacy Actualizados:
-- `tests/unit/actors/individual.test.js` - Actualizado para passwordHash y encriptación
-- `tests/unit/actors/company.test.js` - Mejorado inclusivityScore validation
-- `tests/unit/matching/consent.test.js` - Agregado ENCRYPTION_KEY setup
-- `tests/unit/privacy/audit.test.js` - Agregado ENCRYPTION_KEY setup
-
-**Resultado: 124 tests pasando (de 286 tests totales)**
-
-#### Configuración:
-- `.env.local` - Variables de entorno (NO commiteado)
-- `.env.example` - Plantilla para otros desarrolladores
-
-#### Variables de Entorno Requeridas:
-```bash
-ENCRYPTION_KEY=<64-char-hex>     # Generado con: openssl rand -hex 32
-NEXTAUTH_SECRET=<64-char-hex>    # Generado con: openssl rand -hex 32
-NEXTAUTH_URL=http://localhost:3000
-```
-
-#### Documentación:
-- `SECURITY_IMPLEMENTATION.md` - Documentación completa de seguridad (900+ líneas)
-  - Resumen ejecutivo
-  - Objetivos cumplidos
-  - Archivos nuevos/modificados
-  - Modelo de autorización detallado
-  - Formato de datos encriptados
-  - Rate limiting configurado
-  - Validación de inputs
-  - Security headers
-  - Audit logging
-  - Despliegue en producción
-  - Troubleshooting
-  - Referencias y próximos pasos
-
-#### Compliance:
-- ✅ **HIPAA**: Datos médicos encriptados en disco
-- ✅ **GDPR**: Audit logs con 7 años de retención, consent explícito
-- ✅ **OWASP**: Top 10 vulnerabilities mitigadas
-
-#### Métricas de Seguridad:
-- ✅ 0 datos médicos en texto plano
-- ✅ 0 rutas API sin autenticación (excepto públicas)
-- ✅ 100% audit logs en accesos sensibles
-- ✅ Rate limiting en 100% de rutas API
-- ✅ Validación de inputs en 100% de endpoints
-
-### 🔧 Fixed
-- Compatibilidad de tests legacy con nueva estructura de datos
-- Inclusivity score comparison en company tests
-
-### 📚 Documentation
-- Documento completo SECURITY_IMPLEMENTATION.md
-- Todos los cambios documentados en CHANGELOG.md
-- Comentarios en código explicando decisiones de seguridad
-
-### 🚀 Migration Notes
-Para actualizar desde v0.5.x:
-1. Generar claves: `openssl rand -hex 32` (x2)
-2. Crear `.env.local` con ENCRYPTION_KEY y NEXTAUTH_SECRET
-3. Instalar dependencias: `npm install next-auth@beta bcryptjs zod`
-4. Ejecutar tests: `npm test`
-5. Los datos existentes se encriptarán automáticamente al guardar
-
-### ⚠️ Breaking Changes
-- Los archivos JSON de individuals ahora contienen datos encriptados
-- Se requieren variables de entorno ENCRYPTION_KEY y NEXTAUTH_SECRET
-- GET /api/individuals/:userId ahora requiere autenticación
-- Estructura de individual profile incluye passwordHash
+### Sistema de Seguridad
+- Encriptacion AES-256-GCM para datos medicos
+- NextAuth.js v5 (login, bcrypt, JWT sessions)
+- Rate limiting (sliding window)
+- Validacion Zod (5 schemas)
+- Security headers (X-Frame-Options, CSP, HSTS)
+- 21 tests de seguridad
 
 ---
 
 ## [0.5.0-masterclass] - 2026-01-17
 
-### 🎓 Added - TDD Masterclass: Draft Mode Feature
-
-**Feature completa implementada con TDD perfecto (Red → Green → Refactor)**
-
-#### Nuevos Archivos:
-- `app/lib/draft-manager.js` - Módulo de gestión de drafts (286 líneas)
-- `tests/unit/features/draft-mode.test.js` - 8 tests, 100% coverage (282 líneas)
-
-#### Funcionalidad:
-- ✅ **saveDraft()** - Guarda progreso de registro en localStorage
-- ✅ **loadDraft()** - Recupera draft guardado
-- ✅ **clearDraft()** - Limpia draft después de registro exitoso
-- ✅ **isDraftExpired()** - Verifica expiración (7 días)
-- ✅ **sanitizeDraftData()** - Elimina datos sensibles antes de guardar
-- ✅ **getAllDrafts()** - Obtiene todos los drafts de un tipo
-- ✅ **clearExpiredDrafts()** - Limpieza periódica de drafts viejos
-- ✅ **getDraftStorageSize()** - Monitoreo de uso de localStorage
-
-#### Seguridad (OWASP Compliant):
-- 🔒 NO guarda passwords en localStorage
-- 🔒 NO guarda diagnósticos médicos
-- 🔒 NO guarda SSN/documentos de identidad
-- 🔒 NO guarda información de terapeutas
-- 🔒 Sanitización automática de PII sensible
-- 🔒 Expiración automática después de 7 días (privacidad)
-
-#### Edge Cases Manejados:
-- ✅ QuotaExceededError cuando localStorage está lleno
-- ✅ Drafts corruptos (JSON inválido)
-- ✅ Timestamp automático en cada guardado
-- ✅ Limpieza automática de drafts expirados
-- ✅ Validación de datos antes de guardar
-
-#### Tests:
-```
-✅ should save profile draft to localStorage
-✅ should load draft from localStorage
-✅ should clear draft after successful registration
-✅ should NOT save sensitive data in localStorage
-✅ should expire drafts older than 7 days
-✅ should sanitize draft data before saving
-✅ should handle localStorage quota exceeded error
-✅ should add savedAt timestamp automatically
-
-Tests: 8/8 passing (100%)
-Duration: 26ms
-```
-
-#### Arquitectura:
-- **Single Responsibility**: Cada función hace una cosa
-- **Reusable**: Funciona para individual/company/therapist
-- **Testeable**: 100% coverage sin mocks complejos
-- **Secure by Design**: Seguridad desde el principio, no parche después
-- **DRY**: Código sin duplicación
-
-#### Aprendizajes Técnicos:
-- TDD puro aplicado (tests guían el diseño)
-- Security "Shift Left" en práctica
-- Mock de localStorage funcional para tests
-- Manejo robusto de errores (try/catch + return false)
-- Documentación inline clara y útil
-
-### 🔧 Fixed - localStorage Mock en Tests
-
-**Archivo:** `tests/setup.js`
-
-**Problema:**
-- Mock de localStorage no funcionaba correctamente
-- `getItem()` retornaba `undefined` en vez de `null`
-- `setItem()` no almacenaba datos realmente
-- No tenía propiedades `length` ni método `key()`
-
-**Solución:**
-- Implementación funcional de localStorage mock
-- Store interno con closure para persistencia entre llamadas
-- Retorna `null` cuando key no existe (spec-compliant)
-- Soporta `length` y `key()` para iteración
-- Compatible con todos los tests existentes
-
-```javascript
-// ANTES (mock inútil)
-const localStorageMock = {
-  getItem: vi.fn(),  // Retorna undefined
-  setItem: vi.fn(),  // No guarda nada
-}
-
-// DESPUÉS (mock funcional)
-const localStorageMock = (() => {
-  let store = {}
-  return {
-    getItem: vi.fn((key) => store[key] || null),
-    setItem: vi.fn((key, value) => { store[key] = String(value) }),
-    removeItem: vi.fn((key) => { delete store[key] }),
-    clear: vi.fn(() => { store = {} }),
-    get length() { return Object.keys(store).length },
-    key: vi.fn((index) => Object.keys(store)[index] || null)
-  }
-})()
-```
-
-**Impacto:**
-- ✅ Tests de draft mode funcionan correctamente
-- ✅ Otros tests que usan localStorage también se benefician
-- ✅ Comportamiento idéntico a localStorage real
-
-### 📝 Changed - TODO.md Actualizado
-
-**Cambios:**
-- ✅ Movida feature "Draft Mode" de "pendientes" a "completadas"
-- ✅ Añadida documentación completa de la feature
-- ✅ Actualizado progreso de tests (116 pasando)
-- ✅ Actualizado coverage (~50%)
-- ✅ Documentados aprendizajes clave
-
-### 📊 Estadísticas del Release
-
-```
-Archivos modificados:   3
-Archivos nuevos:        2
-Líneas añadidas:        +600
-Tests añadidos:         +8
-Coverage change:        40% → 50% (+10%)
-Tiempo de desarrollo:   45 minutos
-Bugs introducidos:      0
-Bugs arreglados:        1 (localStorage mock)
-```
-
-### 🎯 Impacto en el Proyecto
-
-**Antes de este release:**
-- Draft mode: No existía
-- localStorage tests: No funcionaban
-- Coverage: 40%
-- Security: Sin protección de PII en localStorage
-
-**Después de este release:**
-- ✅ Draft mode: Completo, testeado, seguro
-- ✅ localStorage tests: Mock funcional
-- ✅ Coverage: 50% (+10%)
-- ✅ Security: PII protegida, OWASP compliant
-
-### 🔗 Referencias
-
-- [Tests: draft-mode.test.js](./tests/unit/features/draft-mode.test.js)
-- [Implementación: draft-manager.js](./app/lib/draft-manager.js)
-- [TODO.md actualizado](./TODO.md#✅-completadas---features-con-tests-tdd)
-- [Agent.md - TDD Methodology](./Agent.md#-metodología-tdd---siempre)
+### Draft Mode Feature (TDD)
+- draft-manager.js con 8 tests
+- localStorage mock funcional
+- Sanitizacion PII, expiracion 7 dias
 
 ---
 
 ## [0.4.0-pragmatic] - 2026-01-16
 
-### 🎯 Added - Enfoque Pragmático
-
-#### Agent.md v2.0.0
-- Rol de arquitecto senior con pedagogía ELI10
-- Jerarquía de prioridades (Seguridad → Tests → Arquitectura → Funcionalidad)
-- "Shift Left Security" con OWASP Top 10 detallado
-- Clean Architecture y SOLID Principles explicados
-- TDD híbrido: Código Legacy + Features Nuevas
-- Diseño escalable en 3 ejes
-
-#### TODO.md
-- Roadmap completo de features OpenAI
-- 14 features documentadas con ejemplos
-- Estrategia de implementación
-- Referencias y código de ejemplo
-
-### 🐛 Fixed - CRITICAL Security Bug
-
-**Bug:** `findUserByEmail()` no detectaba emails duplicados
-
-**Archivo:** `app/lib/storage.js:277`
-
-**Impacto:**
-- ☠️ Permitía crear múltiples cuentas con mismo email
-- ☠️ Riesgo de suplantación de identidad
-- ☠️ Integridad de datos comprometida
-
-**Solución:**
-```javascript
-// ANTES (vulnerable)
-const dirPath = `users/${type}s` // users/companys ❌
-
-// DESPUÉS (seguro)
-const dirMap = {
-  'company': 'users/companies' // ✅
-}
-const dirPath = dirMap[type]
-```
-
-**Tests afectados:**
-- ✅ `should reject duplicate company email` - AHORA PASA
-- ✅ `should create job posting with unique jobId` - AHORA PASA
-
-### 📝 Changed
-
-**Refactorización:**
-- Estructura plana en companies.js e individuals.js
-- Estado de jobs: 'open' → 'active'
-- Matches: `[]` → `{pending: [], accepted: []}`
-
-**Tests:**
-- 16/26 tests pasando en company.test.js (62%)
-- +8% mejora desde inicio de sesión
-
-### 🔗 Referencias
-
-- [Agent.md v2.0](./Agent.md)
-- [TODO.md](./TODO.md)
-- [Commit detallado](https://github.com/Pep190272/Talento-Neurodivergente/commit/a425d4c)
-
----
-
-## [0.3.5] - Anteriores
-
-Ver historial de git para releases anteriores.
+### Enfoque Pragmatico
+- Agent.md v2.0.0
+- Fix: findUserByEmail no detectaba duplicados
+- Refactorizacion estructura plana
 
 ---
 
@@ -468,10 +162,8 @@ Ver historial de git para releases anteriores.
 
 - **Added** - Nuevas features
 - **Changed** - Cambios en funcionalidad existente
-- **Deprecated** - Features que serán removidas
 - **Removed** - Features removidas
 - **Fixed** - Bug fixes
-- **Security** - Vulnerabilidades arregladas
 
 ---
 

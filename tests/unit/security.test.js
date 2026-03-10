@@ -2,11 +2,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { encryptData, decryptData, getEncryptionKey } from '@/lib/encryption'
 import { sanitizeInput } from '@/lib/utils'
-import { saveToFile } from '@/lib/storage'
-import fs from 'fs/promises'
-
-// Mock fs module
-vi.mock('fs/promises')
 
 describe('🛡️ Security Unit Tests', () => {
 

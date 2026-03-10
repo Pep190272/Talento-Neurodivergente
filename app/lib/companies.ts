@@ -509,13 +509,20 @@ export async function analyzeJobInclusivity(jobData: {
       })
     }
 
-    // Calculate inclusivity score
-    let score = 100
+    // Calculate inclusivity score — aligned with LLM prompt methodology
+    // Base: 50, +10 per accommodation (cap 6), +5 premium accommodations, -20 discriminatory
+    const accommodationCount = jobData.accommodations?.length ?? 0
+    const premiumAccommodations = ['remote', 'flexible hours', 'async communication', 'written documentation', 'sensory-friendly']
+    const premiumCount = jobData.accommodations?.filter((a) =>
+      premiumAccommodations.some((p) => a.toLowerCase().includes(p))
+    ).length ?? 0
+
+    let score = 50
+    score += Math.min(accommodationCount, 6) * 10
+    score += premiumCount * 5
+    if (jobData.workMode === 'remote') score += 5
     score -= issues.filter((i) => i.severity === 'high').length * 20
     score -= issues.filter((i) => i.severity === 'medium').length * 10
-
-    if (jobData.accommodations && jobData.accommodations.length >= 3) score += 10
-    if (jobData.workMode === 'remote') score += 10
 
     score = Math.max(0, Math.min(100, score))
 

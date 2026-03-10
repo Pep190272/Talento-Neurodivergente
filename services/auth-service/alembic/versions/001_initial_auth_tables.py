@@ -18,25 +18,33 @@ depends_on: Union[str, Sequence[str], None] = None
 def upgrade() -> None:
     op.execute("CREATE SCHEMA IF NOT EXISTS auth")
 
-    user_role = sa.Enum("candidate", "company", "therapist", "admin",
-                        name="user_role", schema="auth")
-    user_status = sa.Enum("active", "inactive", "deleted",
-                          name="user_status", schema="auth")
+    # Create enums idempotently — survives partial migration retries
+    op.execute("""
+        DO $$ BEGIN
+            CREATE TYPE auth.user_role AS ENUM ('candidate', 'company', 'therapist', 'admin');
+        EXCEPTION WHEN duplicate_object THEN NULL;
+        END $$
+    """)
+    op.execute("""
+        DO $$ BEGIN
+            CREATE TYPE auth.user_status AS ENUM ('active', 'inactive', 'deleted');
+        EXCEPTION WHEN duplicate_object THEN NULL;
+        END $$
+    """)
 
-    op.create_table(
-        "users",
-        sa.Column("id", sa.String(25), primary_key=True),
-        sa.Column("email", sa.String(255), unique=True, nullable=False, index=True),
-        sa.Column("password_hash", sa.String(255), nullable=False),
-        sa.Column("role", user_role, nullable=False, server_default="candidate"),
-        sa.Column("status", user_status, nullable=False, server_default="active"),
-        sa.Column("display_name", sa.String(255), nullable=False, server_default=""),
-        sa.Column("created_at", sa.DateTime(timezone=True), nullable=False,
-                  server_default=sa.func.now()),
-        sa.Column("updated_at", sa.DateTime(timezone=True), nullable=False,
-                  server_default=sa.func.now()),
-        schema="auth",
-    )
+    op.execute("""
+        CREATE TABLE IF NOT EXISTS auth.users (
+            id VARCHAR(25) PRIMARY KEY,
+            email VARCHAR(255) NOT NULL UNIQUE,
+            password_hash VARCHAR(255) NOT NULL,
+            role auth.user_role NOT NULL DEFAULT 'candidate',
+            status auth.user_status NOT NULL DEFAULT 'active',
+            display_name VARCHAR(255) NOT NULL DEFAULT '',
+            created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+            updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+        )
+    """)
+    op.execute("CREATE INDEX IF NOT EXISTS ix_auth_users_email ON auth.users (email)")
 
 
 def downgrade() -> None:
