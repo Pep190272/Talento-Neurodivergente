@@ -155,16 +155,13 @@ services:
       matching-service:
         condition: service_healthy
     restart: unless-stopped
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.diversia.rule=Host(`app.diversia.click`)"
-      - "traefik.http.routers.diversia.entrypoints=websecure"
-      - "traefik.http.routers.diversia.tls.certresolver=letsencrypt"
-      - "traefik.http.services.diversia.loadbalancer.server.port=8000"
-      - "traefik.http.routers.diversia-http.rule=Host(`app.diversia.click`)"
-      - "traefik.http.routers.diversia-http.entrypoints=web"
-      - "traefik.http.routers.diversia-http.middlewares=redirect-to-https"
-      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+    networks:
+      - dokploy-network
+      - default
+
+networks:
+  dokploy-network:
+    external: true
 
 volumes:
   postgres-data:
