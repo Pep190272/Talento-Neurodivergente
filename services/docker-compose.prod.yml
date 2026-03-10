@@ -17,6 +17,9 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - dokploy-network
+      - default
 
   ollama:
     image: ollama/ollama:latest
@@ -40,6 +43,9 @@ services:
       interval: 60s
       timeout: 30s
       retries: 5
+    networks:
+      - dokploy-network
+      - default
 
   auth-service:
     build:
@@ -64,6 +70,9 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
+    networks:
+      - dokploy-network
+      - default
 
   profile-service:
     build:
@@ -88,6 +97,9 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
+    networks:
+      - dokploy-network
+      - default
 
   matching-service:
     build:
@@ -112,6 +124,9 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
+    networks:
+      - dokploy-network
+      - default
 
   intelligence-service:
     build:
@@ -139,6 +154,9 @@ services:
       timeout: 10s
       retries: 5
       start_period: 30s
+    networks:
+      - dokploy-network
+      - default
 
   gateway:
     image: nginx:alpine
@@ -155,6 +173,13 @@ services:
       matching-service:
         condition: service_healthy
     restart: unless-stopped
+    networks:
+      - dokploy-network
+      - default
+
+networks:
+  dokploy-network:
+    external: true
 
 volumes:
   postgres-data:
