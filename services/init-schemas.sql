@@ -19,13 +19,19 @@ CREATE SCHEMA IF NOT EXISTS community;
 CREATE SCHEMA IF NOT EXISTS marketplace;
 CREATE SCHEMA IF NOT EXISTS analytics;
 
--- Grant usage to default user
-GRANT ALL ON SCHEMA auth TO diversia;
-GRANT ALL ON SCHEMA profiles TO diversia;
-GRANT ALL ON SCHEMA matching TO diversia;
-GRANT ALL ON SCHEMA ai TO diversia;
-GRANT ALL ON SCHEMA subscriptions TO diversia;
-GRANT ALL ON SCHEMA learning TO diversia;
-GRANT ALL ON SCHEMA community TO diversia;
-GRANT ALL ON SCHEMA marketplace TO diversia;
-GRANT ALL ON SCHEMA analytics TO diversia;
+-- Grant usage to the database owner (works with any POSTGRES_USER)
+-- The user who creates the DB is the superuser, so GRANTs are automatic.
+-- These are kept as safety net for non-superuser setups.
+DO $$
+BEGIN
+    EXECUTE format('GRANT ALL ON SCHEMA auth TO %I', current_user);
+    EXECUTE format('GRANT ALL ON SCHEMA profiles TO %I', current_user);
+    EXECUTE format('GRANT ALL ON SCHEMA matching TO %I', current_user);
+    EXECUTE format('GRANT ALL ON SCHEMA ai TO %I', current_user);
+    EXECUTE format('GRANT ALL ON SCHEMA subscriptions TO %I', current_user);
+    EXECUTE format('GRANT ALL ON SCHEMA learning TO %I', current_user);
+    EXECUTE format('GRANT ALL ON SCHEMA community TO %I', current_user);
+    EXECUTE format('GRANT ALL ON SCHEMA marketplace TO %I', current_user);
+    EXECUTE format('GRANT ALL ON SCHEMA analytics TO %I', current_user);
+END
+$$;
