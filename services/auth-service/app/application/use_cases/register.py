@@ -6,13 +6,27 @@ import logging
 
 from shared.auth import create_access_token
 from shared.domain import Email, UserRole
-from shared.email_service import EmailConfig, build_welcome_email, send_email
+from shared.email_service import (
+    EmailConfig,
+    build_admin_notification_email,
+    build_early_adopter_email,
+    build_welcome_email,
+    send_email,
+)
 
 from app.application.dto.auth_dto import AuthResponseDTO, RegisterDTO, UserResponseDTO
 from app.domain.entities.user import DuplicateEmailError, User
 from app.domain.repositories.i_user_repository import IUserRepository
 
 logger = logging.getLogger(__name__)
+
+# Admin email for registration notifications
+ADMIN_NOTIFICATION_EMAIL = "diversiaeternals@gmail.com"
+
+# Early adopter limits
+EARLY_ADOPTER_COMPANY_LIMIT = 25
+EARLY_ADOPTER_THERAPIST_LIMIT = 25
+EARLY_ADOPTER_FREE_MONTHS = 3
 
 
 class RegisterUseCase:
@@ -25,7 +39,9 @@ class RegisterUseCase:
     3. Persist user
     4. Generate JWT access token
     5. Send welcome email (best-effort, never blocks registration)
-    6. Return user + token
+    6. Send admin notification email (best-effort)
+    7. Send early adopter email for companies/therapists (best-effort)
+    8. Return user + token
 
     Transaction boundary is managed by the caller (API layer or infra).
     """
@@ -67,14 +83,25 @@ class RegisterUseCase:
             secret=self._jwt_secret,
         )
 
+        user_email = str(user.email)
+        user_name = user.display_name or user_email
+        user_role = user.role.value
+
         # 5. Send welcome email (best-effort)
-        await self._send_welcome_email(
-            to=str(user.email),
-            name=user.display_name or str(user.email),
-            role=user.role.value,
+        await self._send_welcome_email(to=user_email, name=user_name, role=user_role)
+
+        # 6. Send admin notification (best-effort)
+        await self._send_admin_notification(
+            user_name=user_name, user_email=user_email, user_role=user_role,
         )
 
-        # 6. Return
+        # 7. Send early adopter email for companies/therapists (best-effort)
+        if user_role in ("company", "therapist"):
+            await self._send_early_adopter_email(
+                to=user_email, name=user_name, role=user_role,
+            )
+
+        # 8. Return
         return AuthResponseDTO(
             user=UserResponseDTO.from_entity(user),
             access_token=token,
@@ -95,3 +122,41 @@ class RegisterUseCase:
             )
         except Exception:
             logger.exception("Unexpected error sending welcome email to %s", to)
+
+    async def _send_admin_notification(
+        self, *, user_name: str, user_email: str, user_role: str,
+    ) -> None:
+        """Notify admin about a new registration. Never raises."""
+        try:
+            subject, html_body, text_body = build_admin_notification_email(
+                user_name=user_name, user_email=user_email, user_role=user_role,
+            )
+            await send_email(
+                config=self._email_config,
+                to=ADMIN_NOTIFICATION_EMAIL,
+                subject=subject,
+                html_body=html_body,
+                text_body=text_body,
+            )
+        except Exception:
+            logger.exception("Unexpected error sending admin notification for %s", user_email)
+
+    async def _send_early_adopter_email(
+        self, *, to: str, name: str, role: str,
+    ) -> None:
+        """Send early adopter welcome email with free plan info. Never raises."""
+        try:
+            subject, html_body, text_body = build_early_adopter_email(
+                user_name=name,
+                user_role=role,
+                free_months=EARLY_ADOPTER_FREE_MONTHS,
+            )
+            await send_email(
+                config=self._email_config,
+                to=to,
+                subject=subject,
+                html_body=html_body,
+                text_body=text_body,
+            )
+        except Exception:
+            logger.exception("Unexpected error sending early adopter email to %s", to)
