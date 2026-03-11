@@ -1,7 +1,7 @@
 # Proximos Pasos — DiversIA Eternals
 
-**Ultima actualizacion:** 10 de marzo de 2026
-**Estado actual:** v2.0.0 — produccion en app.diversia.click, 233 tests
+**Ultima actualizacion:** 11 de marzo de 2026
+**Estado actual:** v2.2.0-saas — produccion en app.diversia.click, 320 tests
 **Branch principal:** `main`
 
 ---
@@ -14,8 +14,10 @@
 - **PostgreSQL 16** con 4 schemas core
 - **nginx gateway** con DNS dinamico, rate limiting, security headers
 - **Ollama + Llama 3.2 3B** self-hosted (EU)
-- **233 tests totales**, 0 failing
+- **320 tests totales**, 0 failing
 - **28/29 issues** del backlog resueltas
+- **subscription-service** con 87 tests, early adopters, Stripe ready
+- **Welcome email** al registrar usuario (shared email service)
 - **SSL automatico** via Traefik/Let's Encrypt
 
 ### Completado (10 Mar 2026)
@@ -59,11 +61,15 @@
 
 ## Prioridad de Implementacion SaaS
 
-### Fase 1: Subscriptions (Mes 1 post-beta)
-- [ ] subscription-service (:8005)
-- [ ] Stripe checkout + webhooks
-- [ ] Planes empresa (Free/Starter/Pro/Enterprise)
-- [ ] Planes candidato (Free/Pro/Pro+)
+### Fase 1: Subscriptions — COMPLETADO (11 Mar 2026)
+- [x] subscription-service (:8005) — 87 tests
+- [x] Planes empresa/candidato/terapeuta con logica de dominio
+- [x] Early adopter: 25 empresas + 25 terapeutas, 3 meses gratis
+- [x] 6 use cases: CreatePlan, ListPlans, Subscribe, Cancel, ChangePlan, GetSubscription
+- [x] API REST + Docker Compose + nginx gateway
+- [x] Welcome email al registrar (shared email service)
+- [ ] Stripe checkout + webhooks en produccion
+- [ ] Conectar pagos reales con Stripe
 
 ### Fase 2: Analytics (Mes 2)
 - [ ] analytics-service (:8009)
@@ -103,4 +109,4 @@
 
 ---
 
-**Proxima accion inmediata:** Build Tailwind CSS + preparar beta con usuarios reales
+**Proxima accion inmediata:** Conectar Stripe checkout en produccion + Build Tailwind CSS + preparar beta con usuarios reales

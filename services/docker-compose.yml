@@ -120,6 +120,41 @@ services:
       timeout: 5s
       retries: 3
 
+  subscription-service:
+    build:
+      context: .
+      dockerfile: subscription-service/Dockerfile
+    ports:
+      - "8005:8005"
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER:-diversia}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-diversia_dev}
+      POSTGRES_DB: ${POSTGRES_DB:-diversia}
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-in-production-1234567890abcdef}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_PUBLISHABLE_KEY: ${STRIPE_PUBLISHABLE_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-no-reply@diversia.click}
+      SMTP_FROM_NAME: ${SMTP_FROM_NAME:-DiversIA}
+      EARLY_ADOPTER_COMPANY_LIMIT: ${EARLY_ADOPTER_COMPANY_LIMIT:-25}
+      EARLY_ADOPTER_THERAPIST_LIMIT: ${EARLY_ADOPTER_THERAPIST_LIMIT:-25}
+      EARLY_ADOPTER_FREE_MONTHS: ${EARLY_ADOPTER_FREE_MONTHS:-3}
+      ENV: ${ENV:-development}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8005/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
   gateway:
     image: nginx:alpine
     ports:
@@ -131,6 +166,7 @@ services:
       - profile-service
       - matching-service
       - intelligence-service
+      - subscription-service
 
 volumes:
   postgres_data:
