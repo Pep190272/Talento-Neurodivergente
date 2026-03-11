@@ -1,7 +1,7 @@
 # ROADMAP — DiversIA (app.diversia.click)
 
 **Fecha de inicio:** 10 de febrero de 2026
-**Ultima actualizacion:** 10 de marzo de 2026
+**Ultima actualizacion:** 11 de marzo de 2026
 **Estado:** Produccion — app.diversia.click operativa
 
 ---
@@ -14,28 +14,29 @@
 
 ---
 
-## Estado actual del proyecto (10 marzo 2026)
+## Estado actual del proyecto (11 marzo 2026)
 
 ### Que funciona en produccion (app.diversia.click)
 
 | Componente | Estado | Tests |
 |-----------|--------|-------|
-| **auth-service** (:8001) | Operativo — register, login, JWT, bcrypt | 48 passing |
+| **auth-service** (:8001) | Operativo — register, login, JWT, bcrypt, welcome email | 48 passing |
 | **profile-service** (:8002) | Operativo — frontend, auth, quiz, games, jobs, matching | 83 passing |
 | **matching-service** (:8003) | Operativo — scoring trilateral 24D, batch matching | 53 passing |
 | **intelligence-service** (:8004) | Operativo — reports LLM, anonymizer, prompt builder | 36 passing |
-| **shared kernel** | Libreria — value objects, auth, rate limiter | 13 passing |
+| **subscription-service** (:8005) | Operativo — planes, suscripciones, facturacion, early adopters | 87 passing |
+| **shared kernel** | Libreria — value objects, auth, rate limiter, email service | 13 passing |
 | **nginx gateway** (:8000) | Operativo — routing, rate limiting, security headers | — |
-| **PostgreSQL 16** (:5432) | Operativo — 4 schemas core | — |
+| **PostgreSQL 16** (:5432) | Operativo — 4 schemas core + subscriptions | — |
 | **Ollama** (:11434) | Operativo — Llama 3.2 3B self-hosted | — |
 | **Frontend (Jinja2)** | 14 paginas, Alpine.js + Tailwind CDN | — |
 
-**Total: 233 tests, 0 failing**
+**Total: 320 tests, 0 failing**
 
 ### Que falta
 
 - Build de Tailwind CSS (usa CDN — funcional pero no optimo)
-- Fase 1 SaaS: subscription-service + Stripe
+- Stripe webhooks y checkout en produccion
 - Beta con usuarios reales
 - Retirar frontend legacy Next.js (Vercel)
 
@@ -80,10 +81,18 @@ Internet → Traefik (Dokploy) → nginx gateway (:8000)
 - [ ] Build pipeline (postcss + purge)
 - [ ] Alpine.js + Chart.js como vendor bundles locales
 
-### Pendiente: Fase 1 SaaS
-- [ ] subscription-service + Stripe
-- [ ] Planes empresa/candidato/terapeuta
-- [ ] Webhook handling
+### Completado: Fase 1 SaaS — subscription-service (11 Mar 2026)
+- [x] subscription-service con TDD (87 tests)
+- [x] Entidades de dominio: Plan, Subscription, Invoice
+- [x] 6 use cases: CreatePlan, ListPlans, Subscribe, CancelSubscription, ChangePlan, GetSubscription
+- [x] Early adopter logic: primeras 25 empresas + 25 terapeutas, 3 meses gratis
+- [x] API REST FastAPI con validacion Pydantic
+- [x] Docker Compose + nginx gateway integration
+- [x] Configuracion Stripe (secret + publishable keys)
+- [x] Servicio compartido de email (aiosmtplib async)
+- [x] Welcome email al registrar usuario/empresa
+- [ ] Stripe webhooks en produccion
+- [ ] Checkout flow en produccion
 
 ### Pendiente: Beta
 - [ ] 5-10 empresas inclusivas
@@ -113,6 +122,7 @@ Internet → Traefik (Dokploy) → nginx gateway (:8000)
 | v2.0.0-dev | 4-9 Mar | Microservicios Python/FastAPI (233 tests, 14 paginas) |
 | v2.1.0-saas | 9 Mar | Expansion SaaS: 5 bounded contexts, modelo de negocio (ADR-005) |
 | **v2.0.0** | **10 Mar** | **Deploy a app.diversia.click — produccion** |
+| **v2.2.0-saas** | **11 Mar** | **subscription-service + welcome email (87 tests, Stripe ready)** |
 
 ---
 
@@ -138,12 +148,13 @@ docker compose -f docker-compose.prod.yml up --build
 ### Tests
 
 ```bash
-cd services/auth-service && python -m pytest tests/ -q         # 48 tests
-cd services/profile-service && python -m pytest tests/ -q      # 83 tests
-cd services/matching-service && python -m pytest tests/ -q     # 53 tests
-cd services/intelligence-service && python -m pytest tests/ -q # 36 tests
-cd services/shared && python -m pytest tests/ -q               # 13 tests
-# Total: 233 tests, 0 failing
+cd services/auth-service && python -m pytest tests/ -q            # 48 tests
+cd services/profile-service && python -m pytest tests/ -q         # 83 tests
+cd services/matching-service && python -m pytest tests/ -q        # 53 tests
+cd services/intelligence-service && python -m pytest tests/ -q    # 36 tests
+cd services/subscription-service && python -m pytest tests/ -q    # 87 tests
+cd services/shared && python -m pytest tests/ -q                  # 13 tests
+# Total: 320 tests, 0 failing
 ```
 
 ---
@@ -215,5 +226,25 @@ cd services/shared && python -m pytest tests/ -q               # 13 tests
 - nginx DNS dinamico (resolver 127.0.0.11 + variables)
 - Red interna explicita + dokploy-network para gateway
 - **app.diversia.click operativa**
+
+### Sesion 14 (11 Mar): subscription-service + welcome email
+- **subscription-service completo** con TDD: 87 tests
+  - Entidades: Plan (con limites y precios), Subscription (ciclo de vida), Invoice
+  - Value objects: Money, PlanLimits, BillingCycle
+  - 6 use cases: CreatePlan, ListPlans, Subscribe, CancelSubscription, ChangePlan, GetSubscription
+  - Early adopter: primeras 25 empresas + 25 terapeutas reciben 3 meses gratis
+  - API REST FastAPI con schemas Pydantic
+  - In-memory repositories (Stripe adapter preparado)
+- **Servicio compartido de email** (shared/email_service.py)
+  - aiosmtplib async, template HTML con branding DiversIA
+  - Best-effort: nunca bloquea el registro si SMTP falla
+- **Welcome email** al registrar usuario
+  - Integrado en auth-service register use case
+  - Template HTML responsive con branding
+- **Integracion infraestructura**
+  - subscription-service en docker-compose (dev + prod)
+  - nginx gateway con ruta /api/v1/subscriptions
+  - Variables Stripe + SMTP en .env.example
+- **320 tests totales** (233 anteriores + 87 nuevos)
 
 </details>
