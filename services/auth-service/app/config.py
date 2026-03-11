@@ -12,6 +12,14 @@ class AuthServiceSettings(BaseSettings):
     SERVICE_PORT: int = 8001
     ENV: str = "development"
 
+    # Email (SMTP for welcome emails)
+    SMTP_HOST: str = "smtp.gmail.com"
+    SMTP_PORT: int = 587
+    SMTP_USER: str = ""
+    SMTP_PASSWORD: str = ""
+    SMTP_FROM: str = "no-reply@diversia.click"
+    SMTP_FROM_NAME: str = "DiversIA"
+
     # Composed settings
     db: DatabaseSettings = DatabaseSettings()
     jwt: JWTSettings = JWTSettings()

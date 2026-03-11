@@ -6,10 +6,20 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from shared.auth import TokenPayload, decode_access_token
+from shared.email_service import EmailConfig
 from fastapi import HTTPException, Request
 from app.application.use_cases.login import LoginUseCase
 from app.application.use_cases.register import RegisterUseCase
 from app.config import settings
+
+_email_config = EmailConfig(
+    host=settings.SMTP_HOST,
+    port=settings.SMTP_PORT,
+    user=settings.SMTP_USER,
+    password=settings.SMTP_PASSWORD,
+    from_addr=settings.SMTP_FROM,
+    from_name=settings.SMTP_FROM_NAME,
+)
 from app.infrastructure.database import get_session
 from app.infrastructure.persistence.user_repository import SQLAlchemyUserRepository
 
@@ -26,6 +36,7 @@ async def get_register_use_case(
     return RegisterUseCase(
         user_repo=user_repo,
         jwt_secret=settings.jwt.JWT_SECRET,
+        email_config=_email_config,
     )
 
 

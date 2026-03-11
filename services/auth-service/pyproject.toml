@@ -15,6 +15,7 @@ dependencies = [
     "slowapi>=0.1.9",
     "alembic>=1.13",
     "psycopg2-binary>=2.9",
+    "aiosmtplib>=3.0",
     "diversia-shared",
 ]
 
