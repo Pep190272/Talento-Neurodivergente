@@ -16,6 +16,11 @@ vi.mock('next/server', () => ({
   }
 }))
 
+// Mock lib/auth
+vi.mock('@/lib/auth', () => ({
+  auth: vi.fn()
+}))
+
 // Mock lib/matching
 vi.mock('@/lib/matching', () => ({
   findMatchesForJob: vi.fn(),
@@ -32,14 +37,24 @@ vi.mock('@/lib/individuals', () => ({
   getIndividualProfile: vi.fn()
 }))
 
+// Mock repositories
+vi.mock('@/lib/repositories/company.repository', () => ({
+  findCompanyByUserId: vi.fn()
+}))
+
 describe('Matching API Routes - TDD Tests', () => {
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
 
   describe('GET /api/matching/jobs/:jobId', () => {
     it('should return candidate matches for a job', async () => {
       const mockJob = {
         id: 'job-1',
         title: 'Software Engineer',
-        requiredSkills: ['JavaScript', 'React']
+        requiredSkills: ['JavaScript', 'React'],
+        companyId: 'comp-1'
       }
 
       const mockMatches = [
@@ -65,6 +80,11 @@ describe('Matching API Routes - TDD Tests', () => {
         }
       ]
 
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'test-user' } })
+      const { findCompanyByUserId } = await import('@/lib/repositories/company.repository')
+      findCompanyByUserId.mockResolvedValue({ id: 'comp-1' })
+
       const { GET } = await import('@/api/matching/jobs/[jobId]/route.js')
       const { getJobPosting } = await import('@/lib/companies')
       const { findMatchesForJob } = await import('@/lib/matching')
@@ -86,6 +106,9 @@ describe('Matching API Routes - TDD Tests', () => {
     })
 
     it('should return 404 if job not found', async () => {
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'test-user' } })
+
       const { GET } = await import('@/api/matching/jobs/[jobId]/route.js')
       const { getJobPosting } = await import('@/lib/companies')
       getJobPosting.mockResolvedValue(null)
@@ -101,7 +124,12 @@ describe('Matching API Routes - TDD Tests', () => {
     })
 
     it('should return empty array if no matches found', async () => {
-      const mockJob = { id: 'job-1', title: 'Job' }
+      const mockJob = { id: 'job-1', title: 'Job', companyId: 'comp-1' }
+
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'test-user' } })
+      const { findCompanyByUserId } = await import('@/lib/repositories/company.repository')
+      findCompanyByUserId.mockResolvedValue({ id: 'comp-1' })
 
       const { GET } = await import('@/api/matching/jobs/[jobId]/route.js')
       const { getJobPosting } = await import('@/lib/companies')
@@ -122,11 +150,16 @@ describe('Matching API Routes - TDD Tests', () => {
     })
 
     it('should handle minScore query parameter', async () => {
-      const mockJob = { id: 'job-1', title: 'Job' }
+      const mockJob = { id: 'job-1', title: 'Job', companyId: 'comp-1' }
       const mockMatches = [
         { candidateId: 'user-1', score: 0.9 },
         { candidateId: 'user-2', score: 0.7 }
       ]
+
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'test-user' } })
+      const { findCompanyByUserId } = await import('@/lib/repositories/company.repository')
+      findCompanyByUserId.mockResolvedValue({ id: 'comp-1' })
 
       const { GET } = await import('@/api/matching/jobs/[jobId]/route.js')
       const { getJobPosting } = await import('@/lib/companies')
@@ -182,6 +215,9 @@ describe('Matching API Routes - TDD Tests', () => {
         }
       ]
 
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'user-1' } })
+
       const { GET } = await import('@/api/matching/candidates/[userId]/route.js')
       const { getIndividualProfile } = await import('@/lib/individuals')
       const { findMatchesForCandidate } = await import('@/lib/matching')
@@ -203,6 +239,9 @@ describe('Matching API Routes - TDD Tests', () => {
     })
 
     it('should return 404 if candidate not found', async () => {
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'nonexistent' } })
+
       const { GET } = await import('@/api/matching/candidates/[userId]/route.js')
       const { getIndividualProfile } = await import('@/lib/individuals')
       getIndividualProfile.mockResolvedValue(null)
@@ -219,6 +258,9 @@ describe('Matching API Routes - TDD Tests', () => {
 
     it('should return empty array if no job matches found', async () => {
       const mockProfile = { id: 'user-1', profile: { name: 'John' } }
+
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'user-1' } })
 
       const { GET } = await import('@/api/matching/candidates/[userId]/route.js')
       const { getIndividualProfile } = await import('@/lib/individuals')
@@ -244,6 +286,9 @@ describe('Matching API Routes - TDD Tests', () => {
         { jobId: 'job-1', score: 0.92 },
         { jobId: 'job-2', score: 0.65 }
       ]
+
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'user-1' } })
 
       const { GET } = await import('@/api/matching/candidates/[userId]/route.js')
       const { getIndividualProfile } = await import('@/lib/individuals')
@@ -272,6 +317,9 @@ describe('Matching API Routes - TDD Tests', () => {
         { jobId: 'job-2', score: 0.85 },
         { jobId: 'job-3', score: 0.8 }
       ]
+
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'user-1' } })
 
       const { GET } = await import('@/api/matching/candidates/[userId]/route.js')
       const { getIndividualProfile } = await import('@/lib/individuals')

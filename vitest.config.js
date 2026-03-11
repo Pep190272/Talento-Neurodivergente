@@ -23,7 +23,7 @@ export default defineConfig({
       ]
     },
     include: ['**/*.{test,spec}.{js,jsx,ts,tsx}'],
-    exclude: ['node_modules', '.next', 'dist', 'tests/pending/**']
+    exclude: ['node_modules', '.next', 'dist', 'tests/pending/**', 'tests/e2e/**']
   },
   resolve: {
     alias: {

@@ -16,6 +16,11 @@ vi.mock('next/server', () => ({
   }
 }))
 
+// Mock lib/auth
+vi.mock('@/lib/auth', () => ({
+  auth: vi.fn()
+}))
+
 // Mock lib/consent
 vi.mock('@/lib/consent', () => ({
   grantConsent: vi.fn(),
@@ -24,6 +29,10 @@ vi.mock('@/lib/consent', () => ({
 }))
 
 describe('Consent API Routes - TDD Tests', () => {
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
 
   describe('POST /api/consent/accept', () => {
     it('should accept consent for data sharing', async () => {
@@ -40,6 +49,9 @@ describe('Consent API Routes - TDD Tests', () => {
         status: 'granted',
         timestamp: '2026-01-13T12:00:00Z'
       }
+
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'user-1' } })
 
       const { POST } = await import('@/api/consent/accept/route.js')
       const { grantConsent } = await import('@/lib/consent')
@@ -64,6 +76,9 @@ describe('Consent API Routes - TDD Tests', () => {
     })
 
     it('should return 400 if userId is missing', async () => {
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'user-1' } })
+
       const { POST } = await import('@/api/consent/accept/route.js')
 
       const mockRequest = {
@@ -81,6 +96,9 @@ describe('Consent API Routes - TDD Tests', () => {
     })
 
     it('should return 400 if companyId is missing', async () => {
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'user-1' } })
+
       const { POST } = await import('@/api/consent/accept/route.js')
 
       const mockRequest = {
@@ -98,6 +116,9 @@ describe('Consent API Routes - TDD Tests', () => {
     })
 
     it('should return 400 if jobId is missing', async () => {
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'user-1' } })
+
       const { POST } = await import('@/api/consent/accept/route.js')
 
       const mockRequest = {
@@ -115,6 +136,9 @@ describe('Consent API Routes - TDD Tests', () => {
     })
 
     it('should return 400 if consentType is missing', async () => {
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'user-1' } })
+
       const { POST } = await import('@/api/consent/accept/route.js')
 
       const mockRequest = {
@@ -149,6 +173,9 @@ describe('Consent API Routes - TDD Tests', () => {
         timestamp: '2026-01-13T12:00:00Z'
       }
 
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'user-1' } })
+
       const { POST } = await import('@/api/consent/reject/route.js')
       const { rejectConsent } = await import('@/lib/consent')
       rejectConsent.mockResolvedValue(mockResult)
@@ -172,6 +199,9 @@ describe('Consent API Routes - TDD Tests', () => {
     })
 
     it('should return 400 if required fields are missing', async () => {
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'user-1' } })
+
       const { POST } = await import('@/api/consent/reject/route.js')
 
       const mockRequest = {
@@ -204,6 +234,9 @@ describe('Consent API Routes - TDD Tests', () => {
         revokedAt: '2026-01-13T13:00:00Z'
       }
 
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'user-1' } })
+
       const { POST } = await import('@/api/consent/revoke/route.js')
       const { revokeConsent } = await import('@/lib/consent')
       revokeConsent.mockResolvedValue(mockResult)
@@ -227,6 +260,9 @@ describe('Consent API Routes - TDD Tests', () => {
     })
 
     it('should return 400 if userId is missing', async () => {
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'user-1' } })
+
       const { POST } = await import('@/api/consent/revoke/route.js')
 
       const mockRequest = {
@@ -244,6 +280,9 @@ describe('Consent API Routes - TDD Tests', () => {
     })
 
     it('should return 400 if companyId is missing', async () => {
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'user-1' } })
+
       const { POST } = await import('@/api/consent/revoke/route.js')
 
       const mockRequest = {
@@ -261,6 +300,9 @@ describe('Consent API Routes - TDD Tests', () => {
     })
 
     it('should return 400 if jobId is missing', async () => {
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'user-1' } })
+
       const { POST } = await import('@/api/consent/revoke/route.js')
 
       const mockRequest = {
@@ -278,6 +320,9 @@ describe('Consent API Routes - TDD Tests', () => {
     })
 
     it('should return 404 if consent not found', async () => {
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'user-1' } })
+
       const { POST } = await import('@/api/consent/revoke/route.js')
       const { revokeConsent } = await import('@/lib/consent')
 

@@ -29,10 +29,6 @@ export async function POST(request: NextRequest) {
 
     const { userId, companyId, jobId, consentType } = await request.json()
 
-    if (session.user.id !== userId) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
-    }
-
     // Validation
     if (!userId) {
       return NextResponse.json(
@@ -60,6 +56,10 @@ export async function POST(request: NextRequest) {
         { error: 'consentType is required' },
         { status: 400 }
       )
+    }
+
+    if (session.user.id !== userId) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
 
     // Grant consent
