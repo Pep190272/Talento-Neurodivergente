@@ -16,13 +16,27 @@ vi.mock('next/server', () => ({
   }
 }))
 
+// Mock lib/auth
+vi.mock('@/lib/auth', () => ({
+  auth: vi.fn()
+}))
+
 // Mock lib/dashboards
 vi.mock('@/lib/dashboards', () => ({
   getIndividualDashboard: vi.fn(),
   getCompanyDashboard: vi.fn()
 }))
 
+// Mock repositories
+vi.mock('@/lib/repositories/company.repository', () => ({
+  findCompanyByUserId: vi.fn()
+}))
+
 describe('Dashboards API Routes - TDD Tests', () => {
+
+  beforeEach(() => {
+    vi.clearAllMocks()
+  })
 
   describe('GET /api/dashboards/individual/:userId', () => {
     it('should return individual dashboard data', async () => {
@@ -60,6 +74,9 @@ describe('Dashboards API Routes - TDD Tests', () => {
         ]
       }
 
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'user-1' } })
+
       const { GET } = await import('@/api/dashboards/individual/[userId]/route.js')
       const { getIndividualDashboard } = await import('@/lib/dashboards')
       getIndividualDashboard.mockResolvedValue(mockDashboard)
@@ -79,6 +96,9 @@ describe('Dashboards API Routes - TDD Tests', () => {
     })
 
     it('should return 404 if user not found', async () => {
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'nonexistent' } })
+
       const { GET } = await import('@/api/dashboards/individual/[userId]/route.js')
       const { getIndividualDashboard } = await import('@/lib/dashboards')
       getIndividualDashboard.mockResolvedValue(null)
@@ -94,6 +114,9 @@ describe('Dashboards API Routes - TDD Tests', () => {
     })
 
     it('should handle dashboard generation errors', async () => {
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'user-1' } })
+
       const { GET } = await import('@/api/dashboards/individual/[userId]/route.js')
       const { getIndividualDashboard } = await import('@/lib/dashboards')
       getIndividualDashboard.mockRejectedValue(new Error('Database error'))
@@ -157,6 +180,11 @@ describe('Dashboards API Routes - TDD Tests', () => {
         ]
       }
 
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'test-user' } })
+      const { findCompanyByUserId } = await import('@/lib/repositories/company.repository')
+      findCompanyByUserId.mockResolvedValue({ id: 'comp-1' })
+
       const { GET } = await import('@/api/dashboards/company/[companyId]/route.js')
       const { getCompanyDashboard } = await import('@/lib/dashboards')
       getCompanyDashboard.mockResolvedValue(mockDashboard)
@@ -177,6 +205,11 @@ describe('Dashboards API Routes - TDD Tests', () => {
     })
 
     it('should return 404 if company not found', async () => {
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'test-user' } })
+      const { findCompanyByUserId } = await import('@/lib/repositories/company.repository')
+      findCompanyByUserId.mockResolvedValue({ id: 'nonexistent' })
+
       const { GET } = await import('@/api/dashboards/company/[companyId]/route.js')
       const { getCompanyDashboard } = await import('@/lib/dashboards')
       getCompanyDashboard.mockResolvedValue(null)
@@ -192,6 +225,11 @@ describe('Dashboards API Routes - TDD Tests', () => {
     })
 
     it('should handle dashboard generation errors', async () => {
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'test-user' } })
+      const { findCompanyByUserId } = await import('@/lib/repositories/company.repository')
+      findCompanyByUserId.mockResolvedValue({ id: 'comp-1' })
+
       const { GET } = await import('@/api/dashboards/company/[companyId]/route.js')
       const { getCompanyDashboard } = await import('@/lib/dashboards')
       getCompanyDashboard.mockRejectedValue(new Error('Calculation error'))
@@ -221,6 +259,11 @@ describe('Dashboards API Routes - TDD Tests', () => {
         activeJobs: [],
         recentMatches: []
       }
+
+      const { auth } = await import('@/lib/auth')
+      auth.mockResolvedValue({ user: { id: 'test-user' } })
+      const { findCompanyByUserId } = await import('@/lib/repositories/company.repository')
+      findCompanyByUserId.mockResolvedValue({ id: 'comp-1' })
 
       const { GET } = await import('@/api/dashboards/company/[companyId]/route.js')
       const { getCompanyDashboard } = await import('@/lib/dashboards')

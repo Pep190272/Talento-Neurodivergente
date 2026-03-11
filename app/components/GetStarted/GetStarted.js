@@ -2,7 +2,6 @@
 import { useState } from 'react';
 import './GetStarted.css';
 import { useRouter } from 'next/navigation';
-import { getRedirectUrlByRole } from '../../lib/auth-redirect';
 
 const GetStarted = ({ mode }) => {
   const router = useRouter();
@@ -13,6 +12,8 @@ const GetStarted = ({ mode }) => {
     firstName: '',
     lastName: '',
     email: '',
+    password: '',
+    confirmPassword: '',
     phone: '',
 
     // Candidate specific
@@ -93,6 +94,9 @@ const GetStarted = ({ mode }) => {
     if (!formData.lastName.trim()) newErrors.lastName = 'El apellido es requerido';
     if (!formData.email.trim()) newErrors.email = 'El correo electrónico es requerido';
     else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = 'Formato de correo electrónico inválido';
+    if (!formData.password) newErrors.password = 'La contraseña es requerida';
+    else if (formData.password.length < 6) newErrors.password = 'La contraseña debe tener al menos 6 caracteres';
+    if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = 'Las contraseñas no coinciden';
 
     if (userType === 'candidate') {
       if (!formData.age) newErrors.age = 'La edad es requerida';
@@ -128,35 +132,43 @@ const GetStarted = ({ mode }) => {
     setIsSubmitting(true);
 
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userType: userType === 'candidate' ? 'individual' : userType,
+          email: formData.email,
+          password: formData.password,
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          phone: formData.phone,
+          // Company fields
+          companyName: formData.companyName,
+          industry: formData.industry,
+          companySize: formData.companySize,
+          position: formData.position,
+          // Candidate fields
+          skills: formData.skills,
+          // Therapist fields
+          specialization: formData.specialization,
+          licenseNumber: formData.licenseNumber,
+          certifications: formData.certifications,
+        }),
+      });
 
-      // Create user data object
-      const userData = {
-        userType,
-        ...formData,
-        registrationDate: new Date().toISOString(),
-        isRegistered: true
-      };
+      const data = await res.json();
 
-      // Save to localStorage
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('diversia_user_data', JSON.stringify(userData));
-
-        // Here you would typically send data to your backend
-        console.log('Form submitted:', userData);
-
-        // Show success message
-        alert(`¡Bienvenido a Diversia Eternals, ${formData.firstName}! Tu perfil ha sido creado exitosamente.`);
-
-        // Redirect to appropriate dashboard using standard logic
-        const targetUrl = getRedirectUrlByRole(userType);
-        router.push(targetUrl);
+      if (!res.ok) {
+        alert(data.error || 'Error al registrar. Inténtalo de nuevo.');
+        return;
       }
+
+      alert(`¡Bienvenido/a a DiversIA, ${formData.firstName}! Tu cuenta ha sido creada. Ya puedes iniciar sesión.`);
+      router.push('/login');
 
     } catch (error) {
       console.error('Submission error:', error);
-      alert('Algo salió mal. Por favor intenta de nuevo.');
+      alert('Error de conexión. Por favor intenta de nuevo.');
     } finally {
       setIsSubmitting(false);
     }
@@ -303,6 +315,33 @@ const GetStarted = ({ mode }) => {
                 className="input"
                 placeholder="+34 600 123 456"
               />
+            </div>
+          </div>
+
+          <div className="formRow">
+            <div className="formGroup">
+              <label className="label">Contraseña *</label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                className={`input ${errors.password ? 'inputError' : ''}`}
+                placeholder="Mínimo 6 caracteres"
+              />
+              {errors.password && <span className="errorText">{errors.password}</span>}
+            </div>
+            <div className="formGroup">
+              <label className="label">Confirmar Contraseña *</label>
+              <input
+                type="password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                className={`input ${errors.confirmPassword ? 'inputError' : ''}`}
+                placeholder="Repite tu contraseña"
+              />
+              {errors.confirmPassword && <span className="errorText">{errors.confirmPassword}</span>}
             </div>
           </div>
         </div>
@@ -508,6 +547,33 @@ const GetStarted = ({ mode }) => {
               />
             </div>
           </div>
+
+          <div className="formRow">
+            <div className="formGroup">
+              <label className="label">Contraseña *</label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                className={`input ${errors.password ? 'inputError' : ''}`}
+                placeholder="Mínimo 6 caracteres"
+              />
+              {errors.password && <span className="errorText">{errors.password}</span>}
+            </div>
+            <div className="formGroup">
+              <label className="label">Confirmar Contraseña *</label>
+              <input
+                type="password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                className={`input ${errors.confirmPassword ? 'inputError' : ''}`}
+                placeholder="Repite tu contraseña"
+              />
+              {errors.confirmPassword && <span className="errorText">{errors.confirmPassword}</span>}
+            </div>
+          </div>
         </div>
 
         <div className="formSection">
@@ -703,6 +769,33 @@ const GetStarted = ({ mode }) => {
                 className="input"
                 placeholder="+1 (555) 123-4567"
               />
+            </div>
+          </div>
+
+          <div className="formRow">
+            <div className="formGroup">
+              <label className="label">Contraseña *</label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                className={`input ${errors.password ? 'inputError' : ''}`}
+                placeholder="Mínimo 6 caracteres"
+              />
+              {errors.password && <span className="errorText">{errors.password}</span>}
+            </div>
+            <div className="formGroup">
+              <label className="label">Confirmar Contraseña *</label>
+              <input
+                type="password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                className={`input ${errors.confirmPassword ? 'inputError' : ''}`}
+                placeholder="Repite tu contraseña"
+              />
+              {errors.confirmPassword && <span className="errorText">{errors.confirmPassword}</span>}
             </div>
           </div>
         </div>
