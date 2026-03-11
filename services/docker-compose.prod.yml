@@ -152,6 +152,34 @@ services:
     networks:
       - internal
 
+  subscription-service:
+    build:
+      context: .
+      dockerfile: subscription-service/Dockerfile
+    container_name: diversia-subscription
+    environment:
+      POSTGRES_HOST: db
+      POSTGRES_PORT: "5432"
+      POSTGRES_USER: ${POSTGRES_USER:-diversia_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-diversia_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-diversia_db}
+      JWT_SECRET: ${JWT_SECRET:-diversia-dev-secret-change-in-production}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      ENV: production
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8005/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+    networks:
+      - internal
+
   gateway:
     image: nginx:alpine
     container_name: diversia-gateway
