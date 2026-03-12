@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException, Response
 
 from shared.auth import TokenPayload
 
-from app.api.deps import get_current_user, get_login_use_case, get_register_use_case
+from app.api.deps import get_current_user, get_login_use_case, get_register_use_case, get_user_repository
 from app.api.schemas import (
     AuthResponse,
     ErrorResponse,
@@ -16,7 +16,12 @@ from app.api.schemas import (
 )
 from app.application.dto.auth_dto import LoginDTO, RegisterDTO
 from app.application.use_cases.login import LoginUseCase
-from app.application.use_cases.register import RegisterUseCase
+from app.application.use_cases.register import (
+    EARLY_ADOPTER_COMPANY_LIMIT,
+    EARLY_ADOPTER_THERAPIST_LIMIT,
+    RegisterUseCase,
+)
+from app.infrastructure.persistence.user_repository import SQLAlchemyUserRepository
 from app.domain.entities.user import (
     DomainError,
     DuplicateEmailError,
@@ -130,6 +135,21 @@ async def get_me(
         status="active",
         created_at=current_user.iat,
     )
+
+
+@router.get("/early-adopter-slots")
+async def early_adopter_slots(
+    user_repo: SQLAlchemyUserRepository = Depends(get_user_repository),
+) -> dict:
+    """Return remaining early adopter slots for companies and therapists."""
+    company_count = await user_repo.count_by_role("company")
+    therapist_count = await user_repo.count_by_role("therapist")
+    return {
+        "company_remaining": max(0, EARLY_ADOPTER_COMPANY_LIMIT - company_count),
+        "therapist_remaining": max(0, EARLY_ADOPTER_THERAPIST_LIMIT - therapist_count),
+        "company_limit": EARLY_ADOPTER_COMPANY_LIMIT,
+        "therapist_limit": EARLY_ADOPTER_THERAPIST_LIMIT,
+    }
 
 
 @router.post("/logout")

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from shared.domain import Email
@@ -55,3 +55,9 @@ class SQLAlchemyUserRepository(IUserRepository):
 
         await self._session.flush()
         return model.to_entity()
+
+    async def count_by_role(self, role: str) -> int:
+        result = await self._session.execute(
+            select(func.count()).select_from(UserModel).where(UserModel.role == role)
+        )
+        return result.scalar_one()

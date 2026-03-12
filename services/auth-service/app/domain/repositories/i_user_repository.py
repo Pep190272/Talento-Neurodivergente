@@ -27,3 +27,7 @@ class IUserRepository(ABC):
     @abstractmethod
     async def update(self, user: User) -> User:
         """Update an existing user. Returns the updated user."""
+
+    @abstractmethod
+    async def count_by_role(self, role: str) -> int:
+        """Count users with the given role."""
