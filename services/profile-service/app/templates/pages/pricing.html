@@ -21,12 +21,12 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
     <!-- Toggle mensual/anual -->
-    <div class="flex items-center justify-center gap-3 mb-12">
-      <span class="text-sm font-medium" :class="annual ? 'text-gray-400' : 'text-dark'">Mensual</span>
-      <button @click="annual = !annual" class="relative w-12 h-6 rounded-full transition-colors" :class="annual ? 'bg-primary' : 'bg-gray-300'">
-        <span class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform" :class="annual ? 'translate-x-6' : ''"></span>
+    <div class="flex items-center justify-center gap-4 mb-12">
+      <span class="text-sm font-semibold cursor-pointer" :class="annual ? 'text-gray-400' : 'text-dark'" @click="annual = false">Mensual</span>
+      <button @click="annual = !annual" class="relative w-14 h-7 rounded-full transition-colors border-2 focus:outline-none focus:ring-2 focus:ring-primary/50" :class="annual ? 'bg-primary border-primary' : 'bg-gray-200 border-gray-300'">
+        <span class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-md transition-transform duration-200" :class="annual ? 'translate-x-7' : ''"></span>
       </button>
-      <span class="text-sm font-medium" :class="annual ? 'text-dark' : 'text-gray-400'">Anual <span class="text-green-600 text-xs font-bold">-20%</span></span>
+      <span class="text-sm font-semibold cursor-pointer" :class="annual ? 'text-dark' : 'text-gray-400'" @click="annual = true">Anual <span class="bg-green-100 text-green-700 text-xs font-bold px-2 py-0.5 rounded-full ml-1">-20%</span></span>
     </div>
 
     <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
