@@ -7,6 +7,29 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [2.3.0] - 2026-03-12
+
+### Sesion 2026-03-12 — Pricing page, Early Adopter tracking, production fixes
+
+#### Added
+- **Pagina de precios** (`/pricing`): 3 planes (Candidato gratis, Empresa PRO 99€/79€ anual, Terapeuta PRO 59€/49€ anual), toggle mensual/anual, FAQ accordion, banner Early Adopter
+- **Early adopter slot tracking**: endpoint `GET /api/v1/auth/early-adopter-slots`, metodo `count_by_role` en repositorio de usuarios
+- **Verificacion de plazas** al registrar: solo envia email Early Adopter si quedan plazas disponibles (limite 25 por rol)
+- **Auto-creacion de perfil** al registrarse y al entrar al dashboard (fix: empresas/terapeutas no aparecian en BD)
+- **Link "Precios"** en navbar (desktop + movil)
+
+#### Fixed
+- **Emails en produccion**: variables SMTP anadidas a docker-compose.prod.yml (welcome + admin notification + early adopter)
+- **Acentos/ñ** en pagina para-terapeutas: Acompana→Acompaña, numero→número, busqueda→búsqueda, etc.
+- **CI Build**: `DATABASE_URL` dummy proporcionado a `prisma generate` en GitHub Actions
+- **Pricing toggle**: eliminado `x-init` redundante, fallback text en spans, `lucide.createIcons()` protegido
+
+#### Infrastructure
+- Variables SMTP (6) anadidas al auth-service en docker-compose.prod.yml
+- CI workflow optimizado: `DATABASE_URL` a nivel de job `build`
+
+---
+
 ## [2.0.0] - 2026-03-10
 
 ### Sesion 2026-03-10 — Deploy a produccion app.diversia.click

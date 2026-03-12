@@ -17,7 +17,7 @@
 </section>
 
 <!-- Pricing Cards -->
-<section class="py-20 bg-white" x-data="pricingApp()" x-init="init()">
+<section class="py-20 bg-white" x-data="pricingApp()">
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
     <!-- Toggle mensual/anual -->
@@ -84,8 +84,8 @@
           <p class="text-sm text-gray-500 mt-1">Para equipos inclusivos</p>
         </div>
         <div class="mb-6">
-          <span class="font-display text-4xl font-bold text-dark" x-text="annual ? '79' : '99'"></span>
-          <span class="text-gray-500 text-sm ml-1" x-text="annual ? '€/mes (facturado anual)' : '€/mes'"></span>
+          <span class="font-display text-4xl font-bold text-dark" x-text="annual ? '79' : '99'">99</span>
+          <span class="text-gray-500 text-sm ml-1" x-text="annual ? '€/mes (facturado anual)' : '€/mes'">€/mes</span>
         </div>
         <ul class="space-y-3 mb-8 text-sm text-gray-600">
           <li class="flex items-start gap-2">
@@ -135,8 +135,8 @@
           <p class="text-sm text-gray-500 mt-1">Para profesionales verificados</p>
         </div>
         <div class="mb-6">
-          <span class="font-display text-4xl font-bold text-dark" x-text="annual ? '49' : '59'"></span>
-          <span class="text-gray-500 text-sm ml-1" x-text="annual ? '€/mes (facturado anual)' : '€/mes'"></span>
+          <span class="font-display text-4xl font-bold text-dark" x-text="annual ? '49' : '59'">59</span>
+          <span class="text-gray-500 text-sm ml-1" x-text="annual ? '€/mes (facturado anual)' : '€/mes'">€/mes</span>
         </div>
         <ul class="space-y-3 mb-8 text-sm text-gray-600">
           <li class="flex items-start gap-2">
@@ -261,7 +261,7 @@ function pricingApp() {
           this.earlyAdopterTherapistSlots = data.therapist_remaining;
         }
       } catch (_) { /* use defaults */ }
-      this.$nextTick(() => lucide.createIcons());
+      try { this.$nextTick(() => lucide.createIcons()); } catch (_) {}
     }
   }
 }

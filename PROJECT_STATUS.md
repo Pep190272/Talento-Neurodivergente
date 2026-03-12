@@ -1,14 +1,14 @@
 # Project Status — DiversIA Eternals
 
-> **Ultima actualizacion**: 10 de marzo de 2026
-> **Version**: 2.0.0-microservices
+> **Ultima actualizacion**: 12 de marzo de 2026
+> **Version**: 2.3.0
 > **Produccion**: https://app.diversia.click
 
 ---
 
 ## Estado General
 
-**Todos los microservicios core estan desplegados y operativos en produccion.** La app corre en `app.diversia.click` sobre un VPS Hostinger (Paris, EU) via Dokploy con Docker Compose: 4 microservicios Python/FastAPI + PostgreSQL 16 + nginx gateway + Ollama. 5 bounded contexts SaaS adicionales estan disenados con migracion SQL lista (subscriptions, learning, community, marketplace, analytics — ver ADR-005). El frontend legacy Next.js sigue en Vercel pendiente de retirar.
+**Todos los microservicios core estan desplegados y operativos en produccion.** La app corre en `app.diversia.click` sobre un VPS Hostinger (Paris, EU) via Dokploy con Docker Compose: 5 microservicios Python/FastAPI + PostgreSQL 16 + nginx gateway + Ollama. 5 bounded contexts SaaS adicionales estan disenados con migracion SQL lista (subscriptions, learning, community, marketplace, analytics — ver ADR-005). Pagina de precios publicada con tracking de Early Adopter slots. El frontend legacy Next.js sigue en Vercel pendiente de retirar.
 
 ---
 
@@ -29,13 +29,14 @@
 | **profile-service** | :8002 | **Produccion** | 83 | PostgreSQL (schema: profiles) |
 | **matching-service** | :8003 | **Produccion** | 53 | PostgreSQL (schema: matching) |
 | **intelligence-service** | :8004 | **Produccion** | 36 | PostgreSQL (schema: ai) |
+| **subscription-service** | :8005 | **Produccion** | 87 | PostgreSQL (schema: subscriptions) |
 | **shared kernel** | — | Libreria compartida | 13 | — |
 | **nginx gateway** | :8000 | **Produccion** | — | — |
 | **PostgreSQL 16** | :5432 | **Produccion** | — | 4 schemas core + 5 SaaS |
 | **Ollama** | :11434 | **Produccion** | — | Llama 3.2 3B |
 
 ### profile-service (frontend + backend)
-- Frontend: 14 paginas Jinja2 + Alpine.js + Tailwind (CDN)
+- Frontend: 15 paginas Jinja2 + Alpine.js + Tailwind (CDN)
 - Auth proxy: registro, login con JWT + bcrypt
 - Perfiles neurodivergentes: CRUD + neuro-vector 24D
 - Quiz neurocognitivo: 24 preguntas → vector 24D → radar chart
@@ -48,6 +49,8 @@
 - Registro y login con JWT + bcrypt
 - Entidad User con value objects (Email, HashedPassword)
 - Use cases: RegisterUser, LoginUser
+- Welcome email + admin notification + early adopter email al registrar
+- Early adopter slot tracking: `count_by_role` + endpoint `/early-adopter-slots`
 - Alembic migrations (idempotentes)
 
 ### matching-service
@@ -70,7 +73,8 @@
 | auth-service | 48 | Passing |
 | intelligence-service | 36 | Passing |
 | shared kernel | 13 | Passing |
-| **Total pytest** | **233** | **0 failing** |
+| subscription-service | 87 | Passing |
+| **Total pytest** | **320** | **0 failing** |
 
 E2E tests escritos (4 suites) — requieren servicios corriendo.
 
@@ -89,8 +93,10 @@ E2E tests escritos (4 suites) — requieren servicios corriendo.
 | 6 | Brain Suite + matching 24D + inclusivity + jobs | Completado |
 | 7 | Use cases GDPR + rate limiter Redis + backup scripts | Completado |
 | 8 | Docker Compose verificado + deploy a VPS | **Completado** (10 Mar) |
-| 9 | Build Tailwind + monitoring | Pendiente |
-| 10 | Beta con usuarios reales | Pendiente |
+| 9 | Pricing page + Early Adopter tracking + production fixes | **Completado** (12 Mar) |
+| 10 | Stripe checkout + webhooks en produccion | Pendiente |
+| 11 | Build Tailwind + monitoring | Pendiente |
+| 12 | Beta con usuarios reales | Pendiente |
 
 ---
 
@@ -127,12 +133,21 @@ Unica pendiente: #78 (Llama 3.1 8B) — descartada, Llama 3.2:3b se mantiene.
 
 Modelo de negocio: SaaS mixto con Stripe. Empresas pagan (49-399+ EUR/mes), candidatos gratis.
 
+### Funcionalidades recientes (12 Mar 2026)
+
+- **Pagina de precios** (`/pricing`): 3 planes, toggle mensual/anual, FAQ, banner Early Adopter
+- **Early adopter slot tracking**: endpoint API + verificacion al registrar
+- **Auto-creacion de perfil** al registrarse (fix: empresas no aparecian en BD)
+- **Emails en produccion**: welcome + admin notification + early adopter
+- **Fix acentos/ñ** en pagina para-terapeutas
+- **Fix CI**: DATABASE_URL para prisma generate
+
 ---
 
 ## Proximos Pasos
 
-1. Build Tailwind CSS (reemplazar CDN)
-2. Fase 1 post-deploy: subscription-service + Stripe
+1. **Stripe checkout + webhooks en produccion** (pagos reales)
+2. Build Tailwind CSS (reemplazar CDN)
 3. Beta con usuarios reales
 4. Retirar frontend legacy Next.js (Vercel)
 
