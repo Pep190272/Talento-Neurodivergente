@@ -25,9 +25,16 @@ async_session_factory = async_sessionmaker(
 
 
 async def get_session() -> AsyncGenerator[AsyncSession, None]:
-    """Dependency that provides a database session with automatic cleanup."""
+    """Dependency that provides a database session with automatic cleanup.
+
+    Commits on success, rolls back on error, always closes.
+    """
     async with async_session_factory() as session:
         try:
             yield session
+            await session.commit()
+        except Exception:
+            await session.rollback()
+            raise
         finally:
             await session.close()

@@ -57,6 +57,12 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-diversia_pass}
       POSTGRES_DB: ${POSTGRES_DB:-diversia_db}
       JWT_SECRET: ${JWT_SECRET:-diversia-dev-secret-change-in-production}
+      SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-no-reply@diversia.click}
+      SMTP_FROM_NAME: ${SMTP_FROM_NAME:-DiversIA}
       ENV: production
     depends_on:
       db:
