@@ -96,10 +96,13 @@ class RegisterUseCase:
         )
 
         # 7. Send early adopter email for companies/therapists (best-effort)
+        # Only send if the user is within the early adopter limit
         if user_role in ("company", "therapist"):
-            await self._send_early_adopter_email(
-                to=user_email, name=user_name, role=user_role,
-            )
+            remaining = await self._get_early_adopter_remaining(user_role)
+            if remaining > 0:
+                await self._send_early_adopter_email(
+                    to=user_email, name=user_name, role=user_role,
+                )
 
         # 8. Return
         return AuthResponseDTO(
@@ -140,6 +143,19 @@ class RegisterUseCase:
             )
         except Exception:
             logger.exception("Unexpected error sending admin notification for %s", user_email)
+
+    async def _get_early_adopter_remaining(self, role: str) -> int:
+        """Return how many early adopter slots remain for the given role."""
+        try:
+            count = await self._user_repo.count_by_role(role)
+            limit = (
+                EARLY_ADOPTER_COMPANY_LIMIT if role == "company"
+                else EARLY_ADOPTER_THERAPIST_LIMIT
+            )
+            return max(0, limit - count)
+        except Exception:
+            logger.exception("Error checking early adopter slots for role %s", role)
+            return 0
 
     async def _send_early_adopter_email(
         self, *, to: str, name: str, role: str,

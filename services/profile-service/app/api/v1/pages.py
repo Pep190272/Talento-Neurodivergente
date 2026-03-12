@@ -79,3 +79,8 @@ async def inclusivity(request: Request) -> HTMLResponse:
 @router.get("/jobs", response_class=HTMLResponse)
 async def jobs(request: Request) -> HTMLResponse:
     return templates.TemplateResponse("pages/jobs.html", {"request": request})
+
+
+@router.get("/pricing", response_class=HTMLResponse)
+async def pricing(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse("pages/pricing.html", {"request": request})

@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+{% block title %}Precios — DiversIA Eternals{% endblock %}
+{% block description %}Planes y precios de DiversIA. Gratis para candidatos, planes PRO para empresas y terapeutas.{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="relative overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50 py-20">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <span class="inline-block px-3 py-1 bg-amber-100 text-amber-700 text-xs font-semibold rounded-full mb-4">Early Adopter — Plazas limitadas</span>
+    <h1 class="font-display text-4xl lg:text-5xl font-bold text-dark mb-4">
+      Planes y Precios
+    </h1>
+    <p class="text-lg text-gray-600 max-w-2xl mx-auto">
+      Siempre gratis para candidatos. Las primeras 25 empresas y 25 terapeutas obtienen el plan PRO gratis durante 3 meses.
+    </p>
+  </div>
+</section>
+
+<!-- Pricing Cards -->
+<section class="py-20 bg-white" x-data="pricingApp()" x-init="init()">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Toggle mensual/anual -->
+    <div class="flex items-center justify-center gap-3 mb-12">
+      <span class="text-sm font-medium" :class="annual ? 'text-gray-400' : 'text-dark'">Mensual</span>
+      <button @click="annual = !annual" class="relative w-12 h-6 rounded-full transition-colors" :class="annual ? 'bg-primary' : 'bg-gray-300'">
+        <span class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform" :class="annual ? 'translate-x-6' : ''"></span>
+      </button>
+      <span class="text-sm font-medium" :class="annual ? 'text-dark' : 'text-gray-400'">Anual <span class="text-green-600 text-xs font-bold">-20%</span></span>
+    </div>
+
+    <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+
+      <!-- Plan Candidato (siempre gratis) -->
+      <div class="glass rounded-2xl p-8 border border-gray-200 hover-lift">
+        <div class="mb-6">
+          <div class="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center mb-4">
+            <i data-lucide="user" class="w-6 h-6 text-primary"></i>
+          </div>
+          <h3 class="font-display text-xl font-bold text-dark">Candidato</h3>
+          <p class="text-sm text-gray-500 mt-1">Para talento neurodivergente</p>
+        </div>
+        <div class="mb-6">
+          <span class="font-display text-4xl font-bold text-dark">Gratis</span>
+          <span class="text-gray-500 text-sm ml-1">para siempre</span>
+        </div>
+        <ul class="space-y-3 mb-8 text-sm text-gray-600">
+          <li class="flex items-start gap-2">
+            <i data-lucide="check" class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0"></i>
+            Perfil neurocognitivo completo (Quiz 24D)
+          </li>
+          <li class="flex items-start gap-2">
+            <i data-lucide="check" class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0"></i>
+            Brain Suite — juegos cognitivos
+          </li>
+          <li class="flex items-start gap-2">
+            <i data-lucide="check" class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0"></i>
+            Matching inteligente con empresas
+          </li>
+          <li class="flex items-start gap-2">
+            <i data-lucide="check" class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0"></i>
+            Acceso a ofertas de trabajo adaptadas
+          </li>
+          <li class="flex items-start gap-2">
+            <i data-lucide="check" class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0"></i>
+            Protección GDPR y datos en la UE
+          </li>
+        </ul>
+        <a href="/register?role=candidate" class="block w-full text-center py-3 border border-primary text-primary font-semibold rounded-lg hover:bg-primary hover:text-white transition">
+          Crear Cuenta Gratis
+        </a>
+      </div>
+
+      <!-- Plan Empresa -->
+      <div class="glass rounded-2xl p-8 border-2 border-primary relative hover-lift">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 bg-primary text-white text-xs font-bold rounded-full">
+          Más Popular
+        </div>
+        <div class="mb-6">
+          <div class="w-12 h-12 rounded-lg bg-green-100 flex items-center justify-center mb-4">
+            <i data-lucide="building-2" class="w-6 h-6 text-green-600"></i>
+          </div>
+          <h3 class="font-display text-xl font-bold text-dark">Empresa PRO</h3>
+          <p class="text-sm text-gray-500 mt-1">Para equipos inclusivos</p>
+        </div>
+        <div class="mb-6">
+          <span class="font-display text-4xl font-bold text-dark" x-text="annual ? '79' : '99'"></span>
+          <span class="text-gray-500 text-sm ml-1" x-text="annual ? '€/mes (facturado anual)' : '€/mes'"></span>
+        </div>
+        <ul class="space-y-3 mb-8 text-sm text-gray-600">
+          <li class="flex items-start gap-2">
+            <i data-lucide="check" class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0"></i>
+            Evaluación de inclusividad (18 preguntas)
+          </li>
+          <li class="flex items-start gap-2">
+            <i data-lucide="check" class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0"></i>
+            Publicar ofertas de trabajo ilimitadas
+          </li>
+          <li class="flex items-start gap-2">
+            <i data-lucide="check" class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0"></i>
+            Matching IA con candidatos compatibles
+          </li>
+          <li class="flex items-start gap-2">
+            <i data-lucide="check" class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0"></i>
+            Dashboard de diversidad y métricas
+          </li>
+          <li class="flex items-start gap-2">
+            <i data-lucide="check" class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0"></i>
+            Soporte prioritario
+          </li>
+          <li class="flex items-start gap-2">
+            <i data-lucide="check" class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0"></i>
+            Cumplimiento GDPR + EU AI Act
+          </li>
+        </ul>
+        <a href="/register?role=company" class="block w-full text-center py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary-deep transition">
+          Empezar como Empresa
+        </a>
+        <p class="text-center text-xs text-amber-600 font-medium mt-3" x-show="earlyAdopterCompanySlots > 0">
+          <i data-lucide="gift" class="w-3 h-3 inline"></i>
+          Early Adopter: <span x-text="earlyAdopterCompanySlots"></span> plazas gratis restantes
+        </p>
+        <p class="text-center text-xs text-gray-400 mt-3" x-show="earlyAdopterCompanySlots <= 0" x-cloak>
+          Oferta Early Adopter agotada
+        </p>
+      </div>
+
+      <!-- Plan Terapeuta -->
+      <div class="glass rounded-2xl p-8 border border-gray-200 hover-lift">
+        <div class="mb-6">
+          <div class="w-12 h-12 rounded-lg bg-purple-100 flex items-center justify-center mb-4">
+            <i data-lucide="stethoscope" class="w-6 h-6 text-purple-600"></i>
+          </div>
+          <h3 class="font-display text-xl font-bold text-dark">Terapeuta PRO</h3>
+          <p class="text-sm text-gray-500 mt-1">Para profesionales verificados</p>
+        </div>
+        <div class="mb-6">
+          <span class="font-display text-4xl font-bold text-dark" x-text="annual ? '49' : '59'"></span>
+          <span class="text-gray-500 text-sm ml-1" x-text="annual ? '€/mes (facturado anual)' : '€/mes'"></span>
+        </div>
+        <ul class="space-y-3 mb-8 text-sm text-gray-600">
+          <li class="flex items-start gap-2">
+            <i data-lucide="check" class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0"></i>
+            Perfil profesional verificado
+          </li>
+          <li class="flex items-start gap-2">
+            <i data-lucide="check" class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0"></i>
+            Acompañar candidatos y empresas
+          </li>
+          <li class="flex items-start gap-2">
+            <i data-lucide="check" class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0"></i>
+            Publicar cursos y recursos
+          </li>
+          <li class="flex items-start gap-2">
+            <i data-lucide="check" class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0"></i>
+            Impacto en scoring trilateral
+          </li>
+          <li class="flex items-start gap-2">
+            <i data-lucide="check" class="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0"></i>
+            Soporte prioritario
+          </li>
+        </ul>
+        <a href="/register?role=therapist" class="block w-full text-center py-3 border border-purple-600 text-purple-600 font-semibold rounded-lg hover:bg-purple-600 hover:text-white transition">
+          Empezar como Terapeuta
+        </a>
+        <p class="text-center text-xs text-amber-600 font-medium mt-3" x-show="earlyAdopterTherapistSlots > 0">
+          <i data-lucide="gift" class="w-3 h-3 inline"></i>
+          Early Adopter: <span x-text="earlyAdopterTherapistSlots"></span> plazas gratis restantes
+        </p>
+        <p class="text-center text-xs text-gray-400 mt-3" x-show="earlyAdopterTherapistSlots <= 0" x-cloak>
+          Oferta Early Adopter agotada
+        </p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- Early Adopter Banner -->
+<section class="py-16 bg-gradient-to-r from-amber-50 to-orange-50">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <div class="text-4xl mb-4">🎉</div>
+    <h2 class="font-display text-2xl font-bold text-dark mb-4">Programa Early Adopter</h2>
+    <p class="text-gray-600 mb-2">
+      Las primeras <strong>25 empresas</strong> y <strong>25 terapeutas</strong> que se registren obtienen
+      su plan PRO <strong>completamente gratis durante 3 meses</strong>.
+    </p>
+    <p class="text-sm text-gray-500">
+      Sin tarjeta de crédito. Sin compromisos. Se activa automáticamente al registrarte.
+    </p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="py-20 bg-white">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="font-display text-2xl font-bold text-dark text-center mb-12">Preguntas Frecuentes</h2>
+    <div class="space-y-4">
+      <div class="border border-gray-200 rounded-xl" x-data="{ open: false }">
+        <button @click="open = !open" class="w-full flex items-center justify-between p-5 text-left">
+          <span class="font-medium text-dark">¿Los candidatos pagan algo?</span>
+          <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform" :class="open ? 'rotate-180' : ''"></i>
+        </button>
+        <div x-show="open" x-cloak class="px-5 pb-5 text-sm text-gray-600">
+          No, nunca. DiversIA es y será siempre gratuito para candidatos neurodivergentes.
+          Nuestro modelo de negocio se basa en los planes de empresas y terapeutas.
+        </div>
+      </div>
+      <div class="border border-gray-200 rounded-xl" x-data="{ open: false }">
+        <button @click="open = !open" class="w-full flex items-center justify-between p-5 text-left">
+          <span class="font-medium text-dark">¿Qué incluye el plan Early Adopter?</span>
+          <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform" :class="open ? 'rotate-180' : ''"></i>
+        </button>
+        <div x-show="open" x-cloak class="px-5 pb-5 text-sm text-gray-600">
+          Exactamente lo mismo que el plan PRO, pero gratis durante 3 meses.
+          Se activa automáticamente al registrarte — no necesitas código ni tarjeta.
+          Después de los 3 meses puedes continuar con el plan de pago o pasar al plan básico.
+        </div>
+      </div>
+      <div class="border border-gray-200 rounded-xl" x-data="{ open: false }">
+        <button @click="open = !open" class="w-full flex items-center justify-between p-5 text-left">
+          <span class="font-medium text-dark">¿Qué pasa cuando se acaban las plazas Early Adopter?</span>
+          <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform" :class="open ? 'rotate-180' : ''"></i>
+        </button>
+        <div x-show="open" x-cloak class="px-5 pb-5 text-sm text-gray-600">
+          Una vez que las 25 plazas de empresa o terapeuta se agoten, los nuevos usuarios
+          comenzarán directamente con el plan de pago. Los Early Adopters conservan su
+          periodo gratuito completo de 3 meses.
+        </div>
+      </div>
+      <div class="border border-gray-200 rounded-xl" x-data="{ open: false }">
+        <button @click="open = !open" class="w-full flex items-center justify-between p-5 text-left">
+          <span class="font-medium text-dark">¿Dónde se almacenan mis datos?</span>
+          <i data-lucide="chevron-down" class="w-5 h-5 text-gray-400 transition-transform" :class="open ? 'rotate-180' : ''"></i>
+        </button>
+        <div x-show="open" x-cloak class="px-5 pb-5 text-sm text-gray-600">
+          Todos los datos se almacenan en servidores dentro de la Unión Europea.
+          Cumplimos con GDPR, EU AI Act y aplicamos cifrado AES-256 para datos sensibles.
+          La IA que usamos es self-hosted — tus datos nunca salen de nuestra infraestructura.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function pricingApp() {
+  return {
+    annual: false,
+    earlyAdopterCompanySlots: 25,
+    earlyAdopterTherapistSlots: 25,
+    async init() {
+      // Fetch remaining early adopter slots from API
+      try {
+        const res = await fetch('/api/v1/auth/early-adopter-slots');
+        if (res.ok) {
+          const data = await res.json();
+          this.earlyAdopterCompanySlots = data.company_remaining;
+          this.earlyAdopterTherapistSlots = data.therapist_remaining;
+        }
+      } catch (_) { /* use defaults */ }
+      this.$nextTick(() => lucide.createIcons());
+    }
+  }
+}
+</script>
+{% endblock %}
