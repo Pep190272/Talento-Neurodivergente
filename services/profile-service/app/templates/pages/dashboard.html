@@ -816,6 +816,23 @@ function dashboardApp() {
         userId ? api(`/subscriptions/subscriptions/${userId}`).catch(() => null) : Promise.resolve(null),
       ]);
       if (profileResult.status === 'fulfilled') this.profile = profileResult.value;
+
+      // Auto-create profile if it doesn't exist yet (first login after registration)
+      if (!this.profile && Alpine.store('auth').isLoggedIn) {
+        try {
+          const user = Alpine.store('auth').user;
+          const created = await api('/profiles/', {
+            method: 'POST',
+            body: JSON.stringify({
+              role: user.role || 'candidate',
+              display_name: user.display_name || user.email || '',
+              bio: '',
+            }),
+          });
+          if (created) this.profile = created;
+        } catch (_) { /* profile may already exist — ignore */ }
+      }
+
       if (scoresResult.status === 'fulfilled') this.gameScores = scoresResult.value;
       if (jobsResult.status === 'fulfilled') this.matchedJobs = jobsResult.value || [];
       if (subResult.status === 'fulfilled' && subResult.value) this.subscription = subResult.value;
