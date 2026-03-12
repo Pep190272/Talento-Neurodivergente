@@ -1,7 +1,7 @@
 # ROADMAP — DiversIA (app.diversia.click)
 
 **Fecha de inicio:** 10 de febrero de 2026
-**Ultima actualizacion:** 11 de marzo de 2026
+**Ultima actualizacion:** 12 de marzo de 2026
 **Estado:** Produccion — app.diversia.click operativa
 
 ---
@@ -29,14 +29,14 @@
 | **nginx gateway** (:8000) | Operativo — routing, rate limiting, security headers | — |
 | **PostgreSQL 16** (:5432) | Operativo — 4 schemas core + subscriptions | — |
 | **Ollama** (:11434) | Operativo — Llama 3.2 3B self-hosted | — |
-| **Frontend (Jinja2)** | 14 paginas, Alpine.js + Tailwind CDN | — |
+| **Frontend (Jinja2)** | 15 paginas, Alpine.js + Tailwind CDN | — |
 
 **Total: 320 tests, 0 failing**
 
 ### Que falta
 
+- Stripe checkout + webhooks en produccion (pagos reales)
 - Build de Tailwind CSS (usa CDN — funcional pero no optimo)
-- Stripe webhooks y checkout en produccion
 - Beta con usuarios reales
 - Retirar frontend legacy Next.js (Vercel)
 
@@ -91,8 +91,20 @@ Internet → Traefik (Dokploy) → nginx gateway (:8000)
 - [x] Configuracion Stripe (secret + publishable keys)
 - [x] Servicio compartido de email (aiosmtplib async)
 - [x] Welcome email al registrar usuario/empresa
-- [ ] Stripe webhooks en produccion
-- [ ] Checkout flow en produccion
+- [ ] **Stripe checkout + webhooks en produccion** (Issue pendiente)
+- [ ] **Conectar pagos reales con Stripe**
+
+### Completado: Pagina de precios + Early Adopter tracking (12 Mar 2026)
+- [x] Pagina de precios (`/pricing`) con 3 planes: Candidato (gratis), Empresa PRO (99€/79€ anual), Terapeuta PRO (59€/49€ anual)
+- [x] Toggle mensual/anual, FAQ accordion, banner Early Adopter
+- [x] Endpoint `GET /api/v1/auth/early-adopter-slots` — devuelve plazas restantes
+- [x] Tracking de slots por rol en auth-service (count_by_role)
+- [x] Registro verifica plazas disponibles antes de enviar email Early Adopter
+- [x] Link "Precios" en navbar (desktop + movil)
+- [x] Fix acentos/ñ en pagina para-terapeutas
+- [x] Fix CI: DATABASE_URL para prisma generate en GitHub Actions
+- [x] Auto-creacion de perfil al registrarse y al entrar al dashboard
+- [x] Variables SMTP en docker-compose.prod.yml para emails en produccion
 
 ### Pendiente: Beta
 - [ ] 5-10 empresas inclusivas
@@ -123,6 +135,7 @@ Internet → Traefik (Dokploy) → nginx gateway (:8000)
 | v2.1.0-saas | 9 Mar | Expansion SaaS: 5 bounded contexts, modelo de negocio (ADR-005) |
 | **v2.0.0** | **10 Mar** | **Deploy a app.diversia.click — produccion** |
 | **v2.2.0-saas** | **11 Mar** | **subscription-service + welcome email (87 tests, Stripe ready)** |
+| **v2.3.0** | **12 Mar** | **Pricing page, early adopter tracking, auto-profile, email fix, CI fix** |
 
 ---
 
@@ -246,5 +259,15 @@ cd services/shared && python -m pytest tests/ -q                  # 13 tests
   - nginx gateway con ruta /api/v1/subscriptions
   - Variables Stripe + SMTP en .env.example
 - **320 tests totales** (233 anteriores + 87 nuevos)
+
+### Sesion 15 (12 Mar): Pricing page + Early Adopter tracking + production fixes
+- **Pagina de precios** (`/pricing`): 3 planes con toggle mensual/anual, FAQ, Early Adopter banner
+- **Early adopter slot tracking**: endpoint `/api/v1/auth/early-adopter-slots`, `count_by_role` en repositorio
+- **Registro verifica plazas** antes de enviar email Early Adopter
+- **Auto-creacion de perfil** al registrarse y al entrar al dashboard (fix empresa no aparecia en BD)
+- **Emails en produccion**: SMTP env vars en docker-compose.prod.yml
+- **Fix acentos/ñ** en pagina para-terapeutas
+- **Fix CI**: DATABASE_URL para `prisma generate` en GitHub Actions
+- Link "Precios" en navbar (desktop + movil)
 
 </details>
