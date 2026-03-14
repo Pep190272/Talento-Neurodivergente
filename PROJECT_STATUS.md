@@ -136,7 +136,7 @@ Modelo de negocio: **Pago por exito (ADR-006)**. Empresas acceden gratis y pagan
 
 ### Funcionalidades recientes (12 Mar 2026)
 
-- **Pagina de precios** (`/pricing`): 3 planes, toggle mensual/anual, FAQ, banner Early Adopter
+- **Pagina de precios** (`/pricing`): 3 tarjetas (candidato gratis, empresa pago por exito, terapeuta gratis), FAQ, banner Early Adopter, flujo de pago por exito
 - **Early adopter slot tracking**: endpoint API + verificacion al registrar
 - **Auto-creacion de perfil** al registrarse (fix: empresas no aparecian en BD)
 - **Emails en produccion**: welcome + admin notification + early adopter

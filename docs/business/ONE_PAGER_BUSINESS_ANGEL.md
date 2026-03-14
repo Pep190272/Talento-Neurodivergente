@@ -165,19 +165,20 @@ Acceso completo gratuito a la plataforma. El cobro se produce unicamente cuando 
 **Mes 6:**
 - ✅ EU AI Act compliance completado
 - ✅ 2,000 usuarios registrados
-- ✅ 10 empresas piloto (€100/mes early adopter pricing)
+- ✅ 25 empresas activas (early adopters, acceso gratis)
+- ✅ Primeras 1-2 contrataciones exitosas via DiversIA
 - ✅ Bias audit publicado
 
 **Mes 12:**
 - ✅ 5,000 usuarios registrados
-- ✅ 30 empresas pagando (€250/mes avg)
-- ✅ €7,500 MRR (€90K ARR)
+- ✅ 50 empresas activas publicando ofertas
+- ✅ 3-8 contrataciones/mes (~€9K-24K revenue mensual)
 - ✅ Validación científica fase 1 completada
 
 **Mes 18:**
 - ✅ 10,000 usuarios registrados
-- ✅ 80 empresas pagando (€300/mes avg)
-- ✅ €24K MRR (€288K ARR)
+- ✅ 100 empresas activas
+- ✅ 8-15 contrataciones/mes (~€28K-52K revenue mensual)
 - ✅ Break-even operativo
 - ✅ Ready for Series A
 

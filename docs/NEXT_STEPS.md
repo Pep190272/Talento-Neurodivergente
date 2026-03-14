@@ -18,7 +18,7 @@
 - **28/29 issues** del backlog resueltas
 - **subscription-service** con 87 tests, early adopters, Stripe ready
 - **Welcome email + admin notification + early adopter email** al registrar
-- **Pagina de precios** (`/pricing`) con 3 planes y tracking de Early Adopter slots
+- **Pagina de precios** (`/pricing`) con modelo pago por exito y tracking de Early Adopter slots
 - **Early adopter slot tracking**: endpoint API + verificacion automatica al registrar
 - **Auto-creacion de perfil** al registrarse (fix empresas/terapeutas)
 - **SSL automatico** via Traefik/Let's Encrypt
@@ -94,7 +94,7 @@
 - [x] Verificacion de plazas antes de enviar email Early Adopter
 - ~~Stripe checkout + webhooks en produccion~~ **PAUSADO (ADR-006: pago por exito)**
 - ~~Conectar pagos reales con Stripe~~ **PAUSADO (ADR-006: pago por exito)**
-- [ ] **Actualizar pagina /pricing para reflejar modelo pago por exito**
+- [x] **Actualizar pagina /pricing para reflejar modelo pago por exito**
 - [ ] **Implementar tracking de contrataciones exitosas**
 
 ### Fase 2: Analytics (Mes 2)
