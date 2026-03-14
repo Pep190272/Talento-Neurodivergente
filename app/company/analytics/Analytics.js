@@ -124,7 +124,6 @@ const Analytics = () => {
     if (isRealTime) {
       const interval = setInterval(() => {
         // Simulate real-time updates
-        console.log('Real-time update...');
       }, 3000);
       return () => clearInterval(interval);
     }

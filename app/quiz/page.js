@@ -287,14 +287,12 @@ export default function QuizPage() {
     async function loadQuiz() {
       setLoading(true);
       let set = [];
-      console.log('🌍 Current language:', language);
       const QUIZ_SETS = getQuizSets(language || 'es');
       if (key === "ai") {
         set = await fetchAIQuiz(language || 'es');
       } else {
         set = QUIZ_SETS[key] || QUIZ_SETS["neurodiversity"];
       }
-      console.log('📝 Quiz set loaded:', set[0]);
       setQuizSet(set);
       setState(getInitialState(key, set));
       setLoading(false);

@@ -266,8 +266,6 @@ export async function getCompanyByUserId(userId: string): Promise<CompanyProfile
   return normalizeCompany(company as CompanyWithUser)
 }
 
-// Alias for backward compatibility
-export const getCompanyById = getCompany
 
 /**
  * Update company profile via repository
@@ -380,8 +378,6 @@ export async function getJobPosting(jobId: string): Promise<JobProfile | null> {
   return normalizeJob(job as Job)
 }
 
-// Alias for backward compatibility
-export const getJobById = getJobPosting
 
 /**
  * Update job posting via repository
@@ -585,9 +581,6 @@ export async function getCompanyPipeline(
 /**
  * Update pipeline stage for a candidate
  */
-/** Alias used by dashboard tests */
-export const moveCandidateToStage = updatePipelineStage
-
 export async function updatePipelineStage(
   connectionId: string,
   newStage: string
