@@ -11,6 +11,7 @@ import {
   updateJobPosting,
   closeJob
 } from '@/lib/companies'
+import { logger } from '@/lib/logger'
 
 type RouteParams = { params: Promise<{ companyId: string; jobId: string }> }
 
@@ -51,7 +52,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     })
 
   } catch (error) {
-    console.error('Error fetching job posting:', error)
+    logger.error('Jobs', 'Error fetching job posting', error)
 
     return NextResponse.json(
       { error: 'Internal server error', details: (error as Error).message },
@@ -109,7 +110,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     })
 
   } catch (error) {
-    console.error('Error updating job posting:', error)
+    logger.error('Jobs', 'Error updating job posting', error)
 
     return NextResponse.json(
       { error: 'Internal server error', details: (error as Error).message },
@@ -159,7 +160,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     })
 
   } catch (error) {
-    console.error('Error closing job posting:', error)
+    logger.error('Jobs', 'Error closing job posting', error)
 
     return NextResponse.json(
       { error: 'Internal server error', details: (error as Error).message },

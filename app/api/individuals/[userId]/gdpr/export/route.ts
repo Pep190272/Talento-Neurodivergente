@@ -18,6 +18,7 @@ import { auth } from '@/lib/auth'
 import { getIndividualProfile } from '@/lib/individuals'
 import { logDataAccess } from '@/lib/audit'
 import prisma from '@/lib/prisma'
+import { logger } from '@/lib/logger'
 
 type RouteParams = { params: Promise<{ userId: string }> }
 
@@ -252,7 +253,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     return NextResponse.json({ error: 'Invalid format. Use ?format=json or ?format=csv' }, { status: 400 })
 
   } catch (error) {
-    console.error('[GDPR Export]', error)
+    logger.error('GDPRExport', 'Error exporting user data', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

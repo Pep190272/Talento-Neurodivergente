@@ -12,6 +12,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { getIndividualProfile } from '@/lib/individuals'
 import prisma from '@/lib/prisma'
+import { logger } from '@/lib/logger'
 
 type RouteParams = { params: Promise<{ userId: string }> }
 
@@ -111,7 +112,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     })
 
   } catch (error) {
-    console.error('[Consents API]', error)
+    logger.error('Consents', 'Error fetching consents', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

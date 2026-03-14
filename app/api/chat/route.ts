@@ -8,6 +8,7 @@
  */
 import { NextRequest, NextResponse } from 'next/server'
 import { generateCompletion, checkOllamaHealth } from '@/lib/services/llm.service'
+import { logger } from '@/lib/logger'
 
 const SYSTEM_PROMPT = `Eres NeuroDialect, el asistente de IA de DiversIA — una plataforma que conecta talento neurodivergente (TDAH, Autismo, Dislexia, Dispraxia) con empresas inclusivas.
 
@@ -54,7 +55,7 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('[Chat API] error:', error)
+    logger.error('Chat', 'Chat API error', error)
     return NextResponse.json(
       {
         response: 'Disculpa, estoy teniendo dificultades técnicas. Por favor intenta de nuevo en un momento.',

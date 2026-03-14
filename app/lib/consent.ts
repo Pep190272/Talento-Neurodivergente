@@ -19,6 +19,7 @@
  */
 
 import prisma from './prisma'
+import { logger } from './logger'
 import { getMatchById } from './matching'
 import { getIndividualProfile } from './individuals'
 import { getCompany, getJobPosting } from './companies'
@@ -338,7 +339,7 @@ export async function revokeAllConsents(userId: string) {
       const revoked = await revokeConsent(conn.id, userId)
       revokedConnections.push(revoked)
     } catch (error) {
-      console.error(`Failed to revoke connection ${conn.id}:`, error)
+      logger.error('Consent', `Failed to revoke connection ${conn.id}`, error)
     }
   }
 

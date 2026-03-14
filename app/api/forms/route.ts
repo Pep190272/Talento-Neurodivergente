@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
+import { logger } from '@/lib/logger';
 
 // Simple validation and normalization
 async function validateAndNormalize(formData: Record<string, string>, formType: string) {
@@ -48,7 +49,7 @@ async function validateAndNormalize(formData: Record<string, string>, formType: 
       errors
     };
   } catch (error) {
-    console.error('Validation error:', error);
+    logger.error('Forms', 'Validation error', error);
     return {
       validated: false,
       normalized: formData,
@@ -108,7 +109,7 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('Form submission error:', error);
+    logger.error('Forms', 'Form submission error', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }
@@ -136,7 +137,7 @@ export async function GET() {
       count: formatted.length
     });
   } catch (error) {
-    console.error('Error fetching submissions:', error);
+    logger.error('Forms', 'Error fetching submissions', error);
     return NextResponse.json(
       { error: 'Internal server error' },
       { status: 500 }

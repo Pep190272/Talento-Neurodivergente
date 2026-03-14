@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { getIndividualProfile } from '@/lib/individuals'
 import { findMatchesForCandidate } from '@/lib/matching'
+import { logger } from '@/lib/logger'
 
 /**
  * GET /api/matching/candidates/:userId
@@ -65,7 +66,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     })
 
   } catch (error) {
-    console.error('Error finding matches for candidate:', error)
+    logger.error('MatchingCandidates', 'Error finding matches for candidate', error)
 
     return NextResponse.json(
       { error: 'Internal server error', details: (error as Error).message },

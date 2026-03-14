@@ -4,6 +4,7 @@
  */
 
 import nodemailer from 'nodemailer'
+import { logger } from './logger'
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST || 'smtp.gmail.com',
@@ -27,7 +28,7 @@ interface WelcomeEmailParams {
 
 export async function sendWelcomeEmail({ to, name, role }: WelcomeEmailParams): Promise<boolean> {
   if (!isConfigured()) {
-    console.warn('[Email] SMTP not configured — skipping welcome email to', to)
+    logger.warn('Email', `SMTP not configured — skipping welcome email to ${to}`)
     return false
   }
 
@@ -83,10 +84,10 @@ export async function sendWelcomeEmail({ to, name, role }: WelcomeEmailParams): 
       html: htmlBody,
       text: `Hola ${name},\n\nTu cuenta como ${roleLabel} ha sido creada correctamente en DiversIA.\nAccede a tu panel en: https://app.diversia.click/login\n\n-- Equipo DiversIA`,
     })
-    console.log('[Email] Welcome email sent to', to)
+    logger.info('Email', `Welcome email sent to ${to}`)
     return true
   } catch (error) {
-    console.error('[Email] Failed to send welcome email to', to, error)
+    logger.error('Email', `Failed to send welcome email to ${to}`, error)
     return false
   }
 }

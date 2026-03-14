@@ -15,7 +15,8 @@
  * Decision: Keep Ollama self-hosted — data control + colocation with diversia-db
  */
 
-import { rateLimit } from '../rate-limiter.js'
+import { rateLimit } from '../rate-limiter'
+import { logger } from '../logger'
 
 // ─── Configuration ────────────────────────────────────────────────────────────
 
@@ -337,7 +338,7 @@ export async function analyzeJobInclusivity(
     return analysis
 
   } catch (error) {
-    console.warn('[LlmService] analyzeJobInclusivity fallback:', (error as Error).message)
+    logger.warn('LlmService', `analyzeJobInclusivity fallback: ${(error as Error).message}`)
 
     const count = jobData.accommodations?.length ?? 0
     const premiumTerms = ['remote', 'flexible hours', 'async', 'written documentation', 'sensory']
@@ -386,7 +387,7 @@ export async function evaluateCandidate(
     return evaluation
 
   } catch (error) {
-    console.warn('[LlmService] evaluateCandidate fallback:', (error as Error).message)
+    logger.warn('LlmService', `evaluateCandidate fallback: ${(error as Error).message}`)
 
     const matched = candidate.skills.filter(s =>
       job.requiredSkills?.some(r => r.toLowerCase().includes(s.toLowerCase()))
@@ -441,7 +442,7 @@ export async function explainMatch(
     return explanation
 
   } catch (error) {
-    console.warn('[LlmService] explainMatch fallback:', (error as Error).message)
+    logger.warn('LlmService', `explainMatch fallback: ${(error as Error).message}`)
 
     const fallback: MatchingExplanation = {
       summary: `Your profile has a ${score}% compatibility with "${job.title}" based on skills, accommodations, and work preferences.`,

@@ -9,6 +9,7 @@ import {
   getCompany,
   updateCompany
 } from '@/lib/companies'
+import { logger } from '@/lib/logger'
 
 type RouteParams = { params: Promise<{ companyId: string }> }
 
@@ -40,7 +41,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     })
 
   } catch (error) {
-    console.error('Error fetching company profile:', error)
+    logger.error('Companies', 'Error fetching company profile', error)
 
     return NextResponse.json(
       { error: 'Internal server error', details: (error as Error).message },
@@ -85,7 +86,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     })
 
   } catch (error) {
-    console.error('Error updating company profile:', error)
+    logger.error('Companies', 'Error updating company profile', error)
 
     return NextResponse.json(
       { error: 'Internal server error', details: (error as Error).message },

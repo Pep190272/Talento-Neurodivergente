@@ -9,6 +9,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import bcrypt from 'bcryptjs'
 import prisma from '@/lib/prisma'
 import { sendWelcomeEmail } from '@/lib/email'
+import { logger } from '@/lib/logger'
 
 export async function POST(req: NextRequest) {
   try {
@@ -115,7 +116,7 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     )
   } catch (error: any) {
-    console.error('[Register] Error:', error)
+    logger.error('Register', 'Registration error', error)
     return NextResponse.json(
       { error: 'Error interno del servidor' },
       { status: 500 }

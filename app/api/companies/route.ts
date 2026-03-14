@@ -5,6 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createCompany } from '@/lib/companies'
+import { logger } from '@/lib/logger'
 
 /**
  * POST /api/companies
@@ -53,7 +54,7 @@ export async function POST(request: NextRequest) {
     )
 
   } catch (error) {
-    console.error('Error creating company profile:', error)
+    logger.error('Companies', 'Error creating company profile', error)
 
     // Handle specific errors
     if ((error as Error).message.includes('already exists')) {

@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { grantConsent } from '@/lib/consent'
+import { logger } from '@/lib/logger'
 
 /**
  * POST /api/consent/accept
@@ -72,7 +73,7 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error granting consent:', error)
+    logger.error('ConsentAccept', 'Error granting consent', error)
 
     return NextResponse.json(
       { error: 'Internal server error', details: (error as Error).message },

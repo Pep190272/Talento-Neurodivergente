@@ -22,6 +22,7 @@
  */
 
 import prisma from './prisma'
+import { logger } from './logger'
 import type { Matching, Prisma } from '@prisma/client'
 import {
   generateAnonymizedName,
@@ -269,7 +270,7 @@ export async function runMatchingForJob(jobId: string): Promise<MatchResult[]> {
         matches.push(match)
       }
     } catch (error) {
-      console.error(`Error matching candidate ${candidate.userId} with job ${jobId}:`, error)
+      logger.error('Matching', `Error matching candidate ${candidate.userId} with job ${jobId}`, error)
     }
   }
 
@@ -316,7 +317,7 @@ export async function runMatchingForCandidate(candidateId: string): Promise<Matc
         matches.push(match)
       }
     } catch (error) {
-      console.error(`Error matching candidate ${candidateId} with job ${(job as Record<string, unknown>).jobId}:`, error)
+      logger.error('Matching', `Error matching candidate ${candidateId} with job ${(job as Record<string, unknown>).jobId}`, error)
     }
   }
 

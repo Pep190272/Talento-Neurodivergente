@@ -7,6 +7,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { findCompanyByUserId } from '@/lib/repositories/company.repository'
 import { getCompanyDashboard } from '@/lib/dashboards'
+import { logger } from '@/lib/logger'
 
 /**
  * GET /api/dashboards/company/:companyId
@@ -47,7 +48,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     })
 
   } catch (error) {
-    console.error('Error fetching company dashboard:', error)
+    logger.error('CompanyDashboard', 'Error fetching company dashboard', error)
 
     return NextResponse.json(
       { error: 'Internal server error', details: (error as Error).message },
