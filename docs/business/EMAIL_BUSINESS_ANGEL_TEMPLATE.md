@@ -31,7 +31,7 @@ Soy [Tu Nombre], founder de **Diversia Eternals** — la plataforma que ayuda a 
 
 **El mercado:** 15-20% de la población es neurodivergente (1.2B personas), pero 85% están subempleados. Microsoft, SAP y JPMorgan ya tienen programas de neurodiversity hiring — nosotros democratizamos acceso para el 95% de empresas que no tienen recursos.
 
-**El raise:** Estamos levantando $400K para compliance (EU AI Act deadline Agosto 2026), team y go-to-market. Path claro a €2-3M ARR en año 3.
+**El raise:** Estamos levantando $400K para compliance (EU AI Act deadline Agosto 2026), team y go-to-market. Modelo de pago por éxito: las empresas acceden gratis y solo pagan al contratar (10-15% salario). Path claro a €1.7-2.9M revenue en año 3.
 
 **Comparable:** Equalture (Netherlands, game-based assessment genérico) levantó €2.5M con menos traction. Nosotros somos el único player enfocado 100% en neurodiversidad.
 
@@ -70,7 +70,7 @@ Hola [Nombre Business Angel],
 
 **Lo que necesitamos:** $400K para llegar a compliance EU AI Act, contratar equipo core (developer + compliance officer) y validación científica con universidad.
 
-**Proyección:** €2-3M ARR en año 3 con 500 empresas pagando €300-500/mes.
+**Proyección:** €1.7-2.9M revenue en año 3 con modelo de pago por éxito (success fee al contratar). Empresas acceden gratis, pagan solo al contratar.
 
 ¿Te interesaría una demo de 30 min para ver la plataforma en acción?
 
@@ -110,7 +110,7 @@ Diversia Eternals es la primera plataforma que:
 - 4.3/5 satisfaction score
 - 20+ testimonials emocionados
 
-**Por qué te contacto:** Vi tu inversión en [Startup con propósito social]. Esto es similar — impacto social + business model sólido (B2B SaaS, €2-3M ARR proyectado año 3).
+**Por qué te contacto:** Vi tu inversión en [Startup con propósito social]. Esto es similar — impacto social + business model sólido (pago por éxito al contratar, €1.7-2.9M revenue proyectado año 3).
 
 ¿30 minutos para mostrarte cómo funciona?
 

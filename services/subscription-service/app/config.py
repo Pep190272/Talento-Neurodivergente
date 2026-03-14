@@ -26,9 +26,14 @@ class SubscriptionServiceSettings(BaseSettings):
     SMTP_FROM_NAME: str = "DiversIA"
 
     # Early adopter coupons
+    # DEPRECATED (ADR-006): Legacy SaaS model constants — kept for backwards compatibility.
+    # Use SUCCESS_BASED_MODEL_ENABLED instead. Will be removed in v3.0.
     EARLY_ADOPTER_COMPANY_LIMIT: int = 25
     EARLY_ADOPTER_THERAPIST_LIMIT: int = 25
     EARLY_ADOPTER_FREE_MONTHS: int = 3
+
+    # ADR-006: Success-based payment model
+    SUCCESS_BASED_MODEL_ENABLED: bool = True
 
     # Composed settings
     db: DatabaseSettings = DatabaseSettings()

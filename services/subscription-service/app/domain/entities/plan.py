@@ -26,6 +26,7 @@ class PlanTier(str, Enum):
 class BillingCycle(str, Enum):
     MONTHLY = "monthly"
     YEARLY = "yearly"
+    ON_SUCCESS = "on_success"  # ADR-006: pay only on successful hire
 
 
 @dataclass(frozen=True)

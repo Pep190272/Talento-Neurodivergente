@@ -31,23 +31,23 @@
 
 ### 💡 CÓMO FUNCIONA
 
-**Para Individuos (Freemium):**
+**Para Individuos (100% Gratis):**
 - Completan 10 juegos cognitivos accesibles (15-20 min)
 - Reciben perfil de "Superpoderes Cognitivos" personalizado
 - Optan a matching con empresas que buscan sus fortalezas específicas
-- **Free forever** para acceso básico | Premium: $9.99/mes
+- **Siempre gratis** — los candidatos son el valor de la plataforma
 
-**Para Empresas (B2B SaaS):**
-- Acceden a pool de talento neurodivergente pre-screened
+**Para Empresas (Pago por Éxito):**
+- Acceden gratis a pool de talento neurodivergente pre-screened
 - Reciben perfiles de fortalezas (no scores fríos)
 - Herramientas de compliance EU AI Act / ADA / GDPR integradas
 - Analytics de diversidad e inclusión
-- **€200-500/mes** según tamaño de empresa
+- **Solo pagan al contratar**: 10-15% del salario bruto anual (success fee)
 
-**Para Terapeutas:**
+**Para Terapeutas (Gratis):**
 - Acceden a progreso de sus clientes (con consentimiento)
 - Insights para apoyar desarrollo profesional
-- **€50-100/mes**
+- **Gratis** — se reevaluará con marketplace maduro
 
 ---
 
@@ -93,29 +93,37 @@
 
 ---
 
-### 💰 MODELO DE NEGOCIO
+### 💰 MODELO DE NEGOCIO — Pago por Éxito (Success Fee)
+
+**Revenue Model: Las empresas pagan solo cuando contratan.**
+
+Acceso completo gratuito a la plataforma. El cobro se produce unicamente cuando una empresa contrata exitosamente a un candidato encontrado a traves de DiversIA.
 
 **Revenue Streams:**
 
-1. **B2B SaaS (Primary)**: €200-500/mes por empresa
-   - Target: 50 empresas año 1, 200 año 2, 500 año 3
-   - **ARR Año 3**: €1.8M - €3M
+1. **Success Fee (Primary)**: 10-15% del salario bruto anual por contratacion exitosa
+   - Fee medio estimado: €3.000-5.000 por contratacion
+   - Target: 50 contrataciones año 1, 200 año 2, 500 año 3
+   - **Revenue Año 3**: €1.5M - €2.5M
 
-2. **Freemium Individual**: $9.99/mes premium
-   - Conversion rate: 5% de free users
-   - Target: 1,000 premium users año 3
-   - **ARR**: $120K
+2. **Servicios Premium (futuro)**: Informes IA avanzados, formacion en neurodiversidad
+   - Target: 100 empresas año 3
+   - **Revenue**: €200K - €400K
 
-3. **Therapist Subscriptions**: €75/mes promedio
-   - Target: 100 therapists año 3
-   - **ARR**: €90K
+3. **Candidatos y Terapeutas**: Siempre gratis
+   - Base de talento = valor de la plataforma
 
-**Total Projected ARR Año 3**: **€2M - €3.2M** ($2.2M - $3.5M USD)
+**Total Projected Revenue Año 3**: **€1.7M - €2.9M**
 
 **Unit Economics:**
-- CAC (B2B): €1,500 (inbound marketing + sales)
-- LTV (B2B): €10,800 (3 años retention @ €300/mes)
-- **LTV/CAC: 7.2x** ← Excelente para SaaS
+- CAC (B2B): €500 (barrera de entrada cero → CAC muy bajo)
+- LTV (B2B): €15.000 (3 contrataciones promedio en 3 años @ €5.000/contratacion)
+- **LTV/CAC: 30x** ← Excelente para marketplace/success-fee model
+
+**Ventaja del modelo:**
+- Las empresas prueban sin riesgo → adopcion masiva
+- Solo pagamos cuando generamos valor real (contrataciones)
+- Ingresos alineados con outcomes, no con vanity metrics
 
 ---
 
@@ -157,19 +165,20 @@
 **Mes 6:**
 - ✅ EU AI Act compliance completado
 - ✅ 2,000 usuarios registrados
-- ✅ 10 empresas piloto (€100/mes early adopter pricing)
+- ✅ 25 empresas activas (early adopters, acceso gratis)
+- ✅ Primeras 1-2 contrataciones exitosas via DiversIA
 - ✅ Bias audit publicado
 
 **Mes 12:**
 - ✅ 5,000 usuarios registrados
-- ✅ 30 empresas pagando (€250/mes avg)
-- ✅ €7,500 MRR (€90K ARR)
+- ✅ 50 empresas activas publicando ofertas
+- ✅ 3-8 contrataciones/mes (~€9K-24K revenue mensual)
 - ✅ Validación científica fase 1 completada
 
 **Mes 18:**
 - ✅ 10,000 usuarios registrados
-- ✅ 80 empresas pagando (€300/mes avg)
-- ✅ €24K MRR (€288K ARR)
+- ✅ 100 empresas activas
+- ✅ 8-15 contrataciones/mes (~€28K-52K revenue mensual)
 - ✅ Break-even operativo
 - ✅ Ready for Series A
 

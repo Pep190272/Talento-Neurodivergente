@@ -101,7 +101,7 @@ class TestSubscribeUseCase:
 
     async def test_early_adopter_therapist(self, use_case, mock_plan_repo, mock_sub_repo, pro_plan):
         mock_plan_repo.find_by_slug.return_value = pro_plan
-        mock_sub_repo.count_by_plan.return_value = 30  # within 50 limit
+        mock_sub_repo.count_by_plan.return_value = 10  # within 25 limit (unified ADR-006)
 
         dto = SubscribeDTO(
             subscriber_id="therapist001",
@@ -150,3 +150,16 @@ class TestSubscribeUseCase:
         )
         result = await use_case.execute(dto)
         assert result.billing_cycle == "yearly"
+
+    async def test_on_success_billing_cycle(self, use_case, mock_plan_repo, pro_plan):
+        """ADR-006: Subscribe with on_success billing cycle."""
+        mock_plan_repo.find_by_slug.return_value = pro_plan
+
+        dto = SubscribeDTO(
+            subscriber_id="success001",
+            subscriber_type="company",
+            plan_slug="pro-company",
+            billing_cycle="on_success",
+        )
+        result = await use_case.execute(dto)
+        assert result.billing_cycle == "on_success"

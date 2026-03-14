@@ -27,6 +27,8 @@ class SubscriberType(str, Enum):
 
 def _period_end(start: datetime, cycle: BillingCycle) -> datetime:
     """Calculate period end based on billing cycle."""
+    if cycle == BillingCycle.ON_SUCCESS:
+        return start + timedelta(days=365)  # ADR-006: no fixed period, renew yearly
     if cycle == BillingCycle.YEARLY:
         return start + timedelta(days=365)
     return start + timedelta(days=30)

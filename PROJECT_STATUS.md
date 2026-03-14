@@ -1,7 +1,7 @@
 # Project Status — DiversIA Eternals
 
-> **Ultima actualizacion**: 12 de marzo de 2026
-> **Version**: 2.3.0
+> **Ultima actualizacion**: 14 de marzo de 2026
+> **Version**: 2.5.0
 > **Produccion**: https://app.diversia.click
 
 ---
@@ -73,8 +73,8 @@
 | auth-service | 48 | Passing |
 | intelligence-service | 36 | Passing |
 | shared kernel | 13 | Passing |
-| subscription-service | 87 | Passing |
-| **Total pytest** | **320** | **0 failing** |
+| subscription-service | 90 | Passing |
+| **Total pytest** | **323** | **0 failing** |
 
 E2E tests escritos (4 suites) — requieren servicios corriendo.
 
@@ -94,7 +94,8 @@ E2E tests escritos (4 suites) — requieren servicios corriendo.
 | 7 | Use cases GDPR + rate limiter Redis + backup scripts | Completado |
 | 8 | Docker Compose verificado + deploy a VPS | **Completado** (10 Mar) |
 | 9 | Pricing page + Early Adopter tracking + production fixes | **Completado** (12 Mar) |
-| 10 | Stripe checkout + webhooks en produccion | Pendiente |
+| 10 | ~~Stripe checkout + webhooks~~ | **Pausado (ADR-006: pago por exito)** |
+| 10b | Tracking contrataciones + Stripe Invoicing | Pendiente |
 | 11 | Build Tailwind + monitoring | Pendiente |
 | 12 | Beta con usuarios reales | Pendiente |
 
@@ -113,9 +114,13 @@ E2E tests escritos (4 suites) — requieren servicios corriendo.
 
 ---
 
-## Issues: 28 de 29 resueltas
+## Issues: 30 de 31 resueltas
 
 Unica pendiente: #78 (Llama 3.1 8B) — descartada, Llama 3.2:3b se mantiene.
+
+### Resueltas recientemente (14 Mar 2026)
+- **#111**: refactor(backend): deprecar constantes EARLY_ADOPTER_*, unificar limites 25/25, BillingCycle.ON_SUCCESS, feature flag SUCCESS_BASED_MODEL_ENABLED
+- **#112**: docs: actualizar ADR-006 y documentacion para coherencia con pago por exito
 
 ---
 
@@ -131,11 +136,11 @@ Unica pendiente: #78 (Llama 3.1 8B) — descartada, Llama 3.2:3b se mantiene.
 | marketplace | marketplace-service | :8008 | providers, services, bookings, reviews |
 | analytics | analytics-service | :8009 | metric_snapshots, dei_reports, usage_events |
 
-Modelo de negocio: SaaS mixto con Stripe. Empresas pagan (49-399+ EUR/mes), candidatos gratis.
+Modelo de negocio: **Pago por exito (ADR-006)**. Empresas acceden gratis y pagan success fee (10-15% salario) solo al contratar. Candidatos y terapeutas gratis.
 
 ### Funcionalidades recientes (12 Mar 2026)
 
-- **Pagina de precios** (`/pricing`): 3 planes, toggle mensual/anual, FAQ, banner Early Adopter
+- **Pagina de precios** (`/pricing`): 3 tarjetas (candidato gratis, empresa pago por exito, terapeuta gratis), FAQ, banner Early Adopter, flujo de pago por exito
 - **Early adopter slot tracking**: endpoint API + verificacion al registrar
 - **Auto-creacion de perfil** al registrarse (fix: empresas no aparecian en BD)
 - **Emails en produccion**: welcome + admin notification + early adopter
@@ -146,10 +151,12 @@ Modelo de negocio: SaaS mixto con Stripe. Empresas pagan (49-399+ EUR/mes), cand
 
 ## Proximos Pasos
 
-1. **Stripe checkout + webhooks en produccion** (pagos reales)
-2. Build Tailwind CSS (reemplazar CDN)
-3. Beta con usuarios reales
-4. Retirar frontend legacy Next.js (Vercel)
+1. ~~Stripe checkout + webhooks en produccion~~ **PAUSADO (ADR-006: pago por exito)**
+2. **Atraer empresas** (acceso gratis) + conseguir primera contratacion exitosa
+3. **Tracking de contrataciones** + Stripe Invoicing para success fees
+4. Build Tailwind CSS (reemplazar CDN)
+5. Beta con usuarios reales
+6. Retirar frontend legacy Next.js (Vercel)
 
 ---
 
