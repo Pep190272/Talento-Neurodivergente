@@ -8,6 +8,7 @@ import { auth } from '@/lib/auth'
 import { findCompanyByUserId } from '@/lib/repositories/company.repository'
 import { getJobPosting } from '@/lib/companies'
 import { findMatchesForJob } from '@/lib/matching'
+import { logger } from '@/lib/logger'
 
 /**
  * GET /api/matching/jobs/:jobId
@@ -67,7 +68,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     })
 
   } catch (error) {
-    console.error('Error finding matches for job:', error)
+    logger.error('MatchingJobs', 'Error finding matches for job', error)
 
     return NextResponse.json(
       { error: 'Internal server error', details: (error as Error).message },

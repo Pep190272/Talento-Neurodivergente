@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { rejectConsent } from '@/lib/consent'
+import { logger } from '@/lib/logger'
 
 /**
  * POST /api/consent/reject
@@ -51,7 +52,7 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error rejecting consent:', error)
+    logger.error('ConsentReject', 'Error rejecting consent', error)
 
     return NextResponse.json(
       { error: 'Internal server error', details: (error as Error).message },

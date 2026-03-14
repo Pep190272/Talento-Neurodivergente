@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { getIndividualDashboard } from '@/lib/dashboards'
+import { logger } from '@/lib/logger'
 
 /**
  * GET /api/dashboards/individual/:userId
@@ -45,7 +46,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     })
 
   } catch (error) {
-    console.error('Error fetching individual dashboard:', error)
+    logger.error('IndividualDashboard', 'Error fetching individual dashboard', error)
 
     return NextResponse.json(
       { error: 'Internal server error', details: (error as Error).message },

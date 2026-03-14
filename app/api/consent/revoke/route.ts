@@ -6,6 +6,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { revokeConsent } from '@/lib/consent'
+import { logger } from '@/lib/logger'
 
 /**
  * POST /api/consent/revoke
@@ -65,7 +66,7 @@ export async function POST(request: NextRequest) {
     })
 
   } catch (error) {
-    console.error('Error revoking consent:', error)
+    logger.error('ConsentRevoke', 'Error revoking consent', error)
 
     // Handle specific errors
     if ((error as Error).message.includes('not found')) {

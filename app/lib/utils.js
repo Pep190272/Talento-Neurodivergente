@@ -84,9 +84,6 @@ export function isValidEmail(email) {
 }
 
 /**
-import DOMPurify from 'isomorphic-dompurify'
-
-/**
  * Sanitize user input to prevent XSS using DOMPurify
  * @param {string} input - User input to sanitize
  * @returns {string} - Sanitized string

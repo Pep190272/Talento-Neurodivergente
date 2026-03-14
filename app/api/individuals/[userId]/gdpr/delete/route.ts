@@ -21,6 +21,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth'
 import { getIndividualProfile, deleteUserAccount } from '@/lib/individuals'
 import { logDataAccess, logDataDeletion } from '@/lib/audit'
+import { logger } from '@/lib/logger'
 
 type RouteParams = { params: Promise<{ userId: string }> }
 
@@ -95,7 +96,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     })
 
   } catch (error) {
-    console.error('[GDPR Delete]', error)
+    logger.error('GDPRDelete', 'Error deleting user data', error)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }

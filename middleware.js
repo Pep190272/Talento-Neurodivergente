@@ -18,7 +18,7 @@
 import { NextResponse } from 'next/server'
 import NextAuth from 'next-auth'
 import { authConfig } from './app/lib/auth.config'
-import { rateLimit, RATE_LIMITS } from './app/lib/rate-limiter.js'
+import { rateLimit, RATE_LIMITS } from './app/lib/rate-limiter'
 
 const { auth } = NextAuth(authConfig)
 
@@ -81,7 +81,7 @@ export default async function middleware(req) {
 
   // Bypassing rate limiting in development environment because it is annoying
   if (process.env.NODE_ENV === 'development') {
-    return handleSecurityHeaders(NextResponse.next())
+    return applySecurityHeaders(NextResponse.next())
   }
 
   // Determinar límites según el endpoint
@@ -127,54 +127,7 @@ export default async function middleware(req) {
   response.headers.set('X-RateLimit-Remaining', remaining.toString())
   response.headers.set('X-RateLimit-Reset', resetTime.toString())
 
-  // ═══════════════════════════════════════════════════════════════════════
-  // SECURITY HEADERS
-  // ═══════════════════════════════════════════════════════════════════════
-
-  // X-Frame-Options: Prevenir clickjacking
-  response.headers.set('X-Frame-Options', 'DENY')
-
-  // X-Content-Type-Options: Prevenir MIME sniffing
-  response.headers.set('X-Content-Type-Options', 'nosniff')
-
-  // X-XSS-Protection: Protección XSS (legacy, pero no hace daño)
-  response.headers.set('X-XSS-Protection', '1; mode=block')
-
-  // Referrer-Policy: Controlar información del referrer
-  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
-
-  // Permissions-Policy: Desactivar APIs peligrosas
-  response.headers.set(
-    'Permissions-Policy',
-    'camera=(), microphone=(), geolocation=(), interest-cohort=()'
-  )
-
-  // Strict-Transport-Security: Forzar HTTPS durante 1 año (solo producción)
-  if (process.env.NODE_ENV === 'production') {
-    response.headers.set(
-      'Strict-Transport-Security',
-      'max-age=31536000; includeSubDomains'
-    )
-  }
-
-  // Content-Security-Policy: Prevenir inyección de scripts
-  response.headers.set(
-    'Content-Security-Policy',
-    [
-      "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
-      "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: blob:",
-      "font-src 'self' data:",
-      "connect-src 'self'",
-      "frame-ancestors 'none'",
-      "base-uri 'self'",
-      "form-action 'self'",
-      "object-src 'none'",
-    ].join('; ')
-  )
-
-  return response
+  return applySecurityHeaders(response)
 }
 
 /**
@@ -194,31 +147,33 @@ export const config = {
   ]
 }
 
-function handleSecurityHeaders(response) {
-  // X-Frame-Options: Prevenir clickjacking
+function applySecurityHeaders(response) {
   response.headers.set('X-Frame-Options', 'DENY')
-
-  // X-Content-Type-Options: Prevenir MIME sniffing
   response.headers.set('X-Content-Type-Options', 'nosniff')
-
-  // X-XSS-Protection: Protección XSS (legacy, pero no hace daño)
   response.headers.set('X-XSS-Protection', '1; mode=block')
-
-  // Referrer-Policy: Controlar información del referrer
   response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
-
-  // Permissions-Policy: Desactivar APIs peligrosas
   response.headers.set(
     'Permissions-Policy',
     'camera=(), microphone=(), geolocation=(), interest-cohort=()'
   )
 
-  // Content-Security-Policy: Prevenir inyección de scripts
+  if (process.env.NODE_ENV === 'production') {
+    response.headers.set(
+      'Strict-Transport-Security',
+      'max-age=31536000; includeSubDomains'
+    )
+  }
+
+  const isDev = process.env.NODE_ENV !== 'production'
+  const scriptSrc = isDev
+    ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'"
+    : "script-src 'self' 'unsafe-inline'"
+
   response.headers.set(
     'Content-Security-Policy',
     [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      scriptSrc,
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob:",
       "font-src 'self' data:",

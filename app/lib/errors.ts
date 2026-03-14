@@ -10,6 +10,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
+import { logger } from './logger'
 
 // ─── Error Classes ───────────────────────────────────────────────────────────
 
@@ -101,7 +102,7 @@ export function withErrorHandler(handler: RouteHandler): RouteHandler {
       }
 
       // Unknown error — log and return sanitized response
-      console.error(`[API Error] ${req.method} ${req.nextUrl.pathname}:`, error)
+      logger.error('API', `${req.method} ${req.nextUrl.pathname}`, error)
 
       const message = process.env.NODE_ENV === 'production'
         ? 'Internal server error'
@@ -137,7 +138,7 @@ function handlePrismaError(error: unknown): NextResponse {
         { status: 404 }
       )
     default:
-      console.error('[Prisma Error]', code, prismaError.message)
+      logger.error('Prisma', `${code} ${prismaError.message}`)
       return NextResponse.json(
         { error: 'DATABASE_ERROR', message: 'Database operation failed' },
         { status: 500 }

@@ -1,4 +1,4 @@
-// app/lib/schemas.js
+// app/lib/schemas.ts
 /**
  * Schemas de validación con Zod
  *
@@ -25,7 +25,7 @@ const DIAGNOSES = [
   'OCD',
   'Sensory Processing Disorder',
   'Other'
-]
+] as const
 
 // ════════════════════════════════════════════════════════════════════════════
 // SCHEMAS REUTILIZABLES
@@ -248,7 +248,11 @@ export const jobCreateSchema = z.object({
  * @param {any} data - Datos a validar
  * @returns {object} - { success: boolean, data?: any, errors?: array }
  */
-export function validateSchema(schema, data) {
+interface ValidationSuccess<T> { success: true; data: T }
+interface ValidationFailure { success: false; errors: { path: string; message: string; code: string }[] }
+type ValidationResult<T> = ValidationSuccess<T> | ValidationFailure
+
+export function validateSchema<T>(schema: z.ZodSchema<T>, data: unknown): ValidationResult<T> {
   try {
     const validated = schema.parse(data)
     return {
@@ -277,8 +281,8 @@ export function validateSchema(schema, data) {
  * @param {z.ZodSchema} schema - Schema de Zod
  * @returns {Function} - Middleware function
  */
-export function validateRequest(schema) {
-  return async (request) => {
+export function validateRequest<T>(schema: z.ZodSchema<T>) {
+  return async (request: Request) => {
     try {
       const body = await request.json()
       const validation = validateSchema(schema, body)

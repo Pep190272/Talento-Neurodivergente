@@ -8,6 +8,7 @@ import {
   getIndividualProfile,
   updatePrivacySettings
 } from '@/lib/individuals'
+import { logger } from '@/lib/logger'
 
 /**
  * PATCH /api/individuals/:userId/privacy
@@ -51,7 +52,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
     })
 
   } catch (error) {
-    console.error('Error updating privacy settings:', error)
+    logger.error('Privacy', 'Error updating privacy settings', error)
 
     return NextResponse.json(
       { error: 'Internal server error', details: (error as Error).message },

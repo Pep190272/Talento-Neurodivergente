@@ -10,6 +10,7 @@ import {
   createJobPosting,
   getCompanyJobs
 } from '@/lib/companies'
+import { logger } from '@/lib/logger'
 
 type RouteParams = { params: Promise<{ companyId: string }> }
 
@@ -72,7 +73,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     )
 
   } catch (error) {
-    console.error('Error creating job posting:', error)
+    logger.error('Jobs', 'Error creating job posting', error)
 
     // Handle specific errors
     if ((error as Error).message.includes('required')) {
@@ -125,7 +126,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     })
 
   } catch (error) {
-    console.error('Error fetching company jobs:', error)
+    logger.error('Jobs', 'Error fetching company jobs', error)
 
     return NextResponse.json(
       { error: 'Internal server error', details: (error as Error).message },

@@ -5,6 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server'
 import { createIndividualProfile } from '@/lib/individuals'
+import { logger } from '@/lib/logger'
 
 /**
  * POST /api/individuals
@@ -53,7 +54,7 @@ export async function POST(request: NextRequest) {
     )
 
   } catch (error) {
-    console.error('Error creating individual profile:', error)
+    logger.error('Individuals', 'Error creating individual profile', error)
 
     // Handle specific errors
     if ((error as Error).message.includes('already exists')) {

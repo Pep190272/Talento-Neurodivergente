@@ -18,6 +18,7 @@ import {
   deleteUserAccount
 } from '@/lib/individuals'
 import { logDataAccess } from '@/lib/audit'
+import { logger } from '@/lib/logger'
 import { getActiveConnection as findActiveConnectionFromConsent } from '@/lib/consent'
 
 type RouteParams = { params: Promise<{ userId: string }> }
@@ -260,7 +261,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     )
 
   } catch (error) {
-    console.error('Error fetching individual profile:', error)
+    logger.error('Individuals', 'Error fetching individual profile', error)
 
     return NextResponse.json(
       { error: 'Internal server error', details: (error as Error).message },
@@ -329,7 +330,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     })
 
   } catch (error) {
-    console.error('Error updating individual profile:', error)
+    logger.error('Individuals', 'Error updating individual profile', error)
 
     return NextResponse.json(
       { error: 'Internal server error', details: (error as Error).message },
@@ -396,7 +397,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     })
 
   } catch (error) {
-    console.error('Error deleting individual account:', error)
+    logger.error('Individuals', 'Error deleting individual account', error)
 
     return NextResponse.json(
       { error: 'Internal server error', details: (error as Error).message },
