@@ -94,7 +94,8 @@ E2E tests escritos (4 suites) — requieren servicios corriendo.
 | 7 | Use cases GDPR + rate limiter Redis + backup scripts | Completado |
 | 8 | Docker Compose verificado + deploy a VPS | **Completado** (10 Mar) |
 | 9 | Pricing page + Early Adopter tracking + production fixes | **Completado** (12 Mar) |
-| 10 | Stripe checkout + webhooks en produccion | Pendiente |
+| 10 | ~~Stripe checkout + webhooks~~ | **Pausado (ADR-006: pago por exito)** |
+| 10b | Tracking contrataciones + Stripe Invoicing | Pendiente |
 | 11 | Build Tailwind + monitoring | Pendiente |
 | 12 | Beta con usuarios reales | Pendiente |
 
@@ -131,7 +132,7 @@ Unica pendiente: #78 (Llama 3.1 8B) — descartada, Llama 3.2:3b se mantiene.
 | marketplace | marketplace-service | :8008 | providers, services, bookings, reviews |
 | analytics | analytics-service | :8009 | metric_snapshots, dei_reports, usage_events |
 
-Modelo de negocio: SaaS mixto con Stripe. Empresas pagan (49-399+ EUR/mes), candidatos gratis.
+Modelo de negocio: **Pago por exito (ADR-006)**. Empresas acceden gratis y pagan success fee (10-15% salario) solo al contratar. Candidatos y terapeutas gratis.
 
 ### Funcionalidades recientes (12 Mar 2026)
 
@@ -146,10 +147,12 @@ Modelo de negocio: SaaS mixto con Stripe. Empresas pagan (49-399+ EUR/mes), cand
 
 ## Proximos Pasos
 
-1. **Stripe checkout + webhooks en produccion** (pagos reales)
-2. Build Tailwind CSS (reemplazar CDN)
-3. Beta con usuarios reales
-4. Retirar frontend legacy Next.js (Vercel)
+1. ~~Stripe checkout + webhooks en produccion~~ **PAUSADO (ADR-006: pago por exito)**
+2. **Atraer empresas** (acceso gratis) + conseguir primera contratacion exitosa
+3. **Tracking de contrataciones** + Stripe Invoicing para success fees
+4. Build Tailwind CSS (reemplazar CDN)
+5. Beta con usuarios reales
+6. Retirar frontend legacy Next.js (Vercel)
 
 ---
 

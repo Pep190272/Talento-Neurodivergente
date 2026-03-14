@@ -7,6 +7,23 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [2.4.0-docs] - 2026-03-14
+
+### Sesion 2026-03-14 — ADR-006: Migracion a modelo pago por exito (Issue #112)
+
+#### Added
+- **ADR-006**: Migracion de modelo SaaS suscripcion fija a pago por exito (success fee). Empresas acceden gratis y pagan 10-15% del salario bruto anual solo al contratar exitosamente via DiversIA.
+
+#### Changed
+- **DECISIONES_ARQUITECTURA_PENDIENTES.md**: Tablas de pricing actualizadas para reflejar modelo pago por exito. Decisiones 2-7 y 9 actualizadas.
+- **NEXT_STEPS.md**: Stripe checkout marcado como pausado. Nuevo plan: tracking de contrataciones + Stripe Invoicing. Modelo de negocio actualizado.
+- **ROADMAP.md**: Stripe checkout pausado. Nuevos pendientes: tracking contrataciones, actualizar /pricing. Version 2.4.0-docs anadida.
+- **PROJECT_STATUS.md**: Modelo de negocio actualizado a pago por exito. Fase 10 (Stripe) pausada.
+- **ONE_PAGER_BUSINESS_ANGEL.md**: Revenue streams actualizados (success fee como modelo primario, candidatos/terapeutas gratis, LTV/CAC 30x).
+- **EMAIL_BUSINESS_ANGEL_TEMPLATE.md**: Referencias a pricing actualizadas (pago por exito en lugar de SaaS €200-500/mes).
+
+---
+
 ## [2.3.0] - 2026-03-12
 
 ### Sesion 2026-03-12 — Pricing page, Early Adopter tracking, production fixes

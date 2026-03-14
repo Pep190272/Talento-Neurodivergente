@@ -35,7 +35,9 @@
 
 ### Que falta
 
-- Stripe checkout + webhooks en produccion (pagos reales)
+- ~~Stripe checkout + webhooks en produccion~~ **PAUSADO (ADR-006: migracion a pago por exito)**
+- Tracking de contrataciones exitosas (para facturar success fees)
+- Actualizar pagina /pricing para reflejar modelo pago por exito
 - Build de Tailwind CSS (usa CDN — funcional pero no optimo)
 - Beta con usuarios reales
 - Retirar frontend legacy Next.js (Vercel)
@@ -62,7 +64,8 @@ Internet → Traefik (Dokploy) → nginx gateway (:8000)
 
 > **Expansion SaaS (ADR-005):** 5 nuevos bounded contexts disenados con 21 tablas.
 > Servicios: subscription(:8005), learning(:8006), community(:8007), marketplace(:8008), analytics(:8009).
-> Ver `docs/adr/ADR-005.md` y `services/migrations/20260309_001_create_saas_bounded_contexts.sql`.
+> **Modelo de negocio actualizado (ADR-006):** Pago por exito (success fee al contratar) en lugar de suscripcion SaaS fija.
+> Ver `docs/adr/ADR-005.md`, `docs/adr/ADR-006.md` y `services/migrations/20260309_001_create_saas_bounded_contexts.sql`.
 
 ---
 
@@ -81,18 +84,20 @@ Internet → Traefik (Dokploy) → nginx gateway (:8000)
 - [ ] Build pipeline (postcss + purge)
 - [ ] Alpine.js + Chart.js como vendor bundles locales
 
-### Completado: Fase 1 SaaS — subscription-service (11 Mar 2026)
+### Completado: Fase 1 SaaS — subscription-service (11 Mar 2026) + Modelo actualizado (14 Mar)
 - [x] subscription-service con TDD (87 tests)
 - [x] Entidades de dominio: Plan, Subscription, Invoice
 - [x] 6 use cases: CreatePlan, ListPlans, Subscribe, CancelSubscription, ChangePlan, GetSubscription
-- [x] Early adopter logic: primeras 25 empresas + 25 terapeutas, 3 meses gratis
+- [x] Early adopter logic: primeras 25 empresas + 25 terapeutas
 - [x] API REST FastAPI con validacion Pydantic
 - [x] Docker Compose + nginx gateway integration
 - [x] Configuracion Stripe (secret + publishable keys)
 - [x] Servicio compartido de email (aiosmtplib async)
 - [x] Welcome email al registrar usuario/empresa
-- [ ] **Stripe checkout + webhooks en produccion** (Issue pendiente)
-- [ ] **Conectar pagos reales con Stripe**
+- ~~Stripe checkout + webhooks en produccion~~ **PAUSADO (ADR-006: pago por exito)**
+- ~~Conectar pagos reales con Stripe~~ **PAUSADO (ADR-006: pago por exito)**
+- [ ] **Implementar tracking de contrataciones exitosas**
+- [ ] **Integrar Stripe Invoicing para success fees (cuando haya volumen)**
 
 ### Completado: Pagina de precios + Early Adopter tracking (12 Mar 2026)
 - [x] Pagina de precios (`/pricing`) con 3 planes: Candidato (gratis), Empresa PRO (99€/79€ anual), Terapeuta PRO (59€/49€ anual)
@@ -106,10 +111,11 @@ Internet → Traefik (Dokploy) → nginx gateway (:8000)
 - [x] Auto-creacion de perfil al registrarse y al entrar al dashboard
 - [x] Variables SMTP en docker-compose.prod.yml para emails en produccion
 
-### Pendiente: Beta
-- [ ] 5-10 empresas inclusivas
+### Pendiente: Beta (modelo pago por exito — ADR-006)
+- [ ] 25 empresas registradas y publicando ofertas (acceso gratis)
 - [ ] 20-50 candidatos neurodivergentes
 - [ ] 5-10 terapeutas/especialistas
+- [ ] Primera contratacion exitosa via DiversIA (validar modelo)
 
 ---
 
@@ -136,6 +142,7 @@ Internet → Traefik (Dokploy) → nginx gateway (:8000)
 | **v2.0.0** | **10 Mar** | **Deploy a app.diversia.click — produccion** |
 | **v2.2.0-saas** | **11 Mar** | **subscription-service + welcome email (87 tests, Stripe ready)** |
 | **v2.3.0** | **12 Mar** | **Pricing page, early adopter tracking, auto-profile, email fix, CI fix** |
+| **v2.4.0-docs** | **14 Mar** | **ADR-006: Migracion a modelo pago por exito. Stripe checkout pausado.** |
 
 ---
 

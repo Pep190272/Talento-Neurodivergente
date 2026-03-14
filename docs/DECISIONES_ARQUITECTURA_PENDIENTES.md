@@ -309,26 +309,33 @@ Los early adopters no van a pagar los primeros 6 meses. Mejor tener un producto 
 
 ---
 
-## Estado de las decisiones (actualizado 9 Mar 2026)
+## Estado de las decisiones (actualizado 14 Mar 2026)
 
 | # | Decision | Resultado |
 |---|----------|-----------|
 | 1 | Comunicacion inter-servicio | **Aprobado: HTTP Sincrono** |
-| 2 | Quien paga | **Aprobado: Empresa + Terapeuta (candidato gratis)** |
-| 3 | Planes empresa | **Aprobado: Free/Starter(49)/Pro(149)/Enterprise(399+)** |
-| 4 | Planes terapeuta | **Aprobado: Free/Profesional(29)** |
-| 5 | Pasarela de pago | **Aprobado: Stripe** |
-| 6 | Early adopters | **Aprobado: 6 meses gratis PRO** |
-| 7 | Servicio de pagos | **Actualizado: Nuevo subscription-service (:8005)** — la escala justifica servicio dedicado |
+| 2 | Quien paga | **Actualizado (ADR-006): Empresa paga success fee solo al contratar. Candidatos y terapeutas gratis.** |
+| 3 | Planes empresa | **Sustituido (ADR-006): Acceso gratis + success fee (10-15% salario) al contratar** |
+| 4 | Planes terapeuta | **Sustituido (ADR-006): Gratis (se reevaluara con marketplace maduro)** |
+| 5 | Pasarela de pago | **Pausado: Stripe checkout pausado. Facturacion manual o Stripe Invoicing.** |
+| 6 | Early adopters | **Actualizado (ADR-006): 50% descuento en success fee (primeras 25 empresas, primeras 5 contrataciones)** |
+| 7 | Servicio de pagos | **Pausado: subscription-service se mantiene (87 tests) pero desarrollo pausado** |
 | 8 | Prioridad | **Aprobado: Funcionalidad primero, pagos en Fase 1 post-deploy** |
 
 ### Nuevas decisiones tomadas (9 Mar 2026)
 
 | # | Decision | Resultado |
 |---|----------|-----------|
-| 9 | Planes candidato B2C | **Aprobado: Free/Pro(9.99)/Pro+(19.99)** |
+| 9 | Planes candidato B2C | **Sustituido (ADR-006): Candidato siempre gratis** |
 | 10 | 5 nuevos bounded contexts | **Aprobado: subscriptions/learning/community/marketplace/analytics** |
 | 11 | Estrategia de base de datos | **Aprobado: schemas separados en misma PostgreSQL** |
 | 12 | Prioridad de nuevos contextos | **Aprobado: subscriptions → analytics → learning → community → marketplace** |
 
-Ver **ADR-005** para detalles completos de implementacion.
+### Decisiones actualizadas (14 Mar 2026)
+
+| # | Decision | Resultado |
+|---|----------|-----------|
+| 13 | Modelo de negocio | **Aprobado (ADR-006): Pago por exito (success fee) en lugar de SaaS suscripcion fija** |
+| 14 | Stripe checkout | **Pausado: No se requiere checkout de suscripciones. Se usara Stripe Invoicing cuando haya volumen.** |
+
+Ver **ADR-005** para modelo SaaS original y **ADR-006** para migracion a pago por exito.
