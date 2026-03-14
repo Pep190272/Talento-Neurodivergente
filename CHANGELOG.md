@@ -7,6 +7,23 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [2.5.0] - 2026-03-14
+
+### Sesion 2026-03-14 — Backend alineado con ADR-006 (Issues #111, #112)
+
+#### Added
+- **BillingCycle.ON_SUCCESS**: Nuevo ciclo de facturacion para modelo pago por exito (ADR-006)
+- **SUCCESS_BASED_MODEL_ENABLED**: Feature flag en subscription-service config
+- **3 tests nuevos**: BillingCycle.ON_SUCCESS en plan, subscription y subscribe use case (323 total)
+
+#### Changed
+- **Email Early Adopter**: Copy actualizado — empresas ven "50% descuento en success fee", terapeutas ven "acceso premium gratuito" (antes: "X meses gratis")
+- **Limites Early Adopter unificados**: subscription-service alineado a 25/25 (antes: 20/50 vs auth-service 25/25)
+- **Constantes EARLY_ADOPTER_* marcadas deprecated** en auth-service, subscription-service y config (con nota ADR-006, remocion en v3.0)
+- **docker-compose.yml**: Variable SUCCESS_BASED_MODEL_ENABLED anadida al subscription-service
+
+---
+
 ## [2.4.0-docs] - 2026-03-14
 
 ### Sesion 2026-03-14 — ADR-006: Migracion a modelo pago por exito (Issue #112)

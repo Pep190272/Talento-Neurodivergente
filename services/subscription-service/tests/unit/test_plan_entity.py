@@ -5,6 +5,7 @@ from __future__ import annotations
 import pytest
 
 from app.domain.entities.plan import (
+    BillingCycle,
     Money,
     Plan,
     PlanLimits,
@@ -133,3 +134,9 @@ class TestPlan:
         assert PlanTier.PRO.value == "pro"
         assert PlanTier.PRO_PLUS.value == "pro_plus"
         assert PlanTier.ENTERPRISE.value == "enterprise"
+
+    def test_billing_cycle_on_success_exists(self):
+        """ADR-006: ON_SUCCESS billing cycle for success-fee model."""
+        assert BillingCycle.ON_SUCCESS.value == "on_success"
+        assert BillingCycle.MONTHLY.value == "monthly"
+        assert BillingCycle.YEARLY.value == "yearly"

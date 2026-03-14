@@ -1,7 +1,7 @@
 # Proximos Pasos — DiversIA Eternals
 
-**Ultima actualizacion:** 12 de marzo de 2026
-**Estado actual:** v2.3.0 — produccion en app.diversia.click, 320 tests
+**Ultima actualizacion:** 14 de marzo de 2026
+**Estado actual:** v2.5.0 — produccion en app.diversia.click, 323 tests
 **Branch principal:** `main`
 
 ---
@@ -14,8 +14,8 @@
 - **PostgreSQL 16** con 4 schemas core + subscriptions
 - **nginx gateway** con DNS dinamico, rate limiting, security headers
 - **Ollama + Llama 3.2 3B** self-hosted (EU)
-- **320 tests totales**, 0 failing
-- **28/29 issues** del backlog resueltas
+- **323 tests totales**, 0 failing
+- **30/31 issues** del backlog resueltas
 - **subscription-service** con 87 tests, early adopters, Stripe ready
 - **Welcome email + admin notification + early adopter email** al registrar
 - **Pagina de precios** (`/pricing`) con modelo pago por exito y tracking de Early Adopter slots
@@ -95,6 +95,7 @@
 - ~~Stripe checkout + webhooks en produccion~~ **PAUSADO (ADR-006: pago por exito)**
 - ~~Conectar pagos reales con Stripe~~ **PAUSADO (ADR-006: pago por exito)**
 - [x] **Actualizar pagina /pricing para reflejar modelo pago por exito**
+- [x] **Backend alineado con ADR-006**: BillingCycle.ON_SUCCESS, constantes deprecadas, limites unificados 25/25, feature flag, email actualizado
 - [ ] **Implementar tracking de contrataciones exitosas**
 
 ### Fase 2: Analytics (Mes 2)

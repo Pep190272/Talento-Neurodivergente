@@ -23,7 +23,9 @@ logger = logging.getLogger(__name__)
 # Admin email for registration notifications
 ADMIN_NOTIFICATION_EMAIL = "diversiaeternals@gmail.com"
 
-# Early adopter limits
+# DEPRECATED (ADR-006): Legacy SaaS model constants — kept for backwards compatibility.
+# Under success-fee model, early adopters get 50% discount on success fee instead.
+# Will be removed in v3.0.
 EARLY_ADOPTER_COMPANY_LIMIT = 25
 EARLY_ADOPTER_THERAPIST_LIMIT = 25
 EARLY_ADOPTER_FREE_MONTHS = 3

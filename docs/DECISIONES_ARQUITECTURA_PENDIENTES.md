@@ -195,12 +195,12 @@ class ProfileServiceClient:
 
 ### Modelo de primeros adoptantes (Early Adopter)
 
-Como ya está planificado en el dispatch order:
+> **Actualizado (ADR-006):** Modelo migrado a pago por exito. Early adopters ya no reciben meses gratis de SaaS, sino descuento en success fee.
 
-- **Primeras 20 empresas:** Plan PRO gratis durante 6 meses
-- **Primeros 50 terapeutas:** Plan PROFESIONAL gratis durante 6 meses
+- **Primeras 25 empresas:** 50% descuento en success fee (primeras 5 contrataciones)
+- **Primeras 25 terapeutas:** Acceso premium gratuito
 - **Candidatos:** Siempre gratis
-- **Implementación:** Cupón Stripe automático al detectar que el usuario está dentro del umbral
+- **Implementacion:** Tracking automatico via `count_by_role` al registrar
 
 ---
 

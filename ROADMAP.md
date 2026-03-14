@@ -1,7 +1,7 @@
 # ROADMAP — DiversIA (app.diversia.click)
 
 **Fecha de inicio:** 10 de febrero de 2026
-**Ultima actualizacion:** 12 de marzo de 2026
+**Ultima actualizacion:** 14 de marzo de 2026
 **Estado:** Produccion — app.diversia.click operativa
 
 ---
@@ -14,7 +14,7 @@
 
 ---
 
-## Estado actual del proyecto (11 marzo 2026)
+## Estado actual del proyecto (14 marzo 2026)
 
 ### Que funciona en produccion (app.diversia.click)
 
@@ -24,20 +24,19 @@
 | **profile-service** (:8002) | Operativo — frontend, auth, quiz, games, jobs, matching | 83 passing |
 | **matching-service** (:8003) | Operativo — scoring trilateral 24D, batch matching | 53 passing |
 | **intelligence-service** (:8004) | Operativo — reports LLM, anonymizer, prompt builder | 36 passing |
-| **subscription-service** (:8005) | Operativo — planes, suscripciones, facturacion, early adopters | 87 passing |
+| **subscription-service** (:8005) | Operativo — planes, suscripciones, BillingCycle.ON_SUCCESS, early adopters | 90 passing |
 | **shared kernel** | Libreria — value objects, auth, rate limiter, email service | 13 passing |
 | **nginx gateway** (:8000) | Operativo — routing, rate limiting, security headers | — |
 | **PostgreSQL 16** (:5432) | Operativo — 4 schemas core + subscriptions | — |
 | **Ollama** (:11434) | Operativo — Llama 3.2 3B self-hosted | — |
 | **Frontend (Jinja2)** | 15 paginas, Alpine.js + Tailwind CDN | — |
 
-**Total: 320 tests, 0 failing**
+**Total: 323 tests, 0 failing**
 
 ### Que falta
 
 - ~~Stripe checkout + webhooks en produccion~~ **PAUSADO (ADR-006: migracion a pago por exito)**
 - Tracking de contrataciones exitosas (para facturar success fees)
-- Actualizar pagina /pricing para reflejar modelo pago por exito
 - Build de Tailwind CSS (usa CDN — funcional pero no optimo)
 - Beta con usuarios reales
 - Retirar frontend legacy Next.js (Vercel)

@@ -201,15 +201,44 @@ def build_admin_notification_email(
 def build_early_adopter_email(
     *, user_name: str, user_role: str, free_months: int = 3,
 ) -> tuple[str, str, str]:
-    """Return (subject, html_body, text_body) for the early adopter welcome email with free plan info."""
+    """Return (subject, html_body, text_body) for the early adopter welcome email.
+
+    Updated for ADR-006 (success-fee model):
+    - Companies: access is free, early adopters get 50% discount on success fee
+    - Therapists: access is free, early adopters get premium features at no cost
+    The free_months parameter is kept for backwards compatibility but the copy
+    now reflects the success-fee model.
+    """
     role_labels = {
         "company": "Empresa",
         "therapist": "Terapeuta",
     }
     role_label = role_labels.get(user_role, user_role.capitalize())
-    plan_name = "PRO" if user_role == "company" else "PROFESIONAL"
 
-    subject = f"🎉 {user_name}, eres Early Adopter de DiversIA!"
+    subject = f"Enhorabuena {user_name}, eres Early Adopter de DiversIA!"
+
+    if user_role == "company":
+        benefit_html = """\
+        <p style="color:#475569;line-height:1.6;">
+          Como Early Adopter, disfrutas de <strong>acceso completo y gratuito</strong>
+          a la plataforma. Solo pagas cuando contratas: un <strong>success fee
+          con 50% de descuento</strong> en tus primeras 5 contrataciones.
+        </p>"""
+        benefit_text = (
+            "Como Early Adopter, disfrutas de acceso completo y gratuito a la plataforma.\n"
+            "Solo pagas cuando contratas: un success fee con 50% de descuento en tus primeras 5 contrataciones."
+        )
+    else:
+        benefit_html = """\
+        <p style="color:#475569;line-height:1.6;">
+          Como Early Adopter, tienes <strong>acceso gratuito a todas las funcionalidades
+          premium</strong> de la plataforma, incluyendo visibilidad prioritaria
+          y herramientas avanzadas de gestion de pacientes.
+        </p>"""
+        benefit_text = (
+            "Como Early Adopter, tienes acceso gratuito a todas las funcionalidades premium\n"
+            "de la plataforma, incluyendo visibilidad prioritaria y herramientas avanzadas."
+        )
 
     html_body = f"""\
 <!DOCTYPE html>
@@ -218,23 +247,22 @@ def build_early_adopter_email(
 <body style="margin:0;padding:0;font-family:'Segoe UI',Roboto,Arial,sans-serif;background:#f4f7fa;">
   <div style="max-width:600px;margin:32px auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
     <div style="background:linear-gradient(135deg,#f59e0b,#d97706);padding:32px 24px;text-align:center;">
-      <h1 style="color:#fff;margin:0;font-size:28px;">🎉 Enhorabuena!</h1>
+      <h1 style="color:#fff;margin:0;font-size:28px;">Enhorabuena!</h1>
       <p style="color:rgba(255,255,255,0.9);margin:8px 0 0;font-size:16px;">Eres Early Adopter de DiversIA</p>
     </div>
     <div style="padding:32px 24px;">
       <h2 style="color:#1e293b;margin:0 0 16px;">Hola {user_name},</h2>
       <p style="color:#475569;line-height:1.6;">
         Gracias por registrarte como <strong>{role_label}</strong> en DiversIA.
-        Como uno de nuestros primeros usuarios, te ofrecemos el plan
-        <strong>{plan_name}</strong> completamente <strong>gratis durante {free_months} meses</strong>.
       </p>
+      {benefit_html}
       <div style="background:#fffbeb;border:1px solid #fbbf24;border-radius:8px;padding:16px;margin:20px 0;">
         <p style="color:#92400e;margin:0;font-size:14px;font-weight:600;">
-          ✅ Tu plan {plan_name} ya esta activo automaticamente.
+          Tu cuenta Early Adopter ya esta activa.
         </p>
         <p style="color:#92400e;margin:8px 0 0;font-size:13px;">
-          No necesitas introducir ningun codigo. Disfruta de todas las funcionalidades premium
-          durante {free_months} meses sin coste alguno.
+          No necesitas introducir ningun codigo. Tu ventaja de Early Adopter
+          se aplica automaticamente.
         </p>
       </div>
       <div style="text-align:center;margin:28px 0;">
@@ -257,9 +285,9 @@ def build_early_adopter_email(
 
     text_body = (
         f"Hola {user_name},\n\n"
-        f"Enhorabuena! Eres Early Adopter de DiversIA.\n"
-        f"Como {role_label}, tienes el plan {plan_name} gratis durante {free_months} meses.\n\n"
-        f"Tu plan ya esta activo automaticamente. No necesitas codigo.\n\n"
+        f"Enhorabuena! Eres Early Adopter de DiversIA.\n\n"
+        f"{benefit_text}\n\n"
+        f"Tu cuenta Early Adopter ya esta activa. No necesitas codigo.\n\n"
         f"Accede a tu panel: https://app.diversia.click/dashboard\n\n"
         f"-- Equipo DiversIA"
     )

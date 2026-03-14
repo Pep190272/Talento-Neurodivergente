@@ -83,6 +83,18 @@ class TestSubscriptionCreate:
         )
         assert sub.billing_cycle == BillingCycle.YEARLY
 
+    def test_on_success_billing_cycle(self, pro_plan):
+        """ADR-006: ON_SUCCESS billing cycle uses yearly period."""
+        sub = Subscription.create(
+            subscriber_id="success001",
+            subscriber_type=SubscriberType.COMPANY,
+            plan=pro_plan,
+            billing_cycle=BillingCycle.ON_SUCCESS,
+        )
+        assert sub.billing_cycle == BillingCycle.ON_SUCCESS
+        days_diff = (sub.current_period_end - sub.current_period_start).days
+        assert days_diff == 365
+
     def test_empty_subscriber_id_raises(self, free_plan):
         with pytest.raises(SubscriptionValidationError, match="subscriber_id"):
             Subscription.create(

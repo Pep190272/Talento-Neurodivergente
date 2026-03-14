@@ -1,7 +1,7 @@
 # Project Status — DiversIA Eternals
 
-> **Ultima actualizacion**: 12 de marzo de 2026
-> **Version**: 2.3.0
+> **Ultima actualizacion**: 14 de marzo de 2026
+> **Version**: 2.5.0
 > **Produccion**: https://app.diversia.click
 
 ---
@@ -73,8 +73,8 @@
 | auth-service | 48 | Passing |
 | intelligence-service | 36 | Passing |
 | shared kernel | 13 | Passing |
-| subscription-service | 87 | Passing |
-| **Total pytest** | **320** | **0 failing** |
+| subscription-service | 90 | Passing |
+| **Total pytest** | **323** | **0 failing** |
 
 E2E tests escritos (4 suites) — requieren servicios corriendo.
 
@@ -114,9 +114,13 @@ E2E tests escritos (4 suites) — requieren servicios corriendo.
 
 ---
 
-## Issues: 28 de 29 resueltas
+## Issues: 30 de 31 resueltas
 
 Unica pendiente: #78 (Llama 3.1 8B) — descartada, Llama 3.2:3b se mantiene.
+
+### Resueltas recientemente (14 Mar 2026)
+- **#111**: refactor(backend): deprecar constantes EARLY_ADOPTER_*, unificar limites 25/25, BillingCycle.ON_SUCCESS, feature flag SUCCESS_BASED_MODEL_ENABLED
+- **#112**: docs: actualizar ADR-006 y documentacion para coherencia con pago por exito
 
 ---
 

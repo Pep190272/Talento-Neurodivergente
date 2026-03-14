@@ -13,9 +13,10 @@ from app.domain.entities.subscription import (
 from app.domain.repositories.i_plan_repository import IPlanRepository
 from app.domain.repositories.i_subscription_repository import ISubscriptionRepository
 
-# Early adopter thresholds (from ADR-005)
-EARLY_ADOPTER_COMPANY_LIMIT = 20
-EARLY_ADOPTER_THERAPIST_LIMIT = 50
+# DEPRECATED (ADR-006): Legacy SaaS model constants — kept for backwards compatibility.
+# Unified to 25/25 to match auth-service (was 20/50). Will be removed in v3.0.
+EARLY_ADOPTER_COMPANY_LIMIT = 25
+EARLY_ADOPTER_THERAPIST_LIMIT = 25
 
 
 class SubscribeUseCase:
