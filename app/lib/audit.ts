@@ -10,7 +10,6 @@
 import { AuditEventType, type Prisma } from '@prisma/client'
 import prisma from './prisma'
 import { addYears } from './utils.js'
-import { logger } from './logger'
 
 // ============================================================
 // TIPOS
@@ -96,7 +95,7 @@ export async function logDataAccess(event: AuditEvent) {
     })
   } catch (error) {
     // Audit failure nunca debe romper la request principal
-    logger.error('AuditLog', 'Failed to write audit entry', error)
+    console.error('[AuditLog] Failed to write audit entry:', error)
     return null
   }
 }
@@ -128,7 +127,7 @@ export async function getUserAuditLog(userId: string) {
       entries: logs,
     }
   } catch (error) {
-    logger.error('AuditLog', 'Error fetching user audit logs', error)
+    console.error('[AuditLog] Error fetching user audit logs:', error)
     return { userId, totalEntries: 0, entries: [] }
   }
 }
@@ -157,7 +156,7 @@ export async function getAIAuditTrailForMatching(matchingId: string) {
       orderBy: { timestamp: 'asc' },
     })
   } catch (error) {
-    logger.error('AuditLog', 'Error fetching AI audit trail', error)
+    console.error('[AuditLog] Error fetching AI audit trail:', error)
     return []
   }
 }
@@ -235,7 +234,7 @@ export async function getAuditLog(userId: string, actionFilter?: string) {
       }
     })
   } catch (error) {
-    logger.error('AuditLog', 'Error fetching audit logs', error)
+    console.error('[AuditLog] Error fetching audit logs:', error)
     return []
   }
 }
@@ -263,7 +262,7 @@ export async function exportAuditLog(userId: string) {
       },
     }
   } catch (error) {
-    logger.error('AuditLog', 'Error exporting audit log', error)
+    console.error('[AuditLog] Error exporting audit log:', error)
     return {
       exportedAt: new Date(),
       userId,
