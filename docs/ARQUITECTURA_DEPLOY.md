@@ -1,7 +1,7 @@
 # Arquitectura de Deployment — DiversIA Eternals
 
-**Última actualización:** 26 de febrero de 2026
-**Estado:** Producción activa
+**Última actualización:** 15 de marzo de 2026
+**Estado:** Producción activa en VPS
 
 ---
 
@@ -13,46 +13,44 @@
 └───────────────────────────┬─────────────────────────────────┘
                             │ HTTPS
                             ▼
-┌─────────────────────────────────────────────────────────────┐
-│                     VERCEL (CDN/Edge)                        │
-│  • Next.js 15 App Router                                     │
-│  • API Routes (SSR)                                          │
-│  • NextAuth (JWT sessions)                                   │
-│  • Dominio: [tu-dominio].vercel.app                          │
-└──────────────────┬────────────────────┬─────────────────────┘
-                   │                    │
-        PostgreSQL │          Ollama    │
-           TCP     │          HTTP      │
-                   ▼                    ▼
 ┌──────────────────────────────────────────────────────────────┐
 │              VPS Hostinger — París, Francia                   │
 │              Panel: Dokploy (Docker Compose)                  │
 │                                                               │
 │  ┌─────────────────────┐   ┌──────────────────────────────┐  │
-│  │   diversia-db       │   │   diversia-ollama            │  │
-│  │   PostgreSQL 16     │   │   Ollama + Llama 3.2 3B      │  │
-│  │   Puerto: 5432      │   │   Puerto: 11434              │  │
-│  │   8 GB RAM          │   │   ~2 GB RAM (modelo)         │  │
-│  └─────────────────────┘   └──────────────────────────────┘  │
+│  │   Next.js 15 App    │   │   diversia-ollama            │  │
+│  │   App Router (SSR)  │   │   Ollama + Llama 3.2 3B      │  │
+│  │   NextAuth (JWT)    │   │   Puerto: 11434              │  │
+│  │   Puerto: 3000      │   │   ~2 GB RAM (modelo)         │  │
+│  └─────────┬───────────┘   └──────────────────────────────┘  │
+│            │                                                  │
+│            │ PostgreSQL TCP                                   │
+│            ▼                                                  │
+│  ┌─────────────────────┐                                     │
+│  │   diversia-db       │                                     │
+│  │   PostgreSQL 16     │                                     │
+│  │   Puerto: 5432      │                                     │
+│  │   8 GB RAM          │                                     │
+│  └─────────────────────┘                                     │
 └──────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## Variables de entorno en Vercel
+## Variables de entorno en el VPS
 
-Configurar en: Vercel Dashboard → Project → Settings → Environment Variables
+Configurar en: Dokploy → Servicio Next.js → Environment Variables
 
-| Variable | Entorno | Descripción |
-|----------|---------|-------------|
-| `DATABASE_URL` | Production | `postgresql://USER:PASS@YOUR_VPS_IP:5432/diversia` |
-| `NEXTAUTH_SECRET` | Production | 64 caracteres hex: `openssl rand -hex 32` |
-| `NEXTAUTH_URL` | Production | `https://tu-dominio.vercel.app` |
-| `ENCRYPTION_KEY` | Production | 64 caracteres hex (AES-256-GCM para datos médicos) |
-| `OLLAMA_HOST` | Production | `http://YOUR_VPS_IP:11434` |
-| `OLLAMA_MODEL` | Production | `llama3.2:3b` |
+| Variable | Descripción |
+|----------|-------------|
+| `DATABASE_URL` | `postgresql://USER:PASS@diversia-db:5432/diversia` |
+| `NEXTAUTH_SECRET` | 64 caracteres hex: `openssl rand -hex 32` |
+| `NEXTAUTH_URL` | URL pública del dominio (ej. `https://app.diversia.click`) |
+| `ENCRYPTION_KEY` | 64 caracteres hex (AES-256-GCM para datos médicos) |
+| `OLLAMA_HOST` | `http://diversia-ollama:11434` (red interna Docker) |
+| `OLLAMA_MODEL` | `llama3.2:3b` |
 
-> **GDPR**: `DATABASE_URL` y `OLLAMA_HOST` apuntan al VPS en París (Francia, UE).
+> **GDPR**: Todos los servicios corren en el mismo VPS en París (Francia, UE).
 > Los datos nunca salen del territorio europeo (Art. 44 GDPR).
 
 ---
@@ -86,6 +84,11 @@ Configurar en: Vercel Dashboard → Project → Settings → Environment Variabl
 - CSP + HSTS añadidos en middleware.js
 - Playwright E2E: 5 suites, 25+ tests (Issue #27)
 
+### Sprint 6 (Marzo 2026) — Migración a VPS
+- Migración completa de Vercel a VPS Hostinger (París)
+- Eliminación de dependencias Vercel (@vercel/speed-insights)
+- Todos los servicios (app + DB + Ollama) en la misma red Docker
+
 ---
 
 ## Checklist de deploy a producción
@@ -93,29 +96,25 @@ Configurar en: Vercel Dashboard → Project → Settings → Environment Variabl
 ### Primera vez (setup inicial)
 
 ```bash
-# 1. Clonar repositorio en Vercel
-#    → Conectar GitHub repo en vercel.com/new
+# 1. Configurar servicios en Dokploy (Docker Compose)
 
 # 2. Configurar variables de entorno (ver tabla arriba)
 
 # 3. Aplicar migraciones en la DB de producción
 DATABASE_URL="postgresql://..." npx prisma migrate deploy
 
-# 4. Verificar Ollama corriendo en VPS
-curl http://YOUR_VPS_IP:11434/api/health
+# 4. Verificar Ollama corriendo
+curl http://localhost:11434/api/health
 # Respuesta esperada: {"status":"ok"}
 
 # 5. Si Llama 3.2 3B no está descargado:
-# (En el VPS, dentro del contenedor diversia-ollama)
 docker exec -it diversia-ollama ollama pull llama3.2:3b
 ```
 
-### Cada deploy (automático en Vercel)
-
-Vercel detecta push a `main` y despliega automáticamente. No se requiere acción manual.
+### Cada deploy
 
 ```bash
-# Antes de mergear a main, verificar que los tests pasan:
+# Antes de desplegar, verificar que los tests pasan:
 npm test              # Vitest (unit tests)
 npm run test:e2e:public  # Playwright (tests públicos, sin DB)
 npm run build         # Build de Next.js
@@ -153,18 +152,13 @@ find /tmp -name "diversia_*.sql.gz" -mtime +7 -delete
 ```bash
 # Sentry (errores en frontend + API)
 npm install @sentry/nextjs
-# Configurar SENTRY_DSN en variables de entorno de Vercel
+# Configurar SENTRY_DSN en variables de entorno
 # Añadir sentry.client.config.ts y sentry.server.config.ts
-
-# Vercel Analytics (tráfico y performance)
-npm install @vercel/analytics
-# En app/layout.tsx: import { Analytics } from '@vercel/analytics/react'
-# <Analytics /> en el layout
 ```
 
 ### Branch protection (PENDIENTE)
 
-En Gitea (Settings → Branches):
+En GitHub (Settings → Branches):
 - Proteger `main`: require PR + 1 review
 - Status checks requeridos: test (vitest) + build
 
@@ -174,13 +168,14 @@ En Gitea (Settings → Branches):
 
 | Problema | Causa probable | Solución |
 |----------|---------------|----------|
-| `Prisma: Can't reach database server` | IP del VPS no en whitelist o DB caída | Verificar VPS corriendo, revisar firewall |
+| `Prisma: Can't reach database server` | DB caída o red Docker mal configurada | `docker start diversia-db`, verificar red |
 | `Ollama connection refused` | Contenedor diversia-ollama caído | `docker start diversia-ollama` en VPS |
-| `NEXTAUTH_SECRET not set` | Variable de entorno faltante | Añadir en Vercel Dashboard |
+| `NEXTAUTH_SECRET not set` | Variable de entorno faltante | Añadir en Dokploy |
 | Build falla con TS errors | `typescript.ignoreBuildErrors: false` | Revisar errores en `npx tsc --noEmit` |
 | Tests E2E fallan en CI | Servidor no arrancado | Verificar `webServer` config en playwright.config.ts |
 
 ---
 
 **Creado:** 26 de febrero de 2026
+**Actualizado:** 15 de marzo de 2026 — Migración completa a VPS, eliminación de Vercel
 **Siguiente revisión:** Después de implementar backup + monitoring
