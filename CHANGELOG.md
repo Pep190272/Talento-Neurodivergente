@@ -7,6 +7,43 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [2.6.0] - 2026-03-16
+
+### Sesion 2026-03-15/16 — Inclusivity Engine, 360 Ecosystem, A11y, Tech Debt Cleanup
+
+#### Added
+- **Inclusivity Engine mejorado**: scoring diferencial de accommodations con categorizacion de skills (technical/soft/domain), accommodations sugeridas por rol, warning generico si >80% son soft skills
+- **Deteccion de lenguaje discriminatorio**: 25+ bias patterns extraidos en modulo compartido (`app/lib/bias-patterns.ts`), integrado en flujo de creacion de ofertas (antes: 8 patrones, ahora: 25+), DRY entre API route y `companies.ts`
+- **Ecosistema 360 Terapeutas**: nuevo servicio de conexiones (`connections.service.ts`) con modelo trilateral (Individual↔Company, Individual↔Therapist, Company↔Therapist), privacy enforcement (empresas NUNCA ven conexiones de terapia), ciclo de vida de conexiones (create, query, revoke)
+- **E2E tests**: homepage accessibility (keyboard nav, ARIA, focus, contrast), chat modal behavior, registration flows, role selection (`homepage.spec.ts`, `registration.spec.ts`)
+- **Tests nuevos**: `bias-patterns.test.ts`, `connections.service.test.ts` — 285 tests JS/TS (era 245), 2 skipped (era 5)
+- **Logger centralizado** (`app/lib/logger.ts`): modulo de logging estructurado
+- **Email service** (`app/lib/email.ts`): servicio de email para Next.js app
+- **Rate limiter TypeScript** (`app/lib/rate-limiter.ts`): reescrito de JS a TS con tipos
+- **Encryption TypeScript** (`app/lib/encryption.ts`): migrado de JS a TS (46 lineas vs 93)
+
+#### Changed
+- **Accesibilidad (WCAG AA)**: boton AI assistant semantico con `aria-label`/`aria-expanded`, chat overlay con `role="dialog"` + `aria-modal` + Escape key, `aria-live="polite"` para status, labels en inputs, `aria-hidden` en iconos decorativos, contraste de color corregido (#94A3B8 → #64748B, ratio 4.6:1), clase `sr-only` para screen readers
+- **Hero component refactorizado**: GetStarted extraido como componente independiente con accesibilidad mejorada
+- **Schemas migrados a TypeScript**: `schemas.js` → `schemas.ts`
+
+#### Removed
+- **Dependencias Vercel eliminadas**: `@vercel/speed-insights` removido — la app corre exclusivamente en VPS
+- **Vulnerabilidades de seguridad corregidas**: `hono` y `@hono/node-server` resueltas
+- **Codigo legacy eliminado** (#114): 7,800+ lineas de codigo muerto removidas
+  - `app/candidates/` (Candidates.js, CSS, page) — 2,373 lineas
+  - `app/company/` (analytics, settings, training, navigation, layout, page, CSS) — 5,379 lineas
+  - `app/lib/draft-manager.js` (252 lineas), `app/lib/llm.js` (192 lineas), `app/lib/rate-limiter.js` (135 lineas), `app/lib/encryption.js` (93 lineas)
+  - `tests/unit/features/draft-mode.test.js` (282 lineas)
+  - Debug logs, alias no usados, utils.js limpiado
+
+#### Fixed
+- **3 tests LLM corregidos**: timeout, validacion Zod, health check — 14/14 passing, 0 skipped
+- **`onKeyPress` deprecado** reemplazado por `onKeyDown`
+- **Logger en audits**: `console.error` directo en lugar de logger para compatibilidad de tests
+
+---
+
 ## [2.5.0] - 2026-03-14
 
 ### Sesion 2026-03-14 — Backend alineado con ADR-006 (Issues #111, #112)
@@ -224,4 +261,4 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
-**Mantenido por:** Equipo Diversia + Claude Opus 4
+**Mantenido por:** Equipo Diversia + Claude Opus 4.6

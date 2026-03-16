@@ -91,8 +91,9 @@ export async function deactivateIndividualInDb(userId: string) {
  * Cascade:
  *   1. Anonymize Individual PII (name, diagnoses, location, medical, skills)
  *   2. Anonymize User record (email → deleted_<id>@anonymized.local)
- *   3. Revoke all active Connections (consent withdrawn)
- *   4. Withdraw all PENDING Matchings + clear candidateData PII snapshots
+ *   3. Anonymize auth.users record (syncs auth schema)
+ *   4. Revoke all active Connections (consent withdrawn)
+ *   5. Withdraw all PENDING Matchings + clear candidateData PII snapshots
  */
 export async function anonymizeUserAccount(userId: string) {
   const now = new Date()
@@ -101,6 +102,10 @@ export async function anonymizeUserAccount(userId: string) {
     // Find individual record (need internal id for connections/matchings)
     const individual = await tx.individual.findUnique({ where: { userId } })
     if (!individual) return
+
+    // Get user email before anonymization (needed for auth.users sync)
+    const user = await tx.user.findUnique({ where: { id: userId } })
+    const originalEmail = user?.email
 
     // 1. Anonymize Individual PII
     await tx.individual.update({
@@ -123,18 +128,27 @@ export async function anonymizeUserAccount(userId: string) {
       },
     })
 
-    // 2. Anonymize User record
+    // 2. Anonymize User record (public schema)
+    const anonymizedEmail = `deleted_${userId}@anonymized.local`
     await tx.user.update({
       where: { id: userId },
       data: {
-        email: `deleted_${userId}@anonymized.local`,
+        email: anonymizedEmail,
         passwordHash: 'DELETED',
         status: 'deleted',
         updatedAt: now,
       },
     })
 
-    // 3. Revoke all active Connections — notify companies consent was withdrawn
+    // 3. Anonymize auth.users record (auth schema) — sync both tables
+    if (originalEmail) {
+      await tx.$executeRawUnsafe(
+        `UPDATE auth.users SET email = $1, password_hash = 'DELETED', status = 'deleted', updated_at = NOW() WHERE email = $2`,
+        anonymizedEmail, originalEmail
+      )
+    }
+
+    // 4. Revoke all active Connections — notify companies consent was withdrawn
     await tx.connection.updateMany({
       where: { individualId: individual.id, status: 'active' },
       data: {
@@ -146,7 +160,7 @@ export async function anonymizeUserAccount(userId: string) {
       },
     })
 
-    // 4. Withdraw all pending Matchings and clear candidate PII snapshots
+    // 5. Withdraw all pending Matchings and clear candidate PII snapshots
     await tx.matching.updateMany({
       where: { individualId: individual.id },
       data: {

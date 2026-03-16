@@ -1,7 +1,7 @@
 # ROADMAP — DiversIA (app.diversia.click)
 
 **Fecha de inicio:** 10 de febrero de 2026
-**Ultima actualizacion:** 14 de marzo de 2026
+**Ultima actualizacion:** 16 de marzo de 2026
 **Estado:** Produccion — app.diversia.click operativa
 
 ---
@@ -14,7 +14,7 @@
 
 ---
 
-## Estado actual del proyecto (14 marzo 2026)
+## Estado actual del proyecto (16 marzo 2026)
 
 ### Que funciona en produccion (app.diversia.click)
 
@@ -31,7 +31,7 @@
 | **Ollama** (:11434) | Operativo — Llama 3.2 3B self-hosted | — |
 | **Frontend (Jinja2)** | 15 paginas, Alpine.js + Tailwind CDN | — |
 
-**Total: 323 tests, 0 failing**
+**Total: 323 tests pytest + 285 tests JS/TS = 608+ tests, 0 failing**
 
 ### Que falta
 
@@ -39,7 +39,7 @@
 - Tracking de contrataciones exitosas (para facturar success fees)
 - Build de Tailwind CSS (usa CDN — funcional pero no optimo)
 - Beta con usuarios reales
-- Retirar frontend legacy Next.js (Vercel)
+- ~~Retirar frontend legacy Next.js (Vercel)~~ **EN PROGRESO** — dependencias Vercel eliminadas
 
 ---
 
@@ -110,6 +110,16 @@ Internet → Traefik (Dokploy) → nginx gateway (:8000)
 - [x] Auto-creacion de perfil al registrarse y al entrar al dashboard
 - [x] Variables SMTP en docker-compose.prod.yml para emails en produccion
 
+### Completado: Inclusivity Engine + A11y + Tech Debt Cleanup (15-16 Mar 2026)
+- [x] **Inclusivity Engine mejorado**: 25+ bias patterns, scoring diferencial accommodations (technical/soft/domain)
+- [x] **Deteccion de lenguaje discriminatorio**: modulo compartido `bias-patterns.ts`, integrado en job creation
+- [x] **Ecosistema 360 Terapeutas**: conexiones trilaterales con privacy enforcement (companies NEVER see therapy connections)
+- [x] **Accesibilidad WCAG AA**: keyboard nav, ARIA labels/roles, color contrast 4.6:1, screen reader support, Escape key
+- [x] **Tech Debt eliminado**: 7,800+ lineas codigo muerto, dependencias Vercel removidas, vulnerabilidades hono resueltas
+- [x] **3 tests LLM corregidos**: 14/14 passing, 0 skipped
+- [x] **E2E tests nuevos**: homepage accessibility, registration flows
+- [x] **285 tests JS/TS** (era 245, +40 nuevos)
+
 ### Pendiente: Beta (modelo pago por exito — ADR-006)
 - [ ] 25 empresas registradas y publicando ofertas (acceso gratis)
 - [ ] 20-50 candidatos neurodivergentes
@@ -142,6 +152,8 @@ Internet → Traefik (Dokploy) → nginx gateway (:8000)
 | **v2.2.0-saas** | **11 Mar** | **subscription-service + welcome email (87 tests, Stripe ready)** |
 | **v2.3.0** | **12 Mar** | **Pricing page, early adopter tracking, auto-profile, email fix, CI fix** |
 | **v2.4.0-docs** | **14 Mar** | **ADR-006: Migracion a modelo pago por exito. Stripe checkout pausado.** |
+| **v2.5.0** | **14 Mar** | **Backend alineado con ADR-006: BillingCycle.ON_SUCCESS, feature flags, constantes deprecadas** |
+| **v2.6.0** | **16 Mar** | **Inclusivity Engine, 360 Ecosystem, A11y WCAG AA, Tech Debt cleanup (-7,800 LOC)** |
 
 ---
 
@@ -275,5 +287,22 @@ cd services/shared && python -m pytest tests/ -q                  # 13 tests
 - **Fix acentos/ñ** en pagina para-terapeutas
 - **Fix CI**: DATABASE_URL para `prisma generate` en GitHub Actions
 - Link "Precios" en navbar (desktop + movil)
+
+### Sesion 16 (14 Mar): ADR-006 + Backend alignment
+- **ADR-006**: Migracion a modelo pago por exito (success fee)
+- **Backend alineado**: BillingCycle.ON_SUCCESS, constantes deprecadas, limites 25/25, feature flag
+- **Pricing page actualizada** para reflejar modelo pago por exito
+- **Documentacion completa** actualizada: ROADMAP, NEXT_STEPS, PROJECT_STATUS, ONE_PAGER, EMAIL_TEMPLATE
+
+### Sesion 17 (15-16 Mar): Inclusivity Engine + A11y + Tech Debt Cleanup
+- **Inclusivity Engine mejorado**: 25+ bias patterns (modulo compartido `bias-patterns.ts`), scoring diferencial accommodations (technical/soft/domain), warning generico >80% soft skills
+- **Ecosistema 360 Terapeutas**: `connections.service.ts` — modelo trilateral (Individual↔Company, Individual↔Therapist, Company↔Therapist), privacy enforcement, ciclo de vida conexiones
+- **Accesibilidad WCAG AA**: boton AI semantico, chat dialog con ARIA, aria-live, Escape key, contraste 4.6:1, sr-only, autoFocus
+- **Tech Debt eliminado** (#114): 7,800+ lineas codigo muerto (candidates/, company/, draft-manager, llm.js, rate-limiter.js, encryption.js)
+- **Dependencias Vercel eliminadas**: @vercel/speed-insights removido
+- **Vulnerabilidades resueltas**: hono + @hono/node-server
+- **3 tests LLM corregidos**: timeout, Zod validation, health check
+- **E2E tests**: homepage accessibility, registration flows
+- **285 tests JS/TS** (era 245), 2 skipped (era 5)
 
 </details>

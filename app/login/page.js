@@ -11,6 +11,7 @@ export default function LoginPage() {
     const router = useRouter()
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [showPassword, setShowPassword] = useState(false)
     const [error, setError] = useState('')
     const [loading, setLoading] = useState(false)
 
@@ -79,16 +80,27 @@ export default function LoginPage() {
 
                     <div className="form-group">
                         <label htmlFor="password" className="form-label">Contraseña</label>
-                        <input
-                            id="password"
-                            type="password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            placeholder="••••••••"
-                            className="form-input"
-                            required
-                            disabled={loading}
-                        />
+                        <div className="password-wrapper">
+                            <input
+                                id="password"
+                                type={showPassword ? 'text' : 'password'}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="••••••••"
+                                className="form-input"
+                                required
+                                disabled={loading}
+                            />
+                            <button
+                                type="button"
+                                className="password-toggle"
+                                onClick={() => setShowPassword(!showPassword)}
+                                tabIndex={-1}
+                                aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                            >
+                                {showPassword ? '🙈' : '👁️'}
+                            </button>
+                        </div>
                     </div>
 
                     <button
@@ -105,6 +117,9 @@ export default function LoginPage() {
                 </form>
 
                 <div className="login-footer">
+                    <Link href="/forgot-password" className="forgot-password-link">
+                        ¿Olvidaste tu contraseña?
+                    </Link>
                     <p>¿No tienes cuenta?</p>
                     <Link href="/get-started" className="register-link">
                         Regístrate aquí

@@ -69,17 +69,26 @@ async function main() {
     const deletedTherapists = await prisma.therapist.deleteMany({})
     console.log(`🧠 Deleted ${deletedTherapists.count} therapists`)
 
-    // 7. Delete test users (NOT admin)
+    // 7. Delete test users from public."User" (NOT admin)
     const deletedUsers = await prisma.user.deleteMany({
         where: { email: { in: TEST_EMAILS } },
     })
-    console.log(`👥 Deleted ${deletedUsers.count} test users`)
+    console.log(`👥 Deleted ${deletedUsers.count} test users from public."User"`)
 
-    // 8. Verify admin is intact
+    // 8. Delete test users from auth.users (sync both schemas)
+    for (const testEmail of TEST_EMAILS) {
+        await prisma.$executeRawUnsafe(
+            `DELETE FROM auth.users WHERE email = $1`,
+            testEmail
+        )
+    }
+    console.log(`👥 Cleaned auth.users for ${TEST_EMAILS.length} test emails`)
+
+    // 9. Verify admin is intact in both tables
     const admin = await prisma.user.findFirst({
         where: { email: 'jose190272@gmail.com' },
     })
-    console.log(`\n✅ Admin user intact: ${admin?.email} (${admin?.id})`)
+    console.log(`\n✅ Admin user intact (public."User"): ${admin?.email} (${admin?.id})`)
 
     // Show remaining data
     const remainingUsers = await prisma.user.count()

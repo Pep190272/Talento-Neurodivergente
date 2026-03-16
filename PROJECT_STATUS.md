@@ -1,14 +1,14 @@
 # Project Status — DiversIA Eternals
 
-> **Ultima actualizacion**: 14 de marzo de 2026
-> **Version**: 2.5.0
+> **Ultima actualizacion**: 16 de marzo de 2026
+> **Version**: 2.6.0
 > **Produccion**: https://app.diversia.click
 
 ---
 
 ## Estado General
 
-**Todos los microservicios core estan desplegados y operativos en produccion.** La app corre en `app.diversia.click` sobre un VPS Hostinger (Paris, EU) via Dokploy con Docker Compose: 5 microservicios Python/FastAPI + PostgreSQL 16 + nginx gateway + Ollama. 5 bounded contexts SaaS adicionales estan disenados con migracion SQL lista (subscriptions, learning, community, marketplace, analytics — ver ADR-005). Pagina de precios publicada con tracking de Early Adopter slots. El frontend legacy Next.js sigue en Vercel pendiente de retirar.
+**Todos los microservicios core estan desplegados y operativos en produccion.** La app corre en `app.diversia.click` sobre un VPS Hostinger (Paris, EU) via Dokploy con Docker Compose: 5 microservicios Python/FastAPI + PostgreSQL 16 + nginx gateway + Ollama. 5 bounded contexts SaaS adicionales estan disenados con migracion SQL lista (subscriptions, learning, community, marketplace, analytics — ver ADR-005). Pagina de precios publicada con tracking de Early Adopter slots. Inclusivity Engine mejorado con 25+ bias patterns, ecosistema 360 terapeutas, y accesibilidad WCAG AA. Deuda tecnica eliminada: 7,800+ lineas de codigo muerto removidas, dependencias Vercel eliminadas. El frontend legacy Next.js se ha desacoplado completamente (dependencias removidas).
 
 ---
 
@@ -41,8 +41,9 @@
 - Perfiles neurodivergentes: CRUD + neuro-vector 24D
 - Quiz neurocognitivo: 24 preguntas → vector 24D → radar chart
 - Brain Suite: 3 juegos cognitivos con scoring
-- Jobs: CRUD + analisis de inclusividad (LLM)
-- Matching 24D: scoring trilateral con razones
+- Jobs: CRUD + analisis de inclusividad (LLM) + **25+ bias patterns** para deteccion de lenguaje discriminatorio
+- Matching 24D: scoring trilateral con razones + **scoring diferencial de accommodations** (technical/soft/domain)
+- **Ecosistema 360 Terapeutas**: conexiones trilaterales (Individual↔Company, Individual↔Therapist, Company↔Therapist) con privacy enforcement
 - Use cases: ApplyToJob, ManageConsent, ExportData, DeleteAccount, VerifyTherapist
 
 ### auth-service
@@ -75,8 +76,13 @@
 | shared kernel | 13 | Passing |
 | subscription-service | 90 | Passing |
 | **Total pytest** | **323** | **0 failing** |
+| | | |
+| **JS/TS (Vitest)** | **285** | **0 failing (2 skipped)** |
+| E2E (Playwright) | 6 suites | Requieren servicios corriendo |
+| | | |
+| **Total global** | **608+** | **0 failing** |
 
-E2E tests escritos (4 suites) — requieren servicios corriendo.
+Tests E2E incluyen: homepage accessibility, registration flows, candidate/company/therapist flows, GDPR compliance.
 
 ---
 
@@ -96,8 +102,9 @@ E2E tests escritos (4 suites) — requieren servicios corriendo.
 | 9 | Pricing page + Early Adopter tracking + production fixes | **Completado** (12 Mar) |
 | 10 | ~~Stripe checkout + webhooks~~ | **Pausado (ADR-006: pago por exito)** |
 | 10b | Tracking contrataciones + Stripe Invoicing | Pendiente |
-| 11 | Build Tailwind + monitoring | Pendiente |
-| 12 | Beta con usuarios reales | Pendiente |
+| 11 | Inclusivity Engine + A11y + Tech Debt Cleanup | **Completado** (16 Mar) |
+| 12 | Build Tailwind + monitoring | Pendiente |
+| 13 | Beta con usuarios reales | Pendiente |
 
 ---
 
@@ -118,7 +125,8 @@ E2E tests escritos (4 suites) — requieren servicios corriendo.
 
 Unica pendiente: #78 (Llama 3.1 8B) — descartada, Llama 3.2:3b se mantiene.
 
-### Resueltas recientemente (14 Mar 2026)
+### Resueltas recientemente (16 Mar 2026)
+- **#114**: chore: technical debt cleanup — 7,800+ lineas de codigo muerto eliminadas, dependencias Vercel removidas
 - **#111**: refactor(backend): deprecar constantes EARLY_ADOPTER_*, unificar limites 25/25, BillingCycle.ON_SUCCESS, feature flag SUCCESS_BASED_MODEL_ENABLED
 - **#112**: docs: actualizar ADR-006 y documentacion para coherencia con pago por exito
 
@@ -138,7 +146,16 @@ Unica pendiente: #78 (Llama 3.1 8B) — descartada, Llama 3.2:3b se mantiene.
 
 Modelo de negocio: **Pago por exito (ADR-006)**. Empresas acceden gratis y pagan success fee (10-15% salario) solo al contratar. Candidatos y terapeutas gratis.
 
-### Funcionalidades recientes (12 Mar 2026)
+### Funcionalidades recientes (16 Mar 2026)
+
+- **Inclusivity Engine**: 25+ bias patterns para deteccion de lenguaje discriminatorio, scoring diferencial de accommodations (technical/soft/domain)
+- **Ecosistema 360 Terapeutas**: conexiones trilaterales con privacy enforcement
+- **Accesibilidad WCAG AA**: keyboard navigation, ARIA labels, color contrast (ratio 4.6:1), screen reader support
+- **Tech Debt eliminado**: 7,800+ lineas de codigo muerto, dependencias Vercel removidas, vulnerabilidades hono resueltas
+- **E2E tests nuevos**: homepage accessibility, registration flows
+- **285 tests JS/TS** (era 245) + 323 tests pytest = **608+ tests totales**
+
+### Funcionalidades anteriores (12-14 Mar 2026)
 
 - **Pagina de precios** (`/pricing`): 3 tarjetas (candidato gratis, empresa pago por exito, terapeuta gratis), FAQ, banner Early Adopter, flujo de pago por exito
 - **Early adopter slot tracking**: endpoint API + verificacion al registrar
@@ -156,7 +173,7 @@ Modelo de negocio: **Pago por exito (ADR-006)**. Empresas acceden gratis y pagan
 3. **Tracking de contrataciones** + Stripe Invoicing para success fees
 4. Build Tailwind CSS (reemplazar CDN)
 5. Beta con usuarios reales
-6. Retirar frontend legacy Next.js (Vercel)
+6. ~~Retirar frontend legacy Next.js (Vercel)~~ **EN PROGRESO** — dependencias Vercel ya eliminadas
 
 ---
 
