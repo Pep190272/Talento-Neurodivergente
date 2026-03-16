@@ -21,10 +21,17 @@
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Contrasena</label>
-        <input type="password" x-model="password" required
-               class="form-input w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none"
-               placeholder="Min. 8 caracteres">
+        <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+        <div class="relative">
+          <input :type="showPassword ? 'text' : 'password'" x-model="password" required
+                 class="form-input w-full px-4 py-2.5 pr-12 border border-gray-300 rounded-lg focus:outline-none"
+                 :placeholder="showPassword ? 'Min. 8 caracteres' : '••••••••'">
+          <button type="button" @click="showPassword = !showPassword"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-lg"
+                  :aria-label="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+            <span x-text="showPassword ? '🙈' : '👁️'"></span>
+          </button>
+        </div>
       </div>
 
       <button type="submit" :disabled="loading"
@@ -33,9 +40,12 @@
         <span x-text="loading ? 'Entrando...' : 'Entrar'"></span>
       </button>
 
-      <p class="text-center text-sm text-gray-500">
-        No tienes cuenta? <a href="/register" class="text-primary font-medium hover:underline">Registrate</a>
-      </p>
+      <div class="text-center space-y-2">
+        <a href="/forgot-password" class="text-sm text-primary font-medium hover:underline">¿Olvidaste tu contraseña?</a>
+        <p class="text-sm text-gray-500">
+          ¿No tienes cuenta? <a href="/register" class="text-primary font-medium hover:underline">Regístrate</a>
+        </p>
+      </div>
     </form>
   </div>
 </section>
@@ -45,7 +55,7 @@
 <script>
 function loginForm() {
   return {
-    email: '', password: '', error: '', loading: false,
+    email: '', password: '', error: '', loading: false, showPassword: false,
     async submit() {
       this.error = '';
       this.loading = true;

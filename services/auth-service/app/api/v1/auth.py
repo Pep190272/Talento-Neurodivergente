@@ -10,7 +10,9 @@ from app.api.deps import get_current_user, get_login_use_case, get_register_use_
 from app.api.schemas import (
     AuthResponse,
     ErrorResponse,
+    ForgotPasswordRequest,
     LoginRequest,
+    MessageResponse,
     RegisterRequest,
     UserResponse,
 )
@@ -150,6 +152,26 @@ async def early_adopter_slots(
         "company_limit": EARLY_ADOPTER_COMPANY_LIMIT,
         "therapist_limit": EARLY_ADOPTER_THERAPIST_LIMIT,
     }
+
+
+@router.post("/forgot-password", response_model=MessageResponse)
+async def forgot_password(
+    body: ForgotPasswordRequest,
+    user_repo: SQLAlchemyUserRepository = Depends(get_user_repository),
+) -> MessageResponse:
+    """Request password reset. Always returns success to prevent email enumeration."""
+    # Intentionally does not reveal whether the email exists
+    # TODO: integrate with email service to send actual reset link
+    from shared.domain import Email
+
+    user = await user_repo.find_by_email(Email(body.email))
+    if user:
+        # In production, generate token and send email here
+        pass
+
+    return MessageResponse(
+        message="Si el email existe en nuestro sistema, recibirás un enlace para restablecer tu contraseña."
+    )
 
 
 @router.post("/logout")

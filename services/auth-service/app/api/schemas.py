@@ -51,6 +51,18 @@ class AuthResponse(BaseModel):
     token_type: str = "bearer"
 
 
+class ForgotPasswordRequest(BaseModel):
+    """POST /api/v1/auth/forgot-password request body."""
+
+    email: EmailStr
+
+
+class MessageResponse(BaseModel):
+    """Generic message response."""
+
+    message: str
+
+
 class ErrorResponse(BaseModel):
     """Standard error response."""
 
