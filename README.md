@@ -1,6 +1,6 @@
 # DiversIA Eternals
 
-Plataforma de matching trilateral 24D para talento neurodivergente. Conecta candidatos neurodivergentes, empresas inclusivas y terapeutas/especialistas mediante un algoritmo de matching multidimensional potenciado por IA self-hosted.
+Plataforma de matching trilateral 24D para talento neurodivergente. Conecta candidatos neurodivergentes, empresas inclusivas y terapeutas/especialistas mediante un algoritmo de matching multidimensional potenciado por IA self-hosted. Inclusivity Engine con 25+ bias patterns, ecosistema 360 terapeutas, y accesibilidad WCAG AA.
 
 ## Stack Tecnologico
 
@@ -60,6 +60,7 @@ Solo se ejecuta **profile-service** en el puerto **:8002** con SQLite:
 | **profile-service** | :8002 | **Produccion** (app.diversia.click) | 83 |
 | **matching-service** | :8003 | **Produccion** (app.diversia.click) | 53 |
 | **intelligence-service** | :8004 | **Produccion** (app.diversia.click) | 36 |
+| **subscription-service** | :8005 | **Produccion** (app.diversia.click) | 90 |
 | **shared kernel** | — | Libreria compartida | 13 |
 
 Cada servicio sigue **Clean Architecture**:
@@ -141,7 +142,16 @@ cd services/intelligence-service && python -m pytest tests/ -q  # 36 tests
 cd services/shared && python -m pytest tests/ -q             # 13 tests
 ```
 
-**Total: 233 tests, 0 failing**
+**Total pytest: 323 tests, 0 failing**
+**Total JS/TS (Vitest): 285 tests, 0 failing**
+**Total global: 608+ tests**
+
+## Inclusividad y Accesibilidad
+
+- **Inclusivity Engine**: 25+ bias patterns para deteccion de lenguaje discriminatorio en ofertas de empleo
+- **Scoring diferencial**: categorizacion de skills (technical/soft/domain) con accommodations sugeridas
+- **Ecosistema 360 Terapeutas**: conexiones trilaterales (Individual↔Company, Individual↔Therapist, Company↔Therapist) con privacy enforcement
+- **WCAG AA**: keyboard navigation, ARIA labels/roles, color contrast 4.6:1, screen reader support
 
 ## Seguridad y Compliance
 
@@ -157,7 +167,7 @@ cd services/shared && python -m pytest tests/ -q             # 13 tests
 |---------|-----------|--------|
 | **app.diversia.click** | 4 microservicios + PostgreSQL + nginx + Ollama (Dokploy) | **Operativo** |
 | **Desarrollo local** | profile-service :8002 + SQLite | Funcional |
-| **Vercel** | Next.js legacy (frontend) | Pendiente retirar |
+| **Vercel** | Next.js legacy (frontend) | Dependencias eliminadas, pendiente retirar |
 
 ## Costes
 
@@ -166,26 +176,30 @@ cd services/shared && python -m pytest tests/ -q             # 13 tests
 | VPS Hostinger (2 CPU, 8GB RAM, Paris EU) | ~40 EUR/mes |
 | Frontend legacy Vercel | 0 EUR |
 | Dominio diversia.click | ~10 EUR/ano |
-| Desarrollo IA (Claude Opus 4, ~12 sesiones) | ~100 EUR total |
+| Desarrollo IA (Claude Opus 4/4.6, ~17 sesiones) | ~150 EUR total |
 | **Total mensual operativo** | **~40 EUR/mes** |
 
 ## Roadmap resumido
 
 ### Completado
-- [x] 4 microservicios operativos + 5 bounded contexts SaaS disenados (ver ADR-005)
-- [x] Frontend Jinja2 (14 paginas) + Alpine.js + Tailwind CSS
+- [x] 5 microservicios operativos + 5 bounded contexts SaaS disenados (ver ADR-005)
+- [x] Frontend Jinja2 (15 paginas) + Alpine.js + Tailwind CSS
 - [x] Quiz 24D + radar chart + 3 juegos cognitivos
 - [x] Matching 24D con scoring y razones
 - [x] GDPR + EU AI Act compliance
-- [x] 28/29 issues del backlog resueltas
+- [x] 30/31 issues del backlog resueltas
 - [x] Deploy a produccion (app.diversia.click)
 - [x] Docker Compose verificado end-to-end
+- [x] Inclusivity Engine (25+ bias patterns) + Ecosistema 360 Terapeutas
+- [x] Accesibilidad WCAG AA (keyboard nav, ARIA, contrast)
+- [x] subscription-service + modelo pago por exito (ADR-006)
+- [x] Tech Debt cleanup — 7,800+ lineas codigo muerto eliminadas
 
 ### Pendiente
 - [ ] Build Tailwind CSS (sin CDN)
-- [ ] Fase 1: subscription-service + Stripe (monetizacion)
+- [ ] Tracking de contrataciones + Stripe Invoicing
 - [ ] Beta con usuarios reales (5-50)
-- [ ] Retirar frontend legacy Next.js (Vercel)
+- [ ] Retirar frontend legacy Next.js completamente
 
 Ver [ROADMAP.md](ROADMAP.md) para el plan completo.
 
