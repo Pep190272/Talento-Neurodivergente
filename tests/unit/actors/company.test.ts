@@ -13,6 +13,8 @@ import {
   analyzeJobInclusivity,
   getCompany,
   getJobPosting,
+  categorizeSkills,
+  suggestAccommodations,
 } from '@/lib/companies'
 
 // ─── LLM Mock (so tests don't call Ollama) ───────────────────────────────────
@@ -320,14 +322,16 @@ describe('UC-003: Company Registration & Job Posting', () => {
       expect(result.hasDiscriminatoryLanguage).toBe(false)
     })
 
-    it('should detect discriminatory language (young, energetic, rockstar)', async () => {
+    it('should detect discriminatory language (ableism, age, neurodiversity)', async () => {
       const result = await analyzeJobInclusivity({
         ...mockJobData,
-        description: 'We only hire young, energetic rockstars who can work long hours',
+        description: 'Must have perfect communication skills. We need young talent with no limitations in a neurotypical environment.',
       })
 
       expect(result.hasDiscriminatoryLanguage).toBe(true)
       expect(result.issues.length).toBeGreaterThan(0)
+      expect(result.issues.some(i => i.type === 'ableism')).toBe(true)
+      expect(result.issues.some(i => i.type === 'neurodiversity')).toBe(true)
     })
 
     it('should score higher with more accommodations', async () => {
@@ -364,9 +368,65 @@ describe('UC-003: Company Registration & Job Posting', () => {
       await expect(
         createJobPosting(COMPANY_ID, {
           ...mockJobData,
-          description: 'Only young energetic rockstars needed',
+          description: 'Must have perfect communication skills and no limitations. Neurotypical only.',
         })
       ).rejects.toThrow('Discriminatory language detected')
+    })
+  })
+
+  // ─── Skills Categorization ──────────────────────────────────────────────────
+
+  describe('Skills Categorization', () => {
+    it('should categorize skills into technical and soft', () => {
+      const result = categorizeSkills(['JavaScript', 'React', 'Communication', 'Teamwork', 'E-commerce'])
+
+      expect(result.technical).toEqual(['JavaScript', 'React'])
+      expect(result.soft).toEqual(['Communication', 'Teamwork'])
+      expect(result.domain).toEqual(['E-commerce'])
+    })
+
+    it('should warn about overly generic skills in analysis', async () => {
+      const result = await analyzeJobInclusivity({
+        ...mockJobData,
+        skills: ['Communication', 'Teamwork', 'Leadership', 'Adaptability', 'Creativity'],
+      })
+
+      expect(result.suggestions).toEqual(
+        expect.arrayContaining([
+          expect.stringContaining('too generic')
+        ])
+      )
+    })
+  })
+
+  // ─── Suggested Accommodations ──────────────────────────────────────────────
+
+  describe('Suggested Accommodations', () => {
+    it('should suggest role-specific accommodations', () => {
+      const suggestions = suggestAccommodations('Software Engineer', ['Remote work'])
+
+      expect(suggestions.length).toBeGreaterThan(0)
+      expect(suggestions).toEqual(expect.arrayContaining([
+        expect.stringMatching(/Pair programming|Async code|Quiet workspace|Noise-cancelling/)
+      ]))
+    })
+
+    it('should not suggest already-present accommodations', () => {
+      const suggestions = suggestAccommodations('Developer', [
+        'Remote work', 'Flexible hours', 'Pair programming support',
+      ])
+
+      expect(suggestions).not.toContain('Pair programming support')
+      expect(suggestions).not.toContain('Remote work')
+      expect(suggestions).not.toContain('Flexible hours')
+    })
+
+    it('should include skills breakdown and suggestions in analysis result', async () => {
+      const result = await analyzeJobInclusivity(mockJobData as never)
+
+      expect(result.skillsBreakdown).toBeDefined()
+      expect(result.suggestedAccommodations).toBeDefined()
+      expect(result.suggestedAccommodations!.length).toBeGreaterThanOrEqual(0)
     })
   })
 

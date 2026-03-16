@@ -15,6 +15,7 @@ import type { Company, Job, User } from '@prisma/client'
 // Import LLM Service for job analysis (Sprint 4: llm.js → services/llm.service.ts)
 import { analyzeJobInclusivity as llmAnalyze } from './services/llm.service'
 import { validateJobAnalysis } from './schemas/job-analysis'
+import { detectBias } from './bias-patterns'
 
 // ─── Repository (Data Access) ─────────────────────────────────────────────────
 
@@ -87,6 +88,14 @@ interface InclusivityAnalysis {
   llmPowered: boolean
   accommodationsCount?: number
   accommodationsQuality?: string
+  skillsBreakdown?: SkillsBreakdown
+  suggestedAccommodations?: string[]
+}
+
+interface SkillsBreakdown {
+  technical: string[]
+  soft: string[]
+  domain: string[]
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -437,6 +446,87 @@ export async function getAllOpenJobs(): Promise<JobProfile[]> {
   return jobs.map((j) => normalizeJob(j as Job))
 }
 
+// ─── Skills Categorization ────────────────────────────────────────────────────
+
+const TECHNICAL_SKILLS = new Set([
+  'javascript', 'typescript', 'python', 'java', 'c#', 'c++', 'go', 'rust', 'ruby', 'php', 'swift', 'kotlin',
+  'react', 'angular', 'vue', 'next.js', 'node.js', 'express', 'django', 'flask', 'spring',
+  'sql', 'postgresql', 'mysql', 'mongodb', 'redis', 'elasticsearch',
+  'aws', 'azure', 'gcp', 'docker', 'kubernetes', 'terraform', 'ci/cd',
+  'git', 'linux', 'api', 'rest', 'graphql', 'microservices',
+  'html', 'css', 'sass', 'tailwind', 'figma', 'sketch',
+  'machine learning', 'data science', 'data analysis', 'statistics',
+  'cybersecurity', 'networking', 'devops', 'sre',
+])
+
+const SOFT_SKILLS = new Set([
+  'communication', 'teamwork', 'leadership', 'problem solving', 'critical thinking',
+  'creativity', 'adaptability', 'time management', 'organization', 'collaboration',
+  'presentation', 'negotiation', 'conflict resolution', 'emotional intelligence',
+  'attention to detail', 'multitasking', 'decision making', 'mentoring',
+])
+
+export function categorizeSkills(skills: string[]): SkillsBreakdown {
+  const technical: string[] = []
+  const soft: string[] = []
+  const domain: string[] = []
+
+  for (const skill of skills) {
+    const lower = skill.toLowerCase().trim()
+    if (TECHNICAL_SKILLS.has(lower)) {
+      technical.push(skill)
+    } else if (SOFT_SKILLS.has(lower)) {
+      soft.push(skill)
+    } else {
+      domain.push(skill)
+    }
+  }
+
+  return { technical, soft, domain }
+}
+
+// ─── Suggested Accommodations ────────────────────────────────────────────────
+
+const ROLE_ACCOMMODATIONS: Record<string, string[]> = {
+  'engineer': ['Pair programming support', 'Async code reviews', 'Quiet workspace', 'Noise-cancelling headphones provided'],
+  'developer': ['Pair programming support', 'Async code reviews', 'Quiet workspace', 'Noise-cancelling headphones provided'],
+  'designer': ['Visual task boards', 'Flexible deadlines for creative work', 'Quiet workspace'],
+  'analyst': ['Written documentation for all meetings', 'Extended time for data review', 'Structured task breakdowns'],
+  'manager': ['Async meeting options', 'Written agendas in advance', 'Flexible scheduling'],
+  'support': ['Script templates for common interactions', 'Breaks between calls', 'Written escalation procedures'],
+}
+
+const UNIVERSAL_ACCOMMODATIONS = [
+  'Remote work', 'Flexible hours', 'Async communication', 'Written documentation',
+  'Sensory-friendly workspace', 'Clear task prioritization', 'Regular 1:1 check-ins',
+]
+
+export function suggestAccommodations(title: string, existingAccommodations: string[]): string[] {
+  const lower = title.toLowerCase()
+  const existing = new Set(existingAccommodations.map(a => a.toLowerCase()))
+  const suggestions: string[] = []
+
+  // Role-specific suggestions
+  for (const [role, accommodations] of Object.entries(ROLE_ACCOMMODATIONS)) {
+    if (lower.includes(role)) {
+      for (const acc of accommodations) {
+        if (!existing.has(acc.toLowerCase())) {
+          suggestions.push(acc)
+        }
+      }
+    }
+  }
+
+  // Universal suggestions not already present
+  for (const acc of UNIVERSAL_ACCOMMODATIONS) {
+    if (!existing.has(acc.toLowerCase()) && !suggestions.includes(acc)) {
+      suggestions.push(acc)
+    }
+  }
+
+  return suggestions.slice(0, 5)
+}
+
 // ─── Inclusivity Analysis ─────────────────────────────────────────────────────
 
 /**
@@ -446,12 +536,15 @@ export async function getAllOpenJobs(): Promise<JobProfile[]> {
 export async function analyzeJobInclusivity(jobData: {
   title?: string
   description?: string
+  skills?: string[]
   accommodations?: string[]
   workMode?: string
 }): Promise<InclusivityAnalysis> {
   try {
     const rawAnalysis = await llmAnalyze(jobData)
     const validatedAnalysis = validateJobAnalysis(rawAnalysis)
+
+    const skills = jobData.skills ?? []
 
     return {
       score: validatedAnalysis.score,
@@ -468,34 +561,28 @@ export async function analyzeJobInclusivity(jobData: {
       accommodationsCount: validatedAnalysis.accommodations?.count,
       accommodationsQuality: validatedAnalysis.accommodations?.quality,
       llmPowered: !validatedAnalysis.fallback,
+      skillsBreakdown: categorizeSkills(skills),
+      suggestedAccommodations: suggestAccommodations(
+        jobData.title ?? '',
+        jobData.accommodations ?? []
+      ),
     }
   } catch {
-    // Fallback to rule-based analysis
-    const text = `${jobData.title ?? ''} ${jobData.description ?? ''}`.toLowerCase()
+    // Fallback to rule-based analysis using shared bias patterns (25+ patterns)
+    const titleText = jobData.title ?? ''
+    const descText = jobData.description ?? ''
 
-    const discriminatoryTerms = [
-      { term: 'young', type: 'age' },
-      { term: 'energetic', type: 'age' },
-      { term: 'rockstar', type: 'gender' },
-      { term: 'ninja', type: 'gender' },
-      { term: 'guru', type: 'cultural' },
-      { term: 'native speaker', type: 'cultural' },
-      { term: 'recent graduate', type: 'age' },
-      { term: 'digital native', type: 'age' },
+    const biasIssues = [
+      ...detectBias(titleText, 'title'),
+      ...detectBias(descText, 'description'),
     ]
 
-    const issues: InclusivityAnalysis['issues'] = []
-
-    for (const { term, type } of discriminatoryTerms) {
-      if (text.includes(term)) {
-        issues.push({
-          type,
-          text: term,
-          severity: 'high',
-          suggestion: `Replace "${term}" with more inclusive language`,
-        })
-      }
-    }
+    const issues: InclusivityAnalysis['issues'] = biasIssues.map(bi => ({
+      type: bi.type,
+      text: bi.term,
+      severity: bi.severity,
+      suggestion: bi.suggestion,
+    }))
 
     if (!jobData.accommodations || jobData.accommodations.length === 0) {
       issues.push({
@@ -531,12 +618,27 @@ export async function analyzeJobInclusivity(jobData: {
       suggestions.push('Add detailed job description to help candidates understand requirements')
     }
 
+    // Skills breakdown & suggested accommodations
+    const skills = jobData.skills ?? []
+    const skillsBreakdown = categorizeSkills(skills)
+    const suggestedAccommodationsList = suggestAccommodations(
+      jobData.title ?? '',
+      jobData.accommodations ?? []
+    )
+
+    // Warn if skills are overly generic (>80% soft skills)
+    if (skills.length > 0 && skillsBreakdown.soft.length / skills.length > 0.8) {
+      suggestions.push('Skills are too generic for effective matching — add specific technical or domain skills')
+    }
+
     return {
       hasDiscriminatoryLanguage: issues.some((i) => i.severity === 'high'),
       issues,
       score,
       suggestions,
       llmPowered: false,
+      skillsBreakdown,
+      suggestedAccommodations: suggestedAccommodationsList,
     }
   }
 }
