@@ -68,9 +68,14 @@ describe('🤖 LLM Client - Ollama Integration', () => {
             })
         })
 
-        it.skip('should timeout after 10 seconds', async () => {
-            // Skipped: timeout tests cause suite to hang
-            // Real timeout is tested via integration tests
+        it('should timeout after configured seconds', async () => {
+            // Simulate AbortController timeout by rejecting with AbortError
+            const abortError = new DOMException('The operation was aborted', 'AbortError')
+            global.fetch = vi.fn().mockRejectedValue(abortError)
+
+            await expect(
+                generateCompletion('Test prompt')
+            ).rejects.toThrow('LLM timeout')
         })
 
         it('should handle API errors', async () => {
@@ -236,9 +241,26 @@ describe('🤖 LLM Client - Ollama Integration', () => {
             expect(result.fallback).toBe(true)
         })
 
-        it.skip('should validate LLM response with Zod', async () => {
-            // Skipped: Zod validation tested via integration tests
-            // The actual validation happens in companies.js wrapper
+        it('should validate LLM response with Zod schema', async () => {
+            const { validateJobAnalysis } = await import('@/lib/schemas/job-analysis')
+
+            // Valid response should pass validation
+            const validData = {
+                score: 85,
+                discriminatoryLanguage: false,
+                issues: [],
+                accommodations: { count: 3, quality: 'good' },
+                suggestions: 'Looks good!'
+            }
+            expect(() => validateJobAnalysis(validData)).not.toThrow()
+
+            // Invalid response should fail validation
+            const invalidData = {
+                score: 150,  // out of range
+                discriminatoryLanguage: 'maybe',  // wrong type
+                issues: 'none',  // wrong type
+            }
+            expect(() => validateJobAnalysis(invalidData)).toThrow()
         })
 
     })
@@ -268,9 +290,14 @@ describe('🤖 LLM Client - Ollama Integration', () => {
             expect(isHealthy).toBe(false)
         })
 
-        it.skip('should return false on timeout', async () => {
-            // Skipped: timeout tests cause suite to hang
-            // Real timeout is tested via integration tests
+        it('should return false on timeout', async () => {
+            // Simulate AbortSignal.timeout triggering an abort
+            const abortError = new DOMException('The operation was aborted', 'AbortError')
+            global.fetch = vi.fn().mockRejectedValue(abortError)
+
+            const isHealthy = await checkOllamaHealth()
+
+            expect(isHealthy).toBe(false)
         })
     })
 })

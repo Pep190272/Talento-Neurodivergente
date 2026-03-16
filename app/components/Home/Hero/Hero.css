@@ -623,7 +623,7 @@
   }
 
   .chat-textarea::placeholder {
-    color: #94A3B8;
+    color: #64748B;
   }
 
   .chat-send-btn {
@@ -716,7 +716,7 @@
   }
 
   .status-sent {
-    color: #94A3B8;
+    color: #64748B;
   }
 
   .status-delivered {
@@ -783,7 +783,7 @@
     align-items: center;
     justify-content: center;
     height: 100%;
-    color: #94A3B8;
+    color: #64748B;
     text-align: center;
     padding: 40px 20px;
   }
@@ -865,6 +865,12 @@
   z-index: 1000;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  /* Button reset for semantic <button> element */
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
 }
 
 .ai-assistant:hover {
@@ -1208,7 +1214,7 @@
 }
 
 .chat-input::placeholder {
-  color: #94A3B8;
+  color: #64748B;
 }
 
 .chat-send-btn {
@@ -1294,4 +1300,17 @@
   .message-content {
     max-width: 95%;
   }
+}
+
+/* Screen reader only - visually hidden but accessible */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
 }
