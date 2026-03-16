@@ -32,13 +32,19 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Hash new password and update
+    // Hash new password and update both tables
     const passwordHash = await bcrypt.hash(password, 12)
 
     await prisma.user.update({
       where: { email },
       data: { passwordHash },
     })
+
+    // Sync with auth.users (auth schema)
+    await prisma.$executeRawUnsafe(
+      `UPDATE auth.users SET password_hash = $1, updated_at = NOW() WHERE email = $2`,
+      passwordHash, email
+    )
 
     logger.info('Auth', `Password reset completed for ${email}`)
 

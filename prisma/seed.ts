@@ -680,6 +680,32 @@ async function main() {
     console.log(`   - Created ${auditEntries.length} audit log entries`)
 
     // ═══════════════════════════════════════════════════════════════════
+    // 6. SYNC auth.users — Keep auth schema in sync with public."User"
+    // ═══════════════════════════════════════════════════════════════════
+    console.log('\n🔄 Syncing auth.users table...')
+
+    const seedUsers = [
+        { user: companyUser, role: 'company', displayName: 'Mock Tech Inc.', passwordHash: companyPassword },
+        { user: candidate1User, role: 'candidate', displayName: 'Test Candidate', passwordHash: candidatePassword },
+        { user: candidate2User, role: 'candidate', displayName: 'Ana García', passwordHash: candidatePassword },
+        { user: therapistUser, role: 'therapist', displayName: 'Dr. Neuro Inclusive', passwordHash: therapistPassword },
+    ]
+
+    for (const { user, role, displayName, passwordHash } of seedUsers) {
+        await prisma.$executeRawUnsafe(`
+            INSERT INTO auth.users (id, email, password_hash, role, status, display_name, created_at, updated_at)
+            VALUES ($1, $2, $3, $4::auth.user_role, 'active', $5, NOW(), NOW())
+            ON CONFLICT (email) DO UPDATE SET
+                password_hash = EXCLUDED.password_hash,
+                role = EXCLUDED.role,
+                status = 'active',
+                display_name = EXCLUDED.display_name,
+                updated_at = NOW()
+        `, user.id, user.email, passwordHash, role, displayName)
+    }
+    console.log(`   - Synced ${seedUsers.length} users to auth.users`)
+
+    // ═══════════════════════════════════════════════════════════════════
     // SUMMARY
     // ═══════════════════════════════════════════════════════════════════
     console.log('\n✅ Seeding finished. Summary:')
@@ -688,6 +714,7 @@ async function main() {
     console.log('   Matchings:   3 (1 APPROVED, 1 PENDING, 1 REJECTED)')
     console.log('   Connections: 4 (1 consulting, 2 therapy, 1 job_match)')
     console.log('   Audit Logs:  7 (login, matching, review, consent, access)')
+    console.log('   auth.users:  4 (synced with public."User")')
 }
 
 main()

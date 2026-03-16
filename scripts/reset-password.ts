@@ -29,12 +29,21 @@ async function main() {
 
     const passwordHash = await bcrypt.hash(newPassword, 12)
 
+    // Update in public."User" (Prisma)
     await prisma.user.update({
         where: { email },
         data: { passwordHash },
     })
 
+    // Sync with auth.users (auth schema)
+    await prisma.$executeRawUnsafe(
+        `UPDATE auth.users SET password_hash = $1, updated_at = NOW() WHERE email = $2`,
+        passwordHash, email
+    )
+
     console.log(`✅ Password updated for ${email} (type: ${user.userType})`)
+    console.log(`   📋 public."User" ✓`)
+    console.log(`   📋 auth.users    ✓`)
 }
 
 main()
