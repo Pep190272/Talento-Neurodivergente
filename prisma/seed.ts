@@ -21,7 +21,7 @@ async function main() {
     const companyPassword = await bcrypt.hash('company123', 10)
     const companyUser = await prisma.user.upsert({
         where: { email: 'mock_company@test.diversia.com' },
-        update: {},
+        update: { passwordHash: companyPassword },
         create: {
             email: 'mock_company@test.diversia.com',
             passwordHash: companyPassword,
@@ -58,7 +58,7 @@ async function main() {
     const candidatePassword = await bcrypt.hash('candidate123', 10)
     const candidate1User = await prisma.user.upsert({
         where: { email: 'mock_candidate@test.diversia.com' },
-        update: {},
+        update: { passwordHash: candidatePassword },
         create: {
             email: 'mock_candidate@test.diversia.com',
             passwordHash: candidatePassword,
@@ -123,7 +123,7 @@ async function main() {
     // --- Mock Candidate 2 ---
     const candidate2User = await prisma.user.upsert({
         where: { email: 'mock_candidate2@test.diversia.com' },
-        update: {},
+        update: { passwordHash: candidatePassword },
         create: {
             email: 'mock_candidate2@test.diversia.com',
             passwordHash: candidatePassword,
@@ -189,7 +189,7 @@ async function main() {
     const therapistPassword = await bcrypt.hash('therapist123', 10)
     const therapistUser = await prisma.user.upsert({
         where: { email: 'mock_therapist@test.diversia.com' },
-        update: {},
+        update: { passwordHash: therapistPassword },
         create: {
             email: 'mock_therapist@test.diversia.com',
             passwordHash: therapistPassword,
@@ -273,7 +273,7 @@ async function main() {
     const adminPassword = await bcrypt.hash('admin123456', 10)
     const adminUser = await prisma.user.upsert({
         where: { email: 'admin@diversia.com' },
-        update: {},
+        update: { passwordHash: adminPassword },
         create: {
             email: 'admin@diversia.com',
             passwordHash: adminPassword,
