@@ -20,8 +20,6 @@ export function getRedirectUrlByRole(role: string | null | undefined): string {
         case 'therapist':
         case 'specialist': // Alias for consistency
             return '/dashboard/therapist'
-        case 'admin':
-            return '/admin'
         default:
             return '/dashboard'
     }

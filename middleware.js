@@ -57,7 +57,7 @@ export default async function middleware(req) {
   }
 
   // 3. Redirigir si usuario ya logueado intenta ir a Login
-  if ((path === '/login' || path === '/register') && session) {
+  if ((path === '/login' || path === '/register' || path === '/forgot-password' || path === '/reset-password') && session) {
     // Redirigir a su dashboard correspondiente según rol
     const role = session.user?.type
     let target = '/dashboard'

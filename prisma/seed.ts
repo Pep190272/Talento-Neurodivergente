@@ -269,19 +269,6 @@ async function main() {
     const therapistId = therapistUser.therapist!.id
     console.log('🧠 Mock Therapist ensured:', therapistUser.email, '→', therapistId)
 
-    // --- Mock Admin ---
-    const adminPassword = await bcrypt.hash('admin123456', 10)
-    const adminUser = await prisma.user.upsert({
-        where: { email: 'admin@diversia.com' },
-        update: { passwordHash: adminPassword },
-        create: {
-            email: 'admin@diversia.com',
-            passwordHash: adminPassword,
-            userType: 'admin',
-        }
-    })
-    console.log('🛡️  Mock Admin ensured:', adminUser.email, '→', adminUser.id)
-
     // ═══════════════════════════════════════════════════════════════════
     // 2. JOBS — Two job postings for the company
     // ═══════════════════════════════════════════════════════════════════
@@ -696,7 +683,7 @@ async function main() {
     // SUMMARY
     // ═══════════════════════════════════════════════════════════════════
     console.log('\n✅ Seeding finished. Summary:')
-    console.log('   Users:       5 (1 company, 2 candidates, 1 therapist, 1 admin)')
+    console.log('   Users:       4 (1 company, 2 candidates, 1 therapist)')
     console.log('   Jobs:        2 (Frontend, Data Science)')
     console.log('   Matchings:   3 (1 APPROVED, 1 PENDING, 1 REJECTED)')
     console.log('   Connections: 4 (1 consulting, 2 therapy, 1 job_match)')

@@ -20,6 +20,71 @@ function isConfigured(): boolean {
   return !!(process.env.SMTP_USER && process.env.SMTP_PASSWORD)
 }
 
+interface PasswordResetEmailParams {
+  to: string
+  name: string
+  resetUrl: string
+}
+
+export async function sendPasswordResetEmail({ to, name, resetUrl }: PasswordResetEmailParams): Promise<boolean> {
+  if (!isConfigured()) {
+    logger.warn('Email', `SMTP not configured — skipping password reset email to ${to}`)
+    return false
+  }
+
+  const fromName = process.env.SMTP_FROM_NAME || 'DiversIA'
+  const fromAddr = process.env.SMTP_FROM || 'no-reply@diversia.click'
+
+  const htmlBody = `<!DOCTYPE html>
+<html lang="es">
+<head><meta charset="UTF-8"></head>
+<body style="margin:0;padding:0;font-family:'Segoe UI',Roboto,Arial,sans-serif;background:#f4f7fa;">
+  <div style="max-width:600px;margin:32px auto;background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
+    <div style="background:linear-gradient(135deg,#6366f1,#8b5cf6);padding:32px 24px;text-align:center;">
+      <h1 style="color:#fff;margin:0;font-size:28px;">DiversIA</h1>
+      <p style="color:rgba(255,255,255,0.85);margin:8px 0 0;font-size:14px;">Recuperar contraseña</p>
+    </div>
+    <div style="padding:32px 24px;">
+      <h2 style="color:#1e293b;margin:0 0 16px;">Hola ${name},</h2>
+      <p style="color:#475569;line-height:1.6;">
+        Hemos recibido una solicitud para restablecer tu contraseña.
+        Haz clic en el siguiente enlace para crear una nueva contraseña:
+      </p>
+      <div style="text-align:center;margin:28px 0;">
+        <a href="${resetUrl}"
+           style="display:inline-block;background:#6366f1;color:#fff;padding:12px 32px;border-radius:8px;text-decoration:none;font-weight:600;font-size:15px;">
+          Restablecer Contraseña
+        </a>
+      </div>
+      <p style="color:#64748b;font-size:13px;line-height:1.5;">
+        Este enlace expira en 1 hora. Si no solicitaste este cambio, puedes ignorar este correo.
+      </p>
+    </div>
+    <div style="background:#f8fafc;padding:16px 24px;text-align:center;border-top:1px solid #e2e8f0;">
+      <p style="color:#94a3b8;font-size:12px;margin:0;">
+        &copy; 2026 DiversIA &mdash; Todos los derechos reservados.
+      </p>
+    </div>
+  </div>
+</body>
+</html>`
+
+  try {
+    await transporter.sendMail({
+      from: `${fromName} <${fromAddr}>`,
+      to,
+      subject: 'Restablecer tu contraseña — DiversIA',
+      html: htmlBody,
+      text: `Hola ${name},\n\nHemos recibido una solicitud para restablecer tu contraseña.\nHaz clic en el siguiente enlace: ${resetUrl}\n\nEste enlace expira en 1 hora.\n\n-- Equipo DiversIA`,
+    })
+    logger.info('Email', `Password reset email sent to ${to}`)
+    return true
+  } catch (error) {
+    logger.error('Email', `Failed to send password reset email to ${to}`, error)
+    return false
+  }
+}
+
 interface WelcomeEmailParams {
   to: string
   name: string

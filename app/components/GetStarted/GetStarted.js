@@ -47,6 +47,8 @@ const GetStarted = ({ mode }) => {
 
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Initialize from prop if provided
   // (We use initial state above, but this handles prop updates if any)
@@ -321,26 +323,48 @@ const GetStarted = ({ mode }) => {
           <div className="formRow">
             <div className="formGroup">
               <label className="label">Contraseña *</label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                className={`input ${errors.password ? 'inputError' : ''}`}
-                placeholder="Mínimo 6 caracteres"
-              />
+              <div className="passwordWrapper">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className={`input ${errors.password ? 'inputError' : ''}`}
+                  placeholder="Mínimo 6 caracteres"
+                />
+                <button
+                  type="button"
+                  className="passwordToggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                  tabIndex={-1}
+                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                >
+                  {showPassword ? '🙈' : '👁️'}
+                </button>
+              </div>
               {errors.password && <span className="errorText">{errors.password}</span>}
             </div>
             <div className="formGroup">
               <label className="label">Confirmar Contraseña *</label>
-              <input
-                type="password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                className={`input ${errors.confirmPassword ? 'inputError' : ''}`}
-                placeholder="Repite tu contraseña"
-              />
+              <div className="passwordWrapper">
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  className={`input ${errors.confirmPassword ? 'inputError' : ''}`}
+                  placeholder="Repite tu contraseña"
+                />
+                <button
+                  type="button"
+                  className="passwordToggle"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  tabIndex={-1}
+                  aria-label={showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                >
+                  {showConfirmPassword ? '🙈' : '👁️'}
+                </button>
+              </div>
               {errors.confirmPassword && <span className="errorText">{errors.confirmPassword}</span>}
             </div>
           </div>
@@ -551,26 +575,48 @@ const GetStarted = ({ mode }) => {
           <div className="formRow">
             <div className="formGroup">
               <label className="label">Contraseña *</label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                className={`input ${errors.password ? 'inputError' : ''}`}
-                placeholder="Mínimo 6 caracteres"
-              />
+              <div className="passwordWrapper">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className={`input ${errors.password ? 'inputError' : ''}`}
+                  placeholder="Mínimo 6 caracteres"
+                />
+                <button
+                  type="button"
+                  className="passwordToggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                  tabIndex={-1}
+                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                >
+                  {showPassword ? '🙈' : '👁️'}
+                </button>
+              </div>
               {errors.password && <span className="errorText">{errors.password}</span>}
             </div>
             <div className="formGroup">
               <label className="label">Confirmar Contraseña *</label>
-              <input
-                type="password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                className={`input ${errors.confirmPassword ? 'inputError' : ''}`}
-                placeholder="Repite tu contraseña"
-              />
+              <div className="passwordWrapper">
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  className={`input ${errors.confirmPassword ? 'inputError' : ''}`}
+                  placeholder="Repite tu contraseña"
+                />
+                <button
+                  type="button"
+                  className="passwordToggle"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  tabIndex={-1}
+                  aria-label={showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                >
+                  {showConfirmPassword ? '🙈' : '👁️'}
+                </button>
+              </div>
               {errors.confirmPassword && <span className="errorText">{errors.confirmPassword}</span>}
             </div>
           </div>
@@ -775,26 +821,48 @@ const GetStarted = ({ mode }) => {
           <div className="formRow">
             <div className="formGroup">
               <label className="label">Contraseña *</label>
-              <input
-                type="password"
-                name="password"
-                value={formData.password}
-                onChange={handleInputChange}
-                className={`input ${errors.password ? 'inputError' : ''}`}
-                placeholder="Mínimo 6 caracteres"
-              />
+              <div className="passwordWrapper">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className={`input ${errors.password ? 'inputError' : ''}`}
+                  placeholder="Mínimo 6 caracteres"
+                />
+                <button
+                  type="button"
+                  className="passwordToggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                  tabIndex={-1}
+                  aria-label={showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                >
+                  {showPassword ? '🙈' : '👁️'}
+                </button>
+              </div>
               {errors.password && <span className="errorText">{errors.password}</span>}
             </div>
             <div className="formGroup">
               <label className="label">Confirmar Contraseña *</label>
-              <input
-                type="password"
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleInputChange}
-                className={`input ${errors.confirmPassword ? 'inputError' : ''}`}
-                placeholder="Repite tu contraseña"
-              />
+              <div className="passwordWrapper">
+                <input
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  className={`input ${errors.confirmPassword ? 'inputError' : ''}`}
+                  placeholder="Repite tu contraseña"
+                />
+                <button
+                  type="button"
+                  className="passwordToggle"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  tabIndex={-1}
+                  aria-label={showConfirmPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                >
+                  {showConfirmPassword ? '🙈' : '👁️'}
+                </button>
+              </div>
               {errors.confirmPassword && <span className="errorText">{errors.confirmPassword}</span>}
             </div>
           </div>
