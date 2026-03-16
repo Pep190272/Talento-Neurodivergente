@@ -30,11 +30,18 @@
       </div>
 
       <div>
-        <label class="block text-sm font-medium text-gray-700 mb-1">Contrasena</label>
-        <input type="password" x-model="password" required minlength="8"
-               class="form-input w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none"
-               placeholder="Min. 8 chars, mayuscula + numero">
-        <p class="text-xs text-gray-400 mt-1">Minimo 8 caracteres, 1 mayuscula, 1 numero</p>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Contraseña</label>
+        <div class="relative">
+          <input :type="showPassword ? 'text' : 'password'" x-model="password" required minlength="8"
+                 class="form-input w-full px-4 py-2.5 pr-12 border border-gray-300 rounded-lg focus:outline-none"
+                 :placeholder="showPassword ? 'Min. 8 chars, mayúscula + número' : '••••••••'">
+          <button type="button" @click="showPassword = !showPassword"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-lg"
+                  :aria-label="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'">
+            <span x-text="showPassword ? '🙈' : '👁️'"></span>
+          </button>
+        </div>
+        <p class="text-xs text-gray-400 mt-1">Mínimo 8 caracteres, 1 mayúscula, 1 número</p>
       </div>
 
       <div>
@@ -80,7 +87,7 @@
 function registerForm() {
   const params = new URLSearchParams(window.location.search);
   return {
-    name: '', email: '', password: '',
+    name: '', email: '', password: '', showPassword: false,
     role: params.get('role') || 'candidate',
     error: '', success: false, loading: false,
     async submit() {

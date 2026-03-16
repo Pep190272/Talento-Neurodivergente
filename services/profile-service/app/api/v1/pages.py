@@ -51,6 +51,11 @@ async def register(request: Request) -> HTMLResponse:
     return templates.TemplateResponse("pages/register.html", {"request": request})
 
 
+@router.get("/forgot-password", response_class=HTMLResponse)
+async def forgot_password(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse("pages/forgot-password.html", {"request": request})
+
+
 @router.get("/dashboard", response_class=HTMLResponse)
 async def dashboard(request: Request) -> HTMLResponse:
     return templates.TemplateResponse("pages/dashboard.html", {"request": request})
