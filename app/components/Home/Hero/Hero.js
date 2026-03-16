@@ -286,14 +286,19 @@ export default function Hero() {
       </div>
 
       {/* Navigation Assistant */}
-      <div className="ai-assistant" onClick={() => setChatOpen(!chatOpen)}>
+      <button
+        className="ai-assistant"
+        onClick={() => setChatOpen(!chatOpen)}
+        aria-label={chatOpen ? t('hero.closeAssistant') : t('hero.askAssistant')}
+        aria-expanded={chatOpen}
+      >
         <div className="assistant-icon">
-          <FaRobot />
+          <FaRobot aria-hidden="true" />
         </div>
         <div className="assistant-tooltip">
           {chatOpen ? t('hero.closeAssistant') : t('hero.askAssistant')}
         </div>
-      </div>
+      </button>
 
       {/* Main Content */}
       <div className="hero-container">
@@ -371,47 +376,55 @@ export default function Hero() {
 
       {/* Chat Interface */}
       {chatOpen && (
-        <div className="chat-overlay" onClick={(e) => e.target.classList.contains('chat-overlay') && setChatOpen(false)}>
+        <div
+          className="chat-overlay"
+          role="dialog"
+          aria-modal="true"
+          aria-label={t('hero.chat.assistant')}
+          onClick={(e) => e.target.classList.contains('chat-overlay') && setChatOpen(false)}
+          onKeyDown={(e) => e.key === 'Escape' && setChatOpen(false)}
+        >
           <div className="chat-container">
             <div className="chat-header">
               <div className="chat-info">
                 <div className="chat-avatar">
-                  <FaRobot />
+                  <FaRobot aria-hidden="true" />
                 </div>
                 <div className="chat-details">
                   <h3>{t('hero.chat.assistant')}</h3>
-                  <p className="chat-status">
+                  <p className="chat-status" aria-live="polite">
                     {isTypingBot ? t('hero.chat.typing') : t('hero.chat.online')}
                   </p>
                 </div>
               </div>
-              <button 
+              <button
                 className="chat-close"
                 onClick={() => setChatOpen(false)}
+                aria-label={t('hero.closeAssistant')}
               >
-                <FaTimes />
+                <FaTimes aria-hidden="true" />
               </button>
             </div>
-            
-            <div className="chat-body" ref={chatBodyRef}>
+
+            <div className="chat-body" ref={chatBodyRef} aria-live="polite" aria-relevant="additions">
               {chatMessages.map((message, index) => (
-                <div key={index} className={`message ${message.sender}`}>
+                <div key={index} className={`message ${message.sender}`} role="log">
                   <div className="message-content">
                     <p>{message.text}</p>
-                    <span className="message-time">
-                      {new Date(message.timestamp).toLocaleTimeString([], { 
-                        hour: '2-digit', 
-                        minute: '2-digit' 
+                    <span className="message-time" aria-label={new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}>
+                      {new Date(message.timestamp).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit'
                       })}
                     </span>
                   </div>
                 </div>
               ))}
-              
+
               {isTypingBot && (
-                <div className="message bot">
+                <div className="message bot" aria-label={t('hero.chat.typing')}>
                   <div className="message-content">
-                    <div className="typing-indicator">
+                    <div className="typing-indicator" role="status">
                       <span></span>
                       <span></span>
                       <span></span>
@@ -420,23 +433,30 @@ export default function Hero() {
                 </div>
               )}
             </div>
-            
+
             <div className="chat-input-wrapper">
+              <label htmlFor="chat-input-field" className="sr-only">
+                {t('hero.chat.placeholder')}
+              </label>
               <input
+                id="chat-input-field"
                 ref={chatInputRef}
                 type="text"
                 className="chat-input"
                 placeholder={t('hero.chat.placeholder')}
+                aria-label={t('hero.chat.placeholder')}
                 value={currentMessage}
                 onChange={(e) => setCurrentMessage(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                autoFocus
               />
-              <button 
+              <button
                 className="chat-send-btn"
                 onClick={handleSendMessage}
                 disabled={!currentMessage.trim()}
+                aria-label={t('hero.chat.send') || 'Enviar mensaje'}
               >
-                <FaPaperPlane />
+                <FaPaperPlane aria-hidden="true" />
               </button>
             </div>
           </div>
