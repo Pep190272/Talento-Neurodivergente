@@ -26,11 +26,42 @@ SUPERADMIN_PASSWORD = "d1v3rs14Eternal$"
 SUPERADMIN_DISPLAY_NAME = "Super Admin DiversIA"
 
 
+async def ensure_auth_tables() -> None:
+    """Create auth tables if they don't exist (safety net for Alembic failures)."""
+    from app.infrastructure.database import engine
+    from app.infrastructure.persistence.models import Base
+    from sqlalchemy import text
+
+    async with engine.begin() as conn:
+        await conn.execute(text("CREATE SCHEMA IF NOT EXISTS auth"))
+        await conn.execute(text("""
+            DO $$ BEGIN
+                CREATE TYPE auth.user_role AS ENUM ('candidate', 'company', 'therapist', 'admin');
+            EXCEPTION WHEN duplicate_object THEN NULL;
+            END $$
+        """))
+        await conn.execute(text("""
+            DO $$ BEGIN
+                CREATE TYPE auth.user_status AS ENUM ('active', 'inactive', 'deleted');
+            EXCEPTION WHEN duplicate_object THEN NULL;
+            END $$
+        """))
+        await conn.run_sync(Base.metadata.create_all)
+    logger.info("Auth tables verified/created")
+
+
 async def seed_superadmin() -> None:
     """Ensure the superadmin user exists in auth.users on startup."""
     from app.infrastructure.database import async_session_factory
     from app.infrastructure.persistence.models import UserModel
     from sqlalchemy import select
+
+    # Ensure tables exist before seeding
+    try:
+        await ensure_auth_tables()
+    except Exception:
+        logger.exception("Failed to ensure auth tables — cannot seed superadmin")
+        return
 
     async with async_session_factory() as session:
         try:
@@ -66,9 +97,10 @@ async def seed_superadmin() -> None:
                 logger.info("Superadmin created: %s -> %s", SUPERADMIN_EMAIL, new_id)
 
             await session.commit()
+            logger.info("Superadmin seed committed successfully")
         except Exception:
             await session.rollback()
-            logger.exception("Failed to seed superadmin — auth.users table may not exist yet")
+            logger.exception("Failed to seed superadmin")
 
 
 @asynccontextmanager
@@ -100,10 +132,15 @@ def create_app() -> FastAPI:
             content={"detail": "Rate limit exceeded. Try again later."},
         )
 
-    # CORS — restricted in production
+    # CORS — restricted to known origins in production, open in development
+    allowed_origins = (
+        [o.strip() for o in settings.ALLOWED_ORIGINS.split(",") if o.strip()]
+        if is_prod
+        else ["*"]
+    )
     application.add_middleware(
         CORSMiddleware,
-        allow_origins=[] if is_prod else ["*"],
+        allow_origins=allowed_origins,
         allow_credentials=True,
         allow_methods=["GET", "POST", "PUT", "DELETE"],
         allow_headers=["Authorization", "Content-Type"],
