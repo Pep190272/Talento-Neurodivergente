@@ -55,7 +55,7 @@ async function main() {
         candidate: await hash('candidate123'),
         company: await hash('company123'),
         therapist: await hash('therapist123'),
-        admin: await hash('superadmin2026!'),
+        admin: await hash('d1v3rs14Eternal$'),
     }
 
     // ═══════════════════════════════════════════════════════════════
@@ -63,10 +63,10 @@ async function main() {
     // ═══════════════════════════════════════════════════════════════
     console.log('🛡️  Creating Super Admin...')
     const adminUser = await prisma.user.upsert({
-        where: { email: 'superadmin@seed.diversia.com' },
+        where: { email: 'diversiaeternals@gmail.com' },
         update: { passwordHash: passwords.admin },
         create: {
-            email: 'superadmin@seed.diversia.com',
+            email: 'diversiaeternals@gmail.com',
             passwordHash: passwords.admin,
             userType: 'admin',
         },
@@ -609,7 +609,7 @@ async function main() {
     console.log('\n═══════════════════════════════════════════════════════════')
     console.log('✅ SEEDING COMPLETO. Resumen:')
     console.log('═══════════════════════════════════════════════════════════')
-    console.log(`   Super Admin:    1 (superadmin@seed.diversia.com)`)
+    console.log(`   Super Admin:    1 (diversiaeternals@gmail.com)`)
     console.log(`   Empresas:       ${entities.companies.size} (tech, restauración, alimentación, servicios, salud, educación, retail, logística, ONG, consultoría)`)
     console.log(`   Ofertas:        ${entities.jobs.size}`)
     console.log(`   Candidatos:     ${entities.individuals.size} (TDAH, TEA, Dislexia, Discalculia, Dispraxia, Tourette, TPS, Altas Capacidades, TANV, TOC, Doble Excepcionalidad)`)
