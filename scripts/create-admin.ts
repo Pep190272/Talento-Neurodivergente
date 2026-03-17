@@ -31,7 +31,6 @@ async function createAdmin() {
     try {
         const email = await question('Enter Admin Email: ')
         const password = await question('Enter Admin Password: ')
-        const displayName = await question('Enter Display Name (default: Admin): ') || 'Admin'
 
         if (!email || !password) {
             console.error('❌ Email and password are required.')
@@ -49,34 +48,35 @@ async function createAdmin() {
             update: {
                 userType: 'admin',
                 passwordHash,
-                displayName,
             },
             create: {
                 email,
                 passwordHash,
                 userType: 'admin',
-                displayName,
             }
         })
 
         // 2. Sync with auth.users table (auth schema)
         // Uses raw SQL since auth.users is managed by the auth-service
-        await prisma.$executeRawUnsafe(`
-            INSERT INTO auth.users (id, email, password_hash, role, status, display_name, created_at, updated_at)
-            VALUES ($1, $2, $3, 'admin', 'active', $4, NOW(), NOW())
-            ON CONFLICT (email) DO UPDATE SET
-                password_hash = EXCLUDED.password_hash,
-                role = 'admin',
-                status = 'active',
-                display_name = EXCLUDED.display_name,
-                updated_at = NOW()
-        `, user.id, email, passwordHash, displayName)
+        try {
+            await prisma.$executeRawUnsafe(`
+                INSERT INTO auth.users (id, email, password_hash, role, status, display_name, created_at, updated_at)
+                VALUES ($1, $2, $3, 'admin', 'active', 'Super Admin', NOW(), NOW())
+                ON CONFLICT (email) DO UPDATE SET
+                    password_hash = EXCLUDED.password_hash,
+                    role = 'admin',
+                    status = 'active',
+                    updated_at = NOW()
+            `, user.id, email, passwordHash)
+            console.log(`📋 auth.users    ✓`)
+        } catch (e) {
+            console.log(`⚠ auth.users sync skipped (schema may not exist): ${(e as Error).message?.slice(0, 80)}`)
+        }
 
         console.log('-----------------------------------')
-        console.log(`✅ ADMIN CREATED IN BOTH TABLES`)
+        console.log(`✅ ADMIN CREATED`)
         console.log(`👤 User: ${user.email} (${user.id})`)
         console.log(`📋 public."User" ✓`)
-        console.log(`📋 auth.users    ✓`)
         console.log('-----------------------------------')
 
     } catch (error) {
