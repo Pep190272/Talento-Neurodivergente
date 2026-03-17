@@ -64,7 +64,7 @@ export default async function middleware(req) {
 
     if (role === 'admin') target = '/admin'
     else if (role === 'company') target = '/dashboard/company'
-    else if (role === 'individual') target = '/dashboard/individual'
+    else if (role === 'individual') target = '/dashboard/candidate'
     else if (role === 'therapist') target = '/dashboard/therapist'
 
     return NextResponse.redirect(new URL(target, req.url))
