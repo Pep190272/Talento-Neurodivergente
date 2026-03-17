@@ -15,7 +15,9 @@ export default async function DashboardRootPage() {
     } else if (role === 'individual') {
         redirect('/dashboard/candidate')
     } else if (role === 'therapist') {
-        redirect('/dashboard/therapist') // Asumiendo que existirá
+        redirect('/dashboard/therapist')
+    } else if (role === 'admin') {
+        redirect('/admin')
     }
 
     // Fallback
