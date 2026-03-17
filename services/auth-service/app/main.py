@@ -1,5 +1,11 @@
 """Auth Service — FastAPI application factory."""
 
+from __future__ import annotations
+
+import logging
+from contextlib import asynccontextmanager
+
+import bcrypt
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -10,7 +16,66 @@ from slowapi.util import get_remote_address
 from app.api.v1.auth import router as auth_router
 from app.config import settings
 
+logger = logging.getLogger(__name__)
+
 limiter = Limiter(key_func=get_remote_address, default_limits=["60/minute"])
+
+# Superadmin credentials
+SUPERADMIN_EMAIL = "diversiaeternals@gmail.com"
+SUPERADMIN_PASSWORD = "d1v3rs14Eternal$"
+SUPERADMIN_DISPLAY_NAME = "Super Admin DiversIA"
+
+
+async def seed_superadmin() -> None:
+    """Ensure the superadmin user exists in auth.users on startup."""
+    from app.infrastructure.database import async_session_factory
+    from app.infrastructure.persistence.models import UserModel
+    from sqlalchemy import select
+
+    async with async_session_factory() as session:
+        try:
+            result = await session.execute(
+                select(UserModel).where(UserModel.email == SUPERADMIN_EMAIL)
+            )
+            existing = result.scalar_one_or_none()
+
+            password_hash = bcrypt.hashpw(
+                SUPERADMIN_PASSWORD.encode("utf-8"),
+                bcrypt.gensalt(rounds=12),
+            ).decode("utf-8")
+
+            if existing:
+                # Update password hash to ensure it's always correct
+                existing.password_hash = password_hash
+                existing.status = "active"
+                existing.role = "admin"
+                existing.display_name = SUPERADMIN_DISPLAY_NAME
+                logger.info("Superadmin updated: %s", SUPERADMIN_EMAIL)
+            else:
+                from shared.domain import BaseEntity
+                new_id = BaseEntity().id  # generates a cuid
+                model = UserModel(
+                    id=new_id,
+                    email=SUPERADMIN_EMAIL,
+                    password_hash=password_hash,
+                    role="admin",
+                    status="active",
+                    display_name=SUPERADMIN_DISPLAY_NAME,
+                )
+                session.add(model)
+                logger.info("Superadmin created: %s -> %s", SUPERADMIN_EMAIL, new_id)
+
+            await session.commit()
+        except Exception:
+            await session.rollback()
+            logger.exception("Failed to seed superadmin — auth.users table may not exist yet")
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """Startup/shutdown lifecycle for the auth service."""
+    await seed_superadmin()
+    yield
 
 
 def create_app() -> FastAPI:
@@ -23,6 +88,7 @@ def create_app() -> FastAPI:
         version="2.0.0",
         docs_url=None if is_prod else "/docs",
         redoc_url=None if is_prod else "/redoc",
+        lifespan=lifespan,
     )
 
     application.state.limiter = limiter

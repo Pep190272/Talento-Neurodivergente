@@ -585,6 +585,8 @@ async function main() {
         allSeedUsers.push({ user: { id: entity.userId, email: therapist.email }, role: 'therapist', displayName: therapist.name, passwordHash: passwords.therapist })
     }
 
+    let syncedCount = 0
+    let syncErrors = 0
     for (const { user, role, displayName, passwordHash } of allSeedUsers) {
         try {
             await prisma.$executeRawUnsafe(`
@@ -597,11 +599,20 @@ async function main() {
                     display_name = EXCLUDED.display_name,
                     updated_at = NOW()
             `, user.id, user.email, passwordHash, role === 'admin' ? 'admin' : role, displayName)
-        } catch {
-            // auth schema may not exist in all environments
+            syncedCount++
+        } catch (e) {
+            syncErrors++
+            if (syncErrors === 1) {
+                console.log(`   ⚠ auth.users sync failed (schema may not exist): ${(e as Error).message?.slice(0, 100)}`)
+            }
         }
     }
-    console.log(`   ✓ Synced ${allSeedUsers.length} users to auth.users`)
+    if (syncErrors > 0) {
+        console.log(`   ⚠ auth.users: ${syncedCount}/${allSeedUsers.length} synced (${syncErrors} failures)`)
+        console.log('   💡 Run Alembic migrations first: cd services/auth-service && alembic upgrade head')
+    } else {
+        console.log(`   ✓ Synced ${syncedCount} users to auth.users`)
+    }
 
     // ═══════════════════════════════════════════════════════════════
     // SUMMARY
