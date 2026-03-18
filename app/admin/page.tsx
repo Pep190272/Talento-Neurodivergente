@@ -11,6 +11,7 @@ import {
     ConnectionsChart,
     ScoreTimelineChart,
 } from './components/AdminCharts'
+import { DemoTab } from './components/DemoDashboards'
 
 // ═══════════════════════════════════════════════════════════════
 // Types
@@ -65,7 +66,7 @@ export default function AdminDashboard() {
     const [users, setUsers] = useState<UserData[]>([])
     const [therapists, setTherapists] = useState<TherapistData[]>([])
     const [loading, setLoading] = useState(true)
-    const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'therapists' | 'matches' | 'audit'>('overview')
+    const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'therapists' | 'matches' | 'audit' | 'demo'>('overview')
     const [error, setError] = useState<string | null>(null)
 
     const fetchData = useCallback(async () => {
@@ -165,6 +166,7 @@ export default function AdminDashboard() {
                             { id: 'users' as const, label: 'Usuarios' },
                             { id: 'therapists' as const, label: 'Terapeutas' },
                             { id: 'audit' as const, label: 'Auditoría' },
+                            { id: 'demo' as const, label: '🎭 Demo Actores' },
                         ].map(tab => (
                             <button
                                 key={tab.id}
@@ -188,6 +190,7 @@ export default function AdminDashboard() {
                 {activeTab === 'users' && <UsersTab users={users} onToggleStatus={handleUserStatusToggle} />}
                 {activeTab === 'therapists' && <TherapistsTab therapists={therapists} onAction={handleTherapistAction} />}
                 {activeTab === 'audit' && <AuditTab stats={stats} />}
+                {activeTab === 'demo' && <DemoTab />}
             </main>
         </div>
     )
