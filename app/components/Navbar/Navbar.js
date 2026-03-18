@@ -30,6 +30,10 @@ const roleNavItems = {
     { name: 'Dashboard', href: '/dashboard', key: 'navbar.dashboard' },
     { name: 'Forms', href: '/forms', key: 'navbar.forms' },
   ],
+  admin: [
+    { name: 'Panel Admin', href: '/admin', key: 'navbar.admin' },
+    { name: 'Forms', href: '/forms', key: 'navbar.forms' },
+  ],
 }
 
 export default function Navbar() {
@@ -138,7 +142,8 @@ export default function Navbar() {
                   {t('navbar.hi')}, {session.user.name || t('navbar.user')}
                 </span>
                 <span className="user-type">
-                  {session.user.type === 'individual' ? t('navbar.individual') :
+                  {session.user.type === 'admin' ? 'Super Admin' :
+                    session.user.type === 'individual' ? t('navbar.individual') :
                     session.user.type === 'company' ? t('navbar.company') : t('navbar.therapist')}
                 </span>
               </div>
