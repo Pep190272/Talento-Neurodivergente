@@ -62,7 +62,8 @@ export default async function middleware(req) {
     const role = session.user?.type
     let target = '/dashboard'
 
-    if (role === 'company') target = '/dashboard/company'
+    if (role === 'admin') target = '/admin'
+    else if (role === 'company') target = '/dashboard/company'
     else if (role === 'individual') target = '/dashboard/candidate'
     else if (role === 'therapist') target = '/dashboard/therapist'
 
