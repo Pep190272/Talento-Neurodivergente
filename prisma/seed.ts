@@ -137,9 +137,9 @@ async function main() {
     }
 
     // ═══════════════════════════════════════════════════════════════
-    // 2. CANDIDATOS (16 perfiles neurodivergentes diversos)
+    // 2. CANDIDATOS (24 perfiles neurodivergentes diversos)
     // ═══════════════════════════════════════════════════════════════
-    console.log('\n🧑‍💻 Creating Candidates (16 diverse neurodivergent profiles)...')
+    console.log('\n🧑‍💻 Creating Candidates (24 diverse neurodivergent profiles)...')
 
     for (const candidate of candidateProfiles) {
         const user = await prisma.user.upsert({
@@ -180,7 +180,7 @@ async function main() {
     // ═══════════════════════════════════════════════════════════════
     // 3. TERAPEUTAS (6 profesionales variados)
     // ═══════════════════════════════════════════════════════════════
-    console.log('\n🧠 Creating Therapists (6 varied professionals)...')
+    console.log('\n🧠 Creating Therapists (8 varied professionals)...')
 
     for (const therapist of therapistProfiles) {
         const user = await prisma.user.upsert({
@@ -232,7 +232,7 @@ async function main() {
     // ═══════════════════════════════════════════════════════════════
     // 4. MATCHINGS (40+ con distribución realista)
     // ═══════════════════════════════════════════════════════════════
-    console.log('\n🤖 Creating Matchings (40+ with realistic distribution)...')
+    console.log('\n🤖 Creating Matchings (65+ with realistic distribution)...')
 
     const expirationDate = new Date()
     expirationDate.setDate(expirationDate.getDate() + 7)
@@ -332,6 +332,68 @@ async function main() {
 
         // ── CONTESTED match (EU AI Act Art. 22) ──
         { candidateEmail: 'alberto.jimenez@seed.diversia.com', jobId: 'job_neuratech_backend', companyEmail: 'neuratech@seed.diversia.com', aiScore: 38.0, aiFactors: { skills: 8, accommodations: 16, preferences: 10, location: 4 }, status: 'CONTESTED', explanation: 'Score bajo: contabilidad vs programación. Candidato impugna alegando que su atención al detalle (TOC) es transferible a QA.', contested: true },
+
+        // ══════════════════════════════════════════════════════════════
+        // NUEVOS MATCHINGS — Oficios manuales y nuevas empresas
+        // ══════════════════════════════════════════════════════════════
+
+        // ── Construcción: Fernando (TDAH+Dislexia) — Albañil ──
+        { candidateEmail: 'fernando.rueda@seed.diversia.com', jobId: 'job_construccion_albanil', companyEmail: 'construcciones.verdes@seed.diversia.com', aiScore: 93.0, aiFactors: { skills: 39, accommodations: 28, preferences: 18, location: 8 }, status: 'APPROVED', explanation: 'Match excelente: 8 años de albañilería, planos visuales compensan dislexia, variedad de tareas ideal para TDAH. Sevilla match.', accepted: true },
+        { candidateEmail: 'fernando.rueda@seed.diversia.com', jobId: 'job_construccion_solador', companyEmail: 'construcciones.verdes@seed.diversia.com', aiScore: 86.0, aiFactors: { skills: 34, accommodations: 26, preferences: 18, location: 8 }, status: 'PENDING', explanation: 'Buen match: experiencia en solado, trabajo geométrico satisfactorio. Pensamiento espacial 3D compensa dislexia.' },
+        { candidateEmail: 'fernando.rueda@seed.diversia.com', jobId: 'job_construccion_peon', companyEmail: 'construcciones.verdes@seed.diversia.com', aiScore: 55.0, aiFactors: { skills: 15, accommodations: 22, preferences: 12, location: 6 }, status: 'REJECTED', explanation: 'Overqualified: con 8 años de experiencia como oficial, un puesto de peón no aprovecha su talento.', rejected: true },
+
+        // ── Construcción: Marina (TDAH) — Pintora ──
+        { candidateEmail: 'marina.gil@seed.diversia.com', jobId: 'job_construccion_pintor', companyEmail: 'construcciones.verdes@seed.diversia.com', aiScore: 95.0, aiFactors: { skills: 40, accommodations: 29, preferences: 18, location: 8 }, status: 'APPROVED', explanation: 'Match perfecto: pintora profesional, música permitida, ritmo propio, resultados visibles. El TDAH encuentra flow en la pintura. Sevilla match.', accepted: true },
+
+        // ── Construcción: Peón (para candidatos de entrada) ──
+        { candidateEmail: 'tomas.guerrero@seed.diversia.com', jobId: 'job_construccion_peon', companyEmail: 'construcciones.verdes@seed.diversia.com', aiScore: 78.0, aiFactors: { skills: 28, accommodations: 26, preferences: 16, location: 8 }, status: 'APPROVED', explanation: 'Buen match: experiencia en trabajo físico al aire libre, buddy system ideal, comprensión con episodios. Málaga→Sevilla posible.' },
+
+        // ── Construcción: Lampista ──
+        { candidateEmail: 'fernando.rueda@seed.diversia.com', jobId: 'job_construccion_lampista', companyEmail: 'construcciones.verdes@seed.diversia.com', aiScore: 72.0, aiFactors: { skills: 26, accommodations: 24, preferences: 14, location: 8 }, status: 'PENDING', explanation: 'Match parcial: experiencia en construcción transferible, pero no tiene formación específica en fontanería. Puede aprender rápido.' },
+
+        // ── Taller: Óscar (TEA nivel 2) — Mecánico ──
+        { candidateEmail: 'oscar.prieto@seed.diversia.com', jobId: 'job_taller_mecanico', companyEmail: 'taller.mecanica@seed.diversia.com', aiScore: 94.0, aiFactors: { skills: 39, accommodations: 29, preferences: 18, location: 8 }, status: 'APPROVED', explanation: 'Match casi perfecto: mecánico con 6 años, diagnóstico por sonido, bahía propia, rutina predecible. TEA nivel 2 encuentra su elemento. Zaragoza match.', accepted: true },
+        { candidateEmail: 'oscar.prieto@seed.diversia.com', jobId: 'job_taller_electricidad', companyEmail: 'taller.mecanica@seed.diversia.com', aiScore: 82.0, aiFactors: { skills: 32, accommodations: 26, preferences: 16, location: 8 }, status: 'PENDING', explanation: 'Buen match: electricidad básica del automóvil, zona tranquila ideal, trabajo sistemático. Podría especializarse.' },
+
+        // ── Taller: Aprendiz ──
+        { candidateEmail: 'tomas.guerrero@seed.diversia.com', jobId: 'job_taller_aprendiz', companyEmail: 'taller.mecanica@seed.diversia.com', aiScore: 62.0, aiFactors: { skills: 18, accommodations: 22, preferences: 14, location: 8 }, status: 'PENDING', explanation: 'Match parcial: trabajo físico sí, mecánica no directa. Contrato formativo con tutor podría funcionar. Málaga→Zaragoza requiere reubicación.' },
+
+        // ── Taller: Chapa y pintura ──
+        { candidateEmail: 'marina.gil@seed.diversia.com', jobId: 'job_taller_chapa', companyEmail: 'taller.mecanica@seed.diversia.com', aiScore: 76.0, aiFactors: { skills: 28, accommodations: 24, preferences: 16, location: 8 }, status: 'PENDING', explanation: 'Match interesante: experiencia en pintura transferible a pintura de vehículos, creatividad manual, cabina propia. Sevilla→Zaragoza requiere reubicación.' },
+
+        // ── Viveros: Adrián (TEA) — Jardinero ──
+        { candidateEmail: 'adrian.campos@seed.diversia.com', jobId: 'job_vivero_jardinero', companyEmail: 'viveros.del.sol@seed.diversia.com', aiScore: 96.0, aiFactors: { skills: 40, accommodations: 30, preferences: 18, location: 8 }, status: 'APPROVED', explanation: 'Match perfecto: botánica, riego, identificación de especies, control de plagas. Rutina al aire libre ideal para TEA. Málaga match.', accepted: true },
+        { candidateEmail: 'adrian.campos@seed.diversia.com', jobId: 'job_vivero_peon', companyEmail: 'viveros.del.sol@seed.diversia.com', aiScore: 72.0, aiFactors: { skills: 24, accommodations: 26, preferences: 14, location: 8 }, status: 'REJECTED', explanation: 'Overqualified: con FP en Jardinería y conocimiento botánico, un puesto de peón no aprovecha su potencial.', rejected: true },
+
+        // ── Viveros: Tomás (Bipolar) — Peón agrícola ──
+        { candidateEmail: 'tomas.guerrero@seed.diversia.com', jobId: 'job_vivero_peon', companyEmail: 'viveros.del.sol@seed.diversia.com', aiScore: 88.0, aiFactors: { skills: 36, accommodations: 28, preferences: 16, location: 8 }, status: 'APPROVED', explanation: 'Buen match: peón agrícola con experiencia, trabajo físico al aire libre, buddy system, comprensión con ausencias. Málaga match.', accepted: true },
+        { candidateEmail: 'tomas.guerrero@seed.diversia.com', jobId: 'job_vivero_jardinero', companyEmail: 'viveros.del.sol@seed.diversia.com', aiScore: 80.0, aiFactors: { skills: 30, accommodations: 26, preferences: 16, location: 8 }, status: 'PENDING', explanation: 'Buen match: experiencia como jardinero público, conocimiento estacional. Puesto con más responsabilidad que peón.' },
+
+        // ── Viveros: Florista ──
+        { candidateEmail: 'carmen.saez@seed.diversia.com', jobId: 'job_vivero_florista', companyEmail: 'viveros.del.sol@seed.diversia.com', aiScore: 84.0, aiFactors: { skills: 32, accommodations: 28, preferences: 16, location: 8 }, status: 'APPROVED', explanation: 'Buen match: creatividad manual, sensibilidad estética, trabajo tranquilo con flores. TAG se calma con trabajo sensorial. Granada→Málaga cercano.', accepted: true },
+
+        // ── Artesanía: Héctor (Dislexia) — Ebanista ──
+        { candidateEmail: 'hector.blanco@seed.diversia.com', jobId: 'job_artesano_ebanista', companyEmail: 'obrador.artesano@seed.diversia.com', aiScore: 97.0, aiFactors: { skills: 40, accommodations: 30, preferences: 19, location: 8 }, status: 'APPROVED', explanation: 'Match perfecto: 10 años de ebanistería, pensamiento 3D, taller propio, mínima escritura. Dislexia = superpoder espacial. Granada match.', accepted: true },
+        { candidateEmail: 'hector.blanco@seed.diversia.com', jobId: 'job_artesano_restaurador', companyEmail: 'obrador.artesano@seed.diversia.com', aiScore: 89.0, aiFactors: { skills: 36, accommodations: 28, preferences: 17, location: 8 }, status: 'PENDING', explanation: 'Match muy bueno: restauración de muebles, paciencia, detalle, trabajo hiperfocal. Excelente complemento a ebanistería.' },
+
+        // ── Artesanía: Carmen (TAG+TDAH) — Ceramista ──
+        { candidateEmail: 'carmen.saez@seed.diversia.com', jobId: 'job_artesano_ceramista', companyEmail: 'obrador.artesano@seed.diversia.com', aiScore: 95.0, aiFactors: { skills: 39, accommodations: 30, preferences: 18, location: 8 }, status: 'APPROVED', explanation: 'Match perfecto: ceramista profesional, torno como regulación sensorial, sin presión de tiempo, taller silencioso. Granada match.', accepted: true },
+
+        // ── Cocina: Rosa (Tourette) — Cocinera de línea ──
+        { candidateEmail: 'rosa.molina@seed.diversia.com', jobId: 'job_cocina_linea', companyEmail: 'cocina.inclusiva@seed.diversia.com', aiScore: 91.0, aiFactors: { skills: 38, accommodations: 28, preferences: 17, location: 8 }, status: 'APPROVED', explanation: 'Match excelente: cocinera profesional, cocina ruidosa donde los tics pasan desapercibidos, estación fija, descanso post-servicio. Valencia match.', accepted: true },
+        { candidateEmail: 'rosa.molina@seed.diversia.com', jobId: 'job_cocina_reposteria', companyEmail: 'cocina.inclusiva@seed.diversia.com', aiScore: 74.0, aiFactors: { skills: 26, accommodations: 24, preferences: 16, location: 8 }, status: 'PENDING', explanation: 'Match parcial: cocina sí pero repostería requiere más paciencia y silencio, donde los tics pueden generar estrés.' },
+
+        // ── Cocina: Ayudante (para perfil de entrada) ──
+        { candidateEmail: 'tomas.guerrero@seed.diversia.com', jobId: 'job_cocina_ayudante', companyEmail: 'cocina.inclusiva@seed.diversia.com', aiScore: 64.0, aiFactors: { skills: 20, accommodations: 22, preferences: 14, location: 8 }, status: 'PENDING', explanation: 'Match parcial: trabajo físico, repetitivo, sin experiencia requerida. Fases de hipomanía pueden ser ventaja en cocina rápida. Málaga→Valencia requiere reubicación.' },
+
+        // ── Cocina: Office (friegaplatos) ──
+        { candidateEmail: 'adrian.campos@seed.diversia.com', jobId: 'job_cocina_friegaplatos', companyEmail: 'cocina.inclusiva@seed.diversia.com', aiScore: 68.0, aiFactors: { skills: 20, accommodations: 26, preferences: 14, location: 8 }, status: 'PENDING', explanation: 'Match posible: trabajo repetitivo, sin público, ritmo propio, auriculares. TEA podría encontrar zona de confort. Málaga→Valencia requiere reubicación.' },
+
+        // ── ServiPlus Jardinería para Adrián ──
+        { candidateEmail: 'adrian.campos@seed.diversia.com', jobId: 'job_servi_jardineria', companyEmail: 'serviplus@seed.diversia.com', aiScore: 85.0, aiFactors: { skills: 34, accommodations: 27, preferences: 16, location: 8 }, status: 'APPROVED', explanation: 'Match bueno: jardinería, rutina predecible, mínima interacción social, exterior. TEA con especialización botánica ideal. Málaga→Madrid requiere reubicación.' },
+
+        // ── Carpintería en Construcción para Héctor ──
+        { candidateEmail: 'hector.blanco@seed.diversia.com', jobId: 'job_construccion_carpintero', companyEmail: 'construcciones.verdes@seed.diversia.com', aiScore: 88.0, aiFactors: { skills: 36, accommodations: 26, preferences: 18, location: 8 }, status: 'PENDING', explanation: 'Match muy bueno: ebanista con experiencia en carpintería de obra, pensamiento 3D, taller propio. Granada→Sevilla cercano.' },
     ]
 
     for (const scenario of matchingScenarios) {
@@ -425,6 +487,30 @@ async function main() {
         // Coaching laboral → Lda. Sofía Chen
         { individualEmail: 'jorge.navarro@seed.diversia.com', therapistEmail: 'sofia.chen.t@seed.diversia.com' },
         { individualEmail: 'sofia.chen.w@seed.diversia.com', therapistEmail: 'sofia.chen.t@seed.diversia.com' },
+
+        // ═══ NUEVOS CANDIDATOS — Terapia Ocupacional (oficios manuales) ═══
+        // Fernando (TDAH+Dislexia, albañil) → Terapeuta Ocupacional + TDAH specialist
+        { individualEmail: 'fernando.rueda@seed.diversia.com', therapistEmail: 'lucia.ramos@seed.diversia.com' },
+        { individualEmail: 'fernando.rueda@seed.diversia.com', therapistEmail: 'carmen.vega@seed.diversia.com' },
+        // Adrián (TEA, jardinero) → Terapeuta Ocupacional + TEA specialist
+        { individualEmail: 'adrian.campos@seed.diversia.com', therapistEmail: 'lucia.ramos@seed.diversia.com' },
+        { individualEmail: 'adrian.campos@seed.diversia.com', therapistEmail: 'alejandro.ruiz@seed.diversia.com' },
+        // Rosa (Tourette, cocinera) → EMDR/trauma + Terapeuta Ocupacional
+        { individualEmail: 'rosa.molina@seed.diversia.com', therapistEmail: 'rafael.torres@seed.diversia.com' },
+        { individualEmail: 'rosa.molina@seed.diversia.com', therapistEmail: 'lucia.ramos@seed.diversia.com' },
+        // Óscar (TEA nivel 2, mecánico) → TEA specialist + Terapeuta Ocupacional
+        { individualEmail: 'oscar.prieto@seed.diversia.com', therapistEmail: 'alejandro.ruiz@seed.diversia.com' },
+        { individualEmail: 'oscar.prieto@seed.diversia.com', therapistEmail: 'lucia.ramos@seed.diversia.com' },
+        // Marina (TDAH, pintora) → TDAH specialist
+        { individualEmail: 'marina.gil@seed.diversia.com', therapistEmail: 'carmen.vega@seed.diversia.com' },
+        // Héctor (Dislexia, ebanista) → Dislexia specialist + Terapeuta Ocupacional
+        { individualEmail: 'hector.blanco@seed.diversia.com', therapistEmail: 'marta.soler@seed.diversia.com' },
+        { individualEmail: 'hector.blanco@seed.diversia.com', therapistEmail: 'lucia.ramos@seed.diversia.com' },
+        // Carmen (TAG+TDAH, ceramista) → EMDR/trauma (ansiedad) + TDAH specialist
+        { individualEmail: 'carmen.saez@seed.diversia.com', therapistEmail: 'rafael.torres@seed.diversia.com' },
+        { individualEmail: 'carmen.saez@seed.diversia.com', therapistEmail: 'carmen.vega@seed.diversia.com' },
+        // Tomás (Bipolar, peón agrícola) → EMDR/trauma (bipolar specialist)
+        { individualEmail: 'tomas.guerrero@seed.diversia.com', therapistEmail: 'rafael.torres@seed.diversia.com' },
     ]
 
     for (const tc of therapyConnections) {
@@ -458,6 +544,16 @@ async function main() {
         { companyEmail: 'logiaccess@seed.diversia.com', therapistEmail: 'alejandro.ruiz@seed.diversia.com' },
         { companyEmail: 'diversa.consulting@seed.diversia.com', therapistEmail: 'carmen.vega@seed.diversia.com' },
         { companyEmail: 'diversa.consulting@seed.diversia.com', therapistEmail: 'pablo.navarro@seed.diversia.com' },
+        // Nuevas empresas de oficios manuales → Terapeuta Ocupacional
+        { companyEmail: 'construcciones.verdes@seed.diversia.com', therapistEmail: 'lucia.ramos@seed.diversia.com' },
+        { companyEmail: 'taller.mecanica@seed.diversia.com', therapistEmail: 'lucia.ramos@seed.diversia.com' },
+        { companyEmail: 'viveros.del.sol@seed.diversia.com', therapistEmail: 'lucia.ramos@seed.diversia.com' },
+        { companyEmail: 'obrador.artesano@seed.diversia.com', therapistEmail: 'lucia.ramos@seed.diversia.com' },
+        // Cocina Inclusiva también con terapeuta ocupacional (ampliación)
+        { companyEmail: 'cocina.inclusiva@seed.diversia.com', therapistEmail: 'lucia.ramos@seed.diversia.com' },
+        // EMDR para empresas con empleados que pueden tener trauma laboral
+        { companyEmail: 'construcciones.verdes@seed.diversia.com', therapistEmail: 'rafael.torres@seed.diversia.com' },
+        { companyEmail: 'obrador.artesano@seed.diversia.com', therapistEmail: 'rafael.torres@seed.diversia.com' },
     ]
 
     for (const cc of consultingConnections) {
@@ -621,9 +717,9 @@ async function main() {
     console.log('✅ SEEDING COMPLETO. Resumen:')
     console.log('═══════════════════════════════════════════════════════════')
     console.log(`   Super Admin:    1 (diversiaeternals@gmail.com)`)
-    console.log(`   Empresas:       ${entities.companies.size} (tech, restauración, alimentación, servicios, salud, educación, retail, logística, ONG, consultoría)`)
+    console.log(`   Empresas:       ${entities.companies.size} (tech, restauración, alimentación, servicios, salud, educación, retail, logística, ONG, consultoría, CONSTRUCCIÓN, AUTOMOCIÓN, VIVEROS, ARTESANÍA)`)
     console.log(`   Ofertas:        ${entities.jobs.size}`)
-    console.log(`   Candidatos:     ${entities.individuals.size} (TDAH, TEA, Dislexia, Discalculia, Dispraxia, Tourette, TPS, Altas Capacidades, TANV, TOC, Doble Excepcionalidad)`)
+    console.log(`   Candidatos:     ${entities.individuals.size} (TDAH, TEA, TEA-2, Dislexia, Discalculia, Dispraxia, Tourette, TPS, Altas Capacidades, TANV, TOC, TAG, Bipolar-II, Doble/Triple Excepcionalidad)`)
     console.log(`   Terapeutas:     ${entities.therapists.size}`)
     console.log(`   Matchings:      ${entities.matchings.length}`)
     console.log(`   Conexiones:     ${entities.connections.length}`)
@@ -632,6 +728,9 @@ async function main() {
     console.log('═══════════════════════════════════════════════════════════')
     console.log('📌 RECORDATORIO: Todos los datos usan @seed.diversia.com')
     console.log('   NUNCA mezclar con datos reales de producción.')
+    console.log('   Los datos seed son SOLO para demo. Los datos reales de')
+    console.log('   usuarios, empresas y terapeutas registrados en producción')
+    console.log('   JAMÁS deben contaminarse con estos datos de prueba.')
     console.log('═══════════════════════════════════════════════════════════')
 }
 

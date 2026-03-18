@@ -7,6 +7,49 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [2.7.0] - 2026-03-18
+
+### Sesion 2026-03-18 — Expansion de Datos Seed: Oficios Manuales y Neurodivergencias Ampliadas
+
+#### Added
+- **4 nuevas empresas de oficios manuales**:
+  - Construcciones Puente Verde (Sevilla): albañil, peón de obra, pintor/a, carpintero/a, aprendiz lampista, solador/a — 6 ofertas
+  - AutoTaller NeuroMotor (Zaragoza): mecánico/a, electricista auto, aprendiz mecánica, chapista/pintor vehículos — 4 ofertas
+  - Viveros del Sol (Málaga): jardinero/a, peón agrícola, florista — 3 ofertas
+  - Obrador Artesano Manos Diversas (Granada): ceramista, ebanista, restaurador/a — 3 ofertas
+- **Cocina Inclusiva ampliada** con 3 nuevos puestos: ayudante de cocina, cocinero/a de línea, profesional de office (friegaplatos)
+- **8 nuevos candidatos neurodivergentes** especializados en trabajo manual:
+  - Fernando Rueda (TDAH + Dislexia) — albañil/solador
+  - Adrián Campos (TEA) — viverista/jardinero botánico
+  - Rosa Molina (Tourette) — cocinera de línea
+  - Óscar Prieto (TEA nivel 2) — mecánico de taller
+  - Marina Gil (TDAH) — pintora de obra
+  - Héctor Blanco (Dislexia) — ebanista/carpintero artesanal
+  - Carmen Sáez (TAG + TDAH) — ceramista/alfarera
+  - Tomás Guerrero (Bipolar tipo II) — peón agrícola/jardinero
+- **2 nuevos terapeutas**:
+  - Lda. Lucía Ramos — Terapeuta Ocupacional especializada en adaptación de oficios manuales e integración sensorial
+  - Dr. Rafael Torres — EMDR y trauma en personas neurodivergentes (burnout, bipolaridad, ansiedad)
+- **25+ nuevos matchings** para oficios manuales (scores 55-97)
+- **15 nuevas conexiones de terapia** para nuevos candidatos
+- **7 nuevas conexiones de consulting** para nuevas empresas con terapeutas especializados
+- **Nuevas neurodivergencias representadas**: TAG (Ansiedad Generalizada), Trastorno Bipolar tipo II, TEA nivel 2, diagnósticos duales TDAH+Dislexia y TAG+TDAH
+
+#### Changed
+- **Total empresas**: 10 → 14 (4 sectores manuales nuevos)
+- **Total ofertas de empleo**: 22 → 33 (roles de entrada: peón, ayudante, aprendiz)
+- **Total candidatos**: 16 → 24 (énfasis en trabajo manual y diagnósticos duales)
+- **Total terapeutas**: 6 → 8 (Terapia Ocupacional + EMDR)
+- **Total matchings**: ~30 → 55+ (cobertura oficios manuales)
+- **Total conexiones**: ~27 → 49+ (terapia + consulting ampliadas)
+- **Neurodivergencias cubiertas**: 11 → 15 tipos distintos
+
+#### Security
+- Todos los datos seed mantienen dominio `@seed.diversia.com` — NUNCA se mezclan con datos reales de producción
+- Reforzado mensaje de advertencia en resumen del seeder sobre separación seed/producción
+
+---
+
 ## [2.6.0] - 2026-03-16
 
 ### Sesion 2026-03-15/16 — Inclusivity Engine, 360 Ecosystem, A11y, Tech Debt Cleanup

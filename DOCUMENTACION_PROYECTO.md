@@ -21,6 +21,7 @@
 11. [Seguridad Aplicada](#11-seguridad-aplicada)
 12. [Configuración y Deployment](#12-configuración-y-deployment)
 13. [Recomendaciones y Mejoras](#13-recomendaciones-y-mejoras)
+14. [Datos Seed para Demo](#14-datos-seed-para-demo)
 
 ---
 
@@ -1868,6 +1869,103 @@ FASE 4 - Funcionalidad AI (1-2 semanas)
 ├── AI feedback en juegos
 └── Matching inteligente real
 ```
+
+---
+
+## 14. Datos Seed para Demo
+
+### 14.1 Propósito y Separación de Producción
+
+Los datos seed existen **exclusivamente para demo** y pruebas. Todos usan el dominio `@seed.diversia.com` y **JAMÁS deben mezclarse** con datos reales de usuarios, empresas o terapeutas registrados en producción.
+
+**Regla de oro:** El sistema ya está en producción recogiendo datos reales. Los datos seed permiten demostrar funcionalidad completa sin contaminar la base de datos real.
+
+### 14.2 Cobertura de Datos Seed (v2.7.0)
+
+| Entidad | Cantidad | Detalle |
+|---------|----------|---------|
+| **Super Admin** | 1 | diversiaeternals@gmail.com |
+| **Empresas** | 14 | 14 sectores distintos |
+| **Ofertas de empleo** | 33 | Desde peón sin experiencia hasta CTO |
+| **Candidatos** | 24 | 15 neurodivergencias distintas |
+| **Terapeutas** | 8 | Complementarios entre sí |
+| **Matchings IA** | 55+ | Scores 38-97 |
+| **Conexiones** | 49+ | Terapia + Consulting + Job Match |
+| **Audit Logs** | 15+ | GDPR + EU AI Act |
+
+### 14.3 Sectores Empresariales Cubiertos
+
+| Sector | Empresa | Ofertas |
+|--------|---------|---------|
+| Tecnología | NeuraTech Solutions | Frontend, Data, Backend |
+| Restauración | Cocina Inclusiva | Chef, Cocinero/a línea, Ayudante, Camarero/a, Office |
+| Alimentación | NutriDiversa | Control calidad, Logística |
+| Servicios | ServiPlus Inclusivo | Mantenimiento, Jardinería, Limpieza |
+| Salud | Clínica NeuroVida | Admin sanitario, Auxiliar enfermería |
+| Educación | Academia Brillante | Profesor/a, Apoyo educativo |
+| Retail | TiendaParaTodos | Reponedor/a, Visual merchandiser |
+| Logística | LogiAccess | Operario almacén, Inventarios |
+| ONG | Fundación Puentes | Educador/a social, Coordinador/a |
+| Consultoría D&I | Diversa Consulting | Consultor/a, Formador/a |
+| **Construcción** | Construcciones Puente Verde | Peón, Albañil, Pintor/a, Carpintero/a, Lampista, Solador/a |
+| **Automoción** | AutoTaller NeuroMotor | Mecánico/a, Electricista auto, Aprendiz, Chapista |
+| **Viveros/Agricultura** | Viveros del Sol | Jardinero/a, Peón agrícola, Florista |
+| **Artesanía** | Obrador Artesano Manos Diversas | Ceramista, Ebanista, Restaurador/a |
+
+### 14.4 Neurodivergencias Representadas en Candidatos
+
+| Neurodivergencia | Candidatos | Oficios representados |
+|-----------------|------------|----------------------|
+| TDAH | Carlos, Lucía, Diego, Marina | Frontend dev, Chef, Mantenimiento, Pintora |
+| TEA (nivel 1) | Ana, Marcos, Irene, Adrián | Data scientist, Calidad, Almacén, Jardinero |
+| TEA (nivel 2) | Óscar | Mecánico de taller |
+| Dislexia | Pablo, Nuria, Héctor | Diseñador, Educadora, Ebanista |
+| Discalculia | Elena | Content manager |
+| Dispraxia/TDC | Jorge | Consultor accesibilidad |
+| Síndrome de Tourette | Raúl, Rosa | Backend dev, Cocinera de línea |
+| TPS (Procesamiento Sensorial) | Clara | Ilustradora |
+| Altas Capacidades | Miguel, Laura | Arquitecto software, Investigadora |
+| TANV | David | Atención al cliente |
+| TOC | Alberto | Auditor |
+| **TAG (Ansiedad Generalizada)** | Carmen (+ TDAH) | Ceramista |
+| **Trastorno Bipolar tipo II** | Tomás | Peón agrícola |
+| **Doble Excepcionalidad** | Sofía (AC+TDAH), Fernando (TDAH+Dislexia), Carmen (TAG+TDAH) | Consultora, Albañil, Ceramista |
+
+### 14.5 Terapeutas Seed
+
+| Terapeuta | Especialidad | Para quién |
+|-----------|-------------|------------|
+| Dra. Carmen Vega | TDAH + Coaching Ejecutivo | Candidatos TDAH + empresas |
+| Dr. Alejandro Ruiz | TEA + Integración Sensorial | Candidatos TEA + empresas |
+| Lda. Marta Soler | Dislexia + Dificultades Aprendizaje | Candidatos Dislexia/Discalculia/TANV |
+| Dr. Pablo Navarro | Neuropsicología Clínica (Diagnóstico) | Evaluaciones formales |
+| Lda. Sofía Chen | Coaching Laboral Neurodivergente | Coaching + empresas |
+| Dra. Isabel Moreno | Altas Capacidades + Doble Excepcionalidad | Perfiles complejos |
+| **Lda. Lucía Ramos** | **Terapia Ocupacional (oficios manuales)** | **Adaptación puestos manuales + empresas** |
+| **Dr. Rafael Torres** | **EMDR/Trauma en neurodivergentes** | **Burnout, bipolaridad, ansiedad** |
+
+### 14.6 Archivos de Datos Seed
+
+```
+prisma/
+├── seed.ts                        # Orquestador principal (matchings, conexiones, audit)
+└── seed-data/
+    ├── candidates.ts              # 24 candidatos neurodivergentes
+    ├── companies.ts               # 14 empresas con 33 ofertas
+    └── therapists.ts              # 8 terapeutas especializados
+```
+
+### 14.7 Cómo ejecutar el seeder
+
+```bash
+npx prisma db seed
+```
+
+**Credenciales seed (solo demo):**
+- Candidatos: `candidate123`
+- Empresas: `company123`
+- Terapeutas: `therapist123`
+- Admin: `d1v3rs14Eternal$`
 
 ---
 

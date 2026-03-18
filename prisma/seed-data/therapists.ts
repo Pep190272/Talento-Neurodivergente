@@ -1,7 +1,8 @@
 // ═══════════════════════════════════════════════════════════════════
-// TERAPEUTAS — 6 profesionales con especialidades complementarias
+// TERAPEUTAS — 8 profesionales con especialidades complementarias
 // Dominio: @seed.diversia.com (NUNCA mezclar con datos reales)
 // Variados: unos para empresas, otros para individuos, mixtos
+// Incluye: Terapeuta Ocupacional + Especialista EMDR/Trauma
 // ═══════════════════════════════════════════════════════════════════
 
 export const therapistProfiles = [
@@ -218,6 +219,78 @@ export const therapistProfiles = [
             clientSatisfactionScore: 4.75,
             averageResponseTime: 2.5,
             lastSessionDate: '2026-03-14T19:00:00Z',
+        },
+    },
+
+    // ─── 7. Terapeuta Ocupacional — Adaptación de oficios manuales ──
+    {
+        email: 'lucia.ramos@seed.diversia.com',
+        name: 'Lda. Lucía Ramos',
+        specialty: 'Terapia Ocupacional para Neurodiversidad en Oficios Manuales',
+        licenseNumber: 'TO-AND-2020-0234',
+        specializations: ['Terapia ocupacional', 'Adaptación de puestos manuales', 'Ergonomía neurodivergente', 'Integración sensorial en oficios', 'Capacitación laboral'],
+        certifications: [
+            { title: 'Terapeuta Ocupacional Colegiada', licenseNumber: 'COTO-AND-2020-0234', issuingBody: 'Colegio de Terapeutas Ocupacionales de Andalucía', expiryDate: '2028-12-31' },
+            { title: 'Especialista en Integración Sensorial (Ayres)', licenseNumber: 'SI-2023-0189', issuingBody: 'University of Southern California / Asociación Española de IS', expiryDate: '2029-06-30' },
+        ],
+        certificationValidation: { validated: true, checkedAt: '2026-02-20T09:00:00Z' },
+        neurodiversityExperience: 6,
+        experienceYears: 8,
+        approach: 'Terapia Ocupacional basada en fortalezas + Integración Sensorial',
+        services: ['workplace_assessment', 'manual_job_adaptation', 'sensory_integration_therapy', 'ergonomic_consulting', 'company_training', 'individual_therapy'],
+        languages: ['Spanish', 'English'],
+        location: 'Sevilla, Spain',
+        bio: 'Terapeuta ocupacional especializada en adaptar oficios manuales (construcción, mecánica, jardinería, hostelería) a perfiles neurodivergentes. Mi trabajo es hacer que el puesto se adapte a la persona, no al revés. Evalúo in situ en talleres, obras y cocinas.',
+        acceptingNewClients: true,
+        maxClients: 22,
+        currentClients: 14,
+        verificationStatus: 'verified',
+        verifiedAt: new Date('2026-02-20T10:00:00Z'),
+        verifiedBy: 'admin_system',
+        verificationNotes: 'Credenciales verificadas: COTO Andalucía + certificación SI Ayres. Colegiada.',
+        badges: ['neurodiversity_expert', 'verified_professional', 'occupational_therapist', 'manual_trades_specialist'],
+        metadata: {
+            lastLogin: new Date().toISOString(),
+            sessionsCompleted: 189,
+            clientSatisfactionScore: 4.8,
+            averageResponseTime: 3,
+            lastSessionDate: '2026-03-13T11:00:00Z',
+        },
+    },
+
+    // ─── 8. EMDR / Trauma — Neurodivergentes con trauma laboral ──
+    {
+        email: 'rafael.torres@seed.diversia.com',
+        name: 'Dr. Rafael Torres',
+        specialty: 'EMDR y Trauma en Personas Neurodivergentes',
+        licenseNumber: 'PSI-VAL-2015-0789',
+        specializations: ['EMDR', 'Trauma laboral', 'Burnout neurodivergente', 'Ansiedad', 'Trastorno bipolar', 'Regulación emocional'],
+        certifications: [
+            { title: 'EMDR Europe Practitioner', licenseNumber: 'EMDR-EU-2019-1234', issuingBody: 'EMDR Europe Association', expiryDate: '2028-03-31' },
+            { title: 'Psicólogo Clínico (PIR)', licenseNumber: 'PIR-2018-VAL-456', issuingBody: 'Ministerio de Sanidad', expiryDate: null },
+        ],
+        certificationValidation: { validated: true, checkedAt: '2026-02-22T14:00:00Z' },
+        neurodiversityExperience: 9,
+        experienceYears: 14,
+        approach: 'EMDR + Terapia de Aceptación y Compromiso (ACT)',
+        services: ['individual_therapy', 'trauma_processing', 'burnout_recovery', 'anxiety_management', 'bipolar_support', 'emotional_regulation'],
+        languages: ['Spanish', 'English', 'French'],
+        location: 'Valencia, Spain',
+        bio: 'Psicólogo clínico especializado en trauma y EMDR con personas neurodivergentes. Muchos de mis pacientes han sufrido bullying, exclusión laboral o burnout. Trabajo el trauma que deja una vida de ser "diferente" en un mundo que no se adapta. Especial experiencia con bipolaridad, ansiedad y perfiles complejos.',
+        acceptingNewClients: true,
+        maxClients: 18,
+        currentClients: 12,
+        verificationStatus: 'verified',
+        verifiedAt: new Date('2026-02-22T15:00:00Z'),
+        verifiedBy: 'admin_system',
+        verificationNotes: 'Credenciales verificadas: EMDR Europe + PIR. Colegiado en Valencia.',
+        badges: ['neurodiversity_expert', 'verified_professional', 'trauma_specialist', 'clinical_psychologist'],
+        metadata: {
+            lastLogin: new Date().toISOString(),
+            sessionsCompleted: 312,
+            clientSatisfactionScore: 4.9,
+            averageResponseTime: 2,
+            lastSessionDate: '2026-03-15T18:00:00Z',
         },
     },
 ]

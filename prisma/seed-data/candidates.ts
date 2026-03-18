@@ -1,7 +1,9 @@
 // ═══════════════════════════════════════════════════════════════════
-// CANDIDATOS NEURODIVERGENTES — 16 perfiles diversos
+// CANDIDATOS NEURODIVERGENTES — 24 perfiles diversos
 // Dominio: @seed.diversia.com (NUNCA mezclar con datos reales)
 // Cada perfil refleja una idiosincrasia única y real
+// Incluye perfiles de oficios manuales: construcción, mecánica,
+// jardinería, artesanía, cocina, viveros
 // ═══════════════════════════════════════════════════════════════════
 
 export const candidateProfiles = [
@@ -676,5 +678,330 @@ export const candidateProfiles = [
             workStyle: { preferredHours: 'fixed', environment: 'private_office', collaboration: 'structured' },
         },
         metadata: { lastLogin: new Date().toISOString(), profileViews: 4, matchesReceived: 2, applicationsSubmitted: 1 },
+    },
+
+    // ═══════════════════════════════════════════════════════════════
+    // NUEVOS CANDIDATOS — Oficios manuales y diagnósticos duales
+    // Personas que disfrutan trabajando con las manos
+    // ═══════════════════════════════════════════════════════════════
+
+    // ─── TDAH + Dislexia (dual) — Albañil / Construcción ──────
+    {
+        email: 'fernando.rueda@seed.diversia.com',
+        firstName: 'Fernando',
+        lastName: 'Rueda',
+        diagnoses: ['encrypted:TDAH', 'encrypted:Dislexia'],
+        accommodationsNeeded: 'encrypted:visual_instructions,no_written_reports,physical_activity,buddy_system,flexible_breaks',
+        experienceYears: 8,
+        bio: 'Albañil con TDAH y dislexia. Los planos con letras pequeñas me cuestan, pero ponme delante de un muro y levanto la pared más recta que nadie. Mis manos piensan más rápido que mi cabeza con los textos. Necesito instrucciones visuales y un buen compañero de obra.',
+        location: 'Sevilla, Spain',
+        skills: ['Albañilería', 'Encofrado', 'Solado', 'PRL Construcción', 'Herramientas manuales', 'Lectura de planos simplificados'],
+        experience: [
+            { title: 'Oficial de albañilería', company: 'Reformas del Sur', startYear: 2020, endYear: null, current: true, description: 'Rehabilitación de viviendas y albañilería general' },
+            { title: 'Peón de obra', company: 'Construcciones Betis', startYear: 2017, endYear: 2020, current: false, description: 'Apoyo en obras de nueva construcción' },
+        ],
+        education: [
+            { degree: 'Certificado de Profesionalidad en Albañilería', institution: 'Centro de Formación Profesional Sevilla', year: 2017, field: 'Construcción' },
+        ],
+        preferences: {
+            workMode: 'on-site',
+            salaryMin: 22000,
+            salaryMax: 32000,
+            locations: ['Sevilla', 'Málaga', 'Córdoba'],
+            roles: ['Albañil', 'Oficial de obra', 'Solador', 'Peón especializado'],
+            industries: ['Construcción', 'Reformas', 'Mantenimiento'],
+        },
+        privacy: { visibleInSearch: true, showRealName: true, shareDiagnosis: true, shareTherapistContact: false, shareAssessmentDetails: true },
+        assessment: {
+            completed: true,
+            completedAt: '2026-02-15T08:00:00Z',
+            strengths: ['physical_endurance', 'spatial_3d_thinking', 'hands_on_precision', 'problem_solving_practical', 'team_loyalty'],
+            challenges: ['reading_written_plans', 'written_documentation', 'long_text_instructions', 'administrative_tasks'],
+            score: 75,
+            technicalSkills: ['Albañilería', 'Encofrado', 'Solado'],
+            softSkills: ['reliability', 'physical_strength', 'team_player'],
+            workStyle: { preferredHours: 'early_morning', environment: 'outdoor_physical', collaboration: 'in_person_small_team' },
+        },
+        metadata: { lastLogin: new Date().toISOString(), profileViews: 5, matchesReceived: 3, applicationsSubmitted: 2 },
+    },
+
+    // ─── TEA — Jardinero / Viverista ──────────────────────────
+    {
+        email: 'adrian.campos@seed.diversia.com',
+        firstName: 'Adrián',
+        lastName: 'Campos',
+        diagnoses: ['encrypted:TEA'],
+        accommodationsNeeded: 'encrypted:predictable_routine,minimal_social_demands,outdoor_work,written_schedules,sensory_breaks',
+        experienceYears: 3,
+        bio: 'Viverista con TEA. Las plantas no mienten, no cambian de humor y responden a cuidados sistemáticos. Conozco más de 200 especies por su nombre científico. Mi rutina ideal: llegar al vivero, consultar mi lista de tareas visual y trabajar con la tierra en silencio.',
+        location: 'Málaga, Spain',
+        skills: ['Jardinería', 'Botánica', 'Identificación de especies', 'Riego sistematizado', 'Control de plagas', 'Trasplante'],
+        experience: [
+            { title: 'Auxiliar de vivero', company: 'Garden Center Mediterráneo', startYear: 2023, endYear: null, current: true, description: 'Cuidado de plantas, riego y atención a clientes (mínima)' },
+            { title: 'Voluntario de jardín botánico', company: 'Jardín Botánico de Málaga', startYear: 2022, endYear: 2023, current: false, description: 'Catalogación y cuidado de colecciones botánicas' },
+        ],
+        education: [
+            { degree: 'FP Grado Medio en Jardinería y Floristería', institution: 'IES El Palo', year: 2022, field: 'Jardinería' },
+        ],
+        preferences: {
+            workMode: 'on-site',
+            salaryMin: 18000,
+            salaryMax: 24000,
+            locations: ['Málaga', 'Granada'],
+            roles: ['Jardinero', 'Viverista', 'Auxiliar de vivero', 'Cuidador de plantas'],
+            industries: ['Agricultura / Viveros', 'Servicios Generales', 'Medio ambiente'],
+        },
+        privacy: { visibleInSearch: true, showRealName: false, shareDiagnosis: false, shareTherapistContact: false, shareAssessmentDetails: true },
+        assessment: {
+            completed: true,
+            completedAt: '2026-02-18T09:00:00Z',
+            strengths: ['botanical_knowledge', 'systematic_care', 'pattern_detection_plants', 'routine_adherence', 'attention_to_detail'],
+            challenges: ['customer_interaction', 'unexpected_task_changes', 'noisy_environments', 'team_meetings'],
+            score: 82,
+            technicalSkills: ['Botánica', 'Riego', 'Control de plagas'],
+            softSkills: ['patience', 'observation', 'consistency'],
+            workStyle: { preferredHours: 'early_morning', environment: 'outdoor_quiet', collaboration: 'independent' },
+        },
+        metadata: { lastLogin: new Date().toISOString(), profileViews: 4, matchesReceived: 2, applicationsSubmitted: 1 },
+    },
+
+    // ─── Tourette — Cocinero/a de Línea ───────────────────────
+    {
+        email: 'rosa.molina@seed.diversia.com',
+        firstName: 'Rosa',
+        lastName: 'Molina',
+        diagnoses: ['encrypted:Sindrome_Tourette'],
+        accommodationsNeeded: 'encrypted:understanding_environment,busy_noisy_ok,breaks_when_needed,no_customer_facing,fixed_station',
+        experienceYears: 5,
+        bio: 'Cocinera de línea con Tourette. La cocina es el lugar perfecto para mí: ruido, movimiento, acción... nadie nota mis tics entre el fragor de los fogones. Mi estación es mi castillo. Cocino con pasión y rapidez.',
+        location: 'Valencia, Spain',
+        skills: ['Cocina profesional', 'Cocina mediterránea', 'Gestión de tiempos', 'APPCC', 'Emplatado', 'Mise en place'],
+        experience: [
+            { title: 'Cocinera de línea', company: 'Restaurante La Barraca', startYear: 2022, endYear: null, current: true, description: 'Cocina de línea en restaurante de alta afluencia' },
+            { title: 'Ayudante de cocina', company: 'Hotel Mediterráneo', startYear: 2020, endYear: 2022, current: false, description: 'Apoyo en cocina de hotel y preparación de buffets' },
+        ],
+        education: [
+            { degree: 'FP Grado Medio en Cocina y Gastronomía', institution: 'Escuela de Hostelería de Valencia', year: 2020, field: 'Hostelería' },
+        ],
+        preferences: {
+            workMode: 'on-site',
+            salaryMin: 20000,
+            salaryMax: 28000,
+            locations: ['Valencia', 'Barcelona', 'Alicante'],
+            roles: ['Cocinera de línea', 'Cocinera', 'Chef de partida', 'Ayudante de cocina'],
+            industries: ['Restauración', 'Hostelería', 'Alimentación'],
+        },
+        privacy: { visibleInSearch: true, showRealName: true, shareDiagnosis: true, shareTherapistContact: false, shareAssessmentDetails: true },
+        assessment: {
+            completed: true,
+            completedAt: '2026-02-20T10:00:00Z',
+            strengths: ['speed', 'multitasking_in_flow', 'heat_tolerance', 'consistency_under_pressure', 'hands_on_creativity'],
+            challenges: ['quiet_environments_highlight_tics', 'customer_facing_anxiety', 'new_team_adaptation'],
+            score: 78,
+            technicalSkills: ['Cocina mediterránea', 'APPCC', 'Emplatado'],
+            softSkills: ['resilience', 'determination', 'team_spirit'],
+            workStyle: { preferredHours: 'split_shift', environment: 'active_noisy', collaboration: 'kitchen_brigade' },
+        },
+        metadata: { lastLogin: new Date().toISOString(), profileViews: 6, matchesReceived: 3, applicationsSubmitted: 2 },
+    },
+
+    // ─── TEA (nivel 2 apoyo) — Mecánico de Taller ─────────────
+    {
+        email: 'oscar.prieto@seed.diversia.com',
+        firstName: 'Óscar',
+        lastName: 'Prieto',
+        diagnoses: ['encrypted:TEA_nivel2'],
+        accommodationsNeeded: 'encrypted:structured_environment,visual_manuals,own_workspace,minimal_social_demands,predictable_routine,sensory_protection_noise',
+        experienceYears: 6,
+        bio: 'Mecánico de taller con TEA nivel 2. Los motores son mi idioma: lógicos, predecibles, reparables. Puedo diagnosticar una avería por el sonido del motor. Necesito mi bahía fija, mis herramientas ordenadas y que no me cambien la rutina sin aviso.',
+        location: 'Zaragoza, Spain',
+        skills: ['Mecánica general', 'Diagnosis electrónica', 'Inyección diésel', 'Herramientas de taller', 'PRL', 'Electricidad básica del automóvil'],
+        experience: [
+            { title: 'Mecánico', company: 'Talleres Aranda', startYear: 2021, endYear: null, current: true, description: 'Reparación mecánica general y mantenimiento' },
+            { title: 'Aprendiz de mecánico', company: 'Auto Rápido', startYear: 2019, endYear: 2021, current: false, description: 'Aprendizaje de mecánica general con tutor' },
+        ],
+        education: [
+            { degree: 'FP Grado Medio en Electromecánica de Vehículos', institution: 'IES Tiempos Modernos, Zaragoza', year: 2019, field: 'Automoción' },
+        ],
+        preferences: {
+            workMode: 'on-site',
+            salaryMin: 22000,
+            salaryMax: 32000,
+            locations: ['Zaragoza', 'Huesca'],
+            roles: ['Mecánico', 'Mecánico de taller', 'Técnico de automoción'],
+            industries: ['Automoción', 'Transporte', 'Logística'],
+        },
+        privacy: { visibleInSearch: true, showRealName: false, shareDiagnosis: false, shareTherapistContact: false, shareAssessmentDetails: false },
+        assessment: {
+            completed: true,
+            completedAt: '2026-02-22T08:00:00Z',
+            strengths: ['auditory_diagnosis', 'systematic_repair', 'tool_organization', 'routine_precision', 'mechanical_intuition'],
+            challenges: ['team_meetings', 'unexpected_schedule_changes', 'loud_compressor_noise', 'customer_interaction'],
+            score: 83,
+            technicalSkills: ['Mecánica general', 'Diagnosis', 'Inyección diésel'],
+            softSkills: ['precision', 'reliability', 'deep_focus'],
+            workStyle: { preferredHours: 'fixed_morning', environment: 'own_bay_structured', collaboration: 'minimal' },
+        },
+        metadata: { lastLogin: new Date().toISOString(), profileViews: 5, matchesReceived: 2, applicationsSubmitted: 1 },
+    },
+
+    // ─── TDAH — Pintora de Obra / Construcción ────────────────
+    {
+        email: 'marina.gil@seed.diversia.com',
+        firstName: 'Marina',
+        lastName: 'Gil',
+        diagnoses: ['encrypted:TDAH'],
+        accommodationsNeeded: 'encrypted:music_allowed,movement_allowed,visual_color_guides,flexible_breaks,varied_tasks',
+        experienceYears: 4,
+        bio: 'Pintora de obra con TDAH. Pintar paredes es mi flow perfecto: movimiento constante, creatividad con colores, resultados visibles al instante. Con mis auriculares y una brocha, el TDAH desaparece. Cada habitación es un lienzo nuevo.',
+        location: 'Sevilla, Spain',
+        skills: ['Pintura interior', 'Pintura exterior', 'Preparación de superficies', 'Colorimetría', 'Estuco decorativo', 'PRL'],
+        experience: [
+            { title: 'Pintora de obra', company: 'Pinturas Esperanza', startYear: 2023, endYear: null, current: true, description: 'Pintura en rehabilitaciones y obra nueva' },
+            { title: 'Ayudante de pintura', company: 'Reformas Express', startYear: 2021, endYear: 2023, current: false, description: 'Apoyo en trabajos de pintura y acabados' },
+        ],
+        education: [
+            { degree: 'Certificado de Profesionalidad en Pintura Decorativa', institution: 'Centro de Referencia Nacional de Formación, Sevilla', year: 2021, field: 'Construcción' },
+        ],
+        preferences: {
+            workMode: 'on-site',
+            salaryMin: 20000,
+            salaryMax: 28000,
+            locations: ['Sevilla', 'Cádiz', 'Huelva'],
+            roles: ['Pintora de obra', 'Pintora decorativa', 'Estucadora'],
+            industries: ['Construcción', 'Reformas', 'Decoración'],
+        },
+        privacy: { visibleInSearch: true, showRealName: true, shareDiagnosis: true, shareTherapistContact: false, shareAssessmentDetails: true },
+        assessment: {
+            completed: true,
+            completedAt: '2026-02-24T09:00:00Z',
+            strengths: ['color_sense', 'physical_stamina', 'creative_finishing', 'fast_execution', 'visible_progress_motivation'],
+            challenges: ['waiting_for_paint_to_dry', 'detailed_budgets', 'administrative_tasks', 'monotone_single_color_rooms'],
+            score: 76,
+            technicalSkills: ['Pintura', 'Colorimetría', 'Estuco'],
+            softSkills: ['creativity', 'energy', 'optimism'],
+            workStyle: { preferredHours: 'morning', environment: 'active_varied', collaboration: 'small_team' },
+        },
+        metadata: { lastLogin: new Date().toISOString(), profileViews: 4, matchesReceived: 2, applicationsSubmitted: 2 },
+    },
+
+    // ─── Dislexia — Ebanista / Carpintero Artesanal ───────────
+    {
+        email: 'hector.blanco@seed.diversia.com',
+        firstName: 'Héctor',
+        lastName: 'Blanco',
+        diagnoses: ['encrypted:Dislexia'],
+        accommodationsNeeded: 'encrypted:visual_blueprints,verbal_instructions,minimal_writing,text_to_speech,hands_on_learning',
+        experienceYears: 10,
+        bio: 'Ebanista con dislexia. Los manuales escritos me cuestan, pero dime qué mueble quieres y lo construyo sin necesitar ni un plano: lo veo en 3D en mi cabeza. Mi dislexia me dio pensamiento espacial tridimensional y manos que entienden la madera.',
+        location: 'Granada, Spain',
+        skills: ['Ebanistería', 'Carpintería artesanal', 'Restauración de muebles', 'Tornería', 'Tallado en madera', 'Barnizado', 'Diseño de piezas'],
+        experience: [
+            { title: 'Ebanista autónomo', company: 'Taller Blanco (Autónomo)', startYear: 2019, endYear: null, current: true, description: 'Creación y restauración de muebles artesanales por encargo' },
+            { title: 'Carpintero', company: 'Muebles Sierra Nevada', startYear: 2015, endYear: 2019, current: false, description: 'Carpintería industrial y artesanal' },
+        ],
+        education: [
+            { degree: 'FP Grado Superior en Carpintería y Mueble', institution: 'Escuela de Arte de Granada', year: 2015, field: 'Carpintería' },
+        ],
+        preferences: {
+            workMode: 'on-site',
+            salaryMin: 24000,
+            salaryMax: 34000,
+            locations: ['Granada', 'Málaga', 'Jaén'],
+            roles: ['Ebanista', 'Carpintero artesanal', 'Restaurador de muebles', 'Tornero'],
+            industries: ['Artesanía', 'Construcción', 'Restauración de patrimonio'],
+        },
+        privacy: { visibleInSearch: true, showRealName: true, shareDiagnosis: true, shareTherapistContact: true, shareAssessmentDetails: true },
+        assessment: {
+            completed: true,
+            completedAt: '2026-02-25T10:00:00Z',
+            strengths: ['3d_spatial_visualization', 'manual_precision', 'creative_design', 'material_knowledge', 'problem_solving_practical'],
+            challenges: ['written_quotes', 'reading_technical_manuals', 'invoicing', 'email_communication'],
+            score: 85,
+            technicalSkills: ['Ebanistería', 'Tornería', 'Restauración'],
+            softSkills: ['craftsmanship', 'patience', 'artistic_vision'],
+            workStyle: { preferredHours: 'flexible', environment: 'own_workshop', collaboration: 'independent_or_pair' },
+        },
+        metadata: { lastLogin: new Date().toISOString(), profileViews: 7, matchesReceived: 3, applicationsSubmitted: 1 },
+    },
+
+    // ─── TAG + TDAH (dual) — Ceramista / Artesana ─────────────
+    {
+        email: 'carmen.saez@seed.diversia.com',
+        firstName: 'Carmen',
+        lastName: 'Sáez',
+        diagnoses: ['encrypted:TAG_Ansiedad_Generalizada', 'encrypted:TDAH'],
+        accommodationsNeeded: 'encrypted:rhythmic_repetitive_work,quiet_workspace,own_pace,no_time_pressure,sensory_grounding,flexible_schedule',
+        experienceYears: 4,
+        bio: 'Ceramista con TAG y TDAH. La ansiedad me paralizaba en trabajos de oficina, pero el torno de alfarero me salva la vida cada día. El barro entre mis manos me ancla al presente. El TDAH me da la creatividad para diseñar piezas únicas, y la repetición del torno calma mi ansiedad.',
+        location: 'Granada, Spain',
+        skills: ['Cerámica', 'Torno de alfarero', 'Esmaltado', 'Modelado manual', 'Hornos cerámicos', 'Diseño de piezas'],
+        experience: [
+            { title: 'Ceramista', company: 'Taller Albayzín Cerámica', startYear: 2023, endYear: null, current: true, description: 'Creación de piezas cerámicas artesanales y cursos' },
+            { title: 'Aprendiz de cerámica', company: 'Cooperativa de Artesanos de Granada', startYear: 2021, endYear: 2023, current: false, description: 'Aprendizaje de técnicas cerámicas tradicionales' },
+        ],
+        education: [
+            { degree: 'Grado en Bellas Artes (especialidad Cerámica)', institution: 'Universidad de Granada', year: 2021, field: 'Arte' },
+        ],
+        preferences: {
+            workMode: 'on-site',
+            salaryMin: 18000,
+            salaryMax: 26000,
+            locations: ['Granada', 'Málaga', 'Sevilla'],
+            roles: ['Ceramista', 'Alfarera', 'Artesana', 'Monitora de taller'],
+            industries: ['Artesanía', 'Educación', 'Cultura'],
+        },
+        privacy: { visibleInSearch: true, showRealName: true, shareDiagnosis: true, shareTherapistContact: true, shareAssessmentDetails: true },
+        assessment: {
+            completed: true,
+            completedAt: '2026-02-26T11:00:00Z',
+            strengths: ['artistic_creativity', 'rhythmic_work', 'sensory_grounding', 'tactile_sensitivity', 'design_vision'],
+            challenges: ['deadlines_create_panic', 'administrative_tasks', 'crowded_environments', 'phone_calls'],
+            score: 74,
+            technicalSkills: ['Cerámica', 'Torno', 'Esmaltado'],
+            softSkills: ['artistic_sensitivity', 'patience_in_craft', 'teaching_ability'],
+            workStyle: { preferredHours: 'flexible_morning', environment: 'quiet_workshop', collaboration: 'independent_or_small_group' },
+        },
+        metadata: { lastLogin: new Date().toISOString(), profileViews: 5, matchesReceived: 2, applicationsSubmitted: 1 },
+    },
+
+    // ─── Bipolar tipo II — Peón Agrícola / Jardinero ──────────
+    {
+        email: 'tomas.guerrero@seed.diversia.com',
+        firstName: 'Tomás',
+        lastName: 'Guerrero',
+        diagnoses: ['encrypted:Trastorno_Bipolar_tipo_II'],
+        accommodationsNeeded: 'encrypted:flexible_schedule_for_episodes,outdoor_work,physical_activity,understanding_absences,reduced_social_pressure,predictable_seasonal_work',
+        experienceYears: 6,
+        bio: 'Peón agrícola y jardinero con trastorno bipolar tipo II. La tierra no pregunta cómo estás hoy. En mis fases de hipomanía soy el trabajador más productivo del campo. En mis fases bajas, las tareas repetitivas al aire libre me mantienen en pie. El sol y la actividad física son mi mejor medicina complementaria.',
+        location: 'Málaga, Spain',
+        skills: ['Agricultura', 'Jardinería', 'Poda de frutales', 'Riego', 'Maquinaria agrícola', 'Trabajo físico', 'Conocimiento estacional'],
+        experience: [
+            { title: 'Peón agrícola', company: 'Finca Los Almendros', startYear: 2021, endYear: null, current: true, description: 'Cultivo, poda y recolección de frutales' },
+            { title: 'Jardinero', company: 'Ayuntamiento de Málaga (subcontrata)', startYear: 2019, endYear: 2021, current: false, description: 'Mantenimiento de jardines públicos' },
+        ],
+        education: [
+            { degree: 'FP Grado Medio en Producción Agroecológica', institution: 'IES La Rosaleda, Málaga', year: 2019, field: 'Agricultura' },
+        ],
+        preferences: {
+            workMode: 'on-site',
+            salaryMin: 18000,
+            salaryMax: 24000,
+            locations: ['Málaga', 'Granada', 'Almería'],
+            roles: ['Peón agrícola', 'Jardinero', 'Auxiliar de vivero', 'Operario de finca'],
+            industries: ['Agricultura / Viveros', 'Servicios Generales', 'Medio ambiente'],
+        },
+        privacy: { visibleInSearch: true, showRealName: true, shareDiagnosis: false, shareTherapistContact: false, shareAssessmentDetails: false },
+        assessment: {
+            completed: true,
+            completedAt: '2026-02-28T08:00:00Z',
+            strengths: ['physical_endurance', 'seasonal_knowledge', 'nature_connection', 'hypomania_productivity', 'outdoor_resilience'],
+            challenges: ['depressive_episodes', 'winter_months', 'social_energy_fluctuations', 'long_indoor_periods'],
+            score: 70,
+            technicalSkills: ['Agricultura', 'Poda', 'Maquinaria agrícola'],
+            softSkills: ['resilience', 'self_awareness', 'honesty'],
+            workStyle: { preferredHours: 'early_morning', environment: 'outdoor_physical', collaboration: 'small_team_or_alone' },
+        },
+        metadata: { lastLogin: new Date().toISOString(), profileViews: 3, matchesReceived: 2, applicationsSubmitted: 1 },
     },
 ]
