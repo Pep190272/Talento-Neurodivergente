@@ -13,8 +13,8 @@ export function getRedirectUrlByRole(role: string | null | undefined): string {
 
     switch (safeRole) {
         case 'individual':
-        case 'candidate': // Alias for consistency
-            return '/dashboard/candidate'
+        case 'candidate':
+            return '/dashboard/individual'
         case 'company':
             return '/dashboard/company'
         case 'therapist':
