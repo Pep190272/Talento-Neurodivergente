@@ -37,6 +37,10 @@ export default async function middleware(req) {
       const loginUrl = new URL('/auth/role-selection', req.url)
       return NextResponse.redirect(loginUrl)
     }
+    // Admin always goes to /admin (the admin dashboard has its own layout)
+    if (session.user?.type === 'admin') {
+      return NextResponse.redirect(new URL('/admin', req.url))
+    }
   }
 
   // 2. Role-based route protection — return 403 if role doesn't match
@@ -62,7 +66,8 @@ export default async function middleware(req) {
     const role = session.user?.type
     let target = '/dashboard'
 
-    if (role === 'company') target = '/dashboard/company'
+    if (role === 'admin') target = '/admin'
+    else if (role === 'company') target = '/dashboard/company'
     else if (role === 'individual') target = '/dashboard/candidate'
     else if (role === 'therapist') target = '/dashboard/therapist'
 

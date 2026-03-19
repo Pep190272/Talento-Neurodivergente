@@ -44,7 +44,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         // Determinar nombre a mostrar según tipo
         let name = 'User'
-        if (user.userType === 'company' && user.company) {
+        if (user.userType === 'admin') {
+          name = 'Super Admin'
+        } else if (user.userType === 'company' && user.company) {
           name = user.company.name
         } else if (user.userType === 'individual' && user.individual) {
           name = `${user.individual.firstName} ${user.individual.lastName}`.trim()

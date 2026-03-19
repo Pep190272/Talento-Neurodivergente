@@ -20,10 +20,12 @@ logger = logging.getLogger(__name__)
 
 limiter = Limiter(key_func=get_remote_address, default_limits=["60/minute"])
 
-# Superadmin credentials
-SUPERADMIN_EMAIL = "diversiaeternals@gmail.com"
-SUPERADMIN_PASSWORD = "d1v3rs14Eternal$"
-SUPERADMIN_DISPLAY_NAME = "Super Admin DiversIA"
+# Superadmin credentials — prefer environment variables over hardcoded defaults
+import os
+
+SUPERADMIN_EMAIL = os.getenv("ADMIN_EMAIL", "diversiaeternals@gmail.com")
+SUPERADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "d1v3rs14Eternal$")
+SUPERADMIN_DISPLAY_NAME = os.getenv("ADMIN_DISPLAY_NAME", "Super Admin DiversIA")
 
 
 async def ensure_auth_tables() -> None:
