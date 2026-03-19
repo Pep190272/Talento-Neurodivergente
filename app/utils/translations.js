@@ -15,7 +15,8 @@ export const translations = {
       user: 'User',
       individual: 'Individual',
       company: 'Company',
-      therapist: 'Therapist'
+      therapist: 'Therapist',
+      admin: 'Admin Panel'
     },
     hero: {
       badge: 'Powered by Neurodivergent Intelligence',
@@ -171,7 +172,8 @@ export const translations = {
       user: 'Usuario',
       individual: 'Individual',
       company: 'Empresa',
-      therapist: 'Terapeuta'
+      therapist: 'Terapeuta',
+      admin: 'Panel Admin'
     },
     hero: {
       badge: 'Impulsado por Inteligencia Neurodivergente',

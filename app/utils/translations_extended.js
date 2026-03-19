@@ -247,7 +247,8 @@ export const extendedTranslations = {
       subtitle: {
         individual: 'Neurodivergent Individual',
         company: 'Company Placement Manager',
-        therapist: 'Therapist / Specialist'
+        therapist: 'Therapist / Specialist',
+        admin: 'Super Administrator'
       },
       logout: 'Logout',
       noProfile: {
@@ -722,7 +723,8 @@ export const extendedTranslations = {
       subtitle: {
         individual: 'Individual Neurodivergente',
         company: 'Gerente de Colocación de Empresa',
-        therapist: 'Terapeuta / Especialista'
+        therapist: 'Terapeuta / Especialista',
+        admin: 'Super Administrador'
       },
       logout: 'Cerrar Sesión',
       noProfile: {

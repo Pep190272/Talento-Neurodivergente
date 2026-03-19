@@ -25,7 +25,7 @@ export default async function DashboardLayout({
                         Diversia
                     </Link>
                     <div className="mt-2 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                        {userType === 'company' ? 'Empresa' : userType === 'individual' ? 'Candidato' : 'Terapeuta'}
+                        {userType === 'admin' ? 'Super Admin' : userType === 'company' ? 'Empresa' : userType === 'individual' ? 'Candidato' : 'Terapeuta'}
                     </div>
                 </div>
 
@@ -51,6 +51,13 @@ export default async function DashboardLayout({
                         <>
                             <NavLink href="/dashboard/therapist" icon="📊" label="Resumen" />
                             <NavLink href="/forms" icon="📝" label="Mi Perfil" />
+                        </>
+                    )}
+
+                    {userType === 'admin' && (
+                        <>
+                            <NavLink href="/admin" icon="🛡️" label="Panel Admin" />
+                            <NavLink href="/forms" icon="📝" label="Formularios" />
                         </>
                     )}
                 </nav>
