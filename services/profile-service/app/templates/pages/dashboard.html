@@ -673,6 +673,421 @@
         </div>
       </template>
 
+      <!-- ==================== ADMIN / SUPERADMIN DASHBOARD ==================== -->
+      <template x-if="$store.auth.role === 'admin'">
+        <div>
+
+          <!-- Platform KPI Cards -->
+          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+            <div class="glass rounded-xl p-5 hover-lift">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-gray-500 uppercase tracking-wider">Candidatos</span>
+                <i data-lucide="user" class="w-4 h-4 text-primary"></i>
+              </div>
+              <div class="text-2xl font-display font-bold text-primary" x-text="adminStats.users?.candidates ?? '-'"></div>
+              <p class="text-xs text-gray-400 mt-1">Registrados</p>
+            </div>
+            <div class="glass rounded-xl p-5 hover-lift">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-gray-500 uppercase tracking-wider">Empresas</span>
+                <i data-lucide="building-2" class="w-4 h-4 text-amber-500"></i>
+              </div>
+              <div class="text-2xl font-display font-bold text-amber-600" x-text="adminStats.users?.companies ?? '-'"></div>
+              <p class="text-xs text-gray-400 mt-1">
+                <span x-text="adminStats.early_adopter?.company_remaining ?? '?'"></span> slots EA libres
+              </p>
+            </div>
+            <div class="glass rounded-xl p-5 hover-lift">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-gray-500 uppercase tracking-wider">Terapeutas</span>
+                <i data-lucide="stethoscope" class="w-4 h-4 text-purple-500"></i>
+              </div>
+              <div class="text-2xl font-display font-bold text-purple-600" x-text="adminStats.users?.therapists ?? '-'"></div>
+              <p class="text-xs text-gray-400 mt-1">
+                <span x-text="adminStats.early_adopter?.therapist_remaining ?? '?'"></span> slots EA libres
+              </p>
+            </div>
+            <div class="glass rounded-xl p-5 hover-lift">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-gray-500 uppercase tracking-wider">Total</span>
+                <i data-lucide="users" class="w-4 h-4 text-green-500"></i>
+              </div>
+              <div class="text-2xl font-display font-bold text-green-600" x-text="adminStats.users?.total ?? '-'"></div>
+              <p class="text-xs text-gray-400 mt-1">Usuarios</p>
+            </div>
+            <div class="glass rounded-xl p-5 hover-lift">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-gray-500 uppercase tracking-wider">Ofertas</span>
+                <i data-lucide="briefcase" class="w-4 h-4 text-cyan-500"></i>
+              </div>
+              <div class="text-2xl font-display font-bold text-cyan-600" x-text="adminJobCount"></div>
+              <p class="text-xs text-gray-400 mt-1">Publicadas</p>
+            </div>
+            <div class="glass rounded-xl p-5 hover-lift">
+              <div class="flex items-center justify-between mb-2">
+                <span class="text-xs text-gray-500 uppercase tracking-wider">Seguridad</span>
+                <i data-lucide="shield-check" class="w-4 h-4 text-green-500"></i>
+              </div>
+              <div class="text-2xl font-display font-bold text-green-600">GDPR</div>
+              <p class="text-xs text-gray-400 mt-1">EU &middot; Self-hosted</p>
+            </div>
+          </div>
+
+          <!-- System Info Banner -->
+          <div class="glass rounded-xl p-6 mb-6 border-2 border-indigo-200 bg-gradient-to-r from-indigo-50 to-blue-50">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center shrink-0">
+                  <i data-lucide="server" class="w-6 h-6 text-indigo-600"></i>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-lg text-indigo-900">DiversIA Eternals v2.6.0</h3>
+                  <p class="text-sm text-indigo-700">
+                    6 microservicios &middot; PostgreSQL 16 &middot; Ollama (Llama 3.2 3B) &middot; VPS Hostinger Paris (EU)
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="px-3 py-1.5 text-xs font-bold rounded-lg bg-green-100 text-green-700">
+                  <i data-lucide="check-circle" class="w-3 h-3 inline"></i> Produccion
+                </span>
+                <span class="px-3 py-1.5 text-xs font-bold rounded-lg bg-blue-100 text-blue-700">
+                  <i data-lucide="brain" class="w-3 h-3 inline"></i> IA Self-hosted
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── DEMO: Candidate Showcase ── -->
+          <div class="glass rounded-xl p-6 mb-6">
+            <div class="flex items-center gap-3 mb-5">
+              <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+                <i data-lucide="user" class="w-5 h-5 text-primary"></i>
+              </div>
+              <div>
+                <h2 class="font-semibold text-lg">Vista Candidato</h2>
+                <p class="text-xs text-gray-500">Perfil neurocognitivo 24D, Brain Suite, matching de empleo</p>
+              </div>
+            </div>
+
+            <div class="grid lg:grid-cols-3 gap-6">
+              <!-- Demo Radar Chart -->
+              <div class="lg:col-span-2 border border-gray-100 rounded-lg p-5">
+                <h3 class="text-sm font-semibold text-gray-700 mb-3">
+                  <i data-lucide="brain" class="w-4 h-4 inline text-primary"></i>
+                  Perfil Neurocognitivo 24D (demo)
+                </h3>
+                <div class="relative" style="max-height: 350px;">
+                  <canvas id="adminRadarChart"></canvas>
+                </div>
+                <p class="text-xs text-gray-400 mt-2 text-center">
+                  Valores 0-1 &middot; 8 categorias &middot; 24 dimensiones cognitivas
+                </p>
+              </div>
+
+              <!-- Demo strengths -->
+              <div class="space-y-4">
+                <div class="border border-gray-100 rounded-lg p-4">
+                  <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Top Fortalezas</h4>
+                  <div class="space-y-2">
+                    <template x-for="s in demoStrengths" :key="s.label">
+                      <div>
+                        <div class="flex justify-between text-sm mb-1">
+                          <span class="text-gray-700" x-text="s.label"></span>
+                          <span class="font-semibold text-primary" x-text="s.pct + '%'"></span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-1.5">
+                          <div class="bg-primary h-1.5 rounded-full" :style="'width:' + s.pct + '%'"></div>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+
+                <div class="border border-gray-100 rounded-lg p-4">
+                  <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Brain Suite</h4>
+                  <div class="space-y-2 text-sm">
+                    <div class="flex justify-between">
+                      <span class="text-gray-600"><i data-lucide="gamepad-2" class="w-3 h-3 inline text-purple-500"></i> Memory Matrix</span>
+                      <span class="font-semibold">850 pts</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-gray-600"><i data-lucide="gamepad-2" class="w-3 h-3 inline text-purple-500"></i> Pattern Hunter</span>
+                      <span class="font-semibold">720 pts</span>
+                    </div>
+                    <div class="flex justify-between">
+                      <span class="text-gray-600"><i data-lucide="gamepad-2" class="w-3 h-3 inline text-purple-500"></i> Focus Flow</span>
+                      <span class="font-semibold">680 pts</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Demo Matched Jobs -->
+            <div class="mt-5 border border-gray-100 rounded-lg p-4">
+              <h4 class="text-sm font-semibold text-gray-700 mb-3">
+                <i data-lucide="handshake" class="w-4 h-4 inline text-primary"></i>
+                Matching de Empleo (demo)
+              </h4>
+              <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                <template x-for="job in demoJobs" :key="job.title">
+                  <div class="border border-gray-100 rounded-lg p-3 hover:border-primary/30 transition">
+                    <div class="flex items-center justify-between mb-1">
+                      <h5 class="text-sm font-medium truncate" x-text="job.title"></h5>
+                      <span class="px-2 py-0.5 text-xs font-bold rounded-full"
+                            :class="job.pct >= 70 ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'"
+                            x-text="job.pct + '%'"></span>
+                    </div>
+                    <p class="text-xs text-gray-500" x-text="job.company + ' · ' + job.location"></p>
+                    <p class="text-xs text-green-600 mt-1" x-text="job.reason"></p>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── DEMO: Company Showcase ── -->
+          <div class="glass rounded-xl p-6 mb-6">
+            <div class="flex items-center gap-3 mb-5">
+              <div class="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
+                <i data-lucide="building-2" class="w-5 h-5 text-amber-600"></i>
+              </div>
+              <div>
+                <h2 class="font-semibold text-lg">Vista Empresa</h2>
+                <p class="text-xs text-gray-500">Score de inclusividad, ofertas de empleo, Early Adopter</p>
+              </div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <!-- Inclusivity Score Demo -->
+              <div class="lg:col-span-2 border border-gray-100 rounded-lg p-5">
+                <h4 class="text-sm font-semibold text-gray-700 mb-4">
+                  <i data-lucide="heart" class="w-4 h-4 inline text-pink-500"></i>
+                  Score de Inclusividad (demo)
+                </h4>
+                <div class="grid sm:grid-cols-2 gap-3">
+                  <template x-for="cat in demoInclusivity" :key="cat.label">
+                    <div class="flex items-center gap-3">
+                      <div class="flex-1">
+                        <div class="flex justify-between text-sm mb-1">
+                          <span class="text-gray-600" x-text="cat.label"></span>
+                          <span class="font-bold" :class="cat.pct >= 75 ? 'text-green-600' : cat.pct >= 50 ? 'text-yellow-600' : 'text-red-500'"
+                                x-text="cat.pct + '%'"></span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                          <div class="h-2 rounded-full transition-all"
+                               :class="cat.pct >= 75 ? 'bg-green-500' : cat.pct >= 50 ? 'bg-yellow-400' : 'bg-red-400'"
+                               :style="'width:' + cat.pct + '%'"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </template>
+                </div>
+                <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
+                  <span class="text-sm font-medium text-gray-700">Score Global</span>
+                  <span class="text-xl font-bold text-green-600">72%</span>
+                </div>
+              </div>
+
+              <!-- Early Adopter info -->
+              <div class="border border-gray-100 rounded-lg p-5">
+                <h4 class="text-sm font-semibold text-gray-700 mb-3">
+                  <i data-lucide="crown" class="w-4 h-4 inline text-amber-500"></i>
+                  Early Adopter Program
+                </h4>
+                <div class="space-y-3 text-sm">
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Empresas</span>
+                    <span class="font-semibold">
+                      <span x-text="adminStats.users?.companies ?? 0"></span>/<span x-text="adminStats.early_adopter?.company_limit ?? 20"></span>
+                    </span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="bg-amber-400 h-2 rounded-full transition-all"
+                         :style="'width:' + ((adminStats.users?.companies ?? 0) / (adminStats.early_adopter?.company_limit ?? 20) * 100) + '%'"></div>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-600">Terapeutas</span>
+                    <span class="font-semibold">
+                      <span x-text="adminStats.users?.therapists ?? 0"></span>/<span x-text="adminStats.early_adopter?.therapist_limit ?? 20"></span>
+                    </span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="bg-purple-400 h-2 rounded-full transition-all"
+                         :style="'width:' + ((adminStats.users?.therapists ?? 0) / (adminStats.early_adopter?.therapist_limit ?? 20) * 100) + '%'"></div>
+                  </div>
+                  <p class="text-xs text-gray-400 mt-2">Plan PRO gratuito 3 meses para los primeros registrados</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── DEMO: Therapist Showcase ── -->
+          <div class="glass rounded-xl p-6 mb-6">
+            <div class="flex items-center gap-3 mb-5">
+              <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
+                <i data-lucide="stethoscope" class="w-5 h-5 text-purple-600"></i>
+              </div>
+              <div>
+                <h2 class="font-semibold text-lg">Vista Terapeuta</h2>
+                <p class="text-xs text-gray-500">Perfil profesional, verificacion, areas de soporte</p>
+              </div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div class="border border-gray-100 rounded-lg p-5">
+                <div class="flex items-center gap-3 mb-3">
+                  <div class="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center">
+                    <span class="text-purple-600 font-display font-bold text-lg">D</span>
+                  </div>
+                  <div>
+                    <p class="font-semibold">Dra. Maria Lopez</p>
+                    <p class="text-xs text-gray-500">Neuropsicologia Clinica</p>
+                  </div>
+                </div>
+                <div class="space-y-2 text-sm">
+                  <div class="flex justify-between">
+                    <span class="text-gray-500">Colegiado</span>
+                    <span class="font-medium">PSI-28392</span>
+                  </div>
+                  <div class="flex justify-between">
+                    <span class="text-gray-500">Verificacion</span>
+                    <span class="px-2 py-0.5 text-xs rounded-full bg-green-100 text-green-700">Verificada</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="border border-gray-100 rounded-lg p-5">
+                <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Areas de Soporte</h4>
+                <div class="flex flex-wrap gap-2">
+                  <span class="px-3 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-700">TDAH</span>
+                  <span class="px-3 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-700">TEA</span>
+                  <span class="px-3 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-700">Dislexia</span>
+                  <span class="px-3 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-700">Ansiedad</span>
+                  <span class="px-3 py-1 text-xs font-medium rounded-full bg-purple-100 text-purple-700">Altas Capacidades</span>
+                </div>
+              </div>
+
+              <div class="border border-gray-100 rounded-lg p-5">
+                <h4 class="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Funciones (roadmap)</h4>
+                <div class="space-y-2 text-sm">
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i>
+                    <span class="text-gray-700">Perfil profesional</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="check-circle" class="w-4 h-4 text-green-500"></i>
+                    <span class="text-gray-700">Verificacion de colegiado</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="clock" class="w-4 h-4 text-gray-300"></i>
+                    <span class="text-gray-400">Publicar cursos</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="clock" class="w-4 h-4 text-gray-300"></i>
+                    <span class="text-gray-400">Agenda de sesiones</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <i data-lucide="clock" class="w-4 h-4 text-gray-300"></i>
+                    <span class="text-gray-400">Validar perfiles 24D</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Architecture & Matching Overview ── -->
+          <div class="glass rounded-xl p-6 mb-6">
+            <div class="flex items-center gap-3 mb-5">
+              <div class="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center">
+                <i data-lucide="cpu" class="w-5 h-5 text-cyan-600"></i>
+              </div>
+              <div>
+                <h2 class="font-semibold text-lg">Matching Trilateral 24D</h2>
+                <p class="text-xs text-gray-500">Algoritmo de matching candidato-empresa-terapeuta con IA</p>
+              </div>
+            </div>
+
+            <div class="grid sm:grid-cols-3 gap-4">
+              <div class="border border-gray-100 rounded-lg p-5 text-center">
+                <div class="w-14 h-14 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-3">
+                  <i data-lucide="user" class="w-7 h-7 text-primary"></i>
+                </div>
+                <h4 class="font-semibold mb-1">Candidato</h4>
+                <p class="text-xs text-gray-500">Quiz 24D + Brain Suite generan NeuroVector</p>
+                <div class="mt-2 px-2 py-1 text-xs rounded bg-blue-50 text-blue-700 font-mono">NeuroVector24D</div>
+              </div>
+              <div class="border border-gray-100 rounded-lg p-5 text-center">
+                <div class="w-14 h-14 mx-auto rounded-full bg-amber-100 flex items-center justify-center mb-3">
+                  <i data-lucide="building-2" class="w-7 h-7 text-amber-600"></i>
+                </div>
+                <h4 class="font-semibold mb-1">Empresa</h4>
+                <p class="text-xs text-gray-500">Evaluacion inclusividad + requisitos por oferta</p>
+                <div class="mt-2 px-2 py-1 text-xs rounded bg-amber-50 text-amber-700 font-mono">InclusivityScore</div>
+              </div>
+              <div class="border border-gray-100 rounded-lg p-5 text-center">
+                <div class="w-14 h-14 mx-auto rounded-full bg-purple-100 flex items-center justify-center mb-3">
+                  <i data-lucide="stethoscope" class="w-7 h-7 text-purple-600"></i>
+                </div>
+                <h4 class="font-semibold mb-1">Terapeuta</h4>
+                <p class="text-xs text-gray-500">Validacion profesional + acompanamiento</p>
+                <div class="mt-2 px-2 py-1 text-xs rounded bg-purple-50 text-purple-700 font-mono">TherapistProfile</div>
+              </div>
+            </div>
+
+            <div class="mt-4 pt-4 border-t border-gray-100 text-center">
+              <div class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-primary/5 to-purple-50">
+                <i data-lucide="sparkles" class="w-4 h-4 text-primary"></i>
+                <span class="text-sm font-medium text-gray-700">Cosine Similarity + Ollama (Llama 3.2 3B) para reportes IA</span>
+              </div>
+              <p class="text-xs text-gray-400 mt-2">Modelo de negocio: Pago por exito (10-15% salario) &middot; Candidatos y terapeutas siempre gratis</p>
+            </div>
+          </div>
+
+          <!-- Quick Actions Admin -->
+          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <a href="/forms" class="glass rounded-xl p-5 hover-lift hover:border-primary transition flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <i data-lucide="file-text" class="w-5 h-5 text-primary"></i>
+              </div>
+              <div>
+                <h3 class="font-medium text-sm">Formularios</h3>
+                <p class="text-xs text-gray-400">Crear perfiles demo</p>
+              </div>
+            </a>
+            <a href="/quiz" class="glass rounded-xl p-5 hover-lift hover:border-green-400 transition flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center shrink-0">
+                <i data-lucide="brain" class="w-5 h-5 text-green-600"></i>
+              </div>
+              <div>
+                <h3 class="font-medium text-sm">Quiz 24D</h3>
+                <p class="text-xs text-gray-400">Ver evaluacion cognitiva</p>
+              </div>
+            </a>
+            <a href="/games" class="glass rounded-xl p-5 hover-lift hover:border-purple-400 transition flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center shrink-0">
+                <i data-lucide="gamepad-2" class="w-5 h-5 text-purple-600"></i>
+              </div>
+              <div>
+                <h3 class="font-medium text-sm">Brain Suite</h3>
+                <p class="text-xs text-gray-400">Juegos cognitivos</p>
+              </div>
+            </a>
+            <a href="/jobs" class="glass rounded-xl p-5 hover-lift hover:border-cyan-400 transition flex items-center gap-4">
+              <div class="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center shrink-0">
+                <i data-lucide="briefcase" class="w-5 h-5 text-cyan-600"></i>
+              </div>
+              <div>
+                <h3 class="font-medium text-sm">Ofertas</h3>
+                <p class="text-xs text-gray-400">Ver ofertas publicadas</p>
+              </div>
+            </a>
+          </div>
+
+        </div>
+      </template>
+
     </div>
   </div>
 </section>
@@ -729,6 +1144,18 @@ function dashboardApp() {
       keys: ['emotional_regulation', 'emotional_awareness', 'emotional_resilience'] },
   ];
 
+  // Demo data for admin dashboard
+  const demoVector = {
+    attention: 0.85, memory: 0.72, processing_speed: 0.68,
+    pattern_recognition: 0.91, creative_thinking: 0.88, analytical_thinking: 0.75,
+    verbal_reasoning: 0.62, spatial_reasoning: 0.79,
+    communication_style: 0.55, teamwork: 0.60, leadership: 0.45, conflict_resolution: 0.50,
+    task_switching: 0.40, deadline_management: 0.58, autonomy: 0.82, structure_need: 0.70,
+    sensory_sensitivity: 0.78, stress_tolerance: 0.52,
+    domain_expertise: 0.80, learning_speed: 0.87, problem_solving: 0.90,
+    detail_orientation: 0.83, abstract_thinking: 0.76, technical_depth: 0.85,
+  };
+
   return {
     profile: null,
     subscription: null,
@@ -740,6 +1167,38 @@ function dashboardApp() {
     bottomDimensions: [],
     categories: [],
     radarChart: null,
+    adminRadarChart: null,
+    adminStats: {},
+    adminJobCount: '-',
+
+    get demoStrengths() {
+      return [
+        { label: 'Deteccion de patrones', pct: 91 },
+        { label: 'Resolucion de problemas', pct: 90 },
+        { label: 'Pensamiento creativo', pct: 88 },
+        { label: 'Velocidad de aprendizaje', pct: 87 },
+        { label: 'Atencion sostenida', pct: 85 },
+      ];
+    },
+
+    get demoJobs() {
+      return [
+        { title: 'Data Scientist', company: 'TechInclusion SL', location: 'Remoto', pct: 87, reason: 'Tu deteccion de patrones es clave' },
+        { title: 'UX Researcher', company: 'NeuroDev Labs', location: 'Barcelona', pct: 78, reason: 'Tu pensamiento creativo destaca' },
+        { title: 'Backend Developer', company: 'AccessiTech', location: 'Madrid', pct: 72, reason: 'Tu atencion sostenida se alinea' },
+      ];
+    },
+
+    get demoInclusivity() {
+      return [
+        { label: 'Entorno sensorial', pct: 80 },
+        { label: 'Cultura y comunicacion', pct: 75 },
+        { label: 'Procesos de seleccion', pct: 65 },
+        { label: 'Adaptaciones laborales', pct: 82 },
+        { label: 'Formacion', pct: 55 },
+        { label: 'Medicion', pct: 70 },
+      ];
+    },
 
     get hasQuiz() {
       return this.profile?.neuro_vector && typeof this.profile.neuro_vector === 'object'
@@ -805,6 +1264,26 @@ function dashboardApp() {
           window.location.href = '/login';
           return;
         }
+      }
+
+      // Admin: load platform stats
+      const isAdmin = Alpine.store('auth').role === 'admin';
+      if (isAdmin) {
+        const [statsResult, jobsAdminResult] = await Promise.allSettled([
+          api('/auth/admin/stats'),
+          api('/profiles/jobs').catch(() => []),
+        ]);
+        if (statsResult.status === 'fulfilled') this.adminStats = statsResult.value;
+        if (jobsAdminResult.status === 'fulfilled') {
+          const jobs = jobsAdminResult.value;
+          this.adminJobCount = Array.isArray(jobs) ? jobs.length : 0;
+        }
+        this.loading = false;
+        this.$nextTick(() => {
+          this.renderAdminRadarChart();
+          lucide.createIcons();
+        });
+        return;
       }
 
       // Load profile, game scores, matched jobs, and subscription in parallel
@@ -946,9 +1425,68 @@ function dashboardApp() {
       });
     },
 
+    renderAdminRadarChart() {
+      const canvas = document.getElementById('adminRadarChart');
+      if (!canvas) return;
+      if (this.adminRadarChart) this.adminRadarChart.destroy();
+
+      const keys = Object.keys(demoVector);
+      const labels = keys.map(k => dimLabels[k] || k);
+      const values = keys.map(k => demoVector[k]);
+
+      const categoryColors = [
+        '#3B82F6','#3B82F6','#3B82F6','#3B82F6','#3B82F6','#3B82F6','#3B82F6','#3B82F6',
+        '#EC4899','#EC4899','#EC4899','#EC4899',
+        '#10B981','#10B981','#10B981','#10B981','#10B981','#10B981',
+        '#F59E0B','#F59E0B','#F59E0B','#F59E0B','#F59E0B','#F59E0B',
+      ];
+
+      this.adminRadarChart = new Chart(canvas, {
+        type: 'radar',
+        data: {
+          labels,
+          datasets: [{
+            label: 'Perfil demo 24D',
+            data: values,
+            backgroundColor: 'rgba(4, 107, 210, 0.15)',
+            borderColor: '#046BD2',
+            borderWidth: 2,
+            pointBackgroundColor: categoryColors,
+            pointBorderColor: '#fff',
+            pointBorderWidth: 1,
+            pointRadius: 4,
+            pointHoverRadius: 7,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: (ctx) => `${Math.round(ctx.raw * 100)}%`,
+                title: (items) => items[0].label,
+              }
+            }
+          },
+          scales: {
+            r: {
+              beginAtZero: true,
+              max: 1,
+              ticks: { stepSize: 0.25, display: false },
+              grid: { color: 'rgba(0,0,0,0.06)' },
+              angleLines: { color: 'rgba(0,0,0,0.06)' },
+              pointLabels: { font: { size: 9, family: 'Rajdhani' }, color: '#64748B' }
+            }
+          }
+        }
+      });
+    },
+
     roleLabel() {
       const r = Alpine.store('auth').role;
-      return { candidate: 'Candidato', company: 'Empresa', therapist: 'Terapeuta' }[r] || r;
+      return { candidate: 'Candidato', company: 'Empresa', therapist: 'Terapeuta', admin: 'Admin' }[r] || r;
     }
   }
 }
