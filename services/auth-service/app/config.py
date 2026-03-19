@@ -12,6 +12,9 @@ class AuthServiceSettings(BaseSettings):
     SERVICE_PORT: int = 8001
     ENV: str = "development"
 
+    # CORS — comma-separated allowed origins for production
+    ALLOWED_ORIGINS: str = "https://app.diversia.click,https://diversia.click,https://www.diversia.click"
+
     # Email (SMTP for welcome emails)
     SMTP_HOST: str = "smtp.gmail.com"
     SMTP_PORT: int = 587
