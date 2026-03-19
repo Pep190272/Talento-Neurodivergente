@@ -154,6 +154,37 @@ async def early_adopter_slots(
     }
 
 
+@router.get("/admin/stats")
+async def admin_stats(
+    current_user: TokenPayload = Depends(get_current_user),
+    user_repo: SQLAlchemyUserRepository = Depends(get_user_repository),
+) -> dict:
+    """Platform statistics for admin dashboard. Requires admin role."""
+    if current_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+
+    candidate_count = await user_repo.count_by_role("candidate")
+    company_count = await user_repo.count_by_role("company")
+    therapist_count = await user_repo.count_by_role("therapist")
+    admin_count = await user_repo.count_by_role("admin")
+
+    return {
+        "users": {
+            "candidates": candidate_count,
+            "companies": company_count,
+            "therapists": therapist_count,
+            "admins": admin_count,
+            "total": candidate_count + company_count + therapist_count + admin_count,
+        },
+        "early_adopter": {
+            "company_remaining": max(0, EARLY_ADOPTER_COMPANY_LIMIT - company_count),
+            "therapist_remaining": max(0, EARLY_ADOPTER_THERAPIST_LIMIT - therapist_count),
+            "company_limit": EARLY_ADOPTER_COMPANY_LIMIT,
+            "therapist_limit": EARLY_ADOPTER_THERAPIST_LIMIT,
+        },
+    }
+
+
 @router.post("/forgot-password", response_model=MessageResponse)
 async def forgot_password(
     body: ForgotPasswordRequest,
