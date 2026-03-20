@@ -1,14 +1,14 @@
 # Project Status — DiversIA Eternals
 
 > **Ultima actualizacion**: 20 de marzo de 2026
-> **Version**: 2.8.0
+> **Version**: 2.9.0
 > **Produccion**: https://app.diversia.click
 
 ---
 
 ## Estado General
 
-**Todos los microservicios core estan desplegados y operativos en produccion.** La app corre en `app.diversia.click` sobre un VPS Hostinger (Paris, EU) via Dokploy con Docker Compose: 5 microservicios Python/FastAPI + PostgreSQL 16 + nginx gateway + Ollama. Superadmin dashboard funcional con seed data demo (14 empresas, 24 candidatos, 8 terapeutas, 33 ofertas, 55+ matchings). Dashboard V2 en desarrollo (6 despachos, issues #135-#140). Modelo de pago por exito (ADR-006) con baremo escalonado aprobado (8-15% segun rango salarial) y flujo superadmin para cobros via Stripe Checkout. 28 issues abiertas priorizadas.
+**Todos los microservicios core estan desplegados y operativos en produccion.** La app corre en `app.diversia.click` sobre un VPS Hostinger (Paris, EU) via Dokploy con Docker Compose: 5 microservicios Python/FastAPI + PostgreSQL 16 + nginx gateway + Ollama. Superadmin dashboard funcional con seed data demo (14 empresas, 24 candidatos, 8 terapeutas, 33 ofertas, 55+ matchings). **Dashboard V2 completado** (6 despachos, issues #135-#140): tabs por actor, graficos Chart.js, hub matching SVG, chat privado (49 tests), onboarding tour, WCAG AAA. Modelo de pago por exito (ADR-006) con baremo escalonado aprobado (8-15% segun rango salarial) y flujo superadmin para cobros via Stripe Checkout.
 
 ---
 
@@ -76,7 +76,7 @@
 | intelligence-service | 36 | Passing |
 | shared kernel | 13 | Passing |
 | subscription-service | 90 | Passing |
-| **Total pytest** | **323** | **0 failing** |
+| **Total pytest** | **372** | **0 failing** |
 | | | |
 | **JS/TS (Vitest)** | **285** | **0 failing (2 skipped)** |
 | E2E (Playwright) | 6 suites | Requieren servicios corriendo |

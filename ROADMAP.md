@@ -1,7 +1,7 @@
 # ROADMAP — DiversIA (app.diversia.click)
 
 **Fecha de inicio:** 10 de febrero de 2026
-**Ultima actualizacion:** 20 de marzo de 2026
+**Ultima actualizacion:** 21 de marzo de 2026
 **Estado:** Produccion — app.diversia.click operativa
 
 ---
@@ -32,12 +32,12 @@
 | **Frontend (Jinja2)** | 15 paginas, Alpine.js + Tailwind CDN | — |
 | **Seed data** | 14 empresas, 24 candidatos, 8 terapeutas, 33 ofertas, 55+ matchings | — |
 
-**Total: 323 tests pytest + 285 tests JS/TS = 608+ tests, 0 failing**
+**Total: 372 tests pytest + 285 tests JS/TS = 657+ tests, 0 failing**
 
 ### Que falta (priorizado)
 
 1. **Success Fee con Stripe** — Implementar flujo de pago por exito (SuccessFeePayment + Checkout + webhook). Baremo escalonado por rango salarial (8-15%). Flujo: superadmin aprueba → Checkout Session → webhook marca pagado.
-2. **Dashboard V2** — 6 despachos: tabs por actor, graficos interactivos, hub matching, chat, onboarding tour, WCAG AAA (issues #135-#140)
+2. ~~**Dashboard V2** — 6 despachos (issues #135-#140)~~ **COMPLETADO v2.9.0**
 3. **Migrar secrets a Dokploy** (#77) — credenciales fuera de docker-compose.yml antes de integrar Stripe
 4. **Fix inclusivity score siempre 100** (#40) — bug P0 en matching
 5. **Backups automatizados + log rotation** (#87)
@@ -91,13 +91,20 @@ Internet → Traefik (Dokploy) → nginx gateway (:8000)
 - [x] CLAUDE.md como sistema nativo (reemplaza docs legacy)
 - [x] 15 neurodivergencias representadas (TAG, Bipolar II, TEA nivel 2, diagnosticos duales)
 
-### En progreso: Dashboard V2 (issues #135-#140)
-- [ ] Despacho 6: UX/UI contrastes WCAG AAA (#140)
-- [ ] Despacho 1: Sistema de pestanas por actor (#135)
-- [ ] Despacho 2: Graficos interactivos Chart.js (#136)
-- [ ] Despacho 3: Hub de matching trilateral (#137)
-- [ ] Despacho 4: Chat privado entre actores (#138)
-- [ ] Despacho 5: Guia interactiva onboarding (#139)
+### Completado: Dashboard V2 (20 Mar 2026) — v2.9.0
+- [x] Despacho 6: UX/UI contrastes WCAG AAA (#140)
+- [x] Despacho 1: Sistema de pestanas por actor (#135)
+- [x] Despacho 2: Graficos interactivos Chart.js (#136)
+- [x] Despacho 3: Hub de matching trilateral (#137)
+- [x] Despacho 4: Chat privado entre actores (#138) — 49 tests
+- [x] Despacho 5: Guia interactiva onboarding (#139)
+
+### Proxima sesion (21 Mar): Prioridades
+1. **Migrar secrets a Dokploy** (#77) — prerequisito critico para Stripe
+2. **Fix inclusivity score siempre 100** (#40) — bug P0
+3. **Success Fee con Stripe** — iniciar SuccessFeePayment entity + baremo
+4. **Backups automatizados** (#87) — pg_dump diario
+5. Retirar codigo legacy Next.js (cleanup final)
 
 ### Pendiente: Success Fee con Stripe (ADR-006 implementacion)
 - [ ] Migrar secrets a Dokploy (#77) — prerequisito
@@ -186,6 +193,7 @@ Internet → Traefik (Dokploy) → nginx gateway (:8000)
 | **v2.6.0** | **16 Mar** | **Inclusivity Engine, 360 Ecosystem, A11y WCAG AA, Tech Debt cleanup (-7,800 LOC)** |
 | **v2.7.0** | **18 Mar** | **Seed data expandida: oficios manuales, 24 candidatos, 15 neurodivergencias** |
 | **v2.8.0** | **19 Mar** | **Superadmin dashboard, admin role, CLAUDE.md nativo, Dashboard V2 briefs** |
+| **v2.9.0** | **20 Mar** | **Dashboard V2 completo: 6 despachos (#135-#140), chat backend (49 tests), onboarding tour** |
 
 ---
 
@@ -358,5 +366,16 @@ cd services/shared && python -m pytest tests/ -q                  # 13 tests
 - Decision: flujo superadmin para success fee (seguridad, legal, admin)
 - Baremo escalonado aprobado: 8% (hasta 20K) / 10% (20-35K) / 12% (35-50K) / 14% (50-80K) / 15% (+80K)
 - Plan: migrar secrets (#77) → implementar SuccessFeePayment → Dashboard V2 en paralelo
+
+### Sesion 21 (20 Mar): Dashboard V2 completo — 6 despachos (#135-#140)
+- **Despacho 6 WCAG AAA** (#140): contrastes text-gray-700, icon-accessible, touch-target, shadow-md, forced-colors, prefers-reduced-motion
+- **Despacho 1 Tabs** (#135): Sistema de pestanas admin con 4 vistas (Resumen, Candidato, Empresa, Terapeuta), keyboard nav (Arrow, Home, End), ARIA roles
+- **Despacho 2 Charts** (#136): 5 graficos Chart.js (doughnut, timeline, radar mejorado, Brain Suite bars, inclusivity bars), tooltips con categorias y niveles
+- **Despacho 3 Hub** (#137): SVG trilateral interactivo con hover, lineas animadas, metricas live, CTAs scroll-to-section, Alpine.js matchingHub() component
+- **Despacho 4 Chat** (#138): Domain puro (Conversation, Message, ConversationStatus) + 5 endpoints REST + InMemoryMessageRepository + 49 tests + widget mensajes recientes + ruta /messages
+- **Despacho 5 Onboarding** (#139): Tour step-by-step puro Alpine.js (overlay + spotlight + tooltip), 4 guias por rol, auto-inicio primer login, boton "?", localStorage, Escape, aria-live
+- Dashboard: 1618 → 2573 lineas, template tags balanceados (27/27)
+- **372 tests pytest** (+49 chat), 0 failing
+- **v2.9.0**
 
 </details>

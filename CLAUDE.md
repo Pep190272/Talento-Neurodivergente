@@ -11,7 +11,7 @@
 Matching trilateral 24D (candidato-empresa-terapeuta) con IA self-hosted.
 
 - **Produccion**: https://app.diversia.click (VPS Hostinger, Paris, EU, Dokploy)
-- **Version**: 2.8.0
+- **Version**: 2.9.0
 - **Stack**: Python/FastAPI microservicios + PostgreSQL 16 + Ollama (Llama 3.2 3B)
 - **Frontend**: Jinja2 + Alpine.js + Tailwind CSS (dentro de profile-service)
 - **Repo**: https://github.com/Pep190272/Talento-Neurodivergente

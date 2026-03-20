@@ -7,6 +7,24 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [2.9.0] - 2026-03-20
+
+### Sesion 2026-03-20 — Dashboard V2 Completo: 6 Despachos (#135-#140)
+
+#### Added
+- **Despacho 1 — Tabs por actor (#135)**: Sistema de pestanas con navegacion por teclado (Arrow, Home, End) para admin dashboard con 4 vistas: Resumen, Candidato, Empresa, Terapeuta
+- **Despacho 2 — Graficos interactivos (#136)**: 5 graficos Chart.js (doughnut distribucion usuarios, timeline registros, radar 24D mejorado con tooltips categoricos, barras Brain Suite, barras inclusividad)
+- **Despacho 3 — Hub de matching trilateral (#137)**: SVG interactivo con nodos hover, lineas animadas (dash + pulse), flechas de flujo, metricas en vivo, CTAs scroll-to-section
+- **Despacho 4 — Chat privado (#138)**: Backend completo (domain puro + 5 endpoints REST + 49 tests) + widget "Mensajes Recientes" en dashboard candidato + ruta /messages
+- **Despacho 5 — Onboarding tour (#139)**: Guia interactiva step-by-step por rol (candidato 6 pasos, empresa 5, terapeuta 4, admin 5) con overlay + spotlight + tooltip, auto-inicio primer login, boton "?" flotante, persistencia localStorage
+- **Despacho 6 — WCAG AAA (#140)**: Contrastes AAA (text-gray-700 en vez de gray-500), icon-accessible, touch-target 44x44, shadow-md, forced-colors, prefers-reduced-motion
+
+#### Changed
+- Dashboard crece de 1618 a 2573 lineas con los 6 despachos integrados
+- **372 tests pytest** (+49 nuevos del chat service), 0 failing
+
+---
+
 ## [2.8.0] - 2026-03-19
 
 ### Sesion 2026-03-18/19 — Superadmin Dashboard, Admin Role, CLAUDE.md Nativo
