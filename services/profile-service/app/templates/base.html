@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<html lang="es" class="scroll-smooth"
+      x-data="{ highContrast: localStorage.getItem('diversia_high_contrast') === 'true' || window.matchMedia('(prefers-contrast: more)').matches }"
+      x-init="$watch('highContrast', val => { localStorage.setItem('diversia_high_contrast', val); })"
+      :class="{ 'high-contrast': highContrast }">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
