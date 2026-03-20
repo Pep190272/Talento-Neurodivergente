@@ -42,8 +42,8 @@
       <div class="hidden md:flex items-center gap-3">
         <!-- High contrast toggle -->
         <button class="hc-toggle touch-target"
-                @click="$root.closest('html').__x.$data.highContrast = !$root.closest('html').__x.$data.highContrast"
-                :aria-pressed="$root.closest('html').__x.$data.highContrast ? 'true' : 'false'"
+                @click="let hc = document.documentElement.classList.toggle('high-contrast'); localStorage.setItem('diversia_high_contrast', hc)"
+                :aria-pressed="document.documentElement.classList.contains('high-contrast') ? 'true' : 'false'"
                 aria-label="Activar modo de alto contraste"
                 title="Alto contraste">
           <i data-lucide="sun" class="w-4 h-4 icon-accessible" aria-hidden="true"></i>
@@ -110,8 +110,8 @@
       <!-- Mobile high contrast toggle -->
       <div class="border-t border-gray-200 mt-2 pt-2">
         <button class="hc-toggle w-full justify-center touch-target"
-                @click="$root.closest('html').__x.$data.highContrast = !$root.closest('html').__x.$data.highContrast"
-                :aria-pressed="$root.closest('html').__x.$data.highContrast ? 'true' : 'false'"
+                @click="let hc = document.documentElement.classList.toggle('high-contrast'); localStorage.setItem('diversia_high_contrast', hc)"
+                :aria-pressed="document.documentElement.classList.contains('high-contrast') ? 'true' : 'false'"
                 aria-label="Activar modo de alto contraste">
           <i data-lucide="sun" class="w-4 h-4 icon-accessible" aria-hidden="true"></i>
           Alto contraste

@@ -1,10 +1,15 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth"
-      x-data="{ highContrast: localStorage.getItem('diversia_high_contrast') === 'true' || window.matchMedia('(prefers-contrast: more)').matches }"
-      x-init="$watch('highContrast', val => { localStorage.setItem('diversia_high_contrast', val); })"
-      :class="{ 'high-contrast': highContrast }">
+<html lang="es" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
+  <script>
+    // Despacho 6: Apply high contrast mode immediately to prevent flash
+    (function() {
+      var hc = localStorage.getItem('diversia_high_contrast') === 'true'
+               || window.matchMedia('(prefers-contrast: more)').matches;
+      if (hc) document.documentElement.classList.add('high-contrast');
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>{% block title %}DiversIA Eternals{% endblock %}</title>
   <meta name="description" content="{% block description %}Plataforma de matching trilateral para talento neurodivergente{% endblock %}">
@@ -16,6 +21,8 @@
 
   <!-- Tailwind CSS (compiled) + custom styles -->
   <link rel="stylesheet" href="/static/css/styles.css">
+  <!-- WCAG AAA Accessibility + High Contrast Mode (Despacho 6) -->
+  <link rel="stylesheet" href="/static/css/app.css">
 
   <!-- Alpine.js -->
   <script defer src="/static/js/vendor/alpine.3.14.8.min.js"></script>
@@ -28,13 +35,18 @@
 </head>
 <body class="font-body bg-white text-dark antialiased" x-data x-init="$store.auth.init()">
 
+  <!-- Skip to content link for screen readers -->
+  <a href="#main-content" class="sr-only" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;" onfocus="this.style.position='static';this.style.width='auto';this.style.height='auto';" onblur="this.style.position='absolute';this.style.left='-9999px';this.style.width='1px';this.style.height='1px';">
+    Saltar al contenido principal
+  </a>
+
   {% include "partials/navbar.html" %}
 
   <!-- Toast notification -->
   <div class="toast" :class="[$store.toast.visible ? 'show' : '', 'toast-' + $store.toast.type]"
-       x-text="$store.toast.message"></div>
+       x-text="$store.toast.message" role="alert" aria-live="assertive"></div>
 
-  <main>
+  <main id="main-content" role="main">
     {% block content %}{% endblock %}
   </main>
 
