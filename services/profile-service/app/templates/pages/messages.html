@@ -1,0 +1,348 @@
+{% extends "base.html" %}
+{% block title %}Mensajes — DiversIA{% endblock %}
+
+{% block content %}
+<section class="py-4 px-4" x-data="messagesApp()" x-init="init()">
+  <div class="max-w-6xl mx-auto">
+
+    <!-- Loading -->
+    <div x-show="loading" class="flex items-center justify-center py-20">
+      <div class="spinner"></div>
+    </div>
+
+    <div x-show="!loading" x-cloak class="flex flex-col" style="height: calc(100vh - 160px);">
+
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-4">
+        <h1 class="font-display text-xl font-bold text-dark flex items-center gap-2">
+          <i data-lucide="message-circle" class="w-5 h-5 text-primary"></i>
+          Mensajes
+        </h1>
+        <a href="/dashboard" class="text-sm text-gray-500 hover:text-primary transition">
+          <i data-lucide="arrow-left" class="w-4 h-4 inline"></i> Dashboard
+        </a>
+      </div>
+
+      <div class="flex flex-1 min-h-0 glass rounded-xl overflow-hidden">
+
+        <!-- Conversation list (left panel) -->
+        <div class="w-full sm:w-80 border-r border-gray-100 flex flex-col"
+             :class="activeConversation && 'hidden sm:flex'">
+
+          <!-- Search placeholder -->
+          <div class="p-3 border-b border-gray-100">
+            <div class="relative">
+              <i data-lucide="search" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+              <input type="text" placeholder="Buscar conversaciones..."
+                     x-model="searchQuery"
+                     class="w-full pl-9 pr-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary">
+            </div>
+          </div>
+
+          <!-- Conversation items -->
+          <div class="flex-1 overflow-y-auto">
+            <template x-if="filteredConversations.length === 0">
+              <div class="flex flex-col items-center justify-center h-full text-center p-6">
+                <div class="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center mb-3">
+                  <i data-lucide="message-circle" class="w-7 h-7 text-gray-300"></i>
+                </div>
+                <p class="text-sm text-gray-500 mb-1">Sin conversaciones</p>
+                <p class="text-xs text-gray-400">Inicia una conversacion desde el perfil de otro usuario</p>
+              </div>
+            </template>
+
+            <template x-for="conv in filteredConversations" :key="conv.id">
+              <button @click="selectConversation(conv)"
+                      class="w-full p-3 flex items-center gap-3 hover:bg-gray-50 transition text-left border-b border-gray-50"
+                      :class="activeConversation?.id === conv.id ? 'bg-primary/5 border-l-2 border-l-primary' : ''">
+                <div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                  <span class="text-primary font-display font-bold"
+                        x-text="(conv._otherName || '?')[0].toUpperCase()"></span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center justify-between">
+                    <p class="text-sm font-medium truncate" x-text="conv._otherName || 'Usuario'"></p>
+                    <span class="text-xs text-gray-400 shrink-0"
+                          x-text="conv.last_message_at ? timeAgo(conv.last_message_at) : ''"></span>
+                  </div>
+                  <p class="text-xs text-gray-500 truncate" x-text="conv.last_message_preview || 'Sin mensajes'"></p>
+                </div>
+                <div x-show="conv.unread_count > 0"
+                     class="w-5 h-5 rounded-full bg-primary text-white text-xs flex items-center justify-center shrink-0"
+                     x-text="conv.unread_count"></div>
+              </button>
+            </template>
+          </div>
+        </div>
+
+        <!-- Chat area (right panel) -->
+        <div class="flex-1 flex flex-col"
+             :class="!activeConversation && 'hidden sm:flex'">
+
+          <!-- No conversation selected -->
+          <template x-if="!activeConversation">
+            <div class="flex-1 flex items-center justify-center text-center p-6">
+              <div>
+                <div class="w-16 h-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                  <i data-lucide="messages-square" class="w-8 h-8 text-gray-300"></i>
+                </div>
+                <h3 class="font-semibold text-gray-600 mb-1">Selecciona una conversacion</h3>
+                <p class="text-sm text-gray-400">Elige una conversacion de la lista para empezar a chatear</p>
+              </div>
+            </div>
+          </template>
+
+          <!-- Active conversation -->
+          <template x-if="activeConversation">
+            <div class="flex flex-col h-full">
+
+              <!-- Chat header -->
+              <div class="p-3 border-b border-gray-100 flex items-center gap-3">
+                <button @click="activeConversation = null"
+                        class="sm:hidden p-1 hover:bg-gray-100 rounded-lg transition">
+                  <i data-lucide="arrow-left" class="w-5 h-5 text-gray-600"></i>
+                </button>
+                <div class="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center">
+                  <span class="text-primary font-display font-bold text-sm"
+                        x-text="(activeConversation._otherName || '?')[0].toUpperCase()"></span>
+                </div>
+                <div>
+                  <p class="text-sm font-semibold" x-text="activeConversation._otherName || 'Usuario'"></p>
+                  <p class="text-xs text-gray-400">Chat privado</p>
+                </div>
+              </div>
+
+              <!-- Messages area -->
+              <div class="flex-1 overflow-y-auto p-4 space-y-3" id="messagesContainer"
+                   x-ref="messagesContainer">
+
+                <template x-if="messages.length === 0">
+                  <div class="text-center py-8">
+                    <p class="text-sm text-gray-400">No hay mensajes aun. Envia el primero.</p>
+                  </div>
+                </template>
+
+                <template x-for="msg in messages" :key="msg.id">
+                  <div class="flex" :class="msg.sender_id === currentUserId ? 'justify-end' : 'justify-start'">
+                    <div class="max-w-[75%] px-4 py-2.5 rounded-2xl text-sm"
+                         :class="msg.sender_id === currentUserId
+                           ? 'bg-primary text-white rounded-br-md'
+                           : 'bg-gray-100 text-gray-800 rounded-bl-md'">
+                      <p x-text="msg.content" class="whitespace-pre-wrap break-words"></p>
+                      <div class="flex items-center gap-1 mt-1"
+                           :class="msg.sender_id === currentUserId ? 'justify-end' : 'justify-start'">
+                        <span class="text-[10px] opacity-60" x-text="formatTime(msg.created_at)"></span>
+                        <template x-if="msg.sender_id === currentUserId && msg.read_at">
+                          <i data-lucide="check-check" class="w-3 h-3 opacity-60"></i>
+                        </template>
+                      </div>
+                    </div>
+                  </div>
+                </template>
+              </div>
+
+              <!-- Message input -->
+              <div class="p-3 border-t border-gray-100">
+                <form @submit.prevent="sendMessage()" class="flex items-center gap-2">
+                  <input type="text"
+                         x-model="newMessage"
+                         @keydown.enter.prevent="sendMessage()"
+                         placeholder="Escribe un mensaje..."
+                         maxlength="5000"
+                         class="flex-1 px-4 py-2.5 text-sm border border-gray-200 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                         :disabled="sending">
+                  <button type="submit"
+                          :disabled="!newMessage.trim() || sending"
+                          class="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary-deep transition disabled:opacity-40 disabled:cursor-not-allowed shrink-0">
+                    <i data-lucide="send" class="w-4 h-4"></i>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </template>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function messagesApp() {
+  return {
+    loading: true,
+    conversations: [],
+    messages: [],
+    activeConversation: null,
+    newMessage: '',
+    sending: false,
+    searchQuery: '',
+    currentUserId: '',
+    pollInterval: null,
+
+    get filteredConversations() {
+      if (!this.searchQuery.trim()) return this.conversations;
+      const q = this.searchQuery.toLowerCase();
+      return this.conversations.filter(c =>
+        (c._otherName || '').toLowerCase().includes(q) ||
+        (c.last_message_preview || '').toLowerCase().includes(q)
+      );
+    },
+
+    async init() {
+      // Auth recovery
+      if (!Alpine.store('auth').isLoggedIn) {
+        const saved = localStorage.getItem('diversia_auth');
+        if (saved) {
+          try {
+            const data = JSON.parse(saved);
+            Alpine.store('auth').setAuth(data.user, data.token);
+          } catch { /* ignore */ }
+        }
+        if (!Alpine.store('auth').isLoggedIn) {
+          window.location.href = '/login';
+          return;
+        }
+      }
+
+      this.currentUserId = Alpine.store('auth').user?.id || '';
+
+      // Check URL params for pre-selected conversation
+      const params = new URLSearchParams(window.location.search);
+      const targetUser = params.get('with');
+
+      await this.loadConversations();
+
+      // If ?with=userId, create/get conversation with that user
+      if (targetUser && targetUser !== this.currentUserId) {
+        await this.startConversationWith(targetUser);
+      }
+
+      this.loading = false;
+      this.$nextTick(() => lucide.createIcons());
+
+      // Polling every 10s
+      this.pollInterval = setInterval(() => this.poll(), 10000);
+    },
+
+    async loadConversations() {
+      try {
+        const data = await api('/profiles/conversations');
+        this.conversations = (data || []).map(c => ({
+          ...c,
+          _otherName: this.resolveOtherName(c),
+        }));
+      } catch (e) {
+        console.error('Failed to load conversations:', e);
+        this.conversations = [];
+      }
+    },
+
+    resolveOtherName(conv) {
+      const otherId = conv.participant_1_id === this.currentUserId
+        ? conv.participant_2_id
+        : conv.participant_1_id;
+      // For now, show a shortened ID; profiles can be resolved later
+      return 'Usuario ' + otherId.substring(0, 6);
+    },
+
+    async startConversationWith(userId) {
+      try {
+        const conv = await api('/profiles/conversations', {
+          method: 'POST',
+          body: JSON.stringify({ other_user_id: userId }),
+        });
+        if (conv) {
+          await this.loadConversations();
+          const found = this.conversations.find(c => c.id === conv.id);
+          if (found) this.selectConversation(found);
+        }
+      } catch (e) {
+        console.error('Failed to start conversation:', e);
+      }
+    },
+
+    async selectConversation(conv) {
+      this.activeConversation = conv;
+      await this.loadMessages(conv.id);
+      this.$nextTick(() => {
+        this.scrollToBottom();
+        lucide.createIcons();
+      });
+    },
+
+    async loadMessages(conversationId) {
+      try {
+        const data = await api(`/profiles/conversations/${conversationId}/messages?limit=100`);
+        this.messages = data || [];
+      } catch (e) {
+        console.error('Failed to load messages:', e);
+        this.messages = [];
+      }
+    },
+
+    async sendMessage() {
+      if (!this.newMessage.trim() || !this.activeConversation || this.sending) return;
+
+      this.sending = true;
+      try {
+        const msg = await api(`/profiles/conversations/${this.activeConversation.id}/messages`, {
+          method: 'POST',
+          body: JSON.stringify({ content: this.newMessage.trim() }),
+        });
+        if (msg) {
+          this.messages.push(msg);
+          this.newMessage = '';
+          this.activeConversation.last_message_preview = msg.content;
+          this.activeConversation.last_message_at = msg.created_at;
+          this.$nextTick(() => this.scrollToBottom());
+        }
+      } catch (e) {
+        const detail = e?.detail || 'Error al enviar mensaje';
+        Alpine.store('toast').show(detail, 'error');
+      }
+      this.sending = false;
+    },
+
+    async poll() {
+      // Refresh conversation list
+      await this.loadConversations();
+
+      // Refresh current chat messages
+      if (this.activeConversation) {
+        await this.loadMessages(this.activeConversation.id);
+      }
+    },
+
+    scrollToBottom() {
+      const container = this.$refs.messagesContainer;
+      if (container) {
+        container.scrollTop = container.scrollHeight;
+      }
+    },
+
+    timeAgo(isoDate) {
+      if (!isoDate) return '';
+      const d = new Date(isoDate);
+      const now = new Date();
+      const diff = Math.floor((now - d) / 1000);
+      if (diff < 60) return 'ahora';
+      if (diff < 3600) return Math.floor(diff / 60) + 'm';
+      if (diff < 86400) return Math.floor(diff / 3600) + 'h';
+      if (diff < 604800) return Math.floor(diff / 86400) + 'd';
+      return d.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+    },
+
+    formatTime(isoDate) {
+      if (!isoDate) return '';
+      return new Date(isoDate).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    },
+
+    destroy() {
+      if (this.pollInterval) clearInterval(this.pollInterval);
+    }
+  }
+}
+</script>
+{% endblock %}

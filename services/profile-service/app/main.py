@@ -16,6 +16,7 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
+from .api.v1.messages import router as messages_router
 from .api.v1.pages import router as pages_router
 from .api.v1.profiles import router as profiles_router
 from .config import ProfileServiceSettings
@@ -113,6 +114,9 @@ def create_app() -> FastAPI:
 
     # DDD routes — profiles, jobs, games, quiz, therapist (PostgreSQL)
     application.include_router(profiles_router)
+
+    # Chat / messaging routes
+    application.include_router(messages_router)
 
     # HTML page routes (Jinja2 templates)
     application.include_router(pages_router)

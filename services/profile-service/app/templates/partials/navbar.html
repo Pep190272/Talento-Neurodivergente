@@ -16,49 +16,60 @@
         <!-- Public: landing pages -->
         <template x-if="!$store.auth.isLoggedIn">
           <div class="flex items-center gap-6">
-            <a href="/" class="text-sm font-medium text-gray-600 hover:text-primary transition">Inicio</a>
-            <a href="/para-candidatos" class="text-sm font-medium text-gray-600 hover:text-primary transition">Candidatos</a>
-            <a href="/para-empresas" class="text-sm font-medium text-gray-600 hover:text-primary transition">Empresas</a>
-            <a href="/para-terapeutas" class="text-sm font-medium text-gray-600 hover:text-primary transition">Terapeutas</a>
-            <a href="/pricing" class="text-sm font-medium text-gray-600 hover:text-primary transition">Precios</a>
+            <a href="/" class="text-sm font-medium text-gray-700 hover:text-primary transition">Inicio</a>
+            <a href="/para-candidatos" class="text-sm font-medium text-gray-700 hover:text-primary transition">Candidatos</a>
+            <a href="/para-empresas" class="text-sm font-medium text-gray-700 hover:text-primary transition">Empresas</a>
+            <a href="/para-terapeutas" class="text-sm font-medium text-gray-700 hover:text-primary transition">Terapeutas</a>
+            <a href="/pricing" class="text-sm font-medium text-gray-700 hover:text-primary transition">Precios</a>
           </div>
         </template>
 
         <!-- Logged-in: app pages by role -->
         <template x-if="$store.auth.isLoggedIn">
           <div class="flex items-center gap-6">
-            <a href="/dashboard" class="text-sm font-medium text-gray-600 hover:text-primary transition">Dashboard</a>
-            <a href="/quiz" class="text-sm font-medium text-gray-600 hover:text-primary transition" x-show="$store.auth.role === 'candidate'">Quiz</a>
-            <a href="/games" class="text-sm font-medium text-gray-600 hover:text-primary transition" x-show="$store.auth.role === 'candidate'">Games</a>
-            <a href="/inclusivity" class="text-sm font-medium text-gray-600 hover:text-primary transition" x-show="$store.auth.role === 'company'">Inclusividad</a>
-            <a href="/jobs" class="text-sm font-medium text-gray-600 hover:text-primary transition" x-show="$store.auth.role === 'company'">Ofertas</a>
-            <a href="/jobs" class="text-sm font-medium text-gray-600 hover:text-primary transition" x-show="$store.auth.role === 'candidate'">Empleos</a>
-            <a href="/forms" class="text-sm font-medium text-gray-600 hover:text-primary transition">Formularios</a>
+            <a href="/dashboard" class="text-sm font-medium text-gray-700 hover:text-primary transition">Dashboard</a>
+            <a href="/quiz" class="text-sm font-medium text-gray-700 hover:text-primary transition" x-show="$store.auth.role === 'candidate'">Quiz</a>
+            <a href="/games" class="text-sm font-medium text-gray-700 hover:text-primary transition" x-show="$store.auth.role === 'candidate'">Games</a>
+            <a href="/inclusivity" class="text-sm font-medium text-gray-700 hover:text-primary transition" x-show="$store.auth.role === 'company'">Inclusividad</a>
+            <a href="/jobs" class="text-sm font-medium text-gray-700 hover:text-primary transition" x-show="$store.auth.role === 'company'">Ofertas</a>
+            <a href="/jobs" class="text-sm font-medium text-gray-700 hover:text-primary transition" x-show="$store.auth.role === 'candidate'">Empleos</a>
+            <a href="/forms" class="text-sm font-medium text-gray-700 hover:text-primary transition">Formularios</a>
           </div>
         </template>
       </div>
 
       <!-- Right side -->
       <div class="hidden md:flex items-center gap-3">
+        <!-- High contrast toggle -->
+        <button class="hc-toggle touch-target"
+                @click="let hc = document.documentElement.classList.toggle('high-contrast'); localStorage.setItem('diversia_high_contrast', hc)"
+                :aria-pressed="document.documentElement.classList.contains('high-contrast') ? 'true' : 'false'"
+                aria-label="Activar modo de alto contraste"
+                title="Alto contraste">
+          <i data-lucide="sun" class="w-4 h-4 icon-accessible" aria-hidden="true"></i>
+          <span class="hidden lg:inline">Alto contraste</span>
+        </button>
+
         <template x-if="!$store.auth.isLoggedIn">
           <div class="flex items-center gap-3">
-            <a href="/login" class="text-sm font-medium text-gray-600 hover:text-primary transition">Iniciar Sesion</a>
-            <a href="/register" class="px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-deep transition">Registrarse</a>
+            <a href="/login" class="text-sm font-medium text-gray-700 hover:text-primary transition">Iniciar Sesion</a>
+            <a href="/register" class="px-4 py-2 bg-primary text-white text-sm font-semibold rounded-lg hover:bg-primary-deep transition touch-target">Registrarse</a>
           </div>
         </template>
         <template x-if="$store.auth.isLoggedIn">
           <div class="flex items-center gap-3">
-            <span class="text-sm text-gray-500" x-text="$store.auth.user?.display_name || $store.auth.user?.email"></span>
+            <span class="text-sm text-gray-700" x-text="$store.auth.user?.display_name || $store.auth.user?.email"></span>
             <button @click="$store.auth.clear(); window.location.href='/'"
-                    class="text-sm text-gray-500 hover:text-danger transition">Salir</button>
+                    class="text-sm text-gray-700 hover:text-danger transition touch-target">Salir</button>
           </div>
         </template>
       </div>
 
       <!-- Mobile menu button -->
-      <button @click="open = !open" class="md:hidden p-2 rounded-lg hover:bg-gray-100">
-        <i data-lucide="menu" class="w-5 h-5" x-show="!open"></i>
-        <i data-lucide="x" class="w-5 h-5" x-show="open" x-cloak></i>
+      <button @click="open = !open" class="md:hidden p-2 rounded-lg hover:bg-gray-100 touch-target"
+              aria-label="Menu de navegacion" :aria-expanded="open ? 'true' : 'false'">
+        <i data-lucide="menu" class="w-6 h-6 icon-accessible" x-show="!open" aria-hidden="true"></i>
+        <i data-lucide="x" class="w-6 h-6 icon-accessible" x-show="open" x-cloak aria-hidden="true"></i>
       </button>
     </div>
   </div>
@@ -67,35 +78,45 @@
   <div x-show="open" x-cloak x-transition class="md:hidden bg-white border-t border-gray-100 px-4 pb-4">
     <template x-if="!$store.auth.isLoggedIn">
       <div>
-        <a href="/" class="block py-2 text-gray-600 hover:text-primary">Inicio</a>
-        <a href="/para-candidatos" class="block py-2 text-gray-600 hover:text-primary">Candidatos</a>
-        <a href="/para-empresas" class="block py-2 text-gray-600 hover:text-primary">Empresas</a>
-        <a href="/para-terapeutas" class="block py-2 text-gray-600 hover:text-primary">Terapeutas</a>
-        <a href="/pricing" class="block py-2 text-gray-600 hover:text-primary">Precios</a>
+        <a href="/" class="block py-2 text-gray-700 hover:text-primary">Inicio</a>
+        <a href="/para-candidatos" class="block py-2 text-gray-700 hover:text-primary">Candidatos</a>
+        <a href="/para-empresas" class="block py-2 text-gray-700 hover:text-primary">Empresas</a>
+        <a href="/para-terapeutas" class="block py-2 text-gray-700 hover:text-primary">Terapeutas</a>
+        <a href="/pricing" class="block py-2 text-gray-700 hover:text-primary">Precios</a>
       </div>
     </template>
 
     <template x-if="$store.auth.isLoggedIn">
       <div>
-        <a href="/dashboard" class="block py-2 text-gray-600 hover:text-primary">Dashboard</a>
-        <a href="/quiz" class="block py-2 text-gray-600 hover:text-primary" x-show="$store.auth.role === 'candidate'">Quiz</a>
-        <a href="/games" class="block py-2 text-gray-600 hover:text-primary" x-show="$store.auth.role === 'candidate'">Games</a>
-        <a href="/inclusivity" class="block py-2 text-gray-600 hover:text-primary" x-show="$store.auth.role === 'company'">Inclusividad</a>
-        <a href="/jobs" class="block py-2 text-gray-600 hover:text-primary" x-show="$store.auth.role === 'company'">Ofertas</a>
-        <a href="/forms" class="block py-2 text-gray-600 hover:text-primary">Formularios</a>
+        <a href="/dashboard" class="block py-2 text-gray-700 hover:text-primary">Dashboard</a>
+        <a href="/quiz" class="block py-2 text-gray-700 hover:text-primary" x-show="$store.auth.role === 'candidate'">Quiz</a>
+        <a href="/games" class="block py-2 text-gray-700 hover:text-primary" x-show="$store.auth.role === 'candidate'">Games</a>
+        <a href="/inclusivity" class="block py-2 text-gray-700 hover:text-primary" x-show="$store.auth.role === 'company'">Inclusividad</a>
+        <a href="/jobs" class="block py-2 text-gray-700 hover:text-primary" x-show="$store.auth.role === 'company'">Ofertas</a>
+        <a href="/forms" class="block py-2 text-gray-700 hover:text-primary">Formularios</a>
       </div>
     </template>
     <div class="border-t border-gray-100 mt-2 pt-2">
       <template x-if="!$store.auth.isLoggedIn">
         <div>
-          <a href="/login" class="block py-2 text-gray-600">Iniciar Sesion</a>
+          <a href="/login" class="block py-2 text-gray-700">Iniciar Sesion</a>
           <a href="/register" class="block py-2 text-primary font-semibold">Registrarse</a>
         </div>
       </template>
       <template x-if="$store.auth.isLoggedIn">
         <button @click="$store.auth.clear(); window.location.href='/'"
-                class="block py-2 text-red-500">Salir</button>
+                class="block py-2 text-red-600 font-medium">Salir</button>
       </template>
+      <!-- Mobile high contrast toggle -->
+      <div class="border-t border-gray-200 mt-2 pt-2">
+        <button class="hc-toggle w-full justify-center touch-target"
+                @click="let hc = document.documentElement.classList.toggle('high-contrast'); localStorage.setItem('diversia_high_contrast', hc)"
+                :aria-pressed="document.documentElement.classList.contains('high-contrast') ? 'true' : 'false'"
+                aria-label="Activar modo de alto contraste">
+          <i data-lucide="sun" class="w-4 h-4 icon-accessible" aria-hidden="true"></i>
+          Alto contraste
+        </button>
+      </div>
     </div>
   </div>
 </nav>

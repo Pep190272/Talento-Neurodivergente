@@ -1,14 +1,14 @@
 # Project Status — DiversIA Eternals
 
-> **Ultima actualizacion**: 16 de marzo de 2026
-> **Version**: 2.6.0
+> **Ultima actualizacion**: 20 de marzo de 2026
+> **Version**: 2.9.0
 > **Produccion**: https://app.diversia.click
 
 ---
 
 ## Estado General
 
-**Todos los microservicios core estan desplegados y operativos en produccion.** La app corre en `app.diversia.click` sobre un VPS Hostinger (Paris, EU) via Dokploy con Docker Compose: 5 microservicios Python/FastAPI + PostgreSQL 16 + nginx gateway + Ollama. 5 bounded contexts SaaS adicionales estan disenados con migracion SQL lista (subscriptions, learning, community, marketplace, analytics — ver ADR-005). Pagina de precios publicada con tracking de Early Adopter slots. Inclusivity Engine mejorado con 25+ bias patterns, ecosistema 360 terapeutas, y accesibilidad WCAG AA. Deuda tecnica eliminada: 7,800+ lineas de codigo muerto removidas, dependencias Vercel eliminadas. El frontend legacy Next.js se ha desacoplado completamente (dependencias removidas).
+**Todos los microservicios core estan desplegados y operativos en produccion.** La app corre en `app.diversia.click` sobre un VPS Hostinger (Paris, EU) via Dokploy con Docker Compose: 5 microservicios Python/FastAPI + PostgreSQL 16 + nginx gateway + Ollama. Superadmin dashboard funcional con seed data demo (14 empresas, 24 candidatos, 8 terapeutas, 33 ofertas, 55+ matchings). **Dashboard V2 completado** (6 despachos, issues #135-#140): tabs por actor, graficos Chart.js, hub matching SVG, chat privado (49 tests), onboarding tour, WCAG AAA. Modelo de pago por exito (ADR-006) con baremo escalonado aprobado (8-15% segun rango salarial) y flujo superadmin para cobros via Stripe Checkout.
 
 ---
 
@@ -29,7 +29,7 @@
 | **profile-service** | :8002 | **Produccion** | 83 | PostgreSQL (schema: profiles) |
 | **matching-service** | :8003 | **Produccion** | 53 | PostgreSQL (schema: matching) |
 | **intelligence-service** | :8004 | **Produccion** | 36 | PostgreSQL (schema: ai) |
-| **subscription-service** | :8005 | **Produccion** | 87 | PostgreSQL (schema: subscriptions) |
+| **subscription-service** | :8005 | **Produccion** | 90 | PostgreSQL (schema: subscriptions) |
 | **shared kernel** | — | Libreria compartida | 13 | — |
 | **nginx gateway** | :8000 | **Produccion** | — | — |
 | **PostgreSQL 16** | :5432 | **Produccion** | — | 4 schemas core + 5 SaaS |
@@ -44,6 +44,7 @@
 - Jobs: CRUD + analisis de inclusividad (LLM) + **25+ bias patterns** para deteccion de lenguaje discriminatorio
 - Matching 24D: scoring trilateral con razones + **scoring diferencial de accommodations** (technical/soft/domain)
 - **Ecosistema 360 Terapeutas**: conexiones trilaterales (Individual↔Company, Individual↔Therapist, Company↔Therapist) con privacy enforcement
+- **Superadmin dashboard**: demo con seed data, vistas por actor, KPI cards
 - Use cases: ApplyToJob, ManageConsent, ExportData, DeleteAccount, VerifyTherapist
 
 ### auth-service
@@ -75,7 +76,7 @@
 | intelligence-service | 36 | Passing |
 | shared kernel | 13 | Passing |
 | subscription-service | 90 | Passing |
-| **Total pytest** | **323** | **0 failing** |
+| **Total pytest** | **372** | **0 failing** |
 | | | |
 | **JS/TS (Vitest)** | **285** | **0 failing (2 skipped)** |
 | E2E (Playwright) | 6 suites | Requieren servicios corriendo |
@@ -103,8 +104,11 @@ Tests E2E incluyen: homepage accessibility, registration flows, candidate/compan
 | 10 | ~~Stripe checkout + webhooks~~ | **Pausado (ADR-006: pago por exito)** |
 | 10b | Tracking contrataciones + Stripe Invoicing | Pendiente |
 | 11 | Inclusivity Engine + A11y + Tech Debt Cleanup | **Completado** (16 Mar) |
-| 12 | Build Tailwind + monitoring | Pendiente |
-| 13 | Beta con usuarios reales | Pendiente |
+| 12 | Seed data expandida + superadmin dashboard | **Completado** (18-19 Mar) |
+| 13 | Dashboard V2 (6 despachos #135-#140) | **En progreso** |
+| 14 | Migrar secrets a Dokploy (#77) + Success Fee Stripe | Pendiente |
+| 15 | Build Tailwind + monitoring | Pendiente |
+| 16 | Beta con usuarios reales | Pendiente |
 
 ---
 
@@ -121,14 +125,31 @@ Tests E2E incluyen: homepage accessibility, registration flows, candidate/compan
 
 ---
 
-## Issues: 30 de 31 resueltas
+## Issues: 28 abiertas
 
-Unica pendiente: #78 (Llama 3.1 8B) — descartada, Llama 3.2:3b se mantiene.
+### P0 (Criticas)
+- **#40**: Fix inclusivity score siempre 100 (bug matching)
+- **#77**: Migrar credenciales a Dokploy Secrets (seguridad)
+- **#87**: Backups automatizados + log rotation (infra)
+- **#88**: AI Transparency Log — EU AI Act (legal)
 
-### Resueltas recientemente (16 Mar 2026)
-- **#114**: chore: technical debt cleanup — 7,800+ lineas de codigo muerto eliminadas, dependencias Vercel removidas
-- **#111**: refactor(backend): deprecar constantes EARLY_ADOPTER_*, unificar limites 25/25, BillingCycle.ON_SUCCESS, feature flag SUCCESS_BASED_MODEL_ENABLED
-- **#112**: docs: actualizar ADR-006 y documentacion para coherencia con pago por exito
+### P1 (Importantes)
+- **#42**: Onboarding wizard candidatos
+- **#43**: Persistir resultados de juegos
+- **#44**: Persistir resultados de quiz
+- **#45**: Job marketplace con filtros accommodations
+- **#86**: Async Matching Dashboard (ticket view)
+
+### Dashboard V2 (#135-#140)
+- **#140**: WCAG AAA contrastes (independiente, primero)
+- **#135**: Pestanas por actor en admin (independiente)
+- **#136**: Graficos interactivos Chart.js (depende #135)
+- **#137**: Hub matching trilateral (depende #135)
+- **#138**: Chat privado entre actores (independiente)
+- **#139**: Onboarding tour interactivo (depende #135, #136, #137)
+
+### P2-P4 (Medio/bajo plazo)
+- #53, #56, #57, #58, #59, #61, #62, #64, #67, #72, #76, #78, #79, #82
 
 ---
 
@@ -144,37 +165,35 @@ Unica pendiente: #78 (Llama 3.1 8B) — descartada, Llama 3.2:3b se mantiene.
 | marketplace | marketplace-service | :8008 | providers, services, bookings, reviews |
 | analytics | analytics-service | :8009 | metric_snapshots, dei_reports, usage_events |
 
-Modelo de negocio: **Pago por exito (ADR-006)**. Empresas acceden gratis y pagan success fee (10-15% salario) solo al contratar. Candidatos y terapeutas gratis.
+Modelo de negocio: **Pago por exito (ADR-006)**. Empresas acceden gratis y pagan success fee escalonado (8-15% segun rango salarial) solo al contratar. Candidatos y terapeutas gratis. Flujo de cobro via superadmin + Stripe Checkout.
 
-### Funcionalidades recientes (16 Mar 2026)
+### Funcionalidades recientes (17-20 Mar 2026)
 
-- **Inclusivity Engine**: 25+ bias patterns para deteccion de lenguaje discriminatorio, scoring diferencial de accommodations (technical/soft/domain)
+- **Superadmin dashboard**: demo con seed data funcional, vistas por actor
+- **Admin role support**: navbar, dashboard layout, translations
+- **Seed data expandida**: 14 empresas (4 oficios manuales), 24 candidatos, 8 terapeutas, 33 ofertas, 55+ matchings
+- **15 neurodivergencias**: TAG, Bipolar II, TEA nivel 2, diagnosticos duales (TDAH+Dislexia, TAG+TDAH)
+- **CLAUDE.md nativo**: reemplaza documentacion legacy para Claude Code
+- **Dashboard V2 planificado**: 6 despachos con specs detalladas (docs/DESPACHOS_DASHBOARD_V2.md)
+- **Baremo success fee aprobado**: escalonado 8-15% con flujo superadmin (ADR-006 actualizado)
+
+### Funcionalidades anteriores (15-16 Mar 2026)
+
+- **Inclusivity Engine**: 25+ bias patterns, scoring diferencial accommodations (technical/soft/domain)
 - **Ecosistema 360 Terapeutas**: conexiones trilaterales con privacy enforcement
-- **Accesibilidad WCAG AA**: keyboard navigation, ARIA labels, color contrast (ratio 4.6:1), screen reader support
-- **Tech Debt eliminado**: 7,800+ lineas de codigo muerto, dependencias Vercel removidas, vulnerabilidades hono resueltas
-- **E2E tests nuevos**: homepage accessibility, registration flows
-- **285 tests JS/TS** (era 245) + 323 tests pytest = **608+ tests totales**
-
-### Funcionalidades anteriores (12-14 Mar 2026)
-
-- **Pagina de precios** (`/pricing`): 3 tarjetas (candidato gratis, empresa pago por exito, terapeuta gratis), FAQ, banner Early Adopter, flujo de pago por exito
-- **Early adopter slot tracking**: endpoint API + verificacion al registrar
-- **Auto-creacion de perfil** al registrarse (fix: empresas no aparecian en BD)
-- **Emails en produccion**: welcome + admin notification + early adopter
-- **Fix acentos/ñ** en pagina para-terapeutas
-- **Fix CI**: DATABASE_URL para prisma generate
+- **Accesibilidad WCAG AA**: keyboard navigation, ARIA labels, color contrast (ratio 4.6:1)
+- **Tech Debt eliminado**: 7,800+ lineas de codigo muerto, dependencias Vercel removidas
+- **285 tests JS/TS** + 323 tests pytest = **608+ tests totales**
 
 ---
 
-## Proximos Pasos
+## Proximos Pasos (priorizados)
 
-1. ~~Stripe checkout + webhooks en produccion~~ **PAUSADO (ADR-006: pago por exito)**
-2. **Atraer empresas** (acceso gratis) + conseguir primera contratacion exitosa
-3. **Tracking de contrataciones** + Stripe Invoicing para success fees
-4. Build Tailwind CSS (reemplazar CDN)
-5. Beta con usuarios reales
-6. ~~Retirar frontend legacy Next.js (Vercel)~~ **EN PROGRESO** — dependencias Vercel ya eliminadas
-
----
-
-**Nota**: Next.js legacy sigue en Vercel hasta que se retire oficialmente.
+1. **Dashboard V2** (#135-#140) — demo funcional e interactiva para captar empresas
+2. **Migrar secrets a Dokploy** (#77) — prerequisito para Stripe keys
+3. **Success Fee con Stripe** — SuccessFeePayment + Checkout Session + webhook + baremo automatico
+4. **Fix inclusivity score** (#40) — bug P0, reproducible con seed data
+5. **Backups automatizados** (#87) — infra critica
+6. Build Tailwind CSS (reemplazar CDN)
+7. Beta con usuarios reales (25 empresas, 50 candidatos, 10 terapeutas)
+8. ~~Retirar frontend legacy Next.js (Vercel)~~ **EN PROGRESO** — dependencias Vercel ya eliminadas

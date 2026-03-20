@@ -7,6 +7,45 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [2.9.0] - 2026-03-20
+
+### Sesion 2026-03-20 — Dashboard V2 Completo: 6 Despachos (#135-#140)
+
+#### Added
+- **Despacho 1 — Tabs por actor (#135)**: Sistema de pestanas con navegacion por teclado (Arrow, Home, End) para admin dashboard con 4 vistas: Resumen, Candidato, Empresa, Terapeuta
+- **Despacho 2 — Graficos interactivos (#136)**: 5 graficos Chart.js (doughnut distribucion usuarios, timeline registros, radar 24D mejorado con tooltips categoricos, barras Brain Suite, barras inclusividad)
+- **Despacho 3 — Hub de matching trilateral (#137)**: SVG interactivo con nodos hover, lineas animadas (dash + pulse), flechas de flujo, metricas en vivo, CTAs scroll-to-section
+- **Despacho 4 — Chat privado (#138)**: Backend completo (domain puro + 5 endpoints REST + 49 tests) + widget "Mensajes Recientes" en dashboard candidato + ruta /messages
+- **Despacho 5 — Onboarding tour (#139)**: Guia interactiva step-by-step por rol (candidato 6 pasos, empresa 5, terapeuta 4, admin 5) con overlay + spotlight + tooltip, auto-inicio primer login, boton "?" flotante, persistencia localStorage
+- **Despacho 6 — WCAG AAA (#140)**: Contrastes AAA (text-gray-700 en vez de gray-500), icon-accessible, touch-target 44x44, shadow-md, forced-colors, prefers-reduced-motion
+
+#### Changed
+- Dashboard crece de 1618 a 2573 lineas con los 6 despachos integrados
+- **372 tests pytest** (+49 nuevos del chat service), 0 failing
+
+---
+
+## [2.8.0] - 2026-03-19
+
+### Sesion 2026-03-18/19 — Superadmin Dashboard, Admin Role, CLAUDE.md Nativo
+
+#### Added
+- **Superadmin dashboard** con demo seed data: vistas por actor (candidato, empresa, terapeuta) con datos reales del seed
+- **Admin role support**: navbar con opciones admin, dashboard layout adaptado, translations
+- **Superadmin bootstrap endpoint**: creacion automatica del superadmin al iniciar auth-service
+- **CLAUDE.md nativo**: reemplaza documentacion legacy como sistema de contexto para Claude Code
+- **6 agent briefs** para Dashboard V2 overhaul (docs/DESPACHOS_DASHBOARD_V2.md): tabs por actor, graficos interactivos, hub matching, chat, onboarding tour, WCAG AAA
+- **Issues #135-#140** creadas para Dashboard V2 con dependencias entre despachos
+
+#### Fixed
+- **Superadmin login**: CORS fix, schema mismatch, middleware redirect corregidos
+- **Auth redirect**: individual users redirigen correctamente a /dashboard/individual
+
+#### Changed
+- Documentacion legacy reemplazada por CLAUDE.md como fuente de verdad
+
+---
+
 ## [2.7.0] - 2026-03-18
 
 ### Sesion 2026-03-18 — Expansion de Datos Seed: Oficios Manuales y Neurodivergencias Ampliadas

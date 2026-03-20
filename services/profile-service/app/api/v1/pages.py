@@ -89,3 +89,8 @@ async def jobs(request: Request) -> HTMLResponse:
 @router.get("/pricing", response_class=HTMLResponse)
 async def pricing(request: Request) -> HTMLResponse:
     return templates.TemplateResponse("pages/pricing.html", {"request": request})
+
+
+@router.get("/messages", response_class=HTMLResponse)
+async def messages(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse("pages/messages.html", {"request": request})
