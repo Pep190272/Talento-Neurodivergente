@@ -228,6 +228,41 @@
             </div>
           </div>
 
+          <!-- Recent Messages Widget (Despacho 4, #138) -->
+          <div class="glass rounded-xl p-6 mb-6 shadow-md" role="region" aria-label="Mensajes recientes">
+            <div class="flex items-center justify-between mb-4">
+              <h2 class="font-bold text-lg text-dark">
+                <i data-lucide="message-circle" class="w-5 h-5 inline text-primary icon-accessible" aria-hidden="true"></i>
+                Mensajes Recientes
+              </h2>
+              <a href="/messages" class="text-sm text-primary font-medium hover:underline touch-target">Ver todos &rarr;</a>
+            </div>
+            <template x-if="recentConversations.length === 0">
+              <div class="text-center py-4">
+                <p class="text-base text-gray-700 leading-relaxed">No tienes mensajes aun</p>
+                <p class="text-sm text-gray-700 mt-1">Los mensajes apareceran aqui cuando inicies una conversacion</p>
+              </div>
+            </template>
+            <div class="space-y-2">
+              <template x-for="conv in recentConversations" :key="conv.id">
+                <a :href="'/messages?with=' + (conv.participant_1_id === userId ? conv.participant_2_id : conv.participant_1_id)"
+                   class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition touch-target">
+                  <div class="w-9 h-9 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                    <i data-lucide="user" class="w-4 h-4 text-primary icon-accessible" aria-hidden="true"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-base font-medium truncate text-dark"
+                       x-text="'Usuario ' + (conv.participant_1_id === userId ? conv.participant_2_id : conv.participant_1_id).substring(0, 6)"></p>
+                    <p class="text-sm text-gray-700 truncate" x-text="conv.last_message_preview || 'Sin mensajes'"></p>
+                  </div>
+                  <div x-show="conv.unread_count > 0"
+                       class="w-5 h-5 rounded-full bg-primary text-white text-xs flex items-center justify-center shrink-0"
+                       x-text="conv.unread_count"></div>
+                </a>
+              </template>
+            </div>
+          </div>
+
           <!-- Quick Actions row -->
           <div class="grid sm:grid-cols-3 gap-4 mb-6">
             <a href="/quiz" class="glass rounded-xl p-6 hover-lift hover:border-primary transition flex items-center gap-4 shadow-md touch-target"
@@ -251,13 +286,13 @@
               </div>
             </a>
 
-            <a href="/forms" class="glass rounded-xl p-6 hover-lift hover:border-green-400 transition flex items-center gap-4 shadow-md touch-target">
-              <div class="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center shrink-0">
-                <i data-lucide="file-text" class="w-5 h-5 text-green-600 icon-accessible" aria-hidden="true"></i>
+            <a href="/messages" class="glass rounded-xl p-6 hover-lift hover:border-primary transition flex items-center gap-4 shadow-md touch-target">
+              <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                <i data-lucide="message-circle" class="w-5 h-5 text-primary icon-accessible" aria-hidden="true"></i>
               </div>
               <div>
-                <h3 class="font-semibold text-base text-dark">Editar Perfil</h3>
-                <p class="text-sm text-gray-700">Actualiza tus datos</p>
+                <h3 class="font-semibold text-base text-dark">Mensajes</h3>
+                <p class="text-sm text-gray-700">Chat privado con actores</p>
               </div>
             </a>
           </div>
@@ -402,7 +437,7 @@
             </div>
           </div>
 
-          <!-- Inclusivity breakdown chart -->
+          <!-- Inclusivity breakdown chart - Chart.js -->
           <div x-show="hasInclusivity" class="glass rounded-xl p-6 mb-6 shadow-md">
             <div class="flex items-center justify-between mb-4">
               <h2 class="font-bold text-xl text-dark">
@@ -411,22 +446,13 @@
               </h2>
               <a href="/inclusivity" class="text-sm text-green-700 font-medium hover:underline touch-target">Repetir evaluacion &rarr;</a>
             </div>
-            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              <template x-for="cat in inclusivityCategories" :key="cat.key">
-                <div class="border border-gray-200 rounded-lg p-4 shadow-sm">
-                  <div class="flex justify-between text-base mb-2">
-                    <span class="text-gray-700 font-medium" x-text="cat.label"></span>
-                    <span class="font-bold" :class="cat.pct >= 75 ? 'text-green-700' : cat.pct >= 50 ? 'text-yellow-700' : 'text-red-600'"
-                          x-text="cat.pct + '%'"></span>
-                  </div>
-                  <div class="w-full bg-gray-200 rounded-full h-2">
-                    <div class="h-2 rounded-full transition-all"
-                         :class="cat.pct >= 75 ? 'bg-green-500' : cat.pct >= 50 ? 'bg-yellow-400' : 'bg-red-400'"
-                         :style="'width:' + cat.pct + '%'"></div>
-                  </div>
-                </div>
-              </template>
+            <div class="relative" style="max-height: 320px;">
+              <canvas id="companyInclusivityChart" aria-label="Grafico de barras del score de inclusividad" role="img"></canvas>
             </div>
+            <p class="text-sm text-gray-700 mt-3 text-center leading-relaxed">
+              Score global: <span class="font-bold" x-text="inclusivityOverall + '%'"></span> &middot;
+              Hover sobre las barras para ver detalles
+            </p>
           </div>
 
           <!-- Quick Actions -->
@@ -762,7 +788,9 @@
           <div x-data="{ activeTab: 'resumen' }"
                x-effect="
                  if (activeTab === 'candidato') {
-                   $nextTick(() => { renderAdminRadarChart(); lucide.createIcons(); });
+                   $nextTick(() => { renderAdminRadarChart(); renderBrainSuiteChart(); lucide.createIcons(); });
+                 } else if (activeTab === 'empresa') {
+                   $nextTick(() => { renderInclusivityBarChart(); lucide.createIcons(); });
                  } else {
                    $nextTick(() => lucide.createIcons());
                  }
@@ -856,51 +884,269 @@
                  aria-labelledby="tab-resumen"
                  tabindex="0"
             >
-              <!-- Architecture & Matching Overview -->
-              <div class="glass rounded-xl p-6 mb-6 shadow-md">
+              <!-- Hub de Matching Trilateral (Despacho 3, #137) -->
+              <div class="glass rounded-xl p-6 mb-6 shadow-md" x-data="matchingHub()" role="region" aria-label="Hub de Matching Trilateral">
                 <div class="flex items-center gap-3 mb-5">
                   <div class="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center">
                     <i data-lucide="cpu" class="w-5 h-5 text-cyan-600 icon-accessible" aria-hidden="true"></i>
                   </div>
                   <div>
-                    <h2 class="font-bold text-xl text-dark">Matching Trilateral 24D</h2>
-                    <p class="text-sm text-gray-700">Algoritmo de matching candidato-empresa-terapeuta con IA</p>
+                    <h2 class="font-bold text-xl text-dark">Hub de Matching Trilateral 24D</h2>
+                    <p class="text-sm text-gray-700">Ecosistema de conexion candidato-empresa-terapeuta con IA</p>
                   </div>
                 </div>
 
-                <div class="grid sm:grid-cols-3 gap-4">
-                  <div class="border border-gray-200 rounded-lg p-5 text-center">
-                    <div class="w-14 h-14 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-3">
-                      <i data-lucide="user" class="w-7 h-7 text-primary icon-accessible" aria-hidden="true"></i>
-                    </div>
-                    <h4 class="font-semibold mb-1">Candidato</h4>
-                    <p class="text-sm text-gray-700">Quiz 24D + Brain Suite generan NeuroVector</p>
-                    <div class="mt-2 px-2 py-1 text-xs rounded bg-blue-50 text-blue-700 font-mono">NeuroVector24D</div>
+                <!-- Matching Metrics -->
+                <div class="grid grid-cols-3 gap-3 mb-6">
+                  <div class="border border-gray-200 rounded-lg p-3 text-center shadow-sm">
+                    <div class="text-xl font-display font-bold text-primary" x-text="adminStats.users?.candidates ?? '0'"></div>
+                    <p class="text-sm text-gray-700 mt-0.5">Candidatos con perfil</p>
                   </div>
-                  <div class="border border-gray-200 rounded-lg p-5 text-center">
-                    <div class="w-14 h-14 mx-auto rounded-full bg-amber-100 flex items-center justify-center mb-3">
-                      <i data-lucide="building-2" class="w-7 h-7 text-amber-600 icon-accessible" aria-hidden="true"></i>
-                    </div>
-                    <h4 class="font-semibold mb-1">Empresa</h4>
-                    <p class="text-sm text-gray-700">Evaluacion inclusividad + requisitos por oferta</p>
-                    <div class="mt-2 px-2 py-1 text-xs rounded bg-amber-50 text-amber-700 font-mono">InclusivityScore</div>
+                  <div class="border border-gray-200 rounded-lg p-3 text-center shadow-sm">
+                    <div class="text-xl font-display font-bold text-amber-600" x-text="adminJobCount"></div>
+                    <p class="text-sm text-gray-700 mt-0.5">Ofertas publicadas</p>
                   </div>
-                  <div class="border border-gray-200 rounded-lg p-5 text-center">
-                    <div class="w-14 h-14 mx-auto rounded-full bg-purple-100 flex items-center justify-center mb-3">
-                      <i data-lucide="stethoscope" class="w-7 h-7 text-purple-600 icon-accessible" aria-hidden="true"></i>
-                    </div>
-                    <h4 class="font-semibold mb-1">Terapeuta</h4>
-                    <p class="text-sm text-gray-700">Validacion profesional + acompanamiento</p>
-                    <div class="mt-2 px-2 py-1 text-xs rounded bg-purple-50 text-purple-700 font-mono">TherapistProfile</div>
+                  <div class="border border-gray-200 rounded-lg p-3 text-center shadow-sm">
+                    <div class="text-xl font-display font-bold text-purple-600" x-text="adminStats.users?.therapists ?? '0'"></div>
+                    <p class="text-sm text-gray-700 mt-0.5">Terapeutas activos</p>
                   </div>
                 </div>
 
-                <div class="mt-4 pt-4 border-t border-gray-100 text-center">
+                <!-- Interactive Trilateral Diagram -->
+                <div class="relative w-full" style="min-height: 380px;" aria-label="Diagrama interactivo de matching trilateral">
+
+                  <!-- SVG Connection Lines -->
+                  <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 600 380" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+                    <defs>
+                      <linearGradient id="grad-candidate-company" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#046BD2;stop-opacity:0.8" />
+                        <stop offset="100%" style="stop-color:#D97706;stop-opacity:0.8" />
+                      </linearGradient>
+                      <linearGradient id="grad-company-therapist" x1="100%" y1="0%" x2="0%" y2="0%">
+                        <stop offset="0%" style="stop-color:#D97706;stop-opacity:0.8" />
+                        <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:0.8" />
+                      </linearGradient>
+                      <linearGradient id="grad-candidate-therapist" x1="0%" y1="100%" x2="0%" y2="0%">
+                        <stop offset="0%" style="stop-color:#046BD2;stop-opacity:0.8" />
+                        <stop offset="100%" style="stop-color:#7C3AED;stop-opacity:0.8" />
+                      </linearGradient>
+                    </defs>
+
+                    <!-- Line: Candidato -> Empresa -->
+                    <line x1="150" y1="290" x2="450" y2="290"
+                          class="matching-hub-line"
+                          :class="{ 'matching-hub-line--active': hoveredNode === 'candidate' || hoveredNode === 'company' }"
+                          stroke="url(#grad-candidate-company)" stroke-width="2.5"
+                          stroke-dasharray="8 4" />
+
+                    <!-- Line: Empresa -> Terapeuta -->
+                    <line x1="450" y1="290" x2="300" y2="80"
+                          class="matching-hub-line"
+                          :class="{ 'matching-hub-line--active': hoveredNode === 'company' || hoveredNode === 'therapist' }"
+                          stroke="url(#grad-company-therapist)" stroke-width="2.5"
+                          stroke-dasharray="8 4" />
+
+                    <!-- Line: Candidato -> Terapeuta -->
+                    <line x1="150" y1="290" x2="300" y2="80"
+                          class="matching-hub-line"
+                          :class="{ 'matching-hub-line--active': hoveredNode === 'candidate' || hoveredNode === 'therapist' }"
+                          stroke="url(#grad-candidate-therapist)" stroke-width="2.5"
+                          stroke-dasharray="8 4" />
+
+                    <!-- Central IA Node -->
+                    <circle cx="300" cy="210" r="28" fill="#F0F9FF" stroke="#046BD2" stroke-width="1.5" class="matching-hub-ia-pulse" />
+                    <text x="300" y="206" text-anchor="middle" class="text-xs font-semibold" fill="#046BD2" style="font-size:11px;font-family:Rajdhani,sans-serif;">IA</text>
+                    <text x="300" y="220" text-anchor="middle" fill="#64748B" style="font-size:8px;font-family:Rajdhani,sans-serif;">Cosine Sim</text>
+
+                    <!-- Flow arrows -->
+                    <polygon points="225,242 231,237 228,247" fill="#046BD2" opacity="0.6" class="matching-hub-arrow matching-hub-arrow--1" />
+                    <polygon points="375,242 369,237 372,247" fill="#D97706" opacity="0.6" class="matching-hub-arrow matching-hub-arrow--2" />
+                    <polygon points="300,140 295,148 305,148" fill="#7C3AED" opacity="0.6" class="matching-hub-arrow matching-hub-arrow--3" />
+                  </svg>
+
+                  <!-- Terapeuta Node - top center -->
+                  <div class="absolute flex flex-col items-center"
+                       style="left: 50%; top: 0; transform: translateX(-50%);"
+                       @mouseenter="hoveredNode = 'therapist'" @mouseleave="hoveredNode = null"
+                       @focusin="hoveredNode = 'therapist'" @focusout="hoveredNode = null">
+                    <button @click="scrollToSection('admin-showcase-therapist')"
+                            class="matching-hub-node matching-hub-node--therapist group"
+                            :class="{ 'matching-hub-node--highlighted': hoveredNode === 'therapist' }"
+                            aria-label="Ver seccion Terapeuta: validacion profesional y acompanamiento"
+                            style="min-width: 44px; min-height: 44px;">
+                      <div class="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center mb-2 border-2 border-purple-300 group-hover:border-purple-500 group-focus-visible:border-purple-500 transition-all group-hover:scale-110 group-focus-visible:scale-110 group-hover:shadow-lg group-focus-visible:shadow-lg">
+                        <i data-lucide="stethoscope" class="w-8 h-8 text-purple-600" aria-hidden="true"></i>
+                      </div>
+                      <span class="font-semibold text-sm text-gray-800">Terapeuta</span>
+                      <span class="text-sm text-gray-700 text-center max-w-[130px]">Validacion profesional</span>
+                      <span class="mt-1 px-2 py-0.5 text-xs rounded bg-purple-50 text-purple-700 font-mono">TherapistProfile</span>
+                    </button>
+                  </div>
+
+                  <!-- Candidato Node - bottom left -->
+                  <div class="absolute flex flex-col items-center"
+                       style="left: 10%; bottom: 0; transform: translateX(-10%);"
+                       @mouseenter="hoveredNode = 'candidate'" @mouseleave="hoveredNode = null"
+                       @focusin="hoveredNode = 'candidate'" @focusout="hoveredNode = null">
+                    <button @click="scrollToSection('admin-showcase-candidate')"
+                            class="matching-hub-node matching-hub-node--candidate group"
+                            :class="{ 'matching-hub-node--highlighted': hoveredNode === 'candidate' }"
+                            aria-label="Ver seccion Candidato: quiz 24D y Brain Suite generan NeuroVector"
+                            style="min-width: 44px; min-height: 44px;">
+                      <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-2 border-2 border-blue-300 group-hover:border-primary group-focus-visible:border-primary transition-all group-hover:scale-110 group-focus-visible:scale-110 group-hover:shadow-lg group-focus-visible:shadow-lg">
+                        <i data-lucide="user" class="w-8 h-8 text-primary" aria-hidden="true"></i>
+                      </div>
+                      <span class="font-semibold text-sm text-gray-800">Candidato</span>
+                      <span class="text-sm text-gray-700 text-center max-w-[130px]">Quiz 24D + Brain Suite</span>
+                      <span class="mt-1 px-2 py-0.5 text-xs rounded bg-blue-50 text-blue-700 font-mono">NeuroVector24D</span>
+                    </button>
+                  </div>
+
+                  <!-- Empresa Node - bottom right -->
+                  <div class="absolute flex flex-col items-center"
+                       style="right: 10%; bottom: 0; transform: translateX(10%);"
+                       @mouseenter="hoveredNode = 'company'" @mouseleave="hoveredNode = null"
+                       @focusin="hoveredNode = 'company'" @focusout="hoveredNode = null">
+                    <button @click="scrollToSection('admin-showcase-company')"
+                            class="matching-hub-node matching-hub-node--company group"
+                            :class="{ 'matching-hub-node--highlighted': hoveredNode === 'company' }"
+                            aria-label="Ver seccion Empresa: evaluacion de inclusividad y ofertas"
+                            style="min-width: 44px; min-height: 44px;">
+                      <div class="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center mb-2 border-2 border-amber-300 group-hover:border-amber-500 group-focus-visible:border-amber-500 transition-all group-hover:scale-110 group-focus-visible:scale-110 group-hover:shadow-lg group-focus-visible:shadow-lg">
+                        <i data-lucide="building-2" class="w-8 h-8 text-amber-600" aria-hidden="true"></i>
+                      </div>
+                      <span class="font-semibold text-sm text-gray-800">Empresa</span>
+                      <span class="text-sm text-gray-700 text-center max-w-[130px]">Inclusividad + Ofertas</span>
+                      <span class="mt-1 px-2 py-0.5 text-xs rounded bg-amber-50 text-amber-700 font-mono">InclusivityScore</span>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Matching Flow Steps -->
+                <div class="mt-6 pt-4 border-t border-gray-100">
+                  <h3 class="text-sm font-bold text-gray-700 mb-3">Flujo de Matching</h3>
+                  <div class="flex flex-wrap items-center justify-center gap-2 text-xs">
+                    <span class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-blue-50 text-blue-700 font-medium">
+                      <i data-lucide="user" class="w-3 h-3" aria-hidden="true"></i> Candidato (Quiz 24D)
+                    </span>
+                    <i data-lucide="arrow-right" class="w-4 h-4 text-gray-400" aria-hidden="true"></i>
+                    <span class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-cyan-50 text-cyan-700 font-medium">
+                      <i data-lucide="sparkles" class="w-3 h-3" aria-hidden="true"></i> IA (Cosine Similarity)
+                    </span>
+                    <i data-lucide="arrow-right" class="w-4 h-4 text-gray-400" aria-hidden="true"></i>
+                    <span class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-amber-50 text-amber-700 font-medium">
+                      <i data-lucide="building-2" class="w-3 h-3" aria-hidden="true"></i> Empresa (Ofertas)
+                    </span>
+                    <i data-lucide="arrow-left" class="w-4 h-4 text-gray-400" aria-hidden="true"></i>
+                    <span class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-purple-50 text-purple-700 font-medium">
+                      <i data-lucide="stethoscope" class="w-3 h-3" aria-hidden="true"></i> Terapeuta (Validacion)
+                    </span>
+                  </div>
+                </div>
+
+                <!-- Technology & Business Model -->
+                <div class="mt-4 text-center">
                   <div class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-primary/5 to-purple-50">
                     <i data-lucide="sparkles" class="w-4 h-4 text-primary icon-accessible" aria-hidden="true"></i>
                     <span class="text-sm font-medium text-gray-700">Cosine Similarity + Ollama (Llama 3.2 3B) para reportes IA</span>
                   </div>
-                  <p class="text-sm text-gray-700 mt-2">Modelo de negocio: Pago por exito (10-15% salario) &middot; Candidatos y terapeutas siempre gratis</p>
+                  <p class="text-sm text-gray-700 mt-2">Modelo de negocio: Pago por exito (8-15% salario) &middot; Candidatos y terapeutas siempre gratis</p>
+                </div>
+              </div>
+
+              <!-- CSS for Matching Hub animations -->
+              <style>
+                .matching-hub-line {
+                  animation: matchingHubDash 1.5s linear infinite;
+                  transition: opacity 0.3s ease, stroke-width 0.3s ease;
+                  opacity: 0.5;
+                }
+                .matching-hub-line--active {
+                  opacity: 1;
+                  stroke-width: 4;
+                  filter: drop-shadow(0 0 4px rgba(4, 107, 210, 0.3));
+                }
+                @keyframes matchingHubDash {
+                  to { stroke-dashoffset: -24; }
+                }
+                .matching-hub-ia-pulse {
+                  animation: matchingHubPulse 2.5s ease-in-out infinite;
+                }
+                @keyframes matchingHubPulse {
+                  0%, 100% { r: 28; opacity: 1; }
+                  50% { r: 32; opacity: 0.85; }
+                }
+                .matching-hub-arrow {
+                  animation: matchingHubArrowBounce 2s ease-in-out infinite;
+                }
+                .matching-hub-arrow--1 { animation-delay: 0s; }
+                .matching-hub-arrow--2 { animation-delay: 0.6s; }
+                .matching-hub-arrow--3 { animation-delay: 1.2s; }
+                @keyframes matchingHubArrowBounce {
+                  0%, 100% { opacity: 0.3; transform: translateY(0); }
+                  50% { opacity: 0.8; transform: translateY(-3px); }
+                }
+                .matching-hub-node {
+                  display: flex;
+                  flex-direction: column;
+                  align-items: center;
+                  background: none;
+                  border: none;
+                  cursor: pointer;
+                  padding: 0.5rem;
+                  border-radius: 0.75rem;
+                  transition: transform 0.2s ease, box-shadow 0.2s ease;
+                }
+                .matching-hub-node:focus-visible {
+                  outline: 3px solid #046BD2;
+                  outline-offset: 4px;
+                }
+                .matching-hub-node--highlighted {
+                  transform: scale(1.05);
+                }
+                @media (forced-colors: active) {
+                  .matching-hub-line { stroke: LinkText; }
+                  .matching-hub-node:focus-visible { outline: 3px solid Highlight; }
+                }
+                @media (prefers-reduced-motion: reduce) {
+                  .matching-hub-line,
+                  .matching-hub-ia-pulse,
+                  .matching-hub-arrow {
+                    animation: none;
+                  }
+                  .matching-hub-line { opacity: 0.7; }
+                  .matching-hub-arrow { opacity: 0.6; }
+                }
+              </style>
+
+              <!-- Distribucion de usuarios + Timeline (Despacho 2, #136) -->
+              <div class="grid lg:grid-cols-2 gap-6 mb-6">
+                <!-- Doughnut: Distribucion de usuarios -->
+                <div class="glass rounded-xl p-6 shadow-md">
+                  <h2 class="font-bold text-lg text-dark mb-4">
+                    <i data-lucide="pie-chart" class="w-5 h-5 inline text-primary icon-accessible" aria-hidden="true"></i>
+                    Distribucion de Usuarios
+                  </h2>
+                  <div class="relative" style="max-height: 300px;">
+                    <canvas id="userDistributionChart" aria-label="Grafico de distribucion de usuarios por tipo" role="img"></canvas>
+                  </div>
+                  <p class="text-sm text-gray-700 mt-3 text-center leading-relaxed">
+                    Proporcion de usuarios registrados por tipo de actor
+                  </p>
+                </div>
+
+                <!-- Timeline: Registros por mes -->
+                <div class="glass rounded-xl p-6 shadow-md">
+                  <h2 class="font-bold text-lg text-dark mb-4">
+                    <i data-lucide="trending-up" class="w-5 h-5 inline text-green-600 icon-accessible" aria-hidden="true"></i>
+                    Registros por Mes
+                  </h2>
+                  <div class="relative" style="max-height: 300px;">
+                    <canvas id="registrationTimelineChart" aria-label="Grafico de registros por mes" role="img"></canvas>
+                  </div>
+                  <p class="text-sm text-gray-700 mt-3 text-center leading-relaxed">
+                    Evolucion de registros en la plataforma
+                  </p>
                 </div>
               </div>
             </div>
@@ -915,7 +1161,7 @@
                  aria-labelledby="tab-candidato"
                  tabindex="0"
             >
-              <div class="glass rounded-xl p-6 mb-6 shadow-md">
+              <div id="admin-showcase-candidate" class="glass rounded-xl p-6 mb-6 shadow-md">
                 <div class="flex items-center gap-3 mb-5">
                   <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
                     <i data-lucide="user" class="w-5 h-5 text-primary icon-accessible" aria-hidden="true"></i>
@@ -961,20 +1207,12 @@
                     </div>
 
                     <div class="border border-gray-200 rounded-lg p-4">
-                      <h4 class="text-sm font-bold text-gray-700 uppercase tracking-wider mb-3">Brain Suite</h4>
-                      <div class="space-y-2 text-sm">
-                        <div class="flex justify-between">
-                          <span class="text-gray-600"><i data-lucide="gamepad-2" class="w-4 h-4 inline text-purple-600 icon-accessible" aria-hidden="true"></i> Memory Matrix</span>
-                          <span class="font-semibold">850 pts</span>
-                        </div>
-                        <div class="flex justify-between">
-                          <span class="text-gray-600"><i data-lucide="gamepad-2" class="w-4 h-4 inline text-purple-600 icon-accessible" aria-hidden="true"></i> Pattern Hunter</span>
-                          <span class="font-semibold">720 pts</span>
-                        </div>
-                        <div class="flex justify-between">
-                          <span class="text-gray-600"><i data-lucide="gamepad-2" class="w-4 h-4 inline text-purple-600 icon-accessible" aria-hidden="true"></i> Focus Flow</span>
-                          <span class="font-semibold">680 pts</span>
-                        </div>
+                      <h4 class="text-sm font-bold text-gray-700 uppercase tracking-wider mb-3">
+                        <i data-lucide="gamepad-2" class="w-4 h-4 inline text-purple-600 icon-accessible" aria-hidden="true"></i>
+                        Brain Suite Scores
+                      </h4>
+                      <div class="relative" style="max-height: 200px;">
+                        <canvas id="brainSuiteChart" aria-label="Grafico de puntuaciones Brain Suite" role="img"></canvas>
                       </div>
                     </div>
                   </div>
@@ -1014,7 +1252,7 @@
                  aria-labelledby="tab-empresa"
                  tabindex="0"
             >
-              <div class="glass rounded-xl p-6 mb-6 shadow-md">
+              <div id="admin-showcase-company" class="glass rounded-xl p-6 mb-6 shadow-md">
                 <div class="flex items-center gap-3 mb-5">
                   <div class="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
                     <i data-lucide="building-2" class="w-5 h-5 text-amber-600 icon-accessible" aria-hidden="true"></i>
@@ -1026,29 +1264,14 @@
                 </div>
 
                 <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <!-- Inclusivity Score Demo -->
+                  <!-- Inclusivity Score Demo - Chart.js horizontal bar -->
                   <div class="lg:col-span-2 border border-gray-200 rounded-lg p-5">
                     <h4 class="text-base font-bold text-dark mb-4">
                       <i data-lucide="heart" class="w-4 h-4 inline text-pink-500 icon-accessible" aria-hidden="true"></i>
                       Score de Inclusividad (demo)
                     </h4>
-                    <div class="grid sm:grid-cols-2 gap-3">
-                      <template x-for="cat in demoInclusivity" :key="cat.label">
-                        <div class="flex items-center gap-3">
-                          <div class="flex-1">
-                            <div class="flex justify-between text-sm mb-1">
-                              <span class="text-gray-600" x-text="cat.label"></span>
-                              <span class="font-bold" :class="cat.pct >= 75 ? 'text-green-600' : cat.pct >= 50 ? 'text-yellow-600' : 'text-red-500'"
-                                    x-text="cat.pct + '%'"></span>
-                            </div>
-                            <div class="w-full bg-gray-200 rounded-full h-2">
-                              <div class="h-2 rounded-full transition-all"
-                                   :class="cat.pct >= 75 ? 'bg-green-500' : cat.pct >= 50 ? 'bg-yellow-400' : 'bg-red-400'"
-                                   :style="'width:' + cat.pct + '%'"></div>
-                            </div>
-                          </div>
-                        </div>
-                      </template>
+                    <div class="relative" style="max-height: 280px;">
+                      <canvas id="inclusivityBarChart" aria-label="Grafico de barras del score de inclusividad demo" role="img"></canvas>
                     </div>
                     <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between">
                       <span class="text-sm font-medium text-gray-700">Score Global</span>
@@ -1100,7 +1323,7 @@
                  aria-labelledby="tab-terapeuta"
                  tabindex="0"
             >
-              <div class="glass rounded-xl p-6 mb-6 shadow-md">
+              <div id="admin-showcase-therapist" class="glass rounded-xl p-6 mb-6 shadow-md">
                 <div class="flex items-center gap-3 mb-5">
                   <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
                     <i data-lucide="stethoscope" class="w-5 h-5 text-purple-600 icon-accessible" aria-hidden="true"></i>
@@ -1226,6 +1449,21 @@
 
 {% block scripts %}
 <script>
+function matchingHub() {
+  return {
+    hoveredNode: null,
+    scrollToSection(sectionId) {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Brief highlight effect
+        el.classList.add('ring-2', 'ring-primary', 'ring-offset-2');
+        setTimeout(() => el.classList.remove('ring-2', 'ring-primary', 'ring-offset-2'), 2000);
+      }
+    }
+  };
+}
+
 function dashboardApp() {
   // Human-readable labels for each 24D dimension
   const dimLabels = {
@@ -1297,8 +1535,15 @@ function dashboardApp() {
     topDimensions: [],
     bottomDimensions: [],
     categories: [],
+    recentConversations: [],
+    userId: '',
     radarChart: null,
     adminRadarChart: null,
+    userDistributionChart: null,
+    registrationTimelineChart: null,
+    brainSuiteChart: null,
+    inclusivityBarChart: null,
+    companyInclusivityChart: null,
     adminStats: {},
     adminJobCount: '-',
 
@@ -1411,21 +1656,25 @@ function dashboardApp() {
         }
         this.loading = false;
         this.$nextTick(() => {
-          // Radar chart is in the Candidato tab (hidden by default).
-          // It will be rendered when the user switches to that tab.
-          // Render icons for the initially visible Resumen tab.
+          // Render charts for the Resumen tab (visible by default)
+          this.renderUserDistributionChart();
+          this.renderRegistrationTimelineChart();
+          this.renderBrainSuiteChart();
+          this.renderInclusivityBarChart();
           lucide.createIcons();
         });
         return;
       }
 
-      // Load profile, game scores, matched jobs, and subscription in parallel
+      // Load profile, game scores, matched jobs, conversations, and subscription in parallel
       const userId = Alpine.store('auth').user?.id;
-      const [profileResult, scoresResult, jobsResult, subResult] = await Promise.allSettled([
+      this.userId = userId || '';
+      const [profileResult, scoresResult, jobsResult, subResult, convResult] = await Promise.allSettled([
         api('/profiles/me'),
         api('/profiles/games/scores'),
         api('/profiles/jobs/matched'),
         userId ? api(`/subscriptions/subscriptions/${userId}`).catch(() => null) : Promise.resolve(null),
+        api('/profiles/conversations').catch(() => []),
       ]);
       if (profileResult.status === 'fulfilled') this.profile = profileResult.value;
 
@@ -1448,12 +1697,20 @@ function dashboardApp() {
       if (scoresResult.status === 'fulfilled') this.gameScores = scoresResult.value;
       if (jobsResult.status === 'fulfilled') this.matchedJobs = jobsResult.value || [];
       if (subResult.status === 'fulfilled' && subResult.value) this.subscription = subResult.value;
+      if (convResult.status === 'fulfilled') {
+        const convs = convResult.value;
+        this.recentConversations = Array.isArray(convs) ? convs.slice(0, 3) : [];
+      }
       this.loading = false;
 
       // Process neuro_vector data
       await this.$nextTick();
       if (this.hasQuiz) {
         this.processNeuroVector();
+      }
+      // Render company inclusivity chart if applicable
+      if (this.hasInclusivity) {
+        this.$nextTick(() => this.renderCompanyInclusivityChart());
       }
       this.$nextTick(() => lucide.createIcons());
     },
@@ -1484,7 +1741,6 @@ function dashboardApp() {
       const canvas = document.getElementById('radarChart');
       if (!canvas) return;
 
-      // Destroy previous chart if any
       if (this.radarChart) {
         this.radarChart.destroy();
       }
@@ -1493,17 +1749,22 @@ function dashboardApp() {
       const labels = keys.map(k => dimLabels[k] || k);
       const values = keys.map(k => parseFloat(vec[k]));
 
-      // Category colors for each point (8 categories x 3 dims)
       const categoryColors = [
-        '#3B82F6','#3B82F6','#3B82F6',  // Attention - blue
-        '#6366F1','#6366F1','#6366F1',  // Memory - indigo
-        '#06B6D4','#06B6D4','#06B6D4',  // Processing - cyan
-        '#10B981','#10B981','#10B981',  // Executive - green
-        '#EC4899','#EC4899','#EC4899',  // Social - pink
-        '#F59E0B','#F59E0B','#F59E0B',  // Creativity - amber
-        '#8B5CF6','#8B5CF6','#8B5CF6',  // Sensory - purple
-        '#EF4444','#EF4444','#EF4444',  // Emotional - red
+        '#3B82F6','#3B82F6','#3B82F6',
+        '#6366F1','#6366F1','#6366F1',
+        '#06B6D4','#06B6D4','#06B6D4',
+        '#10B981','#10B981','#10B981',
+        '#EC4899','#EC4899','#EC4899',
+        '#F59E0B','#F59E0B','#F59E0B',
+        '#8B5CF6','#8B5CF6','#8B5CF6',
+        '#EF4444','#EF4444','#EF4444',
       ];
+
+      // Build dimension -> category lookup
+      const dimToCategoryMap = {};
+      categoryDefs.forEach(cat => {
+        cat.keys.forEach(k => { dimToCategoryMap[k] = cat.name; });
+      });
 
       this.radarChart = new Chart(canvas, {
         type: 'radar',
@@ -1525,12 +1786,31 @@ function dashboardApp() {
         options: {
           responsive: true,
           maintainAspectRatio: true,
+          animation: { duration: 800 },
           plugins: {
             legend: { display: false },
             tooltip: {
+              backgroundColor: 'rgba(15, 23, 42, 0.9)',
+              titleFont: { size: 13, family: 'Rajdhani', weight: 'bold' },
+              bodyFont: { size: 12, family: 'Rajdhani' },
+              padding: 10,
+              cornerRadius: 8,
               callbacks: {
-                label: (ctx) => `${Math.round(ctx.raw * 100)}%`,
                 title: (items) => items[0].label,
+                afterTitle: (items) => {
+                  const idx = items[0].dataIndex;
+                  const dimKey = keys[idx];
+                  const category = dimToCategoryMap[dimKey] || '';
+                  return category ? `Categoria: ${category}` : '';
+                },
+                label: (ctx) => {
+                  const pct = Math.round(ctx.raw * 100);
+                  let level = 'Bajo';
+                  if (pct >= 75) level = 'Alto';
+                  else if (pct >= 50) level = 'Medio';
+                  else if (pct >= 25) level = 'Medio-bajo';
+                  return `Valor: ${pct}% (${level})`;
+                },
               }
             }
           },
@@ -1594,12 +1874,25 @@ function dashboardApp() {
         options: {
           responsive: true,
           maintainAspectRatio: true,
+          animation: { duration: 800 },
           plugins: {
             legend: { display: false },
             tooltip: {
+              backgroundColor: 'rgba(15, 23, 42, 0.9)',
+              titleFont: { size: 13, family: 'Rajdhani', weight: 'bold' },
+              bodyFont: { size: 12, family: 'Rajdhani' },
+              padding: 10,
+              cornerRadius: 8,
               callbacks: {
-                label: (ctx) => `${Math.round(ctx.raw * 100)}%`,
                 title: (items) => items[0].label,
+                label: (ctx) => {
+                  const pct = Math.round(ctx.raw * 100);
+                  let level = 'Bajo';
+                  if (pct >= 75) level = 'Alto';
+                  else if (pct >= 50) level = 'Medio';
+                  else if (pct >= 25) level = 'Medio-bajo';
+                  return `Valor: ${pct}% (${level})`;
+                },
               }
             }
           },
@@ -1611,6 +1904,366 @@ function dashboardApp() {
               grid: { color: 'rgba(0,0,0,0.06)' },
               angleLines: { color: 'rgba(0,0,0,0.06)' },
               pointLabels: { font: { size: 11, family: 'Rajdhani' }, color: '#374151' }
+            }
+          }
+        }
+      });
+    },
+
+    // ── Despacho 2: Graficos interactivos Chart.js (#136) ──
+
+    renderUserDistributionChart() {
+      const canvas = document.getElementById('userDistributionChart');
+      if (!canvas) return;
+      if (this.userDistributionChart) this.userDistributionChart.destroy();
+
+      const candidates = this.adminStats.users?.candidates ?? 0;
+      const companies = this.adminStats.users?.companies ?? 0;
+      const therapists = this.adminStats.users?.therapists ?? 0;
+      const total = candidates + companies + therapists;
+
+      this.userDistributionChart = new Chart(canvas, {
+        type: 'doughnut',
+        data: {
+          labels: ['Candidatos', 'Empresas', 'Terapeutas'],
+          datasets: [{
+            data: [candidates, companies, therapists],
+            backgroundColor: ['#046BD2', '#D97706', '#7C3AED'],
+            borderColor: '#ffffff',
+            borderWidth: 3,
+            hoverBorderWidth: 0,
+            hoverOffset: 8,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          animation: { duration: 800, easing: 'easeOutQuart' },
+          cutout: '60%',
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                font: { size: 12, family: 'Rajdhani', weight: '600' },
+                color: '#374151',
+                padding: 16,
+                usePointStyle: true,
+                pointStyleWidth: 12,
+              }
+            },
+            tooltip: {
+              backgroundColor: 'rgba(15, 23, 42, 0.9)',
+              titleFont: { size: 13, family: 'Rajdhani', weight: 'bold' },
+              bodyFont: { size: 12, family: 'Rajdhani' },
+              padding: 10,
+              cornerRadius: 8,
+              callbacks: {
+                label: (ctx) => {
+                  const value = ctx.raw;
+                  const pct = total > 0 ? Math.round((value / total) * 100) : 0;
+                  return ` ${ctx.label}: ${value} (${pct}%)`;
+                }
+              }
+            }
+          }
+        }
+      });
+    },
+
+    renderRegistrationTimelineChart() {
+      // TODO (#136): Replace mock data with real registration timeline from API
+      const canvas = document.getElementById('registrationTimelineChart');
+      if (!canvas) return;
+      if (this.registrationTimelineChart) this.registrationTimelineChart.destroy();
+
+      const mockLabels = ['Oct', 'Nov', 'Dic', 'Ene', 'Feb', 'Mar'];
+      const mockCandidates = [2, 5, 8, 12, 18, 24];
+      const mockCompanies = [1, 2, 3, 4, 6, 8];
+      const mockTherapists = [0, 1, 2, 3, 4, 5];
+
+      this.registrationTimelineChart = new Chart(canvas, {
+        type: 'line',
+        data: {
+          labels: mockLabels,
+          datasets: [
+            {
+              label: 'Candidatos',
+              data: mockCandidates,
+              borderColor: '#046BD2',
+              backgroundColor: 'rgba(4, 107, 210, 0.1)',
+              borderWidth: 2,
+              fill: true,
+              tension: 0.3,
+              pointRadius: 4,
+              pointHoverRadius: 7,
+              pointBackgroundColor: '#046BD2',
+              pointBorderColor: '#fff',
+              pointBorderWidth: 2,
+            },
+            {
+              label: 'Empresas',
+              data: mockCompanies,
+              borderColor: '#D97706',
+              backgroundColor: 'rgba(217, 119, 6, 0.1)',
+              borderWidth: 2,
+              fill: true,
+              tension: 0.3,
+              pointRadius: 4,
+              pointHoverRadius: 7,
+              pointBackgroundColor: '#D97706',
+              pointBorderColor: '#fff',
+              pointBorderWidth: 2,
+            },
+            {
+              label: 'Terapeutas',
+              data: mockTherapists,
+              borderColor: '#7C3AED',
+              backgroundColor: 'rgba(124, 58, 237, 0.1)',
+              borderWidth: 2,
+              fill: true,
+              tension: 0.3,
+              pointRadius: 4,
+              pointHoverRadius: 7,
+              pointBackgroundColor: '#7C3AED',
+              pointBorderColor: '#fff',
+              pointBorderWidth: 2,
+            },
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          animation: { duration: 800, easing: 'easeOutQuart' },
+          interaction: { intersect: false, mode: 'index' },
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                font: { size: 12, family: 'Rajdhani', weight: '600' },
+                color: '#374151',
+                padding: 16,
+                usePointStyle: true,
+                pointStyleWidth: 12,
+              }
+            },
+            tooltip: {
+              backgroundColor: 'rgba(15, 23, 42, 0.9)',
+              titleFont: { size: 13, family: 'Rajdhani', weight: 'bold' },
+              bodyFont: { size: 12, family: 'Rajdhani' },
+              padding: 10,
+              cornerRadius: 8,
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { font: { size: 12, family: 'Rajdhani' }, color: '#374151' }
+            },
+            y: {
+              beginAtZero: true,
+              grid: { color: 'rgba(0,0,0,0.06)' },
+              ticks: {
+                font: { size: 12, family: 'Rajdhani' },
+                color: '#374151',
+                stepSize: 5,
+              }
+            }
+          }
+        }
+      });
+    },
+
+    renderBrainSuiteChart() {
+      const canvas = document.getElementById('brainSuiteChart');
+      if (!canvas) return;
+      if (this.brainSuiteChart) this.brainSuiteChart.destroy();
+
+      const games = ['Memory Matrix', 'Pattern Hunter', 'Focus Flow'];
+      const scores = [850, 720, 680];
+      const colors = ['#8B5CF6', '#A78BFA', '#C4B5FD'];
+
+      this.brainSuiteChart = new Chart(canvas, {
+        type: 'bar',
+        data: {
+          labels: games,
+          datasets: [{
+            label: 'Puntuacion',
+            data: scores,
+            backgroundColor: colors,
+            borderColor: colors.map(c => c),
+            borderWidth: 1,
+            borderRadius: 6,
+            barPercentage: 0.7,
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: true,
+          animation: { duration: 800, easing: 'easeOutQuart' },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: 'rgba(15, 23, 42, 0.9)',
+              titleFont: { size: 13, family: 'Rajdhani', weight: 'bold' },
+              bodyFont: { size: 12, family: 'Rajdhani' },
+              padding: 10,
+              cornerRadius: 8,
+              callbacks: {
+                label: (ctx) => ` ${ctx.raw} puntos`
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { font: { size: 11, family: 'Rajdhani' }, color: '#374151' }
+            },
+            y: {
+              beginAtZero: true,
+              grid: { color: 'rgba(0,0,0,0.06)' },
+              ticks: {
+                font: { size: 11, family: 'Rajdhani' },
+                color: '#374151',
+                stepSize: 200,
+              }
+            }
+          }
+        }
+      });
+    },
+
+    renderInclusivityBarChart() {
+      const canvas = document.getElementById('inclusivityBarChart');
+      if (!canvas) return;
+      if (this.inclusivityBarChart) this.inclusivityBarChart.destroy();
+
+      const cats = this.demoInclusivity;
+      const labels = cats.map(c => c.label);
+      const values = cats.map(c => c.pct);
+      const bgColors = values.map(v => v >= 75 ? '#22C55E' : v >= 50 ? '#EAB308' : '#EF4444');
+
+      this.inclusivityBarChart = new Chart(canvas, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Score',
+            data: values,
+            backgroundColor: bgColors,
+            borderColor: bgColors,
+            borderWidth: 1,
+            borderRadius: 6,
+            barPercentage: 0.65,
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: true,
+          animation: { duration: 800, easing: 'easeOutQuart' },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: 'rgba(15, 23, 42, 0.9)',
+              titleFont: { size: 13, family: 'Rajdhani', weight: 'bold' },
+              bodyFont: { size: 12, family: 'Rajdhani' },
+              padding: 10,
+              cornerRadius: 8,
+              callbacks: {
+                label: (ctx) => {
+                  const pct = ctx.raw;
+                  let level = 'Necesita mejora';
+                  if (pct >= 75) level = 'Bueno';
+                  else if (pct >= 50) level = 'Aceptable';
+                  return ` ${pct}% — ${level}`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              max: 100,
+              grid: { color: 'rgba(0,0,0,0.06)' },
+              ticks: {
+                font: { size: 12, family: 'Rajdhani' },
+                color: '#374151',
+                callback: (v) => v + '%',
+              }
+            },
+            y: {
+              grid: { display: false },
+              ticks: { font: { size: 12, family: 'Rajdhani' }, color: '#374151' }
+            }
+          }
+        }
+      });
+    },
+
+    renderCompanyInclusivityChart() {
+      const canvas = document.getElementById('companyInclusivityChart');
+      if (!canvas) return;
+      if (this.companyInclusivityChart) this.companyInclusivityChart.destroy();
+
+      const cats = this.inclusivityCategories;
+      if (cats.length === 0) return;
+
+      const labels = cats.map(c => c.label);
+      const values = cats.map(c => c.pct);
+      const bgColors = values.map(v => v >= 75 ? '#22C55E' : v >= 50 ? '#EAB308' : '#EF4444');
+
+      this.companyInclusivityChart = new Chart(canvas, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Score',
+            data: values,
+            backgroundColor: bgColors,
+            borderColor: bgColors,
+            borderWidth: 1,
+            borderRadius: 6,
+            barPercentage: 0.65,
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: true,
+          animation: { duration: 800, easing: 'easeOutQuart' },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              backgroundColor: 'rgba(15, 23, 42, 0.9)',
+              titleFont: { size: 13, family: 'Rajdhani', weight: 'bold' },
+              bodyFont: { size: 12, family: 'Rajdhani' },
+              padding: 10,
+              cornerRadius: 8,
+              callbacks: {
+                label: (ctx) => {
+                  const pct = ctx.raw;
+                  let level = 'Necesita mejora';
+                  if (pct >= 75) level = 'Bueno';
+                  else if (pct >= 50) level = 'Aceptable';
+                  return ` ${pct}% — ${level}`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              max: 100,
+              grid: { color: 'rgba(0,0,0,0.06)' },
+              ticks: {
+                font: { size: 12, family: 'Rajdhani' },
+                color: '#374151',
+                callback: (v) => v + '%',
+              }
+            },
+            y: {
+              grid: { display: false },
+              ticks: { font: { size: 12, family: 'Rajdhani' }, color: '#374151' }
             }
           }
         }
