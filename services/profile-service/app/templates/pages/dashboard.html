@@ -36,7 +36,7 @@
       <template x-if="$store.auth.role === 'candidate'">
         <div>
           <!-- Progress bar -->
-          <div class="glass rounded-xl p-6 mb-6 shadow-md" role="region" aria-label="Progreso del perfil">
+          <div id="tour-candidate-progress" class="glass rounded-xl p-6 mb-6 shadow-md" role="region" aria-label="Progreso del perfil">
             <div class="flex items-center justify-between mb-3">
               <h2 class="text-base font-bold text-dark">Progreso del perfil</h2>
               <span class="text-base font-bold text-primary" x-text="progressPct() + '%'"></span>
@@ -65,7 +65,7 @@
           <div class="grid lg:grid-cols-5 gap-6 mb-6">
 
             <!-- 24D Radar Chart (3 cols) -->
-            <div class="lg:col-span-3 glass rounded-xl p-6 shadow-md">
+            <div id="tour-candidate-quiz" class="lg:col-span-3 glass rounded-xl p-6 shadow-md">
               <div class="flex items-center justify-between mb-4">
                 <h2 class="font-bold text-xl text-dark">
                   <i data-lucide="brain" class="w-5 h-5 inline text-primary icon-accessible" aria-hidden="true"></i>
@@ -108,7 +108,7 @@
             <div class="lg:col-span-2 space-y-6">
 
               <!-- Profile info -->
-              <div class="glass rounded-xl p-6 shadow-md">
+              <div id="tour-candidate-profile" class="glass rounded-xl p-6 shadow-md">
                 <h3 class="font-bold text-sm text-gray-700 uppercase tracking-wider mb-4">Tu Perfil</h3>
                 <template x-if="profile">
                   <div class="space-y-3">
@@ -154,7 +154,7 @@
               </div>
 
               <!-- Top dimensions -->
-              <div class="glass rounded-xl p-6 shadow-md" x-show="hasQuiz">
+              <div id="tour-candidate-strengths" class="glass rounded-xl p-6 shadow-md" x-show="hasQuiz">
                 <h3 class="font-bold text-sm text-gray-700 uppercase tracking-wider mb-4">Fortalezas Principales</h3>
                 <div class="space-y-3">
                   <template x-for="dim in topDimensions" :key="dim.key">
@@ -276,7 +276,7 @@
               </div>
             </a>
 
-            <a href="/games" class="glass rounded-xl p-6 hover-lift hover:border-purple-400 transition flex items-center gap-4 shadow-md touch-target">
+            <a id="tour-candidate-brainsuite" href="/games" class="glass rounded-xl p-6 hover-lift hover:border-purple-400 transition flex items-center gap-4 shadow-md touch-target">
               <div class="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center shrink-0">
                 <i data-lucide="gamepad-2" class="w-5 h-5 text-purple-600 icon-accessible" aria-hidden="true"></i>
               </div>
@@ -298,7 +298,7 @@
           </div>
 
           <!-- Matching section -->
-          <div class="glass rounded-xl p-6 shadow-md">
+          <div id="tour-candidate-matching" class="glass rounded-xl p-6 shadow-md">
             <div class="flex items-center justify-between mb-4">
               <h2 class="font-bold text-xl text-dark">
                 <i data-lucide="handshake" class="w-5 h-5 inline text-primary icon-accessible" aria-hidden="true"></i>
@@ -358,7 +358,7 @@
       <template x-if="$store.auth.role === 'company'">
         <div>
           <!-- KPI Cards -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div id="tour-company-kpi" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div class="glass rounded-xl p-6 hover-lift shadow-md actor-company-accent">
               <div class="flex items-center justify-between mb-2">
                 <span class="text-sm text-gray-700 font-bold uppercase tracking-wider">Perfil</span>
@@ -406,7 +406,7 @@
           </div>
 
           <!-- Subscription / Early Adopter Banner -->
-          <div class="glass rounded-xl p-6 mb-6 border-2 border-amber-200 bg-gradient-to-r from-amber-50 to-yellow-50 shadow-md">
+          <div id="tour-company-plan" class="glass rounded-xl p-6 mb-6 border-2 border-amber-200 bg-gradient-to-r from-amber-50 to-yellow-50 shadow-md">
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
               <div class="flex items-center gap-4">
                 <div class="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center shrink-0">
@@ -438,7 +438,7 @@
           </div>
 
           <!-- Inclusivity breakdown chart - Chart.js -->
-          <div x-show="hasInclusivity" class="glass rounded-xl p-6 mb-6 shadow-md">
+          <div id="tour-company-inclusivity" x-show="hasInclusivity" class="glass rounded-xl p-6 mb-6 shadow-md">
             <div class="flex items-center justify-between mb-4">
               <h2 class="font-bold text-xl text-dark">
                 <i data-lucide="heart" class="w-5 h-5 inline text-pink-600 icon-accessible" aria-hidden="true"></i>
@@ -476,7 +476,7 @@
                 <p class="text-sm text-gray-700">18 preguntas &middot; 5 min</p>
               </div>
             </a>
-            <a href="/jobs" class="glass rounded-xl p-6 hover-lift hover:border-primary transition flex items-center gap-4 shadow-md touch-target">
+            <a id="tour-company-jobs" href="/jobs" class="glass rounded-xl p-6 hover-lift hover:border-primary transition flex items-center gap-4 shadow-md touch-target">
               <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                 <i data-lucide="briefcase" class="w-5 h-5 text-primary icon-accessible" aria-hidden="true"></i>
               </div>
@@ -488,7 +488,7 @@
           </div>
 
           <!-- Matching placeholder -->
-          <div class="glass rounded-xl p-8 text-center shadow-md">
+          <div id="tour-company-matching" class="glass rounded-xl p-8 text-center shadow-md">
             <div class="w-16 h-16 mx-auto rounded-full bg-gray-100 flex items-center justify-center mb-4">
               <i data-lucide="handshake" class="w-8 h-8 text-gray-600" aria-hidden="true"></i>
             </div>
@@ -506,7 +506,7 @@
       <template x-if="$store.auth.role === 'therapist'">
         <div>
           <!-- KPI Cards -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+          <div id="tour-therapist-kpi" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
             <div class="glass rounded-xl p-6 hover-lift shadow-md actor-therapist-accent">
               <div class="flex items-center justify-between mb-2">
                 <span class="text-sm text-gray-700 font-bold uppercase tracking-wider">Perfil</span>
@@ -575,7 +575,7 @@
 
           <!-- Professional profile card -->
           <div class="grid lg:grid-cols-3 gap-6 mb-6">
-            <div class="lg:col-span-2 glass rounded-xl p-6 shadow-md">
+            <div id="tour-therapist-profile" class="lg:col-span-2 glass rounded-xl p-6 shadow-md">
               <h2 class="font-bold text-xl text-dark mb-4">
                 <i data-lucide="stethoscope" class="w-5 h-5 inline text-purple-600 icon-accessible" aria-hidden="true"></i>
                 Perfil Profesional
@@ -617,7 +617,7 @@
             </div>
 
             <!-- Visibility card -->
-            <div class="glass rounded-xl p-6 shadow-md">
+            <div id="tour-therapist-visibility" class="glass rounded-xl p-6 shadow-md">
               <h3 class="font-bold text-sm text-gray-700 uppercase tracking-wider mb-4">Tu Visibilidad</h3>
               <div class="space-y-4">
                 <div class="flex items-center gap-3">
@@ -685,7 +685,7 @@
           </div>
 
           <!-- Platform connection -->
-          <div class="glass rounded-xl p-8 text-center shadow-md">
+          <div id="tour-therapist-roadmap" class="glass rounded-xl p-8 text-center shadow-md">
             <div class="w-16 h-16 mx-auto rounded-full bg-purple-50 flex items-center justify-center mb-4">
               <i data-lucide="link" class="w-8 h-8 text-purple-600" aria-hidden="true"></i>
             </div>
@@ -704,7 +704,7 @@
         <div>
 
           <!-- Platform KPI Cards -->
-          <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
+          <div id="tour-admin-kpi" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
             <div class="glass rounded-xl p-6 hover-lift shadow-md actor-candidate-accent">
               <div class="flex items-center justify-between mb-2">
                 <span class="text-sm text-gray-700 font-bold uppercase tracking-wider">Candidatos</span>
@@ -785,7 +785,7 @@
           </div>
 
           <!-- ── Tab Bar for Actor Views ── -->
-          <div x-data="{ activeTab: 'resumen' }"
+          <div id="tour-admin-tabs" x-data="{ activeTab: 'resumen' }"
                x-effect="
                  if (activeTab === 'candidato') {
                    $nextTick(() => { renderAdminRadarChart(); renderBrainSuiteChart(); lucide.createIcons(); });
@@ -885,7 +885,7 @@
                  tabindex="0"
             >
               <!-- Hub de Matching Trilateral (Despacho 3, #137) -->
-              <div class="glass rounded-xl p-6 mb-6 shadow-md" x-data="matchingHub()" role="region" aria-label="Hub de Matching Trilateral">
+              <div id="tour-admin-hub" class="glass rounded-xl p-6 mb-6 shadow-md" x-data="matchingHub()" role="region" aria-label="Hub de Matching Trilateral">
                 <div class="flex items-center gap-3 mb-5">
                   <div class="w-10 h-10 rounded-lg bg-cyan-100 flex items-center justify-center">
                     <i data-lucide="cpu" class="w-5 h-5 text-cyan-600 icon-accessible" aria-hidden="true"></i>
@@ -1400,7 +1400,7 @@
           </div><!-- end x-data tabs -->
 
           <!-- Quick Actions Admin -->
-          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div id="tour-admin-actions" class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             <a href="/forms" class="glass rounded-xl p-6 hover-lift hover:border-primary transition flex items-center gap-4 shadow-md touch-target">
               <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
                 <i data-lucide="file-text" class="w-5 h-5 text-primary icon-accessible" aria-hidden="true"></i>
@@ -1444,6 +1444,128 @@
 
     </div>
   </div>
+
+  <!-- ==================== ONBOARDING TOUR (Despacho 5, #139) ==================== -->
+  <div x-data="onboardingTour()" x-init="checkAutoStart()" @keydown.escape.window="closeTour()">
+
+    <!-- Floating "?" button -->
+    <button @click="startTour()"
+            class="fixed bottom-6 right-6 z-40 w-12 h-12 rounded-full bg-primary text-white shadow-lg hover:bg-primary-deep transition-all hover:scale-110 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/50 touch-target"
+            aria-label="Abrir guia interactiva del dashboard"
+            x-show="!active"
+            x-transition>
+      <i data-lucide="help-circle" class="w-6 h-6 mx-auto icon-accessible" aria-hidden="true"></i>
+    </button>
+
+    <!-- Tour overlay -->
+    <template x-if="active">
+      <div class="tour-overlay" role="dialog" aria-modal="true" aria-label="Guia interactiva del dashboard" x-ref="tourDialog">
+
+        <!-- Semi-transparent backdrop -->
+        <div class="fixed inset-0 z-50 bg-black/60 transition-opacity" @click="closeTour()"></div>
+
+        <!-- Spotlight cutout -->
+        <div class="tour-spotlight z-50"
+             :style="spotlightStyle"
+             x-show="spotlightVisible"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100">
+        </div>
+
+        <!-- Tooltip -->
+        <div class="tour-tooltip z-50"
+             :style="tooltipStyle"
+             x-show="spotlightVisible"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-ref="tourTooltip"
+             role="alertdialog"
+             :aria-label="currentStep?.title || 'Paso del tour'">
+
+          <!-- Step counter -->
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-primary/70 uppercase tracking-wider"
+                  x-text="'Paso ' + (currentIndex + 1) + ' de ' + steps.length"></span>
+            <button @click="closeTour()"
+                    class="text-gray-400 hover:text-gray-600 transition touch-target"
+                    aria-label="Cerrar guia">
+              <i data-lucide="x" class="w-4 h-4 icon-accessible" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <!-- Title -->
+          <h3 class="font-display font-bold text-lg text-dark mb-1" x-text="currentStep?.title"></h3>
+
+          <!-- Description -->
+          <p class="text-sm text-gray-700 leading-relaxed mb-4" x-text="currentStep?.description"></p>
+
+          <!-- Navigation buttons -->
+          <div class="flex items-center justify-between gap-2">
+            <button x-show="currentIndex > 0"
+                    @click="prevStep()"
+                    class="px-3 py-1.5 text-sm font-medium text-gray-600 hover:text-dark border border-gray-300 rounded-lg hover:bg-gray-50 transition touch-target">
+              Anterior
+            </button>
+            <div x-show="currentIndex === 0"></div>
+
+            <button @click="nextStep()"
+                    class="px-4 py-1.5 text-sm font-semibold text-white bg-primary rounded-lg hover:bg-primary-deep transition touch-target"
+                    x-text="currentIndex < steps.length - 1 ? 'Siguiente' : 'Finalizar'">
+            </button>
+          </div>
+
+          <!-- Progress dots -->
+          <div class="flex justify-center gap-1.5 mt-3">
+            <template x-for="(s, i) in steps" :key="i">
+              <div class="w-2 h-2 rounded-full transition-all"
+                   :class="i === currentIndex ? 'bg-primary scale-125' : i < currentIndex ? 'bg-primary/40' : 'bg-gray-300'"></div>
+            </template>
+          </div>
+        </div>
+
+        <!-- Screen reader announcements -->
+        <div class="sr-only" aria-live="assertive" x-text="srAnnouncement"></div>
+      </div>
+    </template>
+  </div>
+
+  <!-- Tour CSS -->
+  <style>
+    .tour-spotlight {
+      position: fixed;
+      border-radius: 12px;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.6);
+      pointer-events: none;
+      transition: top 0.35s ease, left 0.35s ease, width 0.35s ease, height 0.35s ease;
+    }
+    .tour-tooltip {
+      position: fixed;
+      background: white;
+      border-radius: 12px;
+      padding: 1.25rem;
+      max-width: 340px;
+      min-width: 280px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.05);
+      transition: top 0.35s ease, left 0.35s ease;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .tour-spotlight,
+      .tour-tooltip {
+        transition: none;
+      }
+    }
+    @media (forced-colors: active) {
+      .tour-tooltip {
+        border: 2px solid CanvasText;
+      }
+      .tour-spotlight {
+        outline: 3px solid Highlight;
+      }
+    }
+  </style>
+
 </section>
 {% endblock %}
 
@@ -2275,6 +2397,176 @@ function dashboardApp() {
       return { candidate: 'Candidato', company: 'Empresa', therapist: 'Terapeuta', admin: 'Admin' }[r] || r;
     }
   }
+}
+
+// ── Despacho 5: Onboarding Tour (#139) ──
+
+function onboardingTour() {
+  const tourSteps = {
+    candidate: [
+      { target: 'tour-candidate-progress', title: 'Bienvenido a DiversIA', description: 'Esta barra muestra tu progreso. Completa cada paso para desbloquear el matching de empleo personalizado.' },
+      { target: 'tour-candidate-profile', title: 'Tu Perfil', description: 'Aqui puedes ver y editar tu informacion personal. Un perfil completo mejora la precision del matching.' },
+      { target: 'tour-candidate-quiz', title: 'Quiz Neurocognitivo 24D', description: 'Responde 24 preguntas para generar tu perfil cognitivo unico. No hay respuestas buenas ni malas — cada dimension es una fortaleza.' },
+      { target: 'tour-candidate-brainsuite', title: 'Brain Suite', description: 'Tres juegos cognitivos disenados para medir atencion, memoria y reconocimiento de patrones de forma ludica.' },
+      { target: 'tour-candidate-strengths', title: 'Tus Fortalezas', description: 'Aqui se muestran tus dimensiones cognitivas mas fuertes. Estas fortalezas son clave en el matching con ofertas de empleo.' },
+      { target: 'tour-candidate-matching', title: 'Empleos Compatibles', description: 'Nuestro algoritmo de IA compara tu perfil 24D con las ofertas publicadas y te muestra las mas compatibles con tu perfil.' },
+    ],
+    company: [
+      { target: 'tour-company-kpi', title: 'Bienvenido a DiversIA', description: 'Estas tarjetas muestran el estado de tu cuenta: perfil, inclusividad, candidatos y cumplimiento GDPR.' },
+      { target: 'tour-company-plan', title: 'Tu Plan', description: 'Como Early Adopter, disfrutas del plan PRO gratis durante 3 meses. Solo pagas un success fee cuando contratas (8-15% del salario).' },
+      { target: 'tour-company-inclusivity', title: 'Score de Inclusividad', description: 'Evalua que tan inclusiva es tu empresa para talento neurodivergente. 18 preguntas en 5 minutos. Mejora tu score para atraer mas candidatos.' },
+      { target: 'tour-company-jobs', title: 'Publicar Ofertas', description: 'Publica ofertas de empleo con analisis de lenguaje inclusivo integrado. Nuestro sistema detecta sesgos automaticamente.' },
+      { target: 'tour-company-matching', title: 'Matching Inteligente', description: 'Cuando completes tu perfil e inclusividad, el algoritmo encontrara candidatos neurodivergentes compatibles con tu cultura.' },
+    ],
+    therapist: [
+      { target: 'tour-therapist-kpi', title: 'Bienvenido a DiversIA', description: 'Estas tarjetas resumen tu actividad: perfil, especialidad, pacientes conectados y cumplimiento normativo.' },
+      { target: 'tour-therapist-profile', title: 'Tu Perfil Profesional', description: 'Completa tu perfil con especialidad, areas de soporte y numero de colegiado. Un perfil verificado genera mas confianza.' },
+      { target: 'tour-therapist-visibility', title: 'Verificacion', description: 'Este checklist muestra tu nivel de visibilidad en la plataforma. Completa cada paso para ser visible para candidatos y empresas.' },
+      { target: 'tour-therapist-roadmap', title: 'Proximamente', description: 'Pronto podras publicar cursos, ofrecer sesiones de acompanamiento y validar perfiles neurocognitivos de candidatos.' },
+    ],
+    admin: [
+      { target: 'tour-admin-kpi', title: 'Panel de Control', description: 'KPIs de la plataforma: usuarios registrados por tipo, ofertas publicadas, slots Early Adopter restantes y estado del sistema.' },
+      { target: 'tour-admin-tabs', title: 'Pestanas por Actor', description: 'Navega entre las vistas de cada tipo de actor: Resumen general, vista Candidato, vista Empresa y vista Terapeuta.' },
+      { target: 'tour-admin-hub', title: 'Hub de Matching', description: 'Visualizacion interactiva del ecosistema trilateral. Haz click en cada nodo para navegar a su seccion correspondiente.' },
+      { target: 'tour-admin-actions', title: 'Acciones Rapidas', description: 'Accesos directos a formularios, quiz 24D, Brain Suite y ofertas de empleo. Usa estos atajos para gestionar la plataforma.' },
+    ],
+  };
+
+  return {
+    active: false,
+    currentIndex: 0,
+    steps: [],
+    spotlightVisible: false,
+    srAnnouncement: '',
+
+    get currentStep() {
+      return this.steps[this.currentIndex] || null;
+    },
+
+    get spotlightStyle() {
+      const s = this._targetRect;
+      if (!s) return 'display:none';
+      const pad = 8;
+      return `top:${s.top - pad}px;left:${s.left - pad}px;width:${s.width + pad * 2}px;height:${s.height + pad * 2}px;`;
+    },
+
+    get tooltipStyle() {
+      const s = this._targetRect;
+      if (!s) return 'display:none';
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const tooltipW = 340;
+      const tooltipH = 220;
+      const gap = 16;
+      let top, left;
+
+      // Prefer below, then above, then right, then left
+      if (s.bottom + gap + tooltipH < vh) {
+        top = s.bottom + gap;
+        left = Math.max(16, Math.min(s.left + s.width / 2 - tooltipW / 2, vw - tooltipW - 16));
+      } else if (s.top - gap - tooltipH > 0) {
+        top = s.top - gap - tooltipH;
+        left = Math.max(16, Math.min(s.left + s.width / 2 - tooltipW / 2, vw - tooltipW - 16));
+      } else if (s.right + gap + tooltipW < vw) {
+        top = Math.max(16, s.top);
+        left = s.right + gap;
+      } else {
+        top = Math.max(16, s.top);
+        left = Math.max(16, s.left - tooltipW - gap);
+      }
+      return `top:${top}px;left:${left}px;`;
+    },
+
+    _targetRect: null,
+
+    checkAutoStart() {
+      this.$nextTick(() => {
+        setTimeout(() => {
+          const role = Alpine.store('auth')?.role;
+          if (!role) return;
+          const key = `diversia_tour_seen_${role}`;
+          if (!localStorage.getItem(key)) {
+            this.startTour();
+          }
+        }, 1500);
+      });
+    },
+
+    startTour() {
+      const role = Alpine.store('auth')?.role || 'candidate';
+      this.steps = tourSteps[role] || tourSteps.candidate;
+      this.currentIndex = 0;
+      this.active = true;
+      this.$nextTick(() => {
+        this._focusTarget();
+        lucide.createIcons();
+      });
+    },
+
+    closeTour() {
+      if (!this.active) return;
+      this.active = false;
+      this.spotlightVisible = false;
+      const role = Alpine.store('auth')?.role;
+      if (role) {
+        localStorage.setItem(`diversia_tour_seen_${role}`, 'true');
+      }
+      this.srAnnouncement = 'Guia interactiva cerrada';
+    },
+
+    nextStep() {
+      if (this.currentIndex < this.steps.length - 1) {
+        this.currentIndex++;
+        this._focusTarget();
+      } else {
+        this.closeTour();
+      }
+    },
+
+    prevStep() {
+      if (this.currentIndex > 0) {
+        this.currentIndex--;
+        this._focusTarget();
+      }
+    },
+
+    _focusTarget() {
+      this.spotlightVisible = false;
+      this.$nextTick(() => {
+        const step = this.currentStep;
+        if (!step) return;
+        const el = document.getElementById(step.target);
+        if (!el) {
+          // Target not visible (e.g. inside hidden template), skip or show centered
+          this._targetRect = {
+            top: window.innerHeight / 2 - 40,
+            left: window.innerWidth / 2 - 120,
+            width: 240,
+            height: 80,
+            bottom: window.innerHeight / 2 + 40,
+            right: window.innerWidth / 2 + 120,
+          };
+          this.spotlightVisible = true;
+          this.srAnnouncement = `Paso ${this.currentIndex + 1} de ${this.steps.length}: ${step.title}. ${step.description}`;
+          return;
+        }
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => {
+          const rect = el.getBoundingClientRect();
+          this._targetRect = {
+            top: rect.top,
+            left: rect.left,
+            width: rect.width,
+            height: rect.height,
+            bottom: rect.bottom,
+            right: rect.right,
+          };
+          this.spotlightVisible = true;
+          this.srAnnouncement = `Paso ${this.currentIndex + 1} de ${this.steps.length}: ${step.title}. ${step.description}`;
+        }, 400);
+      });
+    },
+  };
 }
 </script>
 {% endblock %}
