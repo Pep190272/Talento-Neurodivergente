@@ -7,6 +7,27 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ---
 
+## [2.8.0] - 2026-03-19
+
+### Sesion 2026-03-18/19 — Superadmin Dashboard, Admin Role, CLAUDE.md Nativo
+
+#### Added
+- **Superadmin dashboard** con demo seed data: vistas por actor (candidato, empresa, terapeuta) con datos reales del seed
+- **Admin role support**: navbar con opciones admin, dashboard layout adaptado, translations
+- **Superadmin bootstrap endpoint**: creacion automatica del superadmin al iniciar auth-service
+- **CLAUDE.md nativo**: reemplaza documentacion legacy como sistema de contexto para Claude Code
+- **6 agent briefs** para Dashboard V2 overhaul (docs/DESPACHOS_DASHBOARD_V2.md): tabs por actor, graficos interactivos, hub matching, chat, onboarding tour, WCAG AAA
+- **Issues #135-#140** creadas para Dashboard V2 con dependencias entre despachos
+
+#### Fixed
+- **Superadmin login**: CORS fix, schema mismatch, middleware redirect corregidos
+- **Auth redirect**: individual users redirigen correctamente a /dashboard/individual
+
+#### Changed
+- Documentacion legacy reemplazada por CLAUDE.md como fuente de verdad
+
+---
+
 ## [2.7.0] - 2026-03-18
 
 ### Sesion 2026-03-18 — Expansion de Datos Seed: Oficios Manuales y Neurodivergencias Ampliadas

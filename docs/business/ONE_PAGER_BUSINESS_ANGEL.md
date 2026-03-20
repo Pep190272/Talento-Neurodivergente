@@ -101,7 +101,7 @@ Acceso completo gratuito a la plataforma. El cobro se produce unicamente cuando 
 
 **Revenue Streams:**
 
-1. **Success Fee (Primary)**: 10-15% del salario bruto anual por contratacion exitosa
+1. **Success Fee (Primary)**: 8-15% del salario bruto anual por contratacion exitosa (baremo escalonado: 8% hasta 20K, 10% 20-35K, 12% 35-50K, 14% 50-80K, 15% +80K)
    - Fee medio estimado: €3.000-5.000 por contratacion
    - Target: 50 contrataciones año 1, 200 año 2, 500 año 3
    - **Revenue Año 3**: €1.5M - €2.5M

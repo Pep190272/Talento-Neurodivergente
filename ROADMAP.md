@@ -1,7 +1,7 @@
 # ROADMAP — DiversIA (app.diversia.click)
 
 **Fecha de inicio:** 10 de febrero de 2026
-**Ultima actualizacion:** 16 de marzo de 2026
+**Ultima actualizacion:** 20 de marzo de 2026
 **Estado:** Produccion — app.diversia.click operativa
 
 ---
@@ -14,14 +14,14 @@
 
 ---
 
-## Estado actual del proyecto (16 marzo 2026)
+## Estado actual del proyecto (20 marzo 2026)
 
 ### Que funciona en produccion (app.diversia.click)
 
 | Componente | Estado | Tests |
 |-----------|--------|-------|
-| **auth-service** (:8001) | Operativo — register, login, JWT, bcrypt, welcome email | 48 passing |
-| **profile-service** (:8002) | Operativo — frontend, auth, quiz, games, jobs, matching | 83 passing |
+| **auth-service** (:8001) | Operativo — register, login, JWT, bcrypt, welcome email, superadmin bootstrap | 48 passing |
+| **profile-service** (:8002) | Operativo — frontend, auth, quiz, games, jobs, matching, admin dashboard | 83 passing |
 | **matching-service** (:8003) | Operativo — scoring trilateral 24D, batch matching | 53 passing |
 | **intelligence-service** (:8004) | Operativo — reports LLM, anonymizer, prompt builder | 36 passing |
 | **subscription-service** (:8005) | Operativo — planes, suscripciones, BillingCycle.ON_SUCCESS, early adopters | 90 passing |
@@ -30,16 +30,20 @@
 | **PostgreSQL 16** (:5432) | Operativo — 4 schemas core + subscriptions | — |
 | **Ollama** (:11434) | Operativo — Llama 3.2 3B self-hosted | — |
 | **Frontend (Jinja2)** | 15 paginas, Alpine.js + Tailwind CDN | — |
+| **Seed data** | 14 empresas, 24 candidatos, 8 terapeutas, 33 ofertas, 55+ matchings | — |
 
 **Total: 323 tests pytest + 285 tests JS/TS = 608+ tests, 0 failing**
 
-### Que falta
+### Que falta (priorizado)
 
-- ~~Stripe checkout + webhooks en produccion~~ **PAUSADO (ADR-006: migracion a pago por exito)**
-- Tracking de contrataciones exitosas (para facturar success fees)
-- Build de Tailwind CSS (usa CDN — funcional pero no optimo)
-- Beta con usuarios reales
-- ~~Retirar frontend legacy Next.js (Vercel)~~ **EN PROGRESO** — dependencias Vercel eliminadas
+1. **Success Fee con Stripe** — Implementar flujo de pago por exito (SuccessFeePayment + Checkout + webhook). Baremo escalonado por rango salarial (8-15%). Flujo: superadmin aprueba → Checkout Session → webhook marca pagado.
+2. **Dashboard V2** — 6 despachos: tabs por actor, graficos interactivos, hub matching, chat, onboarding tour, WCAG AAA (issues #135-#140)
+3. **Migrar secrets a Dokploy** (#77) — credenciales fuera de docker-compose.yml antes de integrar Stripe
+4. **Fix inclusivity score siempre 100** (#40) — bug P0 en matching
+5. **Backups automatizados + log rotation** (#87)
+6. Build de Tailwind CSS (reemplazar CDN)
+7. Beta con usuarios reales
+8. ~~Retirar frontend legacy Next.js (Vercel)~~ **EN PROGRESO** — dependencias Vercel eliminadas
 
 ---
 
@@ -77,6 +81,31 @@ Internet → Traefik (Dokploy) → nginx gateway (:8000)
 - [x] Deploy a app.diversia.click via Dokploy
 - [x] SSL (Let's Encrypt via Traefik)
 - [x] DNS dinamico en nginx (resolver 127.0.0.11)
+
+### Completado: Superadmin + Seed Data Expandida (17-19 Mar 2026)
+- [x] Superadmin dashboard con demo seed data
+- [x] Admin role support: navbar, dashboard layout, translations
+- [x] Superadmin bootstrap endpoint + login fix (CORS, schema, redirect)
+- [x] Seed data expandida: 14 empresas (4 oficios manuales), 24 candidatos, 8 terapeutas, 33 ofertas, 55+ matchings
+- [x] 6 agent briefs para Dashboard V2 overhaul (docs/DESPACHOS_DASHBOARD_V2.md)
+- [x] CLAUDE.md como sistema nativo (reemplaza docs legacy)
+- [x] 15 neurodivergencias representadas (TAG, Bipolar II, TEA nivel 2, diagnosticos duales)
+
+### En progreso: Dashboard V2 (issues #135-#140)
+- [ ] Despacho 6: UX/UI contrastes WCAG AAA (#140)
+- [ ] Despacho 1: Sistema de pestanas por actor (#135)
+- [ ] Despacho 2: Graficos interactivos Chart.js (#136)
+- [ ] Despacho 3: Hub de matching trilateral (#137)
+- [ ] Despacho 4: Chat privado entre actores (#138)
+- [ ] Despacho 5: Guia interactiva onboarding (#139)
+
+### Pendiente: Success Fee con Stripe (ADR-006 implementacion)
+- [ ] Migrar secrets a Dokploy (#77) — prerequisito
+- [ ] Entidad SuccessFeePayment (draft → pending → paid → failed)
+- [ ] Baremo escalonado automatico por rango salarial (8-15%)
+- [ ] Stripe Checkout Session (mode=payment) + webhook verificado
+- [ ] Flujo: superadmin aprueba contratacion → genera cobro → empresa paga
+- [ ] Tests unitarios + integracion
 
 ### Pendiente: Build de frontend
 - [ ] Instalar Tailwind CSS como dependencia (no CDN)
@@ -125,6 +154,7 @@ Internet → Traefik (Dokploy) → nginx gateway (:8000)
 - [ ] 20-50 candidatos neurodivergentes
 - [ ] 5-10 terapeutas/especialistas
 - [ ] Primera contratacion exitosa via DiversIA (validar modelo)
+- [ ] Success fee cobrado via Stripe (validar flujo de pago)
 
 ---
 
@@ -154,6 +184,8 @@ Internet → Traefik (Dokploy) → nginx gateway (:8000)
 | **v2.4.0-docs** | **14 Mar** | **ADR-006: Migracion a modelo pago por exito. Stripe checkout pausado.** |
 | **v2.5.0** | **14 Mar** | **Backend alineado con ADR-006: BillingCycle.ON_SUCCESS, feature flags, constantes deprecadas** |
 | **v2.6.0** | **16 Mar** | **Inclusivity Engine, 360 Ecosystem, A11y WCAG AA, Tech Debt cleanup (-7,800 LOC)** |
+| **v2.7.0** | **18 Mar** | **Seed data expandida: oficios manuales, 24 candidatos, 15 neurodivergencias** |
+| **v2.8.0** | **19 Mar** | **Superadmin dashboard, admin role, CLAUDE.md nativo, Dashboard V2 briefs** |
 
 ---
 
@@ -304,5 +336,27 @@ cd services/shared && python -m pytest tests/ -q                  # 13 tests
 - **3 tests LLM corregidos**: timeout, Zod validation, health check
 - **E2E tests**: homepage accessibility, registration flows
 - **285 tests JS/TS** (era 245), 2 skipped (era 5)
+
+### Sesion 18 (18 Mar): Seed data expandida — oficios manuales
+- 4 nuevas empresas de oficios manuales (construccion, taller mecanico, viveros, obrador artesano)
+- 8 nuevos candidatos (trabajo manual, diagnosticos duales TDAH+Dislexia, TAG+TDAH, Bipolar II)
+- 2 nuevos terapeutas (Terapia Ocupacional + EMDR)
+- 33 ofertas (+11), 55+ matchings (+25), 49+ conexiones (+22)
+- 15 neurodivergencias representadas (era 11)
+
+### Sesion 19 (18-19 Mar): Superadmin + Dashboard V2 briefs
+- Superadmin dashboard con seed data demo funcional
+- Admin role support: Navbar, layout, translations
+- Superadmin bootstrap endpoint + login fixes (CORS, schema, redirect)
+- CLAUDE.md como sistema nativo para Claude Code (reemplaza docs legacy)
+- 6 agent briefs detallados para Dashboard V2 overhaul (docs/DESPACHOS_DASHBOARD_V2.md)
+- Issues #135-#140 creadas con dependencias entre despachos
+
+### Sesion 20 (20 Mar): Revision roadmap + planificacion Stripe success fee
+- Revision completa de 28 issues abiertas
+- Analisis de conflictos entre instruccion Stripe y issues existentes
+- Decision: flujo superadmin para success fee (seguridad, legal, admin)
+- Baremo escalonado aprobado: 8% (hasta 20K) / 10% (20-35K) / 12% (35-50K) / 14% (50-80K) / 15% (+80K)
+- Plan: migrar secrets (#77) → implementar SuccessFeePayment → Dashboard V2 en paralelo
 
 </details>

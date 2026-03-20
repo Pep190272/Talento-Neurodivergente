@@ -1,67 +1,72 @@
 # Proximos Pasos — DiversIA Eternals
 
-**Ultima actualizacion:** 16 de marzo de 2026
-**Estado actual:** v2.6.0 — produccion en app.diversia.click, 608+ tests (323 pytest + 285 JS/TS)
+**Ultima actualizacion:** 20 de marzo de 2026
+**Estado actual:** v2.8.0 — produccion en app.diversia.click, 608+ tests (323 pytest + 285 JS/TS)
 **Branch principal:** `main`
 
 ---
 
-## Estado Actual (16 Mar 2026)
+## Estado Actual (20 Mar 2026)
 
 ### Que funciona en produccion (app.diversia.click)
 
 - **5 microservicios** corriendo: auth, profile, matching, intelligence, subscription
+- **Superadmin dashboard** con seed data demo funcional (14 empresas, 24 candidatos, 8 terapeutas)
 - **PostgreSQL 16** con 4 schemas core + subscriptions
 - **nginx gateway** con DNS dinamico, rate limiting, security headers
 - **Ollama + Llama 3.2 3B** self-hosted (EU)
 - **608+ tests totales** (323 pytest + 285 JS/TS), 0 failing
-- **30/31 issues** del backlog resueltas
 - **subscription-service** con 90 tests, early adopters, modelo pago por exito
-- **Welcome email + admin notification + early adopter email** al registrar
 - **Pagina de precios** (`/pricing`) con modelo pago por exito y tracking de Early Adopter slots
-- **Inclusivity Engine**: 25+ bias patterns para deteccion de lenguaje discriminatorio
-- **Ecosistema 360 Terapeutas**: conexiones trilaterales con privacy enforcement
-- **Accesibilidad WCAG AA**: keyboard nav, ARIA labels, color contrast 4.6:1, screen reader support
+- **Seed data**: 33 ofertas, 55+ matchings, 15 neurodivergencias representadas
 - **SSL automatico** via Traefik/Let's Encrypt
 
-### Completado (16 Mar 2026)
+### Completado (17-19 Mar 2026)
 
-- [x] Docker Compose verificado end-to-end
-- [x] Deploy a app.diversia.click via Dokploy
-- [x] Health checks funcionan (/health)
-- [x] nginx rutea correctamente
-- [x] Registro + login + auto-perfil funciona
-- [x] SSL + HTTPS
-- [x] Emails en produccion (SMTP configurado)
-- [x] Pagina de precios con Early Adopter slots en vivo
-- [x] CI fix: DATABASE_URL para prisma generate
-- [x] Inclusivity Engine con 25+ bias patterns + scoring diferencial accommodations
-- [x] Ecosistema 360 Terapeutas (conexiones trilaterales)
-- [x] Accesibilidad WCAG AA (keyboard nav, ARIA, contrast)
-- [x] Tech Debt cleanup: 7,800+ lineas codigo muerto eliminadas
-- [x] Dependencias Vercel eliminadas
-- [x] Vulnerabilidades hono resueltas
-- [x] 3 tests LLM corregidos (14/14 passing)
-- [x] E2E tests: homepage accessibility, registration flows
+- [x] Superadmin dashboard con demo seed data
+- [x] Admin role support: navbar, dashboard layout, translations
+- [x] Superadmin bootstrap endpoint + login fixes
+- [x] Seed data expandida: oficios manuales, diagnosticos duales, nuevos terapeutas
+- [x] CLAUDE.md como sistema nativo para Claude Code
+- [x] 6 agent briefs para Dashboard V2 (docs/DESPACHOS_DASHBOARD_V2.md)
+- [x] Baremo success fee escalonado aprobado (8-15%, ADR-006 actualizado)
 
 ---
 
-## SIGUIENTE PASO: Beta con usuarios reales + Optimizar
+## SIGUIENTE PASO: Dashboard V2 + Stripe Success Fee + Beta
 
-### 1. ~~Stripe checkout + webhooks en produccion~~ — PAUSADO (ADR-006)
+### 1. Dashboard V2 (issues #135-#140)
+- [ ] Despacho 6: WCAG AAA contrastes (#140) — independiente, ejecutar primero
+- [ ] Despacho 1: Pestanas por actor (#135) — independiente
+- [ ] Despacho 2: Graficos interactivos Chart.js (#136) — depende #135
+- [ ] Despacho 3: Hub matching trilateral (#137) — depende #135
+- [ ] Despacho 4: Chat privado (#138) — independiente, backend+frontend
+- [ ] Despacho 5: Onboarding tour (#139) — depende #135, #136, #137
 
-> **Motivo:** Migracion a modelo de pago por exito (success fee). Las empresas acceden gratis y pagan solo al contratar. No se requiere Stripe Checkout Session ni suscripciones recurrentes. Cuando haya volumen de contrataciones (estimado: mes 6+), se integrara Stripe Invoicing para facturacion puntual.
+### 2. Migrar secrets a Dokploy (#77) — PREREQUISITO STRIPE
+- [ ] Mover POSTGRES_PASSWORD y demas credenciales a Dokploy Environment Variables
+- [ ] Preparar variables para STRIPE_SECRET_KEY y STRIPE_WEBHOOK_SECRET
 
-- ~~Crear productos y precios en Stripe Dashboard~~
-- ~~Implementar Stripe Checkout Session en subscription-service~~
-- ~~Configurar Stripe webhooks~~
-- ~~Conectar flujo: pricing page → checkout → webhook → activar suscripcion en BD~~
+### 3. Success Fee con Stripe (implementacion ADR-006)
 
-**Nuevo plan de facturacion (cuando proceda):**
-- [ ] Implementar tracking de contrataciones exitosas en la plataforma
-- [ ] Integrar Stripe Invoicing para emitir facturas por success fee
-- [ ] Configurar webhooks de facturacion (invoice.paid, invoice.overdue)
-- [ ] Dashboard de facturacion para empresas
+**Baremo escalonado aprobado:**
+| Rango salarial | Fee |
+|---------------|-----|
+| Hasta 20K | 8% |
+| 20-35K | 10% |
+| 35-50K | 12% |
+| 50-80K | 14% |
+| +80K | 15% |
+
+**Implementacion:**
+- [ ] Entidad SuccessFeePayment (draft → pending → paid → failed) en subscription-service
+- [ ] Calculo automatico del fee segun baremo y salario del puesto
+- [ ] Stripe Checkout Session (mode=payment) + webhook verificado
+- [ ] Flujo superadmin: revisar → aprobar → generar cobro → empresa paga
+- [ ] Endpoint POST /api/v1/subscriptions/success-fees
+- [ ] Endpoint POST /api/v1/subscriptions/success-fees/{id}/checkout
+- [ ] Webhook POST /api/v1/subscriptions/webhooks/stripe
+- [ ] Tests unitarios (entidad, transiciones) + integracion (endpoints, webhook mock)
 
 ### 2. Build de frontend (optimizacion)
 - [ ] Tailwind CSS como dependencia (no CDN)
@@ -93,21 +98,14 @@
 
 ## Prioridad de Implementacion SaaS
 
-### Fase 1: Subscriptions — COMPLETADO + MODELO ACTUALIZADO (11-14 Mar 2026)
-- [x] subscription-service (:8005) — 87 tests
+### Fase 1: Subscriptions + Success Fee — COMPLETADO parcialmente
+- [x] subscription-service (:8005) — 90 tests
 - [x] Planes empresa/candidato/terapeuta con logica de dominio
 - [x] Early adopter: 25 empresas + 25 terapeutas
-- [x] 6 use cases: CreatePlan, ListPlans, Subscribe, Cancel, ChangePlan, GetSubscription
-- [x] API REST + Docker Compose + nginx gateway
-- [x] Welcome email + admin notification + early adopter email al registrar
-- [x] Pagina de precios (`/pricing`) con tracking de slots en vivo
-- [x] Endpoint `GET /api/v1/auth/early-adopter-slots`
-- [x] Verificacion de plazas antes de enviar email Early Adopter
-- ~~Stripe checkout + webhooks en produccion~~ **PAUSADO (ADR-006: pago por exito)**
-- ~~Conectar pagos reales con Stripe~~ **PAUSADO (ADR-006: pago por exito)**
-- [x] **Actualizar pagina /pricing para reflejar modelo pago por exito**
-- [x] **Backend alineado con ADR-006**: BillingCycle.ON_SUCCESS, constantes deprecadas, limites unificados 25/25, feature flag, email actualizado
-- [ ] **Implementar tracking de contrataciones exitosas**
+- [x] Backend alineado con ADR-006: BillingCycle.ON_SUCCESS, limites 25/25, feature flag
+- [x] Pagina de precios actualizada para modelo pago por exito
+- [ ] **SuccessFeePayment** (entidad + baremo escalonado + Stripe Checkout) ← PROXIMO
+- [ ] **Dashboard de facturacion** para superadmin
 
 ### Fase 2: Analytics (Mes 2)
 - [ ] analytics-service (:8009)
@@ -151,11 +149,20 @@
 
 ---
 
-## Sesion 17 (15-16 Mar 2026) — Inclusivity Engine + A11y + Tech Debt
+## Sesiones recientes
 
-### Resumen
-- **Inclusivity Engine mejorado**: 25+ bias patterns (modulo `bias-patterns.ts`), scoring diferencial accommodations
-- **Ecosistema 360 Terapeutas**: conexiones trilaterales con privacy enforcement
-- **Accesibilidad WCAG AA**: keyboard nav, ARIA, contrast 4.6:1, screen reader
-- **Tech Debt eliminado**: 7,800+ lineas, dependencias Vercel, vulnerabilidades hono
-- **Tests**: 285 JS/TS (era 245) + 323 pytest = 608+ total
+### Sesion 20 (20 Mar 2026) — Revision roadmap + planificacion Stripe
+- Revision completa de 28 issues abiertas y conflictos potenciales
+- Decision: flujo superadmin para success fee (seguridad + legal)
+- Baremo escalonado aprobado: 8% (hasta 20K) → 15% (+80K)
+- ADR-006 actualizado con baremo y flujo superadmin
+- Documentacion completa sincronizada
+
+### Sesion 19 (18-19 Mar 2026) — Superadmin + Dashboard V2 briefs
+- Superadmin dashboard con seed data demo
+- Admin role, bootstrap, CORS fixes
+- CLAUDE.md nativo, 6 agent briefs Dashboard V2
+
+### Sesion 18 (18 Mar 2026) — Seed data expandida
+- 4 empresas oficios manuales, 8 candidatos, 2 terapeutas
+- 33 ofertas, 55+ matchings, 15 neurodivergencias

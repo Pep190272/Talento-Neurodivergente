@@ -11,7 +11,7 @@
 Matching trilateral 24D (candidato-empresa-terapeuta) con IA self-hosted.
 
 - **Produccion**: https://app.diversia.click (VPS Hostinger, Paris, EU, Dokploy)
-- **Version**: 2.6.0
+- **Version**: 2.8.0
 - **Stack**: Python/FastAPI microservicios + PostgreSQL 16 + Ollama (Llama 3.2 3B)
 - **Frontend**: Jinja2 + Alpine.js + Tailwind CSS (dentro de profile-service)
 - **Repo**: https://github.com/Pep190272/Talento-Neurodivergente
@@ -82,7 +82,9 @@ PostgreSQL 16 con schemas separados por servicio (auth, profiles, matching, ai, 
 
 ### Modelo de negocio
 
-Pago por exito (ADR-006): empresas acceden gratis, pagan success fee (10-15% salario) al contratar.
+Pago por exito (ADR-006): empresas acceden gratis, pagan success fee escalonado al contratar.
+Baremo: 8% (hasta 20K) / 10% (20-35K) / 12% (35-50K) / 14% (50-80K) / 15% (+80K).
+Flujo: superadmin aprueba contratacion → Stripe Checkout (mode=payment) → webhook → pagado.
 Candidatos y terapeutas siempre gratis.
 
 ---
@@ -229,8 +231,11 @@ cd services && for d in */; do (cd "$d" && python -m pytest 2>/dev/null); done
 
 ## Tareas pendientes conocidas
 
-- Crear `scripts/seed-demo.sql` — seed de datos demo para los 4 schemas de microservicios
+- **Dashboard V2** — 6 despachos (issues #135-#140): tabs, graficos, hub matching, chat, onboarding, WCAG AAA
+- **Migrar secrets a Dokploy** (#77) — prerequisito para Stripe keys
+- **Success Fee con Stripe** — SuccessFeePayment + Checkout + webhook + baremo automatico (ADR-006)
+- **Fix inclusivity score** (#40) — bug P0, siempre devuelve 100
+- **Backups automatizados** (#87) — pg_dump diario + log rotation
 - Retirar codigo legacy Next.js/Prisma del repo
 - Build Tailwind CSS (reemplazar CDN)
-- Tracking de contrataciones + Stripe Invoicing para success fees
 - Beta con usuarios reales
